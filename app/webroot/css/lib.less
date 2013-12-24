@@ -1,0 +1,114 @@
+
+.alpha(@a){
+  filter:~"alpha(opacity=(@a*100))";
+  -moz-opacity:@a;
+  -khtml-opacity:@a;
+  opacity:@a;
+}
+
+.border-radius(@a){
+  border-radius:@a; 
+  -webkit-border-radius:@a; 
+  -moz-border-radius:@a;
+}
+
+.shadow(@x, @y, @blur, @alpha){
+  -webkit-box-shadow:@x @y @blur rgba(0,0,0,@alpha); 
+  -moz-box-shadow:@x @y @blur rgba(0,0,0,@alpha);
+  box-shadow:@x @y @blur rgba(0,0,0,@alpha);
+}
+
+.gradient(@from, @to){
+  background: @from; /* Old browsers */
+  background: -moz-linear-gradient(top,  @from 0%, @to 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,@from), color-stop(100%,@to)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  @from 0%,@to 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  @from 0%,@to 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  @from 0%,@to 100%); /* IE10+ */
+  background: linear-gradient(to bottom,  @from 0%,@to 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='@from', endColorstr='@to',GradientType=0 ); /* IE6-9 */
+}
+
+.text-shadow(@x,@y,@blur,@color){
+  text-shadow: @x @y @blur @color;
+  filter: dropshadow(color=@color, offx=@x, offy=@y);
+}
+
+.em{
+  @base : 16;
+  .width(@px){
+    width : (@px/@base) + 0em;
+  }
+  .max-width(@px){
+    max-width : (@px/@base) + 0em;
+  }
+  .min-width(@px){
+    min-width : (@px/@base) + 0em;
+  }
+  .height(@px){
+    height : (@px/@base) + 0em;
+  }
+  .max-height(@px){
+    max-height : (@px/@base) + 0em;
+  }
+  .min-height(@px){
+    min-height : (@px/@base) + 0em;
+  }
+  .font-size(@px){
+    font-size : (@px/@base) + 0em;
+  }
+  .line-height(@px){
+    line-height : (@px/@base) + 0em;
+  }
+  .margin(@px){
+    margin : (@px/@base) + 0em;
+  }
+  .margin-top(@px){
+    margin-top : (@px/@base) + 0em;
+  }
+  .margin-right(@px){
+    margin-right : (@px/@base) + 0em;
+  }
+  .margin-bottom(@px){
+    margin-bottom : (@px/@base) + 0em;
+  }
+  .margin-left(@px){
+    margin-left : (@px/@base) + 0em;
+  }
+  .padding(@px){
+    padding : (@px/@base) + 0em;
+  }
+  .padding-top(@px){
+    padding-top : (@px/@base) + 0em;
+  }
+  .padding-right(@px){
+    padding-right : (@px/@base) + 0em;
+  }  
+  .padding-bottom(@px){
+    padding-bottom : (@px/@base) + 0em;
+  }
+  .padding-left(@px){
+    padding-left : (@px/@base + 0em);
+  }
+  .top(@px){
+    top : (@px/@base) + 0em;
+  }
+  .right(@px){
+    right : (@px/@base) + 0em;
+  }
+  .bottom(@px){
+    bottom : (@px/@base) + 0em;
+  }
+  .left(@px){
+    left : (@px/@base) + 0em;
+  }
+}
+
+.auto-trim{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+  -ms-text-overflow: ellipsis;
+  -moz-binding: url('ellipsis.xml#ellipsis');
+}
