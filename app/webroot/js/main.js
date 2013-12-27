@@ -3,6 +3,7 @@ var app = angular.module("lk", []);
 var wall;
 $(document).ready(function(){
 	
+	return;
 	wall = new Wall($("#desktop-view"));
 	
 	function Wall(context){
@@ -59,7 +60,6 @@ $(document).ready(function(){
 				// console.debug(e);
 			// }
 		// });
-// 		
 		return;
 		//console.debug(yql);
 		var s = document.createElement('script');

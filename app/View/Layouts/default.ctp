@@ -12,7 +12,7 @@
 	
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular.min.js"></script>
 	<script src="<?php echo $this -> webroot?>js/main.js" type="text/javascript" charset="utf-8"></script>
-	<script src="<?php echo $this -> webroot?>js/less.js" type="text/javascript"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/less.js/1.5.0/less.min.js" type="text/javascript"></script>
 	
 </head>
 <body>

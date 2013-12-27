@@ -1,0 +1,32 @@
+{
+  "name": "linklies.com",
+  "version": "0.0.1",
+  "description": "paste to save and use links creatively",
+  "main": "app/webroot/js/main.js",
+  "dependencies": {
+    "grunt": "~0.4.2"
+  },
+  "devDependencies": {
+    "grunt-contrib-watch": "~0.5.3"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com/joechen1018/linklies.git"
+  },
+  "keywords": [
+    "social",
+    "bookmark",
+    "bookmark",
+    "desktop",
+    "link",
+    "linklies"
+  ],
+  "author": "Joe Chen",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/joechen1018/linklies/issues"
+  }
+}
