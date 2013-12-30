@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 17.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="64px" height="64px" viewBox="0 0 64 64" enable-background="new 0 0 64 64" xml:space="preserve">
+<g>
+	<path fill="#FFFFFF" d="M32.5,53.25c-11.579,0-21-9.421-21-21s9.421-21,21-21s21,9.421,21,21S44.079,53.25,32.5,53.25z"/>
+	<path fill="#1D1D1B" d="M32.5,14.75c9.65,0,17.5,7.85,17.5,17.5s-7.85,17.5-17.5,17.5S15,41.9,15,32.25S22.85,14.75,32.5,14.75
+		 M32.5,7.75C18.969,7.75,8,18.719,8,32.25s10.969,24.5,24.5,24.5S57,45.781,57,32.25S46.031,7.75,32.5,7.75L32.5,7.75z"/>
+</g>
+<ellipse fill="#1D1D1B" cx="32.5" cy="12.375" rx="4" ry="7.375"/>
+<ellipse fill="#1D1D1B" cx="52.375" cy="32.25" rx="7.375" ry="4"/>
+<ellipse fill="#1D1D1B" cx="32.5" cy="52.125" rx="4" ry="7.375"/>
+<ellipse fill="#1D1D1B" cx="12.625" cy="32.25" rx="7.375" ry="4"/>
+</svg>

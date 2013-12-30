@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 17.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="64px" height="64px" viewBox="0 0 64 64" enable-background="new 0 0 64 64" xml:space="preserve">
+<path d="M13.753,48.042c0,4.418,3.582,8,8,8h18c4.418,0,8-3.582,8-8V24.208h-34V48.042z"/>
+<path d="M39.755,13.75h-18c-4.418,0-8,3.582-8,8h34C47.755,17.332,44.173,13.75,39.755,13.75z"/>
+<path fill="#FFFFFF" d="M37.589,18.75H23.755c-1.105,0-2-0.895-2-2v-3c0-1.105,0.895-2,2-2h13.833c1.105,0,2,0.895,2,2v3
+	C39.589,17.855,38.693,18.75,37.589,18.75z"/>
+<path d="M35.755,10.417H25.422c-1.105,0-2,0.895-2,2v2.5c0,1.105,0.895,2,2,2h10.333c1.105,0,2-0.895,2-2v-2.5
+	C37.755,11.312,36.86,10.417,35.755,10.417z"/>
+<circle cx="30.589" cy="10.75" r="3.333"/>
+<circle fill="#FFFFFF" cx="30.589" cy="10.75" r="1.167"/>
+<g>
+	<rect x="18.669" y="27.708" fill="#FFFFFF" width="24.167" height="2.833"/>
+	<rect x="18.669" y="39.708" fill="#FFFFFF" width="24.167" height="2.833"/>
+	<rect x="18.669" y="45.708" fill="#FFFFFF" width="24.167" height="2.833"/>
+	<rect x="18.669" y="33.708" fill="#FFFFFF" width="24.167" height="2.833"/>
+</g>
+</svg>

@@ -4,10 +4,12 @@
 		<a class="clear" href="javascript:clearBoard()">Clear</a>
 </div> -->
 <div id="desktop-view">
-
+	
 	<!-- Antique Photo Theme -->
 	<ul id="color-theme">
-		<li style="background:#518C7C"></li>
+		<li style="background:#518C7C">
+			
+		</li>
 		<li style="background:#C6D9B4"></li>
 		<li style="background:#EDF2C4"></li>
 		<li style="background:#A6986D"></li>
