@@ -2,7 +2,7 @@
 app.controller("snapGridCtrl", ["$scope", function($scope){
 
 	var hc = 30, hh = 30, hp = 10;
-	var vc = 100, vw = 100, vp = 10;
+	var vc = 100, vw = 150, vp = 10;
 	var hlines = [], vlines = [];
 
 	(function(){
