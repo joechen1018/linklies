@@ -3,7 +3,7 @@
 		<a class="save" href="javascript:saveBoard()">Save</a>
 		<a class="clear" href="javascript:clearBoard()">Clear</a>
 </div> -->
-<div id="desktop-view">
+<div id="desktop-view" ng-controller="desktopCtrl">
 	
 	<!-- Antique Photo Theme -->
 	<ul id="color-theme">
@@ -15,6 +15,12 @@
 		<li style="background:#A6986D"></li>
 	</ul>
 
+	<!-- grid lines -->
+	<ul id="snapGrid" ng-controller="snapGridCtrl">
+		<li class="hline gline" ng-style="{top : line.y}" ng-repeat="line in hlines"></li>
+		<li class="vline gline" ng-style="{left : line.x}" ng-repeat="line in vlines"></li>
+	</ul>
+
 	<!-- <h1 class="links-left">98 <span>left</span></h1> -->
 
 	<div id="topbar">
@@ -23,10 +29,10 @@
 		</div>
 	</div>
 	
-	<div class="folder youtube" style="left:50px; top: 50px;">
+	<div class="folder youtube">
 		<p class="name">My Favorite Playlist 1</p>
 	</div>
-	<div class="folder" style="left:50px; top: 170px;">
+	<div class="folder">
 		<p class="name">Some Pages Found Today</p>
 	</div>
 		
@@ -46,7 +52,7 @@
 				</div>
 				<a class="title" target="_blank">Nina Simone - Feeling good (Nicolas Jaar edit) "Nico's feeling Good" - YouTube</a>
 			</div>
-			<div class="link-details">
+			<div class="link-details hide">
 				<div class="arrow arrow-up"></div>
 				<div class="arrow arrow-down"></div>
 
