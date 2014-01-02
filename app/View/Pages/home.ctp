@@ -15,7 +15,13 @@
 		<li style="background:#A6986D"></li>
 	</ul>
 
-	<h1 class="links-left">98 <span>left</span></h1>
+	<!-- <h1 class="links-left">98 <span>left</span></h1> -->
+
+	<div id="topbar">
+		<div class="funcs">
+			<?php include("img/icons-2/general/SVG/add25.svg") ?>	
+		</div>
+	</div>
 	
 	<div class="folder youtube" style="left:50px; top: 50px;">
 		<p class="name">My Favorite Playlist 1</p>
@@ -24,7 +30,7 @@
 		<p class="name">Some Pages Found Today</p>
 	</div>
 		
-	<div class="msg-box">
+	<div id="msg-box">
 		<div class="arrow-up"></div>
 		<p class="msg-body">Hello Linklies!</p>
 	</div>
@@ -59,7 +65,8 @@
 			</div>
 		</div>
 	</div>
-
+	
+	<div id="bg-dot"></div>
 	<script type="text/javascript" charset="utf-8">
 		// var linkyTmp = $(".link").remove().clone();
 		// var root = "<?php echo $this -> webroot?>";
