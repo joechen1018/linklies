@@ -6,14 +6,14 @@
 <div id="desktop-view" ng-controller="desktopCtrl">
 	
 	<!-- Antique Photo Theme -->
-	<ul id="color-theme">
+	<!-- <ul id="color-theme">
 		<li style="background:#518C7C">
 			
 		</li>
 		<li style="background:#C6D9B4"></li>
 		<li style="background:#EDF2C4"></li>
 		<li style="background:#A6986D"></li>
-	</ul>
+	</ul> -->
 
 	<!-- grid lines -->
 	<ul id="snapGrid" ng-controller="snapGridCtrl">
@@ -72,6 +72,7 @@
 		</div>
 	</div>
 	
+	<div id="overlay"></div>
 	<div id="bg-dot"></div>
 	<script type="text/javascript" charset="utf-8">
 		// var linkyTmp = $(".link").remove().clone();
