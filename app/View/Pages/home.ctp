@@ -3,36 +3,48 @@
 		<a class="save" href="javascript:saveBoard()">Save</a>
 		<a class="clear" href="javascript:clearBoard()">Clear</a>
 </div> -->
+
 <div id="desktop-view" ng-controller="desktopCtrl">
 	
 	<!-- Antique Photo Theme -->
-	<ul id="color-theme">
+	<!-- <ul id="color-theme">
 		<li style="background:#518C7C">
 			
 		</li>
 		<li style="background:#C6D9B4"></li>
 		<li style="background:#EDF2C4"></li>
 		<li style="background:#A6986D"></li>
-	</ul>
-
+	</ul> -->
 	<!-- grid lines -->
+
+	<!-- <h1 class="links-left">98 <span>left</span></h1> -->
+
+	<!-- <div id="topbar">
+		<div class="funcs">
+			<?php include("img/icons-2/general/SVG/add25.svg") ?>	
+		</div>
+	</div> -->
 	<ul id="snapGrid" ng-controller="snapGridCtrl">
 		<li class="hline gline" ng-style="{top : line.y}" ng-repeat="line in hlines"></li>
 		<li class="vline gline" ng-style="{left : line.x}" ng-repeat="line in vlines"></li>
 	</ul>
-
-	<!-- <h1 class="links-left">98 <span>left</span></h1> -->
-
-	<div id="topbar">
-		<div class="funcs">
-			<?php include("img/icons-2/general/SVG/add25.svg") ?>	
-		</div>
-	</div>
 	
-	<div class="folder youtube">
+	<div class="folder youtube" style="left:20px; top: 180px;">
 		<p class="name">My Favorite Playlist 1</p>
 	</div>
-	<div class="folder">
+	<div class="folder" style="left:20px; top:20px;">
+		<p class="name">Some Pages Found Today</p>
+	</div>
+	<div class="folder youtube" style="left:20px; top: 180px;">
+		<p class="name">My Favorite Playlist 1</p>
+	</div>
+	<div class="folder" style="left:20px; top:20px;">
+		<p class="name">Some Pages Found Today</p>
+	</div>
+	<div class="folder youtube" style="left:20px; top: 180px;">
+		<p class="name">My Favorite Playlist 1</p>
+	</div>
+	<div class="folder" style="left:20px; top:20px;">
 		<p class="name">Some Pages Found Today</p>
 	</div>
 		
@@ -40,8 +52,8 @@
 		<div class="arrow-up"></div>
 		<p class="msg-body">Hello Linklies!</p>
 	</div>
-
-	<div id="link-xxxxx" class="link" style="left:500px; top:200px" >
+	
+	<div ng-repeat="link in links" link-directive id="{{link.id}}" class="link" style="left:{{link.left}}px; top:{{link.top}}px" >
 		<div class="state-paste-url">
 			<input />
 		</div>
@@ -50,19 +62,19 @@
 				<div class="icon" style="background:url(http://www.youtube.com/favicon.ico) center center no-repeat">
 					<!-- <img src="http://www.youtube.com/favicon.ico" /> -->
 				</div>
-				<a class="title" target="_blank">Nina Simone - Feeling good (Nicolas Jaar edit) "Nico's feeling Good" - YouTube</a>
+				<a class="title" target="_blank">{{link.pageTitle}}</a>
 			</div>
 			<div class="link-details hide">
 				<div class="arrow arrow-up"></div>
 				<div class="arrow arrow-down"></div>
 
-				<img class="thumb" src="https://fbexternal-a.akamaihd.net/safe_image.php?d=AQBdfgUT1fJTToGl&w=398&h=208&url=http%3A%2F%2Fi1.ytimg.com%2Fvi%2FBkzvSf9NLTY%2Fhqdefault.jpg&cfs=1&upscale" alt="" class="thumb">
+				<img class="thumb" src="{{link.thumb}}">
 				<div class="texts">
 					<h1>
-						Nicolas Jaar - Sonar 2012 (full set)
-						<p><a class="from external" href="www.youtube.com" target="_blank">www.youtube.com</a></p>
+						{{link.contentTitle}}
+						<p><a class="from external" href="www.youtube.com" target="_blank">{{link.from}}</a></p>
 					</h1>
-					<p class="desc">Why sin? Because of ignorence. Why Ignorence? Because we block ourselves. Why block ourselves? Because it is painful to be ourselves. Why it is painful to be ourselves? Because we have sin and we're ignorent.</p>	
+					<p class="desc">link.desc</p>	
 					<div class="more">
 						<div class="arrow-right"></div>
 						<a href="">goodies</a>	
@@ -71,7 +83,7 @@
 			</div>
 		</div>
 	</div>
-	
+
 	<div id="bg-dot"></div>
 	<script type="text/javascript" charset="utf-8">
 		// var linkyTmp = $(".link").remove().clone();

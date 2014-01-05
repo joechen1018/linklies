@@ -1,20 +1,22 @@
 
-app.controller("snapGridCtrl", ["$scope", function($scope){
+app.controller("snapGridCtrl", function($scope){
 
-	var hc = 30, hh = 30, hp = 10;
+
+	var hc = 100, hh = 30, hp = 10;
 	var vc = 100, vw = 150, vp = 10;
 	var hlines = [], vlines = [];
+	var desk = $("#desktop-view");
 
 	(function(){
 		for(var i = 0; i<hc; i++){
 			hlines.push({
-				y : i*(hh + hp)
+				y : 20 + i*(hh + hp)
 			});
 		}
 		
 		for(i = 0; i<vc; i++){
 			vlines.push({
-				x : i*(vw + vp)
+				x : 20 + i*(vw + vp)
 			});
 		}
 		$scope.hlines = hlines;
@@ -23,8 +25,8 @@ app.controller("snapGridCtrl", ["$scope", function($scope){
 
 	var findOverElementH = function(y){
 		var t, tw;
-		var hAreas = $(".hline");
 		var ele;
+		var hAreas = $(".hline");
 		hAreas.each(function(i, e){
 			t = $(e).offset().top;
 			th = t + $(e).height() + hp;
@@ -32,12 +34,15 @@ app.controller("snapGridCtrl", ["$scope", function($scope){
 				ele = $(e);
 			}
 		});	
+		if(y <= 20){
+			ele = hAreas.eq(0);
+		}
 		return ele;
 	}
 	var findOverElementV = function(x){
 		var l, lh;
-		var vAreas = $(".vline");
 		var ele;
+		var vAreas = $(".vline");
 		vAreas.each(function(i, e){
 			l = $(e).offset().left;
 			lw = l + $(e).width() + vp;
@@ -45,6 +50,9 @@ app.controller("snapGridCtrl", ["$scope", function($scope){
 				ele = $(e);
 			}
 		});	
+		if(x <= 20){
+			ele = vAreas.eq(0);
+		}
 		return ele;
 	}
 	var findNearestPosForLink = function(x, y){
@@ -57,45 +65,33 @@ app.controller("snapGridCtrl", ["$scope", function($scope){
 		if(x > (varea.offset().left + varea.width() * 0.7)){
 			varea = varea.next();
 		}
-		var pos = [varea.offset().left, harea.offset().top];
+		var pos = {
+			left : varea.offset().left, 
+			top : harea.offset().top
+		};
 		return pos;
 	}
 	var findNearestPosForFolder = function(x, y){
+
+		var hAreas = $(".hline");
 		var harea = findOverElementH(y);
 		var varea = findOverElementV(x);
-		var alignRight = false;
-		if(y > (harea.offset().top + (harea.height()/2))){
-			harea = harea.next();
+		var i = $(hAreas).index(harea);
+		if(i%4 !== 0){
+			i = Math.floor(i/4);
+			harea = hAreas.eq(i*4);
 		}
-		if(x > (varea.offset().left + varea.width() * 0.6)){
-			varea = varea.next();
-			alignRight = true;
+		// if(y > (harea.offset().top + (harea.height()/2))){
+		// 	harea = harea.next();
+		// }
+
+		var pos = {
+			left : varea.offset().left, 
+			top : harea.offset().top
 		}
-		var pos = [varea.offset().left, harea.offset().top];
-		if(alignRight){
-			pos = [varea.offset().left - varea.width() / 2, harea.offset().top];
-		}
+		// if(alignRight){
+		// 	pos = [varea.offset().left - varea.width() / 2, harea.offset().top];
+		// }
 		return pos;
 	}
-	var hoverX, hoverY;
-	(function(){
-		$(".link, .folder").draggable({
-
-		});
-		$("#desktop-view").droppable({
-			drop :function(e, ui){
-				var pos;
-				if(ui.draggable.hasClass("folder")){
-					pos = findNearestPosForFolder(ui.position.left, ui.position.top);
-				}else{
-					pos = findNearestPosForLink(ui.position.left, ui.position.top);
-				}
-				$(ui.draggable).animate({
-					left : pos[0],
-					top  : pos[1]
-				}, 200);
-			}
-		});
-
-	})();
-}]);
+});
