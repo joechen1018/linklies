@@ -1,6 +1,12 @@
 @import "lib";
 @import "basic";
 
+@gridWidth : 150px;
+@gridHeight : 30px;
+@gridVPadding : 10px;
+@gridHPadding : 10px;
+@gridPadding : 10px;
+@folderHeight : 4*@gridHeight + 3*@gridPadding;
 #color-theme{
   position: absolute;
   right:10px;
@@ -106,10 +112,10 @@ h1.links-left{
     }
   }
 }
-#snapGridWrap{
+#gridWrap{
 
 }
-#snapGrid{
+#grid{
   width:100%;
   height:100%;
   overflow: hidden;
@@ -119,20 +125,20 @@ h1.links-left{
     display: block;
     position:absolute;
     z-index: 2;
-    .alpha(0.21);
+    .alpha(0.01);
     margin:0;
     padding:0;
     pointer-events:none;
 
     &.hline{
       width: 100%;
-      height:@snapHeight;
+      height:@gridHeight;
       left : 0;
       border-top : 1px solid red;
       border-bottom : 1px solid red;
     }
     &.vline{
-      width : @snapWidth;
+      width : @gridWidth;
       height : 100%;
       top : 0;
       border-left : 1px solid red;
@@ -145,7 +151,7 @@ h1.links-left{
 }
 
 .folder{
-  @size : 4*@snapHeight + 3*@snapVPadding;
+  @size : 4*@gridHeight + 3*@gridVPadding;
   position:absolute;
   width : 150px;
   height : @size;
@@ -153,7 +159,8 @@ h1.links-left{
   background-size:@size*0.7;
   z-index:2;
   .alpha(0.85);
-
+  cursor : pointer;
+  
   &.youtube{
     background: @c2 url(../img/icons-3/SVG/movie3.svg) center 10px no-repeat;
     background-size:@size*0.7;
@@ -243,60 +250,70 @@ h1.links-left{
     @w1 : 400px;
     @h1 : 300px;
     position: absolute;
-    top: (@h + @size);
+    top: @h;
     left : (@w - @w1) / 2;
     width:@w1;
     //height:@h1;
-    background: white;
-    .shadow;
     
     @size1 : calc((@w1 - 400px)/2);
-    img.thumb{
-      width:@w1;
-      margin-top:0;
-      margin-left:0;
-    }
-    
-    .texts{
-      margin-left:@size1;
-      margin-bottom:@size1;
-      padding:20px;
-      padding-top:5px;
-      h1{
-        padding-top:5px;
-        font-size:13px;
-        color:@c1;
-        p{
+    .page{
+      background: white;
+      position: relative;
+      top:10px;
+      .shadow;
+
+      &.page-1{
+          img.thumb{
+          width:@w1;
+          margin-top:0;
+          margin-left:0;
+        }
+        
+        .texts{
+          margin-left:@size1;
+          margin-bottom:@size1;
+          padding:20px;
           padding-top:5px;
-        }
-        a.from{
-          color:#888;
-          font-size:12px; 
+          h1{
+            padding-top:5px;
+            font-size:13px;
+            color:@c1;
+            p{
+              padding-top:5px;
+            }
+            a.from{
+              color:#888;
+              font-size:12px; 
+            }
+          }
+          p.desc{
+            padding-top:15px;
+            padding-bottom:25px;
+            line-height: 19px;
+            color:#444;
+          }
+          div.more{
+            position:absolute;
+            right:15px;
+            bottom:15px;
+            div.arrow-right{
+              width: 0; 
+              height: 0; 
+              border-top: 5px solid transparent;
+              border-bottom: 5px solid transparent;
+              border-left: 5px solid black;
+              position:absolute;
+              right:4px;
+              top:1px;
+            }
+            a{
+              padding-right:15px;
+            }
+          }
         }
       }
-      p.desc{
-        padding-top:15px;
-        padding-bottom:25px;
-        line-height: 19px;
-        color:#444;
-      }
-      div.more{
-        position:absolute;
-        right:15px;
-        bottom:15px;
-        div.arrow-right{
-          width: 0; 
-          height: 0; 
-          border-top: 5px solid transparent;
-          border-bottom: 5px solid transparent;
-          border-left: 5px solid black;
-          position:absolute;
-          right:4px;
-          top:1px;
-        }
-        a{
-          padding-right:15px;
-        }
+      &.page-2{
+
       }
     }
 
@@ -308,7 +325,7 @@ h1.links-left{
         
         border-bottom: @size solid white;
         position: absolute;
-        top:-@size;
+        top:0;
         left : calc((@w1 - @size)/2);
     }
     .arrow-down{

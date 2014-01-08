@@ -21,33 +21,21 @@
 
 	<!-- <div id="topbar">
 		<div class="funcs">
-			<?php include("img/icons-2/general/SVG/add25.svg") ?>	
+			<?php //include("img/icons-2/general/SVG/add25.svg") ?>	
 		</div>
 	</div> -->
-	<ul id="snapGrid" ng-controller="snapGridCtrl">
+	<ul id="grid" ng-controller="snapGridCtrl">
 		<li class="hline gline" ng-style="{top : line.y}" ng-repeat="line in hlines"></li>
 		<li class="vline gline" ng-style="{left : line.x}" ng-repeat="line in vlines"></li>
 	</ul>
+
+	<div class="folder {{folder.type}}" ng-repeat="folder in folders" folder-directive id="{{folder.id}}" style="left:{{folder.left}}px; top:{{folder.top}}px">
+		<p class="name">{{folder.name}}</p>
+	</div>
+
+	<div id="folder-drop-preview"></div>
+	<div id="link-drop-preview"></div>
 	
-	<div class="folder youtube" style="left:20px; top: 180px;">
-		<p class="name">My Favorite Playlist 1</p>
-	</div>
-	<div class="folder" style="left:20px; top:20px;">
-		<p class="name">Some Pages Found Today</p>
-	</div>
-	<div class="folder youtube" style="left:20px; top: 180px;">
-		<p class="name">My Favorite Playlist 1</p>
-	</div>
-	<div class="folder" style="left:20px; top:20px;">
-		<p class="name">Some Pages Found Today</p>
-	</div>
-	<div class="folder youtube" style="left:20px; top: 180px;">
-		<p class="name">My Favorite Playlist 1</p>
-	</div>
-	<div class="folder" style="left:20px; top:20px;">
-		<p class="name">Some Pages Found Today</p>
-	</div>
-		
 	<div id="msg-box">
 		<div class="arrow-up"></div>
 		<p class="msg-body">Hello Linklies!</p>
@@ -68,17 +56,19 @@
 				<div class="arrow arrow-up"></div>
 				<div class="arrow arrow-down"></div>
 
-				<img class="thumb" src="{{link.thumb}}">
-				<div class="texts">
-					<h1>
-						{{link.contentTitle}}
-						<p><a class="from external" href="www.youtube.com" target="_blank">{{link.from}}</a></p>
-					</h1>
-					<p class="desc">link.desc</p>	
-					<div class="more">
-						<div class="arrow-right"></div>
-						<a href="">goodies</a>	
-					</div>
+				<div class="page page-1">
+					<img class="thumb" src="{{link.thumb}}">
+					<div class="texts">
+						<h1>
+							{{link.contentTitle}}
+							<p><a class="from external" href="www.youtube.com" target="_blank">{{link.from}}</a></p>
+						</h1>
+						<p class="desc">{{link.desc}}</p>	
+						<div class="more">
+							<div class="arrow-right"></div>
+							<a href="">Next</a>	
+						</div>
+					</div>	
 				</div>
 			</div>
 		</div>
