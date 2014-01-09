@@ -1,79 +1,11 @@
 
-app.controller("desktopCtrl", function($scope){
-	var links = [], folders = [];
-	var margin = 20;
-	var gridWidth = 150;
-
-	var drawLines = function(){
-		console.debug("resize");
-		var getGridWidth = function(){
-			var viewportWidth = $(window).width() - 30;
-			var num = Math.floor(viewportWidth/160);
-			var extra = viewportWidth - num*160;
-			return Math.round(150 + (extra/num));
-		}
-		gridWidth = getGridWidth();
-
-		var hc = gridWidth, hh = 30, hp = 10;
-		var vc = 100, vw = gridWidth, vp = 10;
-		var hlines = [], vlines = [];
-		var desk = $("#desktop-view");
-
-		hlines = [], vlines = [], links = [], folders = [];
-		for(var i = 0; i<hc; i++){
-			hlines.push({
-				y : 20 + i*(hh + hp)
-			});
-		}
-		
-		for(i = 0; i<vc; i++){
-			vlines.push({
-				x : 20 + i*(vw + vp),
-				width : gridWidth
-			});
-		}
-
-		for(var i = 0; i<6; i++){
-			links.push({
-				id : "link-" + (i+1),
-				left : 20,
-				top : 180 + (i*40),
-				grid : [0, 4+i],
-				width : gridWidth*2 + 10,
-				pageTitle : "Nina Simone - Feeling good (Nicolas Jaar edit) \"Nico's feeling Good\" - YouTube",
-				thumb : "https://fbexternal-a.akamaihd.net/safe_image.php?d=AQBdfgUT1fJTToGl&w=398&h=208&url=http%3A%2F%2Fi1.ytimg.com%2Fvi%2FBkzvSf9NLTY%2Fhqdefault.jpg&cfs=1&upscale",
-				contentTitle : "Nicolas Jaar - Sonar 2012 (full set)",
-				from : "www.youtube.com",
-				desc : "Why sin? Because of ignorence. Why Ignorence? Because we block ourselves. Why block ourselves? Because it is painful to be ourselves. Why it is painful to be ourselves? Because we have sin and we're ignorent."
-			});
-
-			folders.push({
-				id : "folder-" + (i+1),
-				type : i % 2 === 0 ? "" : "youtube",
-				left : 20 + i * (gridWidth + 10),
-				width : gridWidth,
-				top : 20,
-				name : "test folder",
-				grid : [i, 0],
-				state : ""
-			});
-		}
-		$scope.$apply(function(){
-			$scope.hlines = hlines;
-			$scope.vlines = vlines;
-			$scope.links = links;
-			$scope.folders = folders;
-		});
-	};
-	$(window).resize(drawLines);
-	drawLines();
-})
-.service("gridAlignmentService", function(){
+app.service("gridService", function(){
 	var hc = 100, hh = 30, hp = 10;
 	var vc = 100, vw = 150, vp = 10;
 	var hlines = [], vlines = [];
 	var desk = $("#desktop-view");
 	var self = this;
+
 	this.findOverElementH = function(y){
 		var t, tw;
 		var ele;
@@ -145,8 +77,85 @@ app.controller("desktopCtrl", function($scope){
 		// }
 		return pos;
 	}
+	this.getGridWidth = function(){
+		var viewportWidth = $(window).width() - 30;
+		var num = Math.floor(viewportWidth/160);
+		var extra = viewportWidth - num*160;
+		return Math.round(150 + (extra/num));
+	}
+	this.createGrids = function(){
+		var hlines = [], vlines = [];
+		var hc = this.getGridWidth(), hh = 30, hp = 10;
+		var vc = 100, vw = this.getGridWidth(), vp = 10;
+
+		for(var i = 0; i<hc; i++){
+			hlines.push({
+				y : 20 + i*(hh + hp)
+			});
+		}
+		
+		for(i = 0; i<vc; i++){
+			vlines.push({
+				x : 20 + i*(vw + vp),
+				width : hc
+			});
+		}		
+		return [hlines, vlines];
+	}
 })
-.directive("folderDirective", function(gridAlignmentService){
+.controller("desktopCtrl", function($scope, gridService){
+	var links = [], folders = [];
+	var margin = 20;
+	var gridWidth = gridService.getGridWidth();
+	
+	var createLinkFolders = function(){
+		for(var i = 0; i<6; i++){
+			links.push({
+				id : "link-" + (i+1),
+				left : 20,
+				top : 180 + (i*40),
+				grid : [0, 4+i],
+				width : gridWidth*2 + 10,
+				pageTitle : "Nina Simone - Feeling good (Nicolas Jaar edit) \"Nico's feeling Good\" - YouTube",
+				thumb : "https://fbexternal-a.akamaihd.net/safe_image.php?d=AQBdfgUT1fJTToGl&w=398&h=208&url=http%3A%2F%2Fi1.ytimg.com%2Fvi%2FBkzvSf9NLTY%2Fhqdefault.jpg&cfs=1&upscale",
+				contentTitle : "Nicolas Jaar - Sonar 2012 (full set)",
+				from : "www.youtube.com",
+				desc : "Why sin? Because of ignorence. Why Ignorence? Because we block ourselves. Why block ourselves? Because it is painful to be ourselves. Why it is painful to be ourselves? Because we have sin and we're ignorent."
+			});
+
+			folders.push({
+				id : "folder-" + (i+1),
+				type : i % 2 === 0 ? "" : "youtube",
+				left : 20 + i * (gridWidth + 10),
+				width : gridWidth,
+				top : 20,
+				name : "test folder",
+				grid : [i, 0],
+				state : ""
+			});
+		}
+	}
+
+	var grids = gridService.createGrids();
+	$scope.hlines = grids[0];
+	$scope.vlines = grids[1];
+
+	createLinkFolders();
+	$scope.links = links;
+	$scope.folders = folders;
+
+
+	var updateGrids = function(){
+
+	}
+
+	$(window).resize(function(){
+		gridService.updateGrids();
+
+		gridWidth = gridService.getGridWidth();
+	});
+})
+.directive("folderDirective", function(gridService){
 	return function(scope, ele, attrs){
 
 		$(ele).draggable({
@@ -161,9 +170,9 @@ app.controller("desktopCtrl", function($scope){
 				var opos = $(this).data("originalPosition");
 				var dragged = $(this);
 				if($(this).hasClass("folder")){
-					pos = gridAlignmentService.findNearestPosForFolder(ui.position.left, ui.position.top);
+					pos = gridService.findNearestPosForFolder(ui.position.left, ui.position.top);
 				}else{
-					pos = gridAlignmentService.findNearestPosForLink(ui.position.left, ui.position.top);
+					pos = gridService.findNearestPosForLink(ui.position.left, ui.position.top);
 				}
 				var allowReposition = true;
 				$(".link, .folder").each(function(i, e){
@@ -193,7 +202,7 @@ app.controller("desktopCtrl", function($scope){
 		});
 	}
 })
-.directive("linkDirective", function(gridAlignmentService){
+.directive("linkDirective", function(gridService){
 	return function(scope, ele, attrs){
 
 		// var details = $(ele).find(".link-details");
@@ -215,9 +224,9 @@ app.controller("desktopCtrl", function($scope){
 				var opos = $(this).data("originalPosition");
 				var dragged = $(this);
 				if($(this).hasClass("folder")){
-					pos = gridAlignmentService.findNearestPosForFolder(ui.position.left, ui.position.top);
+					pos = gridService.findNearestPosForFolder(ui.position.left, ui.position.top);
 				}else{
-					pos = gridAlignmentService.findNearestPosForLink(ui.position.left, ui.position.top);
+					pos = gridService.findNearestPosForLink(ui.position.left, ui.position.top);
 				}
 				var allowReposition = true;
 				$(".link, .folder").each(function(i, e){
