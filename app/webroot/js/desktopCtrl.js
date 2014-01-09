@@ -107,6 +107,46 @@ app.controller("desktopCtrl", function($scope){
 		// }
 		return pos;
 	}
+
+	this.lineup = (function(){
+		var lineup = [];
+		$(".link, .folder").each(function(){
+			lineup.push(this);
+		});
+		return lineup;
+	})();
+
+	this.getAvailiableFolderPosition = function(){
+
+	}
+
+	this.getAvailableLinkPosition = function(){
+
+	}
+
+	this.getPositionByFolderGrid = function(){
+
+	}
+
+	this.getPositionByLinkGrid = function(){
+
+	}
+
+	this.folderGridOccupied = function(){
+
+	}
+
+	this.linkGridOccupied = function(){
+
+	}
+
+	this.nextFolderGrid = function(){
+
+	}
+
+	this.nextLinkGrid = function(){
+		
+	}
 })
 .directive("folderDirective", function(gridAlignmentService){
 	return function(scope, ele, attrs){
