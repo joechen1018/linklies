@@ -2,27 +2,7 @@
 app.controller("snapGridCtrl", function($scope){
 
 
-	var hc = 100, hh = 30, hp = 10;
-	var vc = 100, vw = 150, vp = 10;
-	var hlines = [], vlines = [];
-	var desk = $("#desktop-view");
-
-	(function(){
-		for(var i = 0; i<hc; i++){
-			hlines.push({
-				y : 20 + i*(hh + hp)
-			});
-		}
-		
-		for(i = 0; i<vc; i++){
-			vlines.push({
-				x : 20 + i*(vw + vp)
-			});
-		}
-		$scope.hlines = hlines;
-		$scope.vlines = vlines;
-	})();
-
+	return;
 	var findOverElementH = function(y){
 		var t, tw;
 		var ele;

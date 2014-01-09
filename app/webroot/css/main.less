@@ -31,7 +31,8 @@ body.desktop-view{
   height:100%;
   position:fixed;
   background: url(../img/bg-blur-1.jpg);  
-  overflow: auto;
+  overflow-x:hidden;
+  overflow-y: auto;
   z-index: 1;
 }
 
@@ -125,7 +126,7 @@ h1.links-left{
     display: block;
     position:absolute;
     z-index: 2;
-    .alpha(0.01);
+    .alpha(0.21);
     margin:0;
     padding:0;
     pointer-events:none;
@@ -165,15 +166,15 @@ h1.links-left{
     background: @c2 url(../img/icons-3/SVG/movie3.svg) center 10px no-repeat;
     background-size:@size*0.7;
 
-    &:after{
-      position:absolute;
-      width:16px;
-      height:16px;
-      background: url(http://www.youtube.com/favicon.ico) left top no-repeat;
-      content : "";
-      right : 10px;
-      top : 10px;
-    }
+    // &:after{
+    //   position:absolute;
+    //   width:16px;
+    //   height:16px;
+    //   background: url(http://www.youtube.com/favicon.ico) left top no-repeat;
+    //   content : "";
+    //   right : 10px;
+    //   top : 10px;
+    // }
   }
   .name{
     position: relative;

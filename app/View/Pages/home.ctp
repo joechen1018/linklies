@@ -24,12 +24,12 @@
 			<?php //include("img/icons-2/general/SVG/add25.svg") ?>	
 		</div>
 	</div> -->
-	<ul id="grid" ng-controller="snapGridCtrl">
+	<ul id="grid">
 		<li class="hline gline" ng-style="{top : line.y}" ng-repeat="line in hlines"></li>
-		<li class="vline gline" ng-style="{left : line.x}" ng-repeat="line in vlines"></li>
+		<li class="vline gline" ng-style="{left : line.x, width : line.width}" ng-repeat="line in vlines"></li>
 	</ul>
 
-	<div class="folder {{folder.type}}" ng-repeat="folder in folders" folder-directive id="{{folder.id}}" style="left:{{folder.left}}px; top:{{folder.top}}px">
+	<div class="folder {{folder.type}}" ng-repeat="folder in folders" folder-directive id="{{folder.id}}" style="left:{{folder.left}}px; top:{{folder.top}}px; width : {{folder.width}}px">
 		<p class="name">{{folder.name}}</p>
 	</div>
 
@@ -41,7 +41,7 @@
 		<p class="msg-body">Hello Linklies!</p>
 	</div>
 	
-	<div ng-repeat="link in links" link-directive id="{{link.id}}" class="link" style="left:{{link.left}}px; top:{{link.top}}px" >
+	<div ng-repeat="link in links" link-directive id="{{link.id}}" class="link" style="left:{{link.left}}px; top:{{link.top}}px; width : {{link.width}}px" >
 		<div class="state-paste-url">
 			<input />
 		</div>
