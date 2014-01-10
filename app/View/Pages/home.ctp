@@ -25,11 +25,22 @@
 		</div>
 	</div> -->
 	<ul id="grid">
-		<li class="hline gline" ng-style="{top : line.y}" ng-repeat="line in hlines"></li>
-		<li class="vline gline" ng-style="{left : line.x, width : line.width}" ng-repeat="line in vlines"></li>
+		<li class="hline gline" ng-repeat="line in grid.hlines" ng-style="{
+			top : 20 + $index * (grid.gridHeight + grid.gridMargin) - gridMargin
+		}"></li>
+		<li class="vline gline" ng-repeat="line in grid.vlines" ng-style="{
+			left : 20 + $index * (grid.gridWidth + grid.gridMargin), 
+			width : grid.gridWidth,
+			height : grid.viewHeight
+		}"></li>
 	</ul>
 
-	<div class="folder {{folder.type}}" ng-repeat="folder in folders" folder-directive id="{{folder.id}}" style="left:{{folder.left}}px; top:{{folder.top}}px; width : {{folder.width}}px">
+	<div class="folder {{folder.type}}" ng-repeat="folder in folders" folder-directive id="{{folder.id}}" ng-style="{
+		left : 20 + folder.grid[0] * (grid.gridWidth + 10),
+		top : 20 + folder.grid[1] * (grid.gridHeight * 4 + grid.gridMargin*3),
+		width : grid.gridWidth,
+		height : grid.folderHeight
+	}">
 		<p class="name">{{folder.name}}</p>
 	</div>
 
@@ -41,7 +52,12 @@
 		<p class="msg-body">Hello Linklies!</p>
 	</div>
 	
-	<div ng-repeat="link in links" link-directive id="{{link.id}}" class="link" style="left:{{link.left}}px; top:{{link.top}}px; width : {{link.width}}px" >
+	<div ng-repeat="link in links" link-directive id="{{link.id}}" class="link" ng-style="{
+		left : 20 + link.grid[0] * grid.gridWidth,
+		top : link.grid[1] * (grid.gridHeight + grid.gridMargin) + 20,
+		height : grid.gridHeight,
+		width : grid.linkWidth
+	}">
 		<div class="state-paste-url">
 			<input />
 		</div>

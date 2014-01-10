@@ -1,10 +1,8 @@
 
-app.service("gridService", function(){
-	var hc = 100, hh = 30, hp = 10;
-	var vc = 100, vw = 150, vp = 10;
-	var hlines = [], vlines = [];
-	var desk = $("#desktop-view");
+app.service("grid", function($timeout){
 	var self = this;
+	var $desk = $("#desktop-view");
+	var hlines = [], vlines = [];
 
 	this.findOverElementH = function(y){
 		var t, tw;
@@ -83,52 +81,94 @@ app.service("gridService", function(){
 		var extra = viewportWidth - num*160;
 		return Math.round(150 + (extra/num));
 	}
-	this.createGrids = function(){
-		var hlines = [], vlines = [];
-		var hc = this.getGridWidth(), hh = 30, hp = 10;
-		var vc = 100, vw = this.getGridWidth(), vp = 10;
 
-		for(var i = 0; i<hc; i++){
-			hlines.push({
-				y : 20 + i*(hh + hp)
-			});
-		}
-		
-		for(i = 0; i<vc; i++){
-			vlines.push({
-				x : 20 + i*(vw + vp),
-				width : hc
-			});
-		}		
-		return [hlines, vlines];
+	this.findFolderRect = function(pos){
+
 	}
-})
-.controller("desktopCtrl", function($scope, gridService){
-	var links = [], folders = [];
-	var margin = 20;
-	var gridWidth = gridService.getGridWidth();
+	var getFolderRects = function(){
+
+	}
+	var getLinksRects = function(){
+
+	}
 	
-	var createLinkFolders = function(){
+	//this needs to be called after links and folders rendered
+	this.getViewHeight = function(){
+		var h = $("body").height() , eh = 0;
+		$(".folder, .link").each(function(i, e){
+			eh = $(e).offset().top + $(e).height();
+			if(h < eh){
+				h = eh;
+			}
+		});
+		return h;
+	}
+	this.setViewHeight = function(h){
+		self.viewHeight = h + 20;
+	}
+	this.getHLines = function(){
+		var h = self.getViewHeight();
+		var n = Math.ceil((h - 40 - self.gridMargin) / (self.gridHeight + self.gridMargin));
+		var a = [];
+		for(var i = 0; i<n; i++)
+			a.push({i : i});
+		
+		return a;
+	}
+	this.getVLines = function(){
+		vlines = [];
+		var n = Math.ceil($(window).width() / (self.gridWidth + self.gridMargin)) + 1;
+		for(i = 0; i<n; i++)
+			vlines.push({"i" : i});
+		
+		return vlines;
+	}
+	this.init = function(){
+		this.update();
+		// this.folderRects = getFolderRects();
+		// this.linkRects = getLinksRects();
+	}
+	this.update = function(){
+
+		self.gridHeight = 30;
+		self.gridMargin = 10;
+		self.gridWidth = self.getGridWidth();	
+		self.folderHeight = 4*self.gridHeight + 3*self.gridMargin;
+		self.linkWidth = 2*self.gridWidth + self.gridMargin;
+
+		$timeout(function(){
+			self.hlines = self.getHLines();
+			self.vlines = self.getVLines();
+			
+			$timeout(function(){
+				var bodyHeight = $(window).height();
+				var viewHeight = self.getViewHeight();
+
+				self.viewHeight = viewHeight > bodyHeight ? viewHeight + 20 : viewHeight;
+			}, 10);
+		}, 10);
+	}
+
+	this.init();
+	
+})
+.controller("desktopCtrl", function($scope, $timeout, grid){
+	var links = [], folders = [];
+	var init = function(){
 		for(var i = 0; i<6; i++){
 			links.push({
 				id : "link-" + (i+1),
-				left : 20,
-				top : 180 + (i*40),
 				grid : [0, 4+i],
-				width : gridWidth*2 + 10,
 				pageTitle : "Nina Simone - Feeling good (Nicolas Jaar edit) \"Nico's feeling Good\" - YouTube",
 				thumb : "https://fbexternal-a.akamaihd.net/safe_image.php?d=AQBdfgUT1fJTToGl&w=398&h=208&url=http%3A%2F%2Fi1.ytimg.com%2Fvi%2FBkzvSf9NLTY%2Fhqdefault.jpg&cfs=1&upscale",
 				contentTitle : "Nicolas Jaar - Sonar 2012 (full set)",
 				from : "www.youtube.com",
-				desc : "Why sin? Because of ignorence. Why Ignorence? Because we block ourselves. Why block ourselves? Because it is painful to be ourselves. Why it is painful to be ourselves? Because we have sin and we're ignorent."
+				desc : "THIS IS THE FIRST 11 MINUTES OF THE DARKSIDE ALBUM. FOOTAGE WAS FILMED IN MONTICELLO, NY. RECORD WAS WRITTEN AND RECORDED AT OTHER PEOPLE STUDIOS, NY, STUDIO DE LA REINE, PARIS & THE BARN, GARRISON, NY."
 			});
 
 			folders.push({
 				id : "folder-" + (i+1),
 				type : i % 2 === 0 ? "" : "youtube",
-				left : 20 + i * (gridWidth + 10),
-				width : gridWidth,
-				top : 20,
 				name : "test folder",
 				grid : [i, 0],
 				state : ""
@@ -136,43 +176,101 @@ app.service("gridService", function(){
 		}
 	}
 
-	var grids = gridService.createGrids();
-	$scope.hlines = grids[0];
-	$scope.vlines = grids[1];
+	init();
 
-	createLinkFolders();
 	$scope.links = links;
 	$scope.folders = folders;
+	$scope.grid = grid;
 
-
-	var updateGrids = function(){
-
-	}
-
+	var timeout;
 	$(window).resize(function(){
-		gridService.updateGrids();
-
-		gridWidth = gridService.getGridWidth();
+		clearTimeout(timeout);
+		timeout = setTimeout(function(){
+			grid.update();
+			$scope.$apply(function(){
+				$scope.grid = grid;
+			});
+		}, 300);
 	});
-})
-.directive("folderDirective", function(gridService){
-	return function(scope, ele, attrs){
 
+	//wait for folder directive construction
+	$timeout(function(){
+		$(".folder").draggable({
+			start : function(){
+
+			},
+			drag : function(e, ui){
+				
+			},
+			stop : function(e, ui){
+
+				var folder = $(ui.helper.context);
+				var folderBottom = ui.position.top + folder.height();
+
+				if(folderBottom > grid.viewHeight){
+					grid.update();
+					$timeout(function(){
+						$scope.$apply(function(){
+							$scope.grid = grid;
+						}, 100);
+					});			
+				}
+			}
+		});		
+	}, 100);
+	
+	// var timeout;
+	// var margin = 20;
+	// var gridWidth = grid.getGridWidth();
+	// var folderHeight, linkWidth, gridMargin = 10, gridHeight = 30;
+	// var update = function(){
+
+	// 	gridWidth = grid.getGridWidth();
+	// 	folderHeight = 4*$scope.gridHeight + 3*$scope.gridMargin;
+	// 	linkWidth = 2*gridWidth + gridMargin;
+
+	// 	$scope.$apply(function(){
+	// 		$scope.gridWidth = gridWidth;
+	// 		$scope.gridHeight = 30;
+	// 		$scope.gridMargin = gridMargin;
+	// 		$scope.folderHeight = folderHeight;
+	// 		$scope.linkWidth = linkWidth;
+
+	// 		$scope.hlines = grids[0];
+	// 		$scope.vlines = grids[1];
+
+	// 		createLinkFolders();
+	// 		$scope.links = links;
+	// 		$scope.folders = folders;	
+	// 	});
+	// }
+})
+.directive("folderDirective", function(grid){
+	return function(scope, ele, attrs){
+		return;
 		$(ele).draggable({
 			start : function(e, ui){
 				$(this).data("originalPosition", ui.originalPosition);
 				$(this).addClass("dragging");
 			},
-			stop : function(e, ui){
-				$(this).removeClass("dragging");
+			drag : function(e, ui){
 
+			},
+			stop : function(e, ui){
+
+				$(this).removeClass("dragging");
+				grid.update();
+				scope.$apply(function(){
+					scope.grid = grid;
+				});
+				return;
 				var pos;
 				var opos = $(this).data("originalPosition");
 				var dragged = $(this);
 				if($(this).hasClass("folder")){
-					pos = gridService.findNearestPosForFolder(ui.position.left, ui.position.top);
+					pos = grid.findNearestPosForFolder(ui.position.left, ui.position.top);
 				}else{
-					pos = gridService.findNearestPosForLink(ui.position.left, ui.position.top);
+					pos = grid.findNearestPosForLink(ui.position.left, ui.position.top);
 				}
 				var allowReposition = true;
 				$(".link, .folder").each(function(i, e){
@@ -202,7 +300,7 @@ app.service("gridService", function(){
 		});
 	}
 })
-.directive("linkDirective", function(gridService){
+.directive("linkDirective", function(grid){
 	return function(scope, ele, attrs){
 
 		// var details = $(ele).find(".link-details");
@@ -224,9 +322,9 @@ app.service("gridService", function(){
 				var opos = $(this).data("originalPosition");
 				var dragged = $(this);
 				if($(this).hasClass("folder")){
-					pos = gridService.findNearestPosForFolder(ui.position.left, ui.position.top);
+					pos = grid.findNearestPosForFolder(ui.position.left, ui.position.top);
 				}else{
-					pos = gridService.findNearestPosForLink(ui.position.left, ui.position.top);
+					pos = grid.findNearestPosForLink(ui.position.left, ui.position.top);
 				}
 				var allowReposition = true;
 				$(".link, .folder").each(function(i, e){
