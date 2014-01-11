@@ -89,7 +89,18 @@ app.service("grid", function($timeout){
 
 	}
 	var getLinksRects = function(){
+		var n = getHGridNum();
+		var i = getVGridNum();
+		console.debug(n, i);
+	}
 
+	var getHGridNum = function(){
+		var h = self.viewHeight;
+		return Math.ceil((h - 40 - self.gridMargin) / (self.gridHeight + self.gridMargin));
+	}
+
+	var getVGridNum = function(){
+		return = Math.ceil(self.viewWidth / (self.gridWidth + self.gridMargin)) + 1;
 	}
 	
 	//this needs to be called after links and folders rendered
@@ -107,7 +118,7 @@ app.service("grid", function($timeout){
 		self.viewHeight = h + 20;
 	}
 	this.getHLines = function(){
-		var h = self.getViewHeight();
+		var h = self.viewHeight;
 		var n = Math.ceil((h - 40 - self.gridMargin) / (self.gridHeight + self.gridMargin));
 		var a = [];
 		for(var i = 0; i<n; i++)
@@ -124,36 +135,38 @@ app.service("grid", function($timeout){
 		return vlines;
 	}
 	this.init = function(){
+
+		self.gridHeight = 30;
+		self.gridMargin = 10;
+
 		this.update();
 		// this.folderRects = getFolderRects();
 		// this.linkRects = getLinksRects();
 	}
 	this.update = function(){
 
-		self.gridHeight = 30;
-		self.gridMargin = 10;
-		self.gridWidth = self.getGridWidth();	
+		self.gridWidth = self.getGridWidth();
 		self.folderHeight = 4*self.gridHeight + 3*self.gridMargin;
 		self.linkWidth = 2*self.gridWidth + self.gridMargin;
 
-		$timeout(function(){
-			self.hlines = self.getHLines();
-			self.vlines = self.getVLines();
-			
-			$timeout(function(){
-				var bodyHeight = $(window).height();
-				var viewHeight = self.getViewHeight();
+		self.viewWidth = $(window).width();
+		self.viewHeight = self.newViewHeight || self.getViewHeight();
+		self.newViewHeight = false;
 
-				self.viewHeight = viewHeight > bodyHeight ? viewHeight + 20 : viewHeight;
-			}, 10);
-		}, 10);
+		self.hlines = self.getHLines();
+		self.vlines = self.getVLines();
+		self.folderRects = getFolderRects();
+		self.linkRects = getLinksRects();
 	}
+	this.updateViewHeight = function(){
 
+	}
 	this.init();
 	
 })
 .controller("desktopCtrl", function($scope, $timeout, grid){
 	var links = [], folders = [];
+	var lastDragged;
 	var init = function(){
 		for(var i = 0; i<6; i++){
 			links.push({
@@ -181,39 +194,55 @@ app.service("grid", function($timeout){
 	$scope.links = links;
 	$scope.folders = folders;
 	$scope.grid = grid;
+	$scope.folderPreviewGrid = [2, 1];
+	$scope.showFolderPreview = false;
+	$scope.linkPreviewGrid = [3, 4];
+	$scope.showLinkPreview = false;
 
 	var timeout;
 	$(window).resize(function(){
 		clearTimeout(timeout);
 		timeout = setTimeout(function(){
 			grid.update();
-			$scope.$apply(function(){
-				$scope.grid = grid;
-			});
+			$scope.$apply();
 		}, 300);
 	});
 
+	var updateRect = function(originRect, draggingRect){
+		//find in all available rects, which has most intersection
+	}
+
 	//wait for folder directive construction
 	$timeout(function(){
-		$(".folder").draggable({
-			start : function(){
 
+		var timeout;
+		var originRect, draggingRect;
+		var posToRect = function(pos, target){
+			return {
+				left : pos.left,
+				top : pos.top,
+				width : target.width(),
+				height : target.height()
+			}
+		}
+		$(".folder").draggable({
+			start : function(e, ui){
+				originRect = posToRect(ui.originalPosition, $(this));
 			},
 			drag : function(e, ui){
-				
+				//console.debug(ui);
+
+				draggingRect = posToRect(ui.position, $(this));
+				updateRect(originRect, draggingRect);
 			},
 			stop : function(e, ui){
 
-				var folder = $(ui.helper.context);
-				var folderBottom = ui.position.top + folder.height();
+				var newHeight = ui.position.top + $(this).height();
+				grid.newViewHeight = newHeight + 20;
 
-				if(folderBottom > grid.viewHeight){
+				if(newHeight > grid.viewHeight){
 					grid.update();
-					$timeout(function(){
-						$scope.$apply(function(){
-							$scope.grid = grid;
-						}, 100);
-					});			
+					$scope.$apply();
 				}
 			}
 		});		

@@ -24,6 +24,11 @@
 			<?php //include("img/icons-2/general/SVG/add25.svg") ?>	
 		</div>
 	</div> -->
+	<div id="msg-box">
+		<div class="arrow-up"></div>
+		<p class="msg-body">Hello Linklies!</p>
+	</div>
+
 	<ul id="grid">
 		<li class="hline gline" ng-repeat="line in grid.hlines" ng-style="{
 			top : 20 + $index * (grid.gridHeight + grid.gridMargin) - gridMargin
@@ -36,24 +41,32 @@
 	</ul>
 
 	<div class="folder {{folder.type}}" ng-repeat="folder in folders" folder-directive id="{{folder.id}}" ng-style="{
-		left : 20 + folder.grid[0] * (grid.gridWidth + 10),
-		top : 20 + folder.grid[1] * (grid.gridHeight * 4 + grid.gridMargin*3),
+		left : 20 + folder.grid[0] * (grid.gridWidth + grid.gridMargin),
+		top : 20 + folder.grid[1] * (grid.gridHeight+ grid.gridMargin) * 4 ,
 		width : grid.gridWidth,
 		height : grid.folderHeight
 	}">
 		<p class="name">{{folder.name}}</p>
 	</div>
 
-	<div id="folder-drop-preview"></div>
-	<div id="link-drop-preview"></div>
-	
-	<div id="msg-box">
-		<div class="arrow-up"></div>
-		<p class="msg-body">Hello Linklies!</p>
-	</div>
+	<div id="folder-drop-preview" ng-style="{
+		width : grid.gridWidth,
+		height : grid.folderHeight,
+		left : 20 + folderPreviewGrid[0] * (grid.gridWidth + grid.gridMargin),
+		top : 20 + folderPreviewGrid[1] * (grid.gridHeight+ grid.gridMargin) * 4 ,
+		display : showFolderPreview ? 'block' : 'none'
+	}"></div>
+
+	<div id="link-drop-preview" ng-style="{
+		left : 20 + linkPreviewGrid[0] * (grid.gridWidth + grid.gridMargin),
+		top : linkPreviewGrid[1] * (grid.gridHeight + grid.gridMargin) + 20,
+		width : grid.linkWidth,
+		height : grid.gridHeight,
+		display : showLinkPreview ? 'block' : 'none'
+	}"></div>
 	
 	<div ng-repeat="link in links" link-directive id="{{link.id}}" class="link" ng-style="{
-		left : 20 + link.grid[0] * grid.gridWidth,
+		left : 20 + link.grid[0] * (grid.gridWidth + grid.gridMargin),
 		top : link.grid[1] * (grid.gridHeight + grid.gridMargin) + 20,
 		height : grid.gridHeight,
 		width : grid.linkWidth

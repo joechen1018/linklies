@@ -15,6 +15,7 @@
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular.min.js"></script>
 	
 	<script src="<?php echo $this -> webroot?>js/plugins.js" type="text/javascript" charset="utf-8"></script>
+	<script src="<?php echo $this -> webroot?>js/closure-library/closure/goog/base.js" type="text/javascript" charset="utf-8"></script>
 	<script src="<?php echo $this -> webroot?>js/main.js" type="text/javascript" charset="utf-8"></script>
 	<script src="<?php echo $this -> webroot?>js/desktopCtrl.js" type="text/javascript" charset="utf-8"></script>
 	<script src="<?php echo $this -> webroot?>js/snapGridCtrl.js" type="text/javascript" charset="utf-8"></script>
