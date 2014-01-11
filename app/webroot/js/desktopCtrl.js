@@ -99,6 +99,7 @@ app.service("grid", function($timeout){
 		self.gridMargin = 10;
 
 		this.update();
+
 		// this.folderRects = getFolderRects();
 		// this.linkRects = getLinksRects();
 	}
@@ -123,9 +124,10 @@ app.service("grid", function($timeout){
 	this.init();
 	
 })
-.controller("desktopCtrl", function($scope, $timeout, grid){
+.controller("desktopCtrl", function($scope, $timeout, grid, keyboardManager){
 	var links = [], folders = [];
 	var lastDragged;
+	var timeout;
 	var init = function(){
 		for(var i = 0; i<6; i++){
 			links.push({
@@ -146,6 +148,72 @@ app.service("grid", function($timeout){
 				state : ""
 			});
 		}
+
+		$(window).resize(function(){
+			clearTimeout(timeout);
+			timeout = setTimeout(function(){
+				grid.update();
+				$scope.$apply();
+			}, 300);
+		});
+
+		keyboardManager.bind("ctrl+l", function(){
+			$("#grid").toggle();
+		});
+
+		//wait for folder directive construction
+		$timeout(function(){
+			var timeout;
+			var originRect, draggingRect, selectedGrid, $folder;
+			
+			$(".folder").draggable({
+				start : function(e, ui){
+					originRect = getRect($(this));
+					selectedGrid = undefined;
+					$folder = $(this);
+				},
+				drag : function(e, ui){
+
+					draggingRect = getRect($folder);
+					selectedGrid = findSelectedGrid(originRect, draggingRect);
+					if(!folderOccupied(selectedGrid)){
+						$scope.folderPreviewGrid = selectedGrid;
+						$scope.showFolderPreview = true;
+					}else{
+						$scope.showFolderPreview = false;
+					}
+					$scope.$apply();
+				},
+				stop : function(e, ui){
+
+					var newHeight = ui.position.top + $(this).height();
+					grid.newViewHeight = newHeight + 20;
+					if(newHeight > grid.viewHeight){
+						grid.update();
+					}
+
+					$scope.showFolderPreview = false;
+					
+					draggingRect = getRect($folder);
+					selectedGrid = findSelectedGrid(originRect, draggingRect);
+					
+					if(!folderOccupied(selectedGrid)){
+						for(var i = 0; i<folders.length; i ++){
+							if(folders[i].id == $folder.attr("id")){
+								$scope.folders[i].grid = selectedGrid;
+							}
+						}
+					}else{
+						$folder.animate({
+							left : originRect.left,
+							top : originRect.top
+						}, 200);
+					}
+					
+					$scope.$apply();
+				}
+			});		
+		}, 100);
 	}
 
 	init();
@@ -157,30 +225,50 @@ app.service("grid", function($timeout){
 	$scope.showFolderPreview = false;
 	$scope.linkPreviewGrid = [3, 4];
 	$scope.showLinkPreview = false;
-
-	var timeout;
-	$(window).resize(function(){
-		clearTimeout(timeout);
-		timeout = setTimeout(function(){
-			grid.update();
-			$scope.$apply();
-		}, 300);
-	});
-
-	var findAvailableGrid = function(originRect, draggingRect){
+	
+	var linkGridInFolderGrid = function(linkGrid, folderGrid){
+		var linkRect = new goog.math.Rect();
+	}
+	var folderOccupied = function(grid){
+		folders = $scope.folders;
+		links = $scope.links;
+		for(var i = 0; i<folders.length; i++){
+			if(goog.array.equals(folders[i].grid,grid)){
+				return true;
+			}
+		}
+		var rect1, rect2 = folderGridToRect(grid);;
+		for(var i = 0; i<links.length; i++){
+			rect1 = linkGridToRect(links[i].grid);
+			if(rect1.intersects(rect2))
+				return true;
+		}
+		return false;
+	}
+	var isOriginalGrid = function($folder, grid){
+		for(var i = 0; i<folders.length; i++){
+			if(folders[i].id === $folder.attr("id")){
+				if(goog.array.equals(folders[i].grid,grid)){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	var findSelectedGrid = function(originRect, draggingRect){
 		//find in all available rects, which has most intersection
 		var folderRects = grid.folderRects, rect, intersection, area, max = {area : 0, grid : undefined};
 		var linkRects = grid.linkRects;
+		var occupied; 
+		
 		for(var i = 0; i<folderRects.length; i++){
 			rect = folderRects[i];
-			if(!goog.math.Rect.equals(rect, originRect)){
-				if(rect.intersects(draggingRect)){
-					intersection = goog.math.Rect.intersection(rect, draggingRect);
-					area = intersection.width * intersection.height;
-					if(area > max.area){
-						max.area = area;
-						max.grid = rect.grid;
-					}
+			if(rect.intersects(draggingRect)){
+				intersection = goog.math.Rect.intersection(rect, draggingRect);
+				area = intersection.width * intersection.height;
+				if(area > max.area){
+					max.area = area;
+					max.grid = rect.grid;
 				}
 			}
 		}
@@ -190,75 +278,24 @@ app.service("grid", function($timeout){
 		var offset = $target.offset();
 		return new goog.math.Rect(offset.left, offset.top, $target.width(), $target.height());
 	}
-	//wait for folder directive construction
-	$timeout(function(){
-
-		var timeout;
-		var originRect, draggingRect, availableGrid;
-		
-		$(".folder").draggable({
-			start : function(e, ui){
-				originRect = getRect($(this));
-				availableGrid = undefined;
-			},
-			drag : function(e, ui){
-
-				draggingRect = getRect($(ui.helper.context));
-				availableGrid = findAvailableGrid(originRect, draggingRect);
-				if(availableGrid !== undefined){
-					$scope.$apply(function(){
-						$scope.folderPreviewGrid = availableGrid;
-						$scope.showFolderPreview = true;
-					});
-				}
-			},
-			stop : function(e, ui){
-
-				var newHeight = ui.position.top + $(this).height();
-				grid.newViewHeight = newHeight + 20;
-
-				if(newHeight > grid.viewHeight){
-					grid.update();
-				}
-
-				$scope.showFolderPreview = false;
-				if(availableGrid !== undefined){
-					for(var i = 0; i<$scope.folders.length; i ++){
-						if($scope.folders[i].id == $(ui.helper.context).attr("id")){
-							$scope.folders[i].grid = availableGrid;
-						}
-					}
-				}
-				$scope.$apply();
-			}
-		});		
-	}, 100);
-	
-	// var timeout;
-	// var margin = 20;
-	// var gridWidth = grid.getGridWidth();
-	// var folderHeight, linkWidth, gridMargin = 10, gridHeight = 30;
-	// var update = function(){
-
-	// 	gridWidth = grid.getGridWidth();
-	// 	folderHeight = 4*$scope.gridHeight + 3*$scope.gridMargin;
-	// 	linkWidth = 2*gridWidth + gridMargin;
-
-	// 	$scope.$apply(function(){
-	// 		$scope.gridWidth = gridWidth;
-	// 		$scope.gridHeight = 30;
-	// 		$scope.gridMargin = gridMargin;
-	// 		$scope.folderHeight = folderHeight;
-	// 		$scope.linkWidth = linkWidth;
-
-	// 		$scope.hlines = grids[0];
-	// 		$scope.vlines = grids[1];
-
-	// 		createLinkFolders();
-	// 		$scope.links = links;
-	// 		$scope.folders = folders;	
-	// 	});
-	// }
+	var folderGridToRect = function(folderGrid){
+		var rect = new goog.math.Rect(
+			20 + folderGrid[0] * (grid.gridWidth + grid.gridMargin),
+			20 + folderGrid[1] * (grid.gridHeight + grid.gridMargin) * 4 ,
+			grid.gridWidth,
+			grid.folderHeight
+		);
+		return rect;
+	}
+	var linkGridToRect = function(linkGrid){
+		var rect = new goog.math.Rect(
+			20 + linkGrid[0] * (grid.gridWidth + grid.gridMargin),
+			linkGrid[1] * (grid.gridHeight + grid.gridMargin) + 20,
+			grid.linkWidth,
+			grid.gridHeight
+		);
+		return rect;
+	}
 })
 .directive("folderDirective", function(grid){
 	return function(scope, ele, attrs){
