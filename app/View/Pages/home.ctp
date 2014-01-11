@@ -86,7 +86,7 @@
 				<div class="arrow arrow-down"></div>
 
 				<div class="page page-1">
-					<img class="thumb" src="{{link.thumb}}">
+					<img class="thumb" ng-src="{link.thumb}">
 					<div class="texts">
 						<h1>
 							{{link.contentTitle}}
