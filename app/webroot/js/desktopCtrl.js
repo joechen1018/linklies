@@ -6,7 +6,7 @@ app.service("grid", function($timeout){
 	var hlines = [], vlines = [];
 	
 	this.getGridWidth = function(){
-		var viewportWidth = $(window).width() - 30;
+		var viewportWidth = $(window).width() - 30 - getScrollbarWidth();
 		var num = Math.floor(viewportWidth/160);
 		var extra = viewportWidth - num*160;
 		return Math.round(150 + (extra/num));
@@ -36,18 +36,18 @@ app.service("grid", function($timeout){
 	}
 	var getLinksRects = function(){
 		var h = getHGridNum();
-		var v = getVGridNum();
+		var v = getVisibleVGridNum();
 		var rects = [], rect;
-
 		for(var i = 0; i<h; i++){
 			for(var j = 0; j<v; j++){
 				rect = new goog.math.Rect(
-					20 + j*(self.gridWidth*2 + self.gridMargin),
-					20 + v*(self.gridHeight + self.gridMargin),
+					20 + j*(self.gridWidth + self.gridMargin),
+					20 + i*(self.gridHeight + self.gridMargin),
 					self.linkWidth,
 					self.gridHeight
 				);
-				rects[i, j] = rect;
+				rect.grid = [j, i];
+				rects.push(rect);
 			}
 		}
 		return rects;
@@ -60,6 +60,39 @@ app.service("grid", function($timeout){
 
 	var getVGridNum = function(){
 		return Math.ceil(self.viewWidth / (self.gridWidth + self.gridMargin));
+	}
+
+	var getVisibleVGridNum = function(){
+		return Math.floor(($(window).width() - 40) / (self.gridWidth + self.gridMargin));
+	}
+
+	var getScrollbarWidth = function(){
+		if($(window).height() >= self.getViewHeight()){
+			return 0;
+		}
+		var inner = document.createElement('p');
+		inner.style.width = "100%";
+		inner.style.height = "200px";
+
+		var outer = document.createElement('div');
+		outer.style.position = "absolute";
+		outer.style.top = "0px";
+		outer.style.left = "0px";
+		outer.style.visibility = "hidden";
+		outer.style.width = "200px";
+		outer.style.height = "150px";
+		outer.style.overflow = "hidden";
+		outer.appendChild (inner);
+
+		document.body.appendChild (outer);
+		var w1 = inner.offsetWidth;
+		outer.style.overflow = 'scroll';
+		var w2 = inner.offsetWidth;
+		if (w1 == w2) w2 = outer.clientWidth;
+
+		document.body.removeChild (outer);
+
+		return (w1 - w2);
 	}
 	
 	//this needs to be called after links and folders rendered
@@ -87,7 +120,7 @@ app.service("grid", function($timeout){
 	}
 	this.getVLines = function(){
 		vlines = [];
-		var n = Math.ceil($(window).width() / (self.gridWidth + self.gridMargin)) + 1;
+		var n = Math.ceil(self.viewWidth / (self.gridWidth + self.gridMargin)) + 1;
 		for(i = 0; i<n; i++)
 			vlines.push({"i" : i});
 		
@@ -109,8 +142,9 @@ app.service("grid", function($timeout){
 		self.folderHeight = 4*self.gridHeight + 3*self.gridMargin;
 		self.linkWidth = 2*self.gridWidth + self.gridMargin;
 
-		self.viewWidth = $(window).width();
+		//new height comes from dragged element exceeding viewport
 		self.viewHeight = self.newViewHeight || self.getViewHeight();
+		self.viewWidth = $(window).width() - getScrollbarWidth();
 		self.newViewHeight = false;
 
 		self.hlines = self.getHLines();
@@ -125,9 +159,10 @@ app.service("grid", function($timeout){
 	
 })
 .controller("desktopCtrl", function($scope, $timeout, grid, keyboardManager){
-	var links = [], folders = [];
+	var links = [], folders = [], $allElements;;
 	var lastDragged;
 	var timeout;
+
 	var init = function(){
 		for(var i = 0; i<6; i++){
 			links.push({
@@ -150,11 +185,9 @@ app.service("grid", function($timeout){
 		}
 
 		$(window).resize(function(){
+			//lazy adjustment
 			clearTimeout(timeout);
-			timeout = setTimeout(function(){
-				grid.update();
-				$scope.$apply();
-			}, 300);
+			timeout = setTimeout(onresize, 300);
 		});
 
 		keyboardManager.bind("ctrl+l", function(){
@@ -164,8 +197,28 @@ app.service("grid", function($timeout){
 		//wait for folder directive construction
 		$timeout(function(){
 			var timeout;
-			var originRect, draggingRect, selectedGrid, $folder;
-			
+			var originRect, draggingRect, selectedGrid, $folder, $link;
+			var linkOccupied = function($link, grid){
+				// console.log(grid);
+				var rect1, rect2 = linkGridToRect(grid);
+				// var occupied = false;
+				// $(".link").each(function(i, e){
+				// 	rect1 = new goog.math.Rect($(e).offset().left, $(e).offset().top, $(e).width(), $(e).height());
+				// 	if($link !== $(e)){
+				// 		if(rect1.intersects(rect2)){
+				// 			console.log(2);
+				// 			occupied = true;
+				// 		}
+				// 	}
+				// });
+				// return occupied;
+				for(var i = 0; i<links.length; i++){
+					rect1 = linkGridToRect(links[i].grid);
+					if(rect1.intersects(rect2))
+						return true;
+				}
+				return false;
+			}
 			$(".folder").draggable({
 				start : function(e, ui){
 					originRect = getRect($(this));
@@ -175,7 +228,7 @@ app.service("grid", function($timeout){
 				drag : function(e, ui){
 
 					draggingRect = getRect($folder);
-					selectedGrid = findSelectedGrid(originRect, draggingRect);
+					selectedGrid = findSelectedFolderGrid(originRect, draggingRect);
 					if(!folderOccupied(selectedGrid)){
 						$scope.folderPreviewGrid = selectedGrid;
 						$scope.showFolderPreview = true;
@@ -195,7 +248,7 @@ app.service("grid", function($timeout){
 					$scope.showFolderPreview = false;
 					
 					draggingRect = getRect($folder);
-					selectedGrid = findSelectedGrid(originRect, draggingRect);
+					selectedGrid = findSelectedFolderGrid(originRect, draggingRect);
 					
 					if(!folderOccupied(selectedGrid)){
 						for(var i = 0; i<folders.length; i ++){
@@ -212,7 +265,59 @@ app.service("grid", function($timeout){
 					
 					$scope.$apply();
 				}
-			});		
+			});
+
+			$(".link").draggable({
+				start : function(e, ui){
+					$link = $(this);
+					originRect = getRect($link);
+					selectedGrid = undefined;
+				},
+				drag : function(e, ui){
+
+					draggingRect = getRect($link);
+					selectedGrid = findSelectedLinkGrid(originRect, draggingRect);
+					if(!linkOccupied($link, selectedGrid)){
+						$scope.linkPreviewGrid = selectedGrid;
+						$scope.showLinkPreview = true;
+					}else{
+						$scope.showLinkPreview = false;
+					}
+					$scope.$apply();
+				},
+				stop : function(e, ui){
+
+					//return;
+					var newHeight = ui.position.top + $(this).height();
+					grid.newViewHeight = newHeight + 20;
+					if(newHeight > grid.viewHeight){
+						grid.update();
+					}
+
+					$scope.showLinkPreview = false;
+					
+					draggingRect = getRect($link);
+					selectedGrid = findSelectedLinkGrid(originRect, draggingRect);
+					
+					if(!linkOccupied($link, selectedGrid)){
+						for(var i = 0; i<links.length; i ++){
+							if(links[i].id == $link.attr("id")){
+								$scope.links[i].grid = selectedGrid;
+							}
+						}
+					}else{
+						$link.animate({
+							left : originRect.left,
+							top : originRect.top
+						}, 200);
+					}
+					$scope.$apply();
+				}
+			});
+
+			grid.update();
+			$scope.$apply();
+
 		}, 100);
 	}
 
@@ -225,6 +330,81 @@ app.service("grid", function($timeout){
 	$scope.showFolderPreview = false;
 	$scope.linkPreviewGrid = [3, 4];
 	$scope.showLinkPreview = false;
+
+	$scope.getLinkStyle = function(link){
+		
+		return {
+			left : 20 + link.grid[0] * (grid.gridWidth + grid.gridMargin),
+			top : link.grid[1] * (grid.gridHeight + grid.gridMargin) + 20,
+			height : grid.gridHeight,
+			width : grid.linkWidth
+		}
+	}
+	$scope.getFolderStyle = function(folder){
+		return {
+			left : 20 + folder.grid[0] * (grid.gridWidth + grid.gridMargin),
+			top : 20 + folder.grid[1] * (grid.gridHeight+ grid.gridMargin) * 4 ,
+			width : grid.gridWidth,
+			height : grid.folderHeight
+		}
+	}
+	var onresize = function(){
+
+		grid.update();
+		$scope.$apply();
+
+		//reposition();
+	}
+
+	var pushForward = function($ele){
+		// var grid = $ele.attr("data-grid"), rect;
+		console.debug(grid.vlines.length);
+		var vline = 3;
+		if(isFolder($ele)){
+			if(pushedX >= vline){
+				pushedY++;
+				pushedX = 0;
+			}else{
+				pushedX++;
+			}
+		}
+		console.log([pushedX, pushedY]);
+		rect = folderGridToRect([pushedX, pushedY]);
+		$ele.css({
+			left : rect.left,
+			top : rect.top
+		});
+	}
+
+	var overlayByPrev = function($prev, $current){
+		return false;
+	}
+	var pushedX, pushedY;
+	var reposition = function(){
+		var last;
+		var all = $(".folder, .link");
+		pushedX = 3; 
+		pushedY = 0;
+		all.each(function(i, e){
+			if(i !== 0){
+				if(overlayByPrev($(last), $(e))){
+					pushForward($(e));
+				}
+			}
+			if(outOfBoundry($(e))){
+				pushForward($(e));
+			}
+			last = e;
+		});
+	}
+
+	var isFolder = function($ele){
+		return $ele.attr("id").indexOf("folder") !== -1;
+	}
+
+	var outOfBoundry = function($ele){
+		return $ele.offset().left + $ele.width() > $(window).width();
+	}
 	
 	var linkGridInFolderGrid = function(linkGrid, folderGrid){
 		var linkRect = new goog.math.Rect();
@@ -245,6 +425,7 @@ app.service("grid", function($timeout){
 		}
 		return false;
 	}
+	
 	var isOriginalGrid = function($folder, grid){
 		for(var i = 0; i<folders.length; i++){
 			if(folders[i].id === $folder.attr("id")){
@@ -255,7 +436,7 @@ app.service("grid", function($timeout){
 		}
 		return false;
 	}
-	var findSelectedGrid = function(originRect, draggingRect){
+	var findSelectedFolderGrid = function(originRect, draggingRect){
 		//find in all available rects, which has most intersection
 		var folderRects = grid.folderRects, rect, intersection, area, max = {area : 0, grid : undefined};
 		var linkRects = grid.linkRects;
@@ -263,6 +444,24 @@ app.service("grid", function($timeout){
 		
 		for(var i = 0; i<folderRects.length; i++){
 			rect = folderRects[i];
+			if(rect.intersects(draggingRect)){
+				intersection = goog.math.Rect.intersection(rect, draggingRect);
+				area = intersection.width * intersection.height;
+				if(area > max.area){
+					max.area = area;
+					max.grid = rect.grid;
+				}
+			}
+		}
+		return max.grid;
+	}
+	var findSelectedLinkGrid = function(originRect, draggingRect){
+		//find in all available rects, which has most intersection
+		var rect, intersection, area, max = {area : 0, grid : undefined};
+		var linkRects = grid.linkRects;
+		var occupied; 
+		for(var i = 0; i<linkRects.length; i++){
+			rect = linkRects[i];
 			if(rect.intersects(draggingRect)){
 				intersection = goog.math.Rect.intersection(rect, draggingRect);
 				area = intersection.width * intersection.height;
@@ -299,109 +498,10 @@ app.service("grid", function($timeout){
 })
 .directive("folderDirective", function(grid){
 	return function(scope, ele, attrs){
-		return;
-		$(ele).draggable({
-			start : function(e, ui){
-				$(this).data("originalPosition", ui.originalPosition);
-				$(this).addClass("dragging");
-			},
-			drag : function(e, ui){
-
-			},
-			stop : function(e, ui){
-
-				$(this).removeClass("dragging");
-				grid.update();
-				scope.$apply(function(){
-					scope.grid = grid;
-				});
-				return;
-				var pos;
-				var opos = $(this).data("originalPosition");
-				var dragged = $(this);
-				if($(this).hasClass("folder")){
-					pos = grid.findNearestPosForFolder(ui.position.left, ui.position.top);
-				}else{
-					pos = grid.findNearestPosForLink(ui.position.left, ui.position.top);
-				}
-				var allowReposition = true;
-				$(".link, .folder").each(function(i, e){
-					if(e != dragged[0]){
-						area2 = {
-							left : $(e).offset().left,
-							top : $(e).offset().top,
-							width : $(e).width(),
-							height : $(e).height()
-						}
-						var intersects = new $.rect($(dragged)).intersects($(e));
-						var rect = new $.rect($(dragged)).intersection($(e));
-						console.debug(rect);
-						if(intersects){
-							$(dragged).animate(opos, 200);
-
-							allowReposition = false;
-							return false;
-						}
-					}
-				});
-
-				if(allowReposition){
-					$(dragged).animate(pos, 200);
-				}
-			}
-		});
 	}
 })
 .directive("linkDirective", function(grid){
 	return function(scope, ele, attrs){
-
-		// var details = $(ele).find(".link-details");
-		// $(ele).hover(function(){
-		// 	details.removeClass('hide');
-		// }, function(){
-		// 	details.addClass('hide');
-		// });
-
-		$(ele).draggable({
-			start : function(e, ui){
-				$(this).data("originalPosition", ui.originalPosition);
-				$(this).addClass("dragging");
-			},
-			stop : function(e, ui){
-				$(this).removeClass("dragging");
-
-				var pos;
-				var opos = $(this).data("originalPosition");
-				var dragged = $(this);
-				if($(this).hasClass("folder")){
-					pos = grid.findNearestPosForFolder(ui.position.left, ui.position.top);
-				}else{
-					pos = grid.findNearestPosForLink(ui.position.left, ui.position.top);
-				}
-				var allowReposition = true;
-				$(".link, .folder").each(function(i, e){
-					if(e != dragged[0]){
-						area2 = {
-							left : $(e).offset().left,
-							top : $(e).offset().top,
-							width : $(e).width(),
-							height : $(e).height()
-						}
-						var bool = new $.rect($(dragged)).intersects($(e));
-						if(bool){
-							$(dragged).animate(opos, 200);
-
-							allowReposition = false;
-							return false;
-						}
-					}
-				});
-
-				if(allowReposition){
-					$(dragged).animate(pos, 200);
-				}
-			}
-		})
 	}
 });
 

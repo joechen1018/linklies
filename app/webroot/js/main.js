@@ -1,4 +1,6 @@
 var app = angular.module("lk", []);
+
+//http://jsfiddle.net/firehist/nzUBg/
 app.factory('keyboardManager', function ($window, $timeout) {
 	var keyboardManagerService = {};
 
