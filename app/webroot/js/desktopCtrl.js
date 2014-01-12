@@ -5,16 +5,6 @@ app.service("grid", function($timeout){
 	var $desk = $("#desktop-view");
 	var hlines = [], vlines = [];
 	
-	this.getGridWidth = function(){
-		var viewportWidth = $(window).width() - 30 - getScrollbarWidth();
-		var num = Math.floor(viewportWidth/160);
-		var extra = viewportWidth - num*160;
-		return Math.round(150 + (extra/num));
-	}
-
-	this.findFolderRect = function(pos){
-
-	}
 	var getFolderRects = function(){
 		var h = Math.ceil(getHGridNum() / 4);
 		var v = getVGridNum();
@@ -34,6 +24,7 @@ app.service("grid", function($timeout){
 		//console.log(rects);
 		return rects;
 	}
+
 	var getLinksRects = function(){
 		var h = getHGridNum();
 		var v = getVisibleVGridNum();
@@ -94,6 +85,13 @@ app.service("grid", function($timeout){
 
 		return (w1 - w2);
 	}
+
+	this.getGridWidth = function(){
+		var viewportWidth = $(window).width() - 30 - getScrollbarWidth();
+		var num = Math.floor(viewportWidth/160);
+		var extra = viewportWidth - num*160;
+		return Math.round(150 + (extra/num));
+	}
 	
 	//this needs to be called after links and folders rendered
 	this.getViewHeight = function(){
@@ -106,9 +104,11 @@ app.service("grid", function($timeout){
 		});
 		return h;
 	}
+
 	this.setViewHeight = function(h){
 		self.viewHeight = h + 20;
 	}
+
 	this.getHLines = function(){
 		var h = self.viewHeight;
 		var n = Math.ceil((h - 40 - self.gridMargin) / (self.gridHeight + self.gridMargin));
@@ -118,6 +118,7 @@ app.service("grid", function($timeout){
 		
 		return a;
 	}
+
 	this.getVLines = function(){
 		vlines = [];
 		var n = Math.ceil(self.viewWidth / (self.gridWidth + self.gridMargin)) + 1;
@@ -126,6 +127,7 @@ app.service("grid", function($timeout){
 		
 		return vlines;
 	}
+
 	this.init = function(){
 
 		self.gridHeight = 30;
@@ -136,6 +138,7 @@ app.service("grid", function($timeout){
 		// this.folderRects = getFolderRects();
 		// this.linkRects = getLinksRects();
 	}
+
 	this.update = function(){
 
 		self.gridWidth = self.getGridWidth();
@@ -152,9 +155,7 @@ app.service("grid", function($timeout){
 		self.folderRects = getFolderRects();
 		self.linkRects = getLinksRects();
 	}
-	this.updateViewHeight = function(){
 
-	}
 	this.init();
 	
 })
@@ -162,7 +163,7 @@ app.service("grid", function($timeout){
 	var links = [], folders = [], $allElements;;
 	var lastDragged;
 	var timeout;
-
+	var pushedX, pushedY;
 	var init = function(){
 		for(var i = 0; i<6; i++){
 			links.push({
@@ -321,8 +322,6 @@ app.service("grid", function($timeout){
 		}, 100);
 	}
 
-	init();
-
 	$scope.links = links;
 	$scope.folders = folders;
 	$scope.grid = grid;
@@ -331,23 +330,9 @@ app.service("grid", function($timeout){
 	$scope.linkPreviewGrid = [3, 4];
 	$scope.showLinkPreview = false;
 
-	$scope.getLinkStyle = function(link){
-		
-		return {
-			left : 20 + link.grid[0] * (grid.gridWidth + grid.gridMargin),
-			top : link.grid[1] * (grid.gridHeight + grid.gridMargin) + 20,
-			height : grid.gridHeight,
-			width : grid.linkWidth
-		}
-	}
-	$scope.getFolderStyle = function(folder){
-		return {
-			left : 20 + folder.grid[0] * (grid.gridWidth + grid.gridMargin),
-			top : 20 + folder.grid[1] * (grid.gridHeight+ grid.gridMargin) * 4 ,
-			width : grid.gridWidth,
-			height : grid.folderHeight
-		}
-	}
+	init();
+
+	
 	var onresize = function(){
 
 		grid.update();
@@ -379,7 +364,7 @@ app.service("grid", function($timeout){
 	var overlayByPrev = function($prev, $current){
 		return false;
 	}
-	var pushedX, pushedY;
+	
 	var reposition = function(){
 		var last;
 		var all = $(".folder, .link");
@@ -409,6 +394,7 @@ app.service("grid", function($timeout){
 	var linkGridInFolderGrid = function(linkGrid, folderGrid){
 		var linkRect = new goog.math.Rect();
 	}
+
 	var folderOccupied = function(grid){
 		folders = $scope.folders;
 		links = $scope.links;
@@ -436,6 +422,7 @@ app.service("grid", function($timeout){
 		}
 		return false;
 	}
+
 	var findSelectedFolderGrid = function(originRect, draggingRect){
 		//find in all available rects, which has most intersection
 		var folderRects = grid.folderRects, rect, intersection, area, max = {area : 0, grid : undefined};
@@ -455,6 +442,7 @@ app.service("grid", function($timeout){
 		}
 		return max.grid;
 	}
+
 	var findSelectedLinkGrid = function(originRect, draggingRect){
 		//find in all available rects, which has most intersection
 		var rect, intersection, area, max = {area : 0, grid : undefined};
@@ -473,10 +461,12 @@ app.service("grid", function($timeout){
 		}
 		return max.grid;
 	}
+
 	var getRect = function($target){
 		var offset = $target.offset();
 		return new goog.math.Rect(offset.left, offset.top, $target.width(), $target.height());
 	}
+
 	var folderGridToRect = function(folderGrid){
 		var rect = new goog.math.Rect(
 			20 + folderGrid[0] * (grid.gridWidth + grid.gridMargin),
@@ -486,6 +476,7 @@ app.service("grid", function($timeout){
 		);
 		return rect;
 	}
+
 	var linkGridToRect = function(linkGrid){
 		var rect = new goog.math.Rect(
 			20 + linkGrid[0] * (grid.gridWidth + grid.gridMargin),
@@ -494,6 +485,25 @@ app.service("grid", function($timeout){
 			grid.gridHeight
 		);
 		return rect;
+	}
+
+	$scope.getLinkStyle = function(link){
+		
+		return {
+			left : 20 + link.grid[0] * (grid.gridWidth + grid.gridMargin),
+			top : link.grid[1] * (grid.gridHeight + grid.gridMargin) + 20,
+			height : grid.gridHeight,
+			width : grid.linkWidth
+		}
+	}
+
+	$scope.getFolderStyle = function(folder){
+		return {
+			left : 20 + folder.grid[0] * (grid.gridWidth + grid.gridMargin),
+			top : 20 + folder.grid[1] * (grid.gridHeight+ grid.gridMargin) * 4 ,
+			width : grid.gridWidth,
+			height : grid.folderHeight
+		}
 	}
 })
 .directive("folderDirective", function(grid){
