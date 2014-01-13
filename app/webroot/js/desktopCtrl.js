@@ -100,7 +100,8 @@ app.service("gridService", function($timeout){
 	
 	//this needs to be called after links and folders rendered
 	this.getViewHeight = function(){
-		var h = $(window).height() , eh = 0;
+		var wh = $(window).height()
+		var h = wh , eh = 0;
 		$(".folder, .link").each(function(i, e){
 			eh = $(e).offset().top + $(e).height();
 			if(h < eh){
@@ -143,7 +144,7 @@ app.service("gridService", function($timeout){
 	this.update = function(){
 
 		//new height comes from dragged element exceeding viewport
-		self.viewHeight = self.newViewHeight || self.getViewHeight();
+		self.viewHeight = self.getViewHeight();
 		self.contentHeight = self.getContentHeight();
 		self.viewWidth = hasScrollbar() ? $(window).width() - scrollWidth : $(window).width();
 		self.gridWidth = self.getGridWidth();
@@ -378,6 +379,8 @@ app.service("gridService", function($timeout){
 		var gs = gridService;
 
 		$(ele).draggable({
+			containment : "body",
+			scroll: false,
 			start : function(e, ui){
 				originRect = gs.getRect($(ele));
 				selectedGrid = undefined;
@@ -393,14 +396,8 @@ app.service("gridService", function($timeout){
 				}else{
 					$scope.hideDragPreview("folder");
 				}
-
-				//check if element exceeds bottom boundry and update
-				gs.updateOverFlow(draggingRect.top + draggingRect.height);
 			},
 			stop : function(e, ui){
-
-				//check if element exceeds bottom boundry and update
-				gs.updateOverFlow(ui.position.top + $(ele).height());
 
 				//hide the dragging preview div
 				$scope.hideDragPreview("folder");
@@ -438,6 +435,8 @@ app.service("gridService", function($timeout){
 		var originRect, originGrid, draggingRect, selectedGrid, $folder, $link;
 
 		$(ele).draggable({
+			containment : "body",
+			scroll: false,
 			start : function(e, ui){
 				$link = $(ele);
 				originRect = gs.getRect($link);

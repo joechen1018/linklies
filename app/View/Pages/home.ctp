@@ -4,7 +4,9 @@
 		<a class="clear" href="javascript:clearBoard()">Clear</a>
 </div> -->
 
-<div id="desktop-view" ng-controller="desktopCtrl">
+<div id="desktop-view" ng-controller="desktopCtrl" ng-style="{
+	height : viewHeight
+}">
 	
 	<!-- Antique Photo Theme -->
 	<!-- <ul id="color-theme">
