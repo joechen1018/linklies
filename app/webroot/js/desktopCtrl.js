@@ -87,15 +87,16 @@ app.service("gridService", function($timeout){
 		// return (w1 - w2);
 	}
 
-	var hasScrollbar = function(){
+	this.hasScrollbar = function(){
 		return $(window).height() > self.contentHeight ? false : true;
 	}
 
 	this.getGridWidth = function(){
-		var viewportWidth = self.viewWidth - 20 - 10;
+		var bool = this.hasScrollbar();
+		var viewportWidth = bool ? self.viewWidth - 10 : self.viewWidth - 30;
 		var num = Math.floor(viewportWidth/160);
-		var extra = viewportWidth - num*160;
-		return Math.round(150 + (extra/num));
+		var extra = Math.round((viewportWidth - num*160)/num);
+		return 150 + extra;
 	}
 	
 	//this needs to be called after links and folders rendered
@@ -124,7 +125,7 @@ app.service("gridService", function($timeout){
 
 	this.getHLines = function(){
 		var h = self.viewHeight;
-		var n = Math.ceil((h - 40 - self.gridMargin) / (self.gridHeight + self.gridMargin));
+		var n = Math.ceil((h - self.gridMargin) / (self.gridHeight + self.gridMargin));
 		var a = [];
 		for(var i = 0; i<n; i++)
 			a.push({i : i});
@@ -146,13 +147,15 @@ app.service("gridService", function($timeout){
 		//new height comes from dragged element exceeding viewport
 		self.viewHeight = self.getViewHeight();
 		self.contentHeight = self.getContentHeight();
-		self.viewWidth = hasScrollbar() ? $(window).width() - scrollWidth : $(window).width();
+		self.viewWidth = self.hasScrollbar() ? $(window).width() - scrollWidth : $(window).width();
 		self.gridWidth = self.getGridWidth();
 		self.folderHeight = 4*self.gridHeight + 3*self.gridMargin;
 		self.linkWidth = 2*self.gridWidth + self.gridMargin;
-		self.newViewHeight = false;
 
+		//require viewHeight
 		self.hlines = self.getHLines();
+
+		//require viewWidth
 		self.vlines = self.getVLines();
 		self.folderRects = getRects.folder();
 		self.linkRects = getRects.link();
@@ -303,6 +306,14 @@ app.service("gridService", function($timeout){
 			});
 		}
 
+		// folders.push({
+		// 	id : "folder-" + (7),
+		// 	type : i % 2 === 0 ? "" : "youtube",
+		// 	name : "test folder",
+		// 	grid : [0, 7],
+		// 	state : ""
+		// });
+
 
 		$(window).resize(function(){
 			//lazy call
@@ -313,7 +324,8 @@ app.service("gridService", function($timeout){
 		});
 
 		keyboardManager.bind("ctrl+l", function(){
-			$("#grid").toggle();
+			$scope.showGrid = !$scope.showGrid;
+			$scope.$apply();
 		});
 
 		//wait for folder directive construction
@@ -322,6 +334,8 @@ app.service("gridService", function($timeout){
 		}, 100);
 	}
 
+	init();
+
 	$scope.links = links;
 	$scope.folders = folders;
 	$scope.grid = gridService;
@@ -329,9 +343,22 @@ app.service("gridService", function($timeout){
 	$scope.showFolderPreview = false;
 	$scope.linkPreviewGrid = [3, 4];
 	$scope.showLinkPreview = false;
+	$scope.showGrid = false;
 
-	init();
 	gridService.init(folders, links);
+
+	$scope.getDesktopStyle = function(){
+		var hasScrollbar = gridService.hasScrollbar();
+		if(hasScrollbar){
+			return {height : gridService.viewHeight + 20}
+		}else{
+			return {height : gridService.viewHeight}
+		}
+	}
+
+	$scope.gridClass = function(){
+		return $scope.showGrid ? "shawGrid" : "hideGrid";
+	}
 
 	$scope.getLinkStyle = function(link){
 		
@@ -379,7 +406,7 @@ app.service("gridService", function($timeout){
 		var gs = gridService;
 
 		$(ele).draggable({
-			containment : "body",
+			containment : "#desktop-view",
 			scroll: false,
 			start : function(e, ui){
 				originRect = gs.getRect($(ele));

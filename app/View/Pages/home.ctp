@@ -4,9 +4,7 @@
 		<a class="clear" href="javascript:clearBoard()">Clear</a>
 </div> -->
 
-<div id="desktop-view" ng-controller="desktopCtrl" ng-style="{
-	height : viewHeight
-}">
+<div id="desktop-view" ng-controller="desktopCtrl" ng-style="getDesktopStyle()">
 	
 	<!-- Antique Photo Theme -->
 	<!-- <ul id="color-theme">
@@ -31,7 +29,7 @@
 		<p class="msg-body">Hello Linklies!</p>
 	</div>
 
-	<ul id="grid">
+	<ul id="grid" ng-class="gridClass()">
 		<li class="hline gline" ng-repeat="line in grid.hlines" ng-style="{
 			top : 20 + $index * (grid.gridHeight + grid.gridMargin) - gridMargin
 		}"></li>
