@@ -40,7 +40,7 @@
 		}"></li>
 	</ul>
 
-	<div class="folder {{folder.type}}" ng-repeat="folder in folders" folder-directive id="{{folder.id}}" data-grid="{{folder.grid}}" ng-style="getFolderStyle(folder)">
+	<div class="folder {{folder.type}}" ng-repeat="folder in folders" folder-directive id="{{folder.id}}" data-grid="{{folder.grid}}" data-grid-index="{{$index}}" ng-style="getFolderStyle(folder)">
 		<p class="name">{{folder.name}}</p>
 	</div>
 
@@ -60,7 +60,7 @@
 		display : showLinkPreview ? 'block' : 'none'
 	}"></div>
 	
-	<div ng-repeat="link in links" link-directive id="{{link.id}}" class="link" ng-style="getLinkStyle(link)">
+	<div ng-repeat="link in links" link-directive id="{{link.id}}" class="link" data-grid="{{link.grid}}" ng-style="getLinkStyle(link)">
 		<div class="state-paste-url">
 			<input />
 		</div>

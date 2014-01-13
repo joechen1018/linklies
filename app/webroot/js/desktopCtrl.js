@@ -187,20 +187,25 @@ app.service("gridService", function($timeout){
 			return false;
 		},
 		link : function(grid){
-
+			var links = self.links;
+			for(var i = 0; i<links.length; i++){
+				if(goog.array.equals(links[i].grid, grid))
+					return true;
+			}
+			return false;
 		}
 	}
 
 	this.findSelectedGrid = {
-		folder : function(originRect, draggingRect){
+		folder : function(originGrid, draggingRect){
 			//find in all available rects, which has most intersection
 			var folderRects = self.folderRects, rect, intersection, area, max = {area : 0, grid : undefined};
 			var linkRects = self.linkRects;
 			var occupied; 
-
 			for(var i = 0; i<folderRects.length; i++){
 				rect = folderRects[i];
-				if(rect.intersects(draggingRect) && (!goog.math.Rect.equals(originRect, rect))){
+				//if(rect.intersects(draggingRect) && (!goog.math.Rect.equals(originRect, rect))){
+				if(rect.intersects(draggingRect) && (!goog.array.equals(rect.grid, originGrid))){	
 					intersection = goog.math.Rect.intersection(rect, draggingRect);
 					area = intersection.width * intersection.height;
 					if(area > max.area){
@@ -211,14 +216,14 @@ app.service("gridService", function($timeout){
 			}
 			return max.grid;
 		},
-		link :function(originRect, draggingRect){
+		link :function(originGrid, draggingRect){
 			//find in all available rects, which has most intersection
 			var rect, intersection, area, max = {area : 0, grid : undefined};
 			var linkRects = self.linkRects;
 			var occupied; 
 			for(var i = 0; i<linkRects.length; i++){
 				rect = linkRects[i];
-				if(rect.intersects(draggingRect)){
+				if(rect.intersects(draggingRect) && (!goog.array.equals(rect.grid, originGrid))){
 					intersection = goog.math.Rect.intersection(rect, draggingRect);
 					area = intersection.width * intersection.height;
 					if(area > max.area){
@@ -369,7 +374,7 @@ app.service("gridService", function($timeout){
 .directive("folderDirective", function(gridService){
 	return function($scope, ele, attrs){
 		var timeout;
-		var originRect, draggingRect, selectedGrid, $folder, $link;
+		var originRect, originGrid, draggingRect, selectedGrid, $folder, $link;
 		var gs = gridService;
 
 		$(ele).draggable({
@@ -377,28 +382,39 @@ app.service("gridService", function($timeout){
 				originRect = gs.getRect($(ele));
 				selectedGrid = undefined;
 				$folder = $(ele);
+				originGrid = JSON.parse($folder.attr("data-grid"));
 			},
 			drag : function(e, ui){
 
 				draggingRect = gs.getRect($folder);
-				selectedGrid = gs.findSelectedGrid.folder(originRect, draggingRect);
-				if(!gs.occupied.folder(selectedGrid)){
+				selectedGrid = gs.findSelectedGrid.folder(originGrid, draggingRect);
+				if(selectedGrid !== undefined && !gs.occupied.folder(selectedGrid)){
 					$scope.showDragPreview(selectedGrid, "folder");
 				}else{
 					$scope.hideDragPreview("folder");
 				}
+
+				//check if element exceeds bottom boundry and update
 				gs.updateOverFlow(draggingRect.top + draggingRect.height);
 			},
 			stop : function(e, ui){
 
+				//check if element exceeds bottom boundry and update
 				gs.updateOverFlow(ui.position.top + $(ele).height());
 
+				//hide the dragging preview div
 				$scope.hideDragPreview("folder");
 				
+				//get rect by current dom position
 				draggingRect = gs.getRect($folder);
-				selectedGrid = gs.findSelectedGrid.folder(originRect, draggingRect);
+
+				//find selected grid, if current position is original grid, return undefined
+				selectedGrid = gs.findSelectedGrid.folder(originGrid, draggingRect);
 				
-				if(!gs.occupied.folder(selectedGrid)){
+				//if there is a selected grid and the selected grid is not occupied
+				if(selectedGrid !== undefined && !gs.occupied.folder(selectedGrid)){
+
+					//find the model by dom id
 					for(var i = 0; i<$scope.folders.length; i ++){
 						if($scope.folders[i].id == $folder.attr("id")){
 							$scope.folders[i].grid = selectedGrid;
@@ -419,28 +435,21 @@ app.service("gridService", function($timeout){
 .directive("linkDirective", function(gridService){
 	return function($scope, ele, attrs){
 		var gs = gridService;
-		var originRect, draggingRect, selectedGrid, $folder, $link;
-		var linkOccupied = function($link, selectedGrid){
-			var rect1, rect2 = gs.gridToRect.link(selectedGrid);
-			for(var i = 0; i<gs.links.length; i++){
-				rect1 = gs.gridToRect.link(gs.links[i].grid);
-				if(rect1.intersects(rect2))
-					return true;
-			}
-			return false;
-		}
+		var originRect, originGrid, draggingRect, selectedGrid, $folder, $link;
 
 		$(ele).draggable({
 			start : function(e, ui){
 				$link = $(ele);
 				originRect = gs.getRect($link);
 				selectedGrid = undefined;
+				originGrid = JSON.parse($link.attr("data-grid"));
 			},
 			drag : function(e, ui){
 
 				draggingRect = gs.getRect($link);
 				selectedGrid = gs.findSelectedGrid.link(originRect, draggingRect);
-				if(!linkOccupied($link, selectedGrid)){
+				
+				if(selectedGrid !== undefined && !gs.occupied.link(selectedGrid)){
 					$scope.showDragPreview(selectedGrid, "link");
 				}else{
 					$scope.hideDragPreview("link");
@@ -448,18 +457,21 @@ app.service("gridService", function($timeout){
 			},
 			stop : function(e, ui){
 
-				var newHeight = ui.position.top + $(ele).height();
-				gs.newViewHeight = newHeight + 20;
-				if(newHeight > gs.viewHeight){
-					gs.update();
-				}
+				//check if element exceeds bottom boundry and update
+				gs.updateOverFlow(ui.position.top + $(ele).height());
 
+				//hide the dragging preview div
 				$scope.hideDragPreview("link");
 				
+				//get rect by current dom position
 				draggingRect = gs.getRect($link);
-				selectedGrid = gs.findSelectedGrid.link(originRect, draggingRect);
+				//find selected grid, if current position is original grid, return undefined
+				selectedGrid = gs.findSelectedGrid.link(originGrid, draggingRect);
 				
-				if(!linkOccupied($link, selectedGrid)){
+				//if there is a selected grid and the selected grid is not occupied
+				if(selectedGrid !== undefined && !gs.occupied.link(selectedGrid)){
+
+					//find the model by dom id
 					for(var i = 0; i<$scope.links.length; i ++){
 						if($scope.links[i].id == $link.attr("id")){
 							$scope.links[i].grid = selectedGrid;
