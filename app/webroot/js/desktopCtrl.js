@@ -2,6 +2,18 @@
 
 goog.require('goog.math.Rect');
 app.service("gridService", function($timeout){
+	// Array.prototype.max = function() {
+	// 	var max = this[0];
+	// 	var len = this.length;
+	// 	for (var i = 1; i < len; i++) if (this[i] > max) max = this[i];
+	// 	return max;
+	// }
+	// Array.prototype.min = function() {
+	// 	var min = this[0];
+	// 	var len = this.length;
+	// 	for (var i = 1; i < len; i++) if (this[i] < min) min = this[i];
+	// 	return min;
+	// }
 	var self = this;
 	var $desk = $("#desktop-view");
 	var hlines = [], vlines = [];
@@ -87,6 +99,51 @@ app.service("gridService", function($timeout){
 		// return (w1 - w2);
 	}
 
+	var folderDistance = function(grid1, grid2){
+		var dist = Math.abs(grid2[0] - grid1[0]) + Math.abs(grid2[1] - grid1[1]);
+		//console.log(grid2 + "," + grid1 + " -> " + dist);
+		return dist;
+	}
+
+	var getGrids = function(){
+		var y = 0, x = 0, grids = [], col = getVGridNum();
+		var w = (self.gridWidth + self.gridMargin), h = (self.gridHeight + self.gridMargin);
+		while((y * h) <= self.viewHeight - h){
+			grids.push([x, y]);
+			x++;
+			if(x >= col - 1){
+				x = 0;
+				y++;
+			}
+		}
+		return grids;
+	}
+
+	var getFolderGrids = function(){
+		var h = Math.ceil(getHGridNum() / 4);
+		var v = getVGridNum();
+		var grids = [], grid;
+		for(var i = 0; i<h; i++){
+			for(var j = 0; j<v; j++){
+				grid = [j, i];
+				grids.push(grid);
+			}
+		}
+		//console.log(rects);
+		return grids;
+	}
+
+	var getMinNatureNum = function(arr){
+		var min = 1000, tmp, index = -1;
+		for(var i = 0; i<arr.length; i++){
+			if(arr[i] < min && arr[i] > 0){
+				min = arr[i];
+				index = i;
+			}
+		}
+		return index;
+	}
+
 	this.hasScrollbar = function(){
 		return $(window).height() > self.contentHeight ? false : true;
 	}
@@ -149,6 +206,8 @@ app.service("gridService", function($timeout){
 		self.contentHeight = self.getContentHeight();
 		self.viewWidth = self.hasScrollbar() ? $(window).width() - scrollWidth : $(window).width();
 		self.gridWidth = self.getGridWidth();
+		self.rows = getHGridNum();
+		self.cols = getVGridNum();
 		self.folderHeight = 4*self.gridHeight + 3*self.gridMargin;
 		self.linkWidth = 2*self.gridWidth + self.gridMargin;
 
@@ -159,14 +218,13 @@ app.service("gridService", function($timeout){
 		self.vlines = self.getVLines();
 		self.folderRects = getRects.folder();
 		self.linkRects = getRects.link();
+		self.grids = getGrids();
+		self.folderGrids = getFolderGrids();
 	}
 
 	this.getRect = function($target){
 		var offset = $target.offset();
 		return new goog.math.Rect(offset.left, offset.top, $target.width(), $target.height());
-	}
-
-	this.reposition = function(){
 	}
 
 	this.outOfBoundry = function($ele){
@@ -261,12 +319,75 @@ app.service("gridService", function($timeout){
 		}
 	}
 
+	this.rectToGrid = function(rect){
+		var left = rect.left, top = rect.top;
+
+	}
+
+	this.findNearistGrid = {
+		folder : function(grid){
+			var folderGrids = self.folderGrids, folderGrid, availableGrids = [], distances = [], bool;
+			for(var i = 0; i<folderGrids.length; i++){
+				folderGrid = folderGrids[i];
+				bool = self.occupied.folder(folderGrid);
+				//console.log(folderGrid, bool);
+				if(!bool){
+					folderGrid.distance = folderDistance(folderGrid, grid);
+					availableGrids.push(folderGrid);
+				}
+			}
+			//sort by distance
+			var min = availableGrids.sort(function(a, b){
+				if(a.distance > b.distance)
+					return 1;
+				else if(a.distance < b.distance)
+					return -1;
+				return 0;
+			});
+
+			//get only nearests
+			min = (function(){
+				var last = min[0].distance, arr = [], i = 0;
+				while(min[i].distance === last){
+					arr.push(min[i]);
+					i++;
+				}
+				return arr;
+			})();
+
+
+			//left greater than right, top greater than bottom
+			min.sort(function(a, b){
+				if(a[0] > b[0])
+					return 1
+				else if(a[1] > b[1])
+					return 1
+				else return -1;
+			});
+
+			return min[0];
+		},
+		link : function(grid){
+
+		}
+	}
+
+	this.findNextGrid = {
+		folder : function(){
+
+		},
+		link : function(){
+
+		}
+	}
+
 	this.updateOverFlow = function(bottom){
 		bottom += 20;
 		if(bottom > this.viewHeight){
 			this.update();
 		}
 	}
+
 	this.init = function(folders, links){
 
 		this.folders = folders;
@@ -320,7 +441,18 @@ app.service("gridService", function($timeout){
 			clearTimeout(timeout);
 			timeout = $timeout(function(){
 				gridService.update();
-			}, 100);
+				var folders = $scope.folders;
+				var cols = gridService.cols;
+				
+				// $(".folder").each(function(i, e){
+				// 	if(gs.outOfBoundry($(e))){
+				// 		var newGrid = gs.findNearistGrid.folder(folders[i].grid);
+				// 		$scope.folders[i].grid = newGrid;
+				// 		console.log(newGrid);
+				// 	}
+				// });
+
+			}, 300);
 		});
 
 		keyboardManager.bind("ctrl+l", function(){
@@ -452,6 +584,9 @@ app.service("gridService", function($timeout){
 				}
 				
 				$scope.$apply();
+
+				var near = gs.findNearistGrid.folder(selectedGrid);
+				console.log(near);
 			}
 		});
 	}
