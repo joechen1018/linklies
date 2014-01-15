@@ -31,66 +31,86 @@
 
 	<ul id="grid" ng-class="gridClass()">
 		<li class="hline gline" ng-repeat="line in grid.hlines" ng-style="{
-			top : 20 + $index * (grid.gridHeight + grid.gridMargin) - gridMargin
+			top : grid.topHeight + $index * (grid.gridHeight + grid.gridMargin) - gridMargin
 		}"></li>
 		<li class="vline gline" ng-repeat="line in grid.vlines" ng-style="{
-			left : 20 + $index * (grid.gridWidth + grid.gridMargin), 
+			left : grid.sideWidth + $index * (grid.gridWidth + grid.gridMargin), 
 			width : grid.gridWidth,
 			height : grid.viewHeight
 		}"></li>
 	</ul>
 
-	<div class="folder {{folder.type}}" ng-repeat="folder in folders" folder-directive id="{{folder.id}}" data-grid="{{folder.grid}}" data-grid-index="{{$index}}" ng-style="getFolderStyle(folder)">
-		<p class="name">{{folder.name}}</p>
-	</div>
-
-	<div id="folder-drop-preview" ng-style="{
-		width : grid.gridWidth,
-		height : grid.folderHeight,
-		left : 20 + folderPreviewGrid[0] * (grid.gridWidth + grid.gridMargin),
-		top : 20 + folderPreviewGrid[1] * (grid.gridHeight+ grid.gridMargin) * 4 ,
-		display : showFolderPreview ? 'block' : 'none'
-	}"></div>
-
-	<div id="link-drop-preview" ng-style="{
-		left : 20 + linkPreviewGrid[0] * (grid.gridWidth + grid.gridMargin),
-		top : linkPreviewGrid[1] * (grid.gridHeight + grid.gridMargin) + 20,
-		width : grid.linkWidth,
-		height : grid.gridHeight,
-		display : showLinkPreview ? 'block' : 'none'
-	}"></div>
-	
-	<div ng-repeat="link in links" link-directive id="{{link.id}}" class="link" data-grid="{{link.grid}}" ng-style="getLinkStyle(link)">
-		<div class="state-paste-url">
-			<input />
-		</div>
-		<div class="state-ready">
-			<div class="link-body">
-				<div class="icon" style="background:url(http://www.youtube.com/favicon.ico) center center no-repeat">
-					<!-- <img src="http://www.youtube.com/favicon.ico" /> -->
-				</div>
-				<a class="title" target="_blank">{{link.pageTitle}}</a>
-			</div>
-			<div class="link-details hide">
-				<div class="arrow arrow-up"></div>
-				<div class="arrow arrow-down"></div>
-
-				<div class="page page-1">
-					<img class="thumb" ng-src="{link.thumb}">
-					<div class="texts">
-						<h1>
-							{{link.contentTitle}}
-							<p><a class="from external" href="www.youtube.com" target="_blank">{{link.from}}</a></p>
-						</h1>
-						<p class="desc">{{link.desc}}</p>	
-						<div class="more">
-							<div class="arrow-right"></div>
-							<a href="">Next</a>	
-						</div>
-					</div>	
-				</div>
+	<div id="board">
+		
+		<div id="topbar">
+			<p><span data-icon="g" class="icon"></span><span class="logo">LiNKlies</span></p>
+			<div class="funcs-1">
+				<a class="addNew" href="" data-icon="d"><span></span></a>
+				<a href="" class="options" data-icon="o"></a>
 			</div>
 		</div>
+
+		<div id="footer">
+			<div id="div-1"></div>
+			<div id="div-2"></div>
+			<div id="div-3"></div>
+			<div id="div-4"></div>
+			<div id="div-5"></div>
+		</div>
+
+		<div class="folder {{folder.type}}" ng-repeat="folder in folders" folder-directive id="{{folder.id}}" data-grid="{{folder.grid}}" data-grid-index="{{$index}}" ng-style="getFolderStyle(folder)">
+			<p class="name">{{folder.name}}</p>
+		</div>
+
+		<div id="folder-drop-preview" ng-style="{
+			width : grid.gridWidth,
+			height : grid.folderHeight,
+			left : grid.sideWidth + folderPreviewGrid[0] * (grid.gridWidth + grid.gridMargin),
+			top : grid.topHeight + folderPreviewGrid[1] * (grid.gridHeight+ grid.gridMargin) * 4,
+			display : showFolderPreview ? 'block' : 'none'
+		}"></div>
+
+		<div id="link-drop-preview" ng-style="{
+			left : grid.sideWidth + linkPreviewGrid[0] * (grid.gridWidth + grid.gridMargin),
+			top : grid.topHeight + linkPreviewGrid[1] * (grid.gridHeight + grid.gridMargin),
+			width : grid.linkWidth,
+			height : grid.gridHeight,
+			display : showLinkPreview ? 'block' : 'none'
+		}"></div>
+		
+		<div ng-repeat="link in links" link-directive id="{{link.id}}" class="link" data-grid="{{link.grid}}" ng-style="getLinkStyle(link)">
+			<div class="state-paste-url">
+				<input />
+			</div>
+			<div class="state-ready">
+				<div class="link-body">
+					<div class="icon" style="background:url(http://www.youtube.com/favicon.ico) center center no-repeat">
+						<!-- <img src="http://www.youtube.com/favicon.ico" /> -->
+					</div>
+					<a class="title" target="_blank">{{link.pageTitle}}</a>
+				</div>
+				<div class="link-details hide">
+					<div class="arrow arrow-up"></div>
+					<div class="arrow arrow-down"></div>
+
+					<div class="page page-1">
+						<img class="thumb" ng-src="{link.thumb}">
+						<div class="texts">
+							<h1>
+								{{link.contentTitle}}
+								<p><a class="from external" href="www.youtube.com" target="_blank">{{link.from}}</a></p>
+							</h1>
+							<p class="desc">{{link.desc}}</p>	
+							<div class="more">
+								<div class="arrow-right"></div>
+								<a href="">Next</a>	
+							</div>
+						</div>	
+					</div>
+				</div>
+			</div>
+		</div>
+
 	</div>
 
 	<div id="bg-dot"></div>

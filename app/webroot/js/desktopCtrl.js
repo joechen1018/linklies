@@ -19,6 +19,8 @@ app.service("gridService", function($timeout){
 	var hlines = [], vlines = [];
 	var folders, links;
 	var scrollWidth = 20;
+	var sideWidth = 90;
+	var topHeight = 50;
 	var getRects = {
 		folder : function(){
 			var h = Math.ceil(getHGridNum() / 4);
@@ -27,8 +29,8 @@ app.service("gridService", function($timeout){
 			for(var i = 0; i<h; i++){
 				for(var j = 0; j<v; j++){
 					rect = new goog.math.Rect(
-						20 + j*(self.gridWidth + self.gridMargin),
-						20 + i*(self.folderHeight + self.gridMargin),
+						sideWidth + j*(self.gridWidth + self.gridMargin),
+						topHeight + i*(self.folderHeight + self.gridMargin),
 						self.gridWidth,
 						self.folderHeight
 					);
@@ -46,8 +48,8 @@ app.service("gridService", function($timeout){
 			for(var i = 0; i<h; i++){
 				for(var j = 0; j<v; j++){
 					rect = new goog.math.Rect(
-						20 + j*(self.gridWidth + self.gridMargin),
-						20 + i*(self.gridHeight + self.gridMargin),
+						sideWidth + j*(self.gridWidth + self.gridMargin),
+						topHeight + i*(self.gridHeight + self.gridMargin),
 						self.linkWidth,
 						self.gridHeight
 					);
@@ -61,15 +63,15 @@ app.service("gridService", function($timeout){
 
 	var getHGridNum = function(){
 		var h = self.viewHeight;
-		return Math.ceil((h - 40 - self.gridMargin) / (self.gridHeight + self.gridMargin));
+		return Math.ceil((h - self.gridMargin) / (self.gridHeight + self.gridMargin));
 	}
 
 	var getVGridNum = function(){
-		return Math.ceil(self.viewWidth / (self.gridWidth + self.gridMargin));
+		return Math.ceil(self.viewWidth - (2*sideWidth) / (self.gridWidth + self.gridMargin));
 	}
 
 	var getVisibleVGridNum = function(){
-		return Math.floor(($(window).width() - 40) / (self.gridWidth + self.gridMargin));
+		return Math.floor(($(window).width() - 2*sideWidth) / (self.gridWidth + self.gridMargin));
 	}
 
 	var getScrollbarWidth = function(){
@@ -133,26 +135,17 @@ app.service("gridService", function($timeout){
 		return grids;
 	}
 
-	var getMinNatureNum = function(arr){
-		var min = 1000, tmp, index = -1;
-		for(var i = 0; i<arr.length; i++){
-			if(arr[i] < min && arr[i] > 0){
-				min = arr[i];
-				index = i;
-			}
-		}
-		return index;
-	}
-
+	this.sideWidth = sideWidth;
+	this.topHeight = topHeight;
 	this.hasScrollbar = function(){
 		return $(window).height() > self.contentHeight ? false : true;
 	}
 
 	this.getGridWidth = function(){
 		var bool = this.hasScrollbar();
-		var viewportWidth = bool ? self.viewWidth - 10 : self.viewWidth - 30;
-		var num = Math.floor(viewportWidth/160);
-		var extra = Math.round((viewportWidth - num*160)/num);
+		var viewportWidth = bool ? self.viewWidth - 10 : self.viewWidth - 2*(sideWidth + self.gridMargin);
+		var num = Math.floor(viewportWidth/150);
+		var extra = Math.round((viewportWidth - num*(150 + self.gridMargin))/num);
 		return 150 + extra;
 	}
 	
@@ -301,8 +294,8 @@ app.service("gridService", function($timeout){
 	this.gridToRect = {
 		folder :function(grid){
 			var rect = new goog.math.Rect(
-				20 + grid[0] * (self.gridWidth + self.gridMargin),
-				20 + grid[1] * (self.gridHeight + self.gridMargin) * 4 ,
+				sideWidth + grid[0] * (self.gridWidth + self.gridMargin),
+				topHeight + grid[1] * (self.gridHeight + self.gridMargin) * 4 ,
 				self.gridWidth,
 				self.folderHeight
 			);
@@ -310,8 +303,8 @@ app.service("gridService", function($timeout){
 		},
 		link : function(grid){
 			var rect = new goog.math.Rect(
-				20 + grid[0] * (self.gridWidth + self.gridMargin),
-				grid[1] * (self.gridHeight + self.gridMargin) + 20,
+				sideWidth + grid[0] * (self.gridWidth + self.gridMargin),
+				grid[1] * (self.gridHeight + self.gridMargin) + topHeight,
 				self.linkWidth,
 				self.gridHeight
 			);
@@ -382,7 +375,7 @@ app.service("gridService", function($timeout){
 	}
 
 	this.updateOverFlow = function(bottom){
-		bottom += 20;
+		bottom += topHeight;
 		if(bottom > this.viewHeight){
 			this.update();
 		}
@@ -406,6 +399,7 @@ app.service("gridService", function($timeout){
 	var timeout;
 	var pushedX, pushedY;
 	var gs = gridService;
+	var sideWidth = gs.sideWidth;
 	var init = function(){
 		for(var i = 0; i<6; i++){
 			links.push({
@@ -495,8 +489,8 @@ app.service("gridService", function($timeout){
 	$scope.getLinkStyle = function(link){
 		
 		return {
-			left : 20 + link.grid[0] * (gridService.gridWidth + gridService.gridMargin),
-			top : link.grid[1] * (gridService.gridHeight + gridService.gridMargin) + 20,
+			left : sideWidth + link.grid[0] * (gridService.gridWidth + gridService.gridMargin),
+			top : link.grid[1] * (gridService.gridHeight + gridService.gridMargin) + gridService.topHeight - gridService.gridMargin,
 			height : gridService.gridHeight,
 			width : gridService.linkWidth
 		}
@@ -504,8 +498,8 @@ app.service("gridService", function($timeout){
 
 	$scope.getFolderStyle = function(folder){
 		return {
-			left : 20 + folder.grid[0] * (gridService.gridWidth + gridService.gridMargin),
-			top : 20 + folder.grid[1] * (gridService.gridHeight+ gridService.gridMargin) * 4 ,
+			left : sideWidth + folder.grid[0] * (gridService.gridWidth + gridService.gridMargin),
+			top : gridService.topHeight + folder.grid[1] * (gridService.gridHeight+ gridService.gridMargin) * 4  - gridService.gridMargin,
 			width : gridService.gridWidth,
 			height : gridService.folderHeight
 		}
@@ -536,7 +530,7 @@ app.service("gridService", function($timeout){
 		var timeout;
 		var originRect, originGrid, draggingRect, selectedGrid, $folder, $link;
 		var gs = gridService;
-
+		var sideWidth = gs.sideWidth;
 		$(ele).draggable({
 			containment : "#desktop-view",
 			scroll: false,
@@ -595,7 +589,7 @@ app.service("gridService", function($timeout){
 	return function($scope, ele, attrs){
 		var gs = gridService;
 		var originRect, originGrid, draggingRect, selectedGrid, $folder, $link;
-
+		var sideWidth = gs.sideWidth;
 		$(ele).draggable({
 			containment : "body",
 			scroll: false,

@@ -1,12 +1,14 @@
 @import "lib";
 @import "basic";
-
+@import "styles.css";
 @gridWidth : 150px;
 @gridHeight : 30px;
 @gridVPadding : 10px;
 @gridHPadding : 10px;
 @gridPadding : 10px;
 @folderHeight : 4*@gridHeight + 3*@gridPadding;
+@bg-color : #dde6e4;
+
 #color-theme{
   position: absolute;
   right:10px;
@@ -30,12 +32,298 @@ body-html{
 }
 
 #desktop-view{
+  top : 0px;
   width:100%;
   min-height: 100%;
   position:absolute;
-  background: url(../img/bg-blur-1.jpg);  
+  //background: url(../img/bg-blur-1.jpg);  
   overflow:hidden;
   z-index: 1;
+  background: @bg-color;
+
+@sideWidth : 90px;
+#board{
+      
+      position: relative;
+      top:50px;
+
+      #topbar{
+        .icon{
+          color: darken(@bg-color, 45%);
+          font-size:30px;
+          position:relative;
+          top:10px;
+          left : @sideWidth;
+        }
+        .logo{
+          color: darken(@bg-color, 15%);
+          font-size:25px;
+          position:relative;
+          top:5px;
+          left : @sideWidth + 10px;
+          letter-spacing: 2px;
+          //text-shadow: -1px -1px 0px #999;
+        }
+        .funcs-1{
+          width : 300px;
+          position: absolute;
+          right:@sideWidth;
+          top : 5px;
+          a{
+            float:right;
+            display: block;
+            margin-left : 10px;
+            color:darken(@bg-color, 20%);
+            font-size:25px;
+            padding:5px 5px 0px 5px;
+            border : 1px solid;
+            border-color : darken(@bg-color, 3%);
+            margin-top:3px;
+          }
+        }
+        height: 50px;
+        width:100%;
+        background: white;
+        position: fixed;
+        left:0;
+        top:0;
+        .shadow-light;
+        z-index:2;
+        div.funcs{
+          height:100%;
+          position:absolute;
+          right:17px;
+          top:17px;
+          .add25{
+            fill : #ffffff;
+          }
+        }
+      }
+
+      #footer{
+        display: none;
+        height : 3px;
+        width : 100%;
+        position: fixed;
+        bottom:0;
+        background: #222;
+        z-index: 3;
+        @count : 5;
+        @p : 20%;
+        div{
+          position:absolute;
+          width : 20%;
+          height : 100%;
+          top : 0;
+        }
+        #div-1{
+          left : 0 * @p;
+        }
+        #div-2{
+          left : 1 * @p;
+        }
+        #div-3{
+          left : 2 * @p;
+        }
+        #div-4{
+          left : 3 * @p;
+        }
+        #div-5{
+          left : 4 * @p;
+        }
+      }
+
+      .folder{
+      @size : 4*@gridHeight + 3*@gridVPadding;
+      position:absolute;
+      width : 150px;
+      height : @size;
+      background: @c1 url(../img/icons-3/SVG/folder12.svg) center 10px no-repeat;
+      background-size:@size*0.7;
+      z-index:2;
+      .alpha(0.85);
+      cursor : pointer;
+      .shadow-light;
+      
+      &.youtube{
+        background: @c2 url(../img/icons-3/SVG/movie3.svg) center 10px no-repeat;
+        background-size:@size*0.7;
+
+        // &:after{
+        //   position:absolute;
+        //   width:16px;
+        //   height:16px;
+        //   background: url(http://www.youtube.com/favicon.ico) left top no-repeat;
+        //   content : "";
+        //   right : 10px;
+        //   top : 10px;
+        // }
+      }
+      .name{
+        position: relative;
+        top:@size - 30px;
+        font-size:10px;
+        text-align: center;
+        line-height:20px;
+        padding:0 10px 0 10px;
+        width:150px - 10px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
+    .external{
+      padding-right:22px;
+      background:url(../img/icon-external-link.gif) right center no-repeat;
+      background-size: 18px 12px;
+    }
+
+    .link{
+      @h :30px;
+      @w : 310px;
+      @grey : #c7c7c7;
+      @grey-dark : #999;
+      
+      position:absolute;
+      height:@h;
+      width: @w;
+      border:0;
+      -webkit-border-radius: 3px 3px 0 0;
+      border-radius: 3px;
+      .shadow-light;
+      background:white;
+      z-index:2;
+      cursor:pointer;
+
+      .state-paste-url{
+        display: none;
+        input{
+          width:300px;
+          border:0;
+          line-height: 30px;
+        }
+      }
+      .state-ready{
+        .link-body{
+          .icon{
+            height:@h;
+            width:35px;
+            overflow: hidden;
+            img{
+              position:absolute;
+            }
+          }
+          a.title{
+            color:#333;
+            text-decoration:none;
+            font-size:12px;
+            line-height:@h;
+            position:absolute;
+            left:35px;
+            top:0;
+            width:@w - 35px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+        }
+      }
+      .link-details{
+        @size : 10px;
+        @w1 : 400px;
+        @h1 : 300px;
+        position: absolute;
+        top: @h;
+        left : (@w - @w1) / 2;
+        width:@w1;
+        //height:@h1;
+        
+        @size1 : calc((@w1 - 400px)/2);
+        .page{
+          background: white;
+          position: relative;
+          top:10px;
+          .shadow;
+
+          &.page-1{
+              img.thumb{
+              width:@w1;
+              margin-top:0;
+              margin-left:0;
+            }
+            
+            .texts{
+              margin-left:@size1;
+              margin-bottom:@size1;
+              padding:20px;
+              padding-top:5px;
+              h1{
+                padding-top:5px;
+                font-size:13px;
+                color:@c1;
+                p{
+                  padding-top:5px;
+                }
+                a.from{
+                  color:#888;
+                  font-size:12px; 
+                }
+              }
+              p.desc{
+                padding-top:15px;
+                padding-bottom:25px;
+                line-height: 19px;
+                color:#444;
+              }
+              div.more{
+                position:absolute;
+                right:15px;
+                bottom:15px;
+                div.arrow-right{
+                  width: 0; 
+                  height: 0; 
+                  border-top: 5px solid transparent;
+                  border-bottom: 5px solid transparent;
+                  border-left: 5px solid black;
+                  position:absolute;
+                  right:4px;
+                  top:1px;
+                }
+                a{
+                  padding-right:15px;
+                }
+              }
+            }
+          }
+          &.page-2{
+
+          }
+        }
+
+        .arrow-up{
+            width: 0; 
+            height: 0; 
+            border-left: @size solid transparent;
+            border-right: @size solid transparent;
+            
+            border-bottom: @size solid white;
+            position: absolute;
+            top:0;
+            left : calc((@w1 - @size)/2);
+        }
+        .arrow-down{
+            display: none;
+            width: 0; 
+            height: 0; 
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            
+            border-top: 20px solid #f00;
+        }
+      }
+    }
+  }
 }
 
 #bg-dot{
@@ -103,25 +391,6 @@ h1.links-left{
   z-index: 1;
 }
 
-#topbar{
-  height: 50px;
-  width:100%;
-  background: #222222;
-  position: fixed;
-  left:0;
-  top:0;
-  .alpha(0.5);
-  z-index:2;
-  div.funcs{
-    height:100%;
-    position:absolute;
-    right:17px;
-    top:17px;
-    .add25{
-      fill : #ffffff;
-    }
-  }
-}
 #gridWrap{
 
 }
@@ -148,208 +417,18 @@ h1.links-left{
       width: 100%;
       height:@gridHeight;
       left : 0;
-      border-top : 1px solid red;
-      border-bottom : 1px solid red;
+      border-top : 1px solid darken(@bg-color, 80%);
+      border-bottom : 1px solid darken(@bg-color, 85%);
     }
     &.vline{
       width : @gridWidth;
       height : 100%;
       top : 0;
-      border-left : 1px solid red;
-      border-right : 1px solid red;
+      border-left : 1px solid darken(@bg-color, 85%);
+      border-right : 1px solid darken(@bg-color, 85%);
     }
     &.over{
       background:blue;
-    }
-  }
-}
-
-.folder{
-  @size : 4*@gridHeight + 3*@gridVPadding;
-  position:absolute;
-  width : 150px;
-  height : @size;
-  background: @c1 url(../img/icons-3/SVG/folder12.svg) center 10px no-repeat;
-  background-size:@size*0.7;
-  z-index:2;
-  .alpha(0.85);
-  cursor : pointer;
-  
-  &.youtube{
-    background: @c2 url(../img/icons-3/SVG/movie3.svg) center 10px no-repeat;
-    background-size:@size*0.7;
-
-    // &:after{
-    //   position:absolute;
-    //   width:16px;
-    //   height:16px;
-    //   background: url(http://www.youtube.com/favicon.ico) left top no-repeat;
-    //   content : "";
-    //   right : 10px;
-    //   top : 10px;
-    // }
-  }
-  .name{
-    position: relative;
-    top:@size - 30px;
-    font-size:10px;
-    text-align: center;
-    line-height:20px;
-    padding:0 10px 0 10px;
-    width:150px - 10px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-}
-
-.external{
-  padding-right:22px;
-  background:url(../img/icon-external-link.gif) right center no-repeat;
-  background-size: 18px 12px;
-}
-
-.link{
-  @h :30px;
-  @w : 310px;
-  @grey : #c7c7c7;
-  @grey-dark : #999;
-  
-  position:absolute;
-  height:@h;
-  width: @w;
-  border:0;
-  -webkit-border-radius: 3px 3px 0 0;
-  border-radius: 3px;
-  .shadow;
-  background:white;
-  z-index:2;
-  cursor:pointer;
-
-  .state-paste-url{
-    display: none;
-    input{
-      width:300px;
-      border:0;
-      line-height: 30px;
-    }
-  }
-  .state-ready{
-    .link-body{
-      .icon{
-        height:@h;
-        width:35px;
-        overflow: hidden;
-        img{
-          position:absolute;
-        }
-      }
-      a.title{
-        color:#333;
-        text-decoration:none;
-        font-size:12px;
-        line-height:@h;
-        position:absolute;
-        left:35px;
-        top:0;
-        width:@w - 35px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-    }
-  }
-  .link-details{
-    @size : 10px;
-    @w1 : 400px;
-    @h1 : 300px;
-    position: absolute;
-    top: @h;
-    left : (@w - @w1) / 2;
-    width:@w1;
-    //height:@h1;
-    
-    @size1 : calc((@w1 - 400px)/2);
-    .page{
-      background: white;
-      position: relative;
-      top:10px;
-      .shadow;
-
-      &.page-1{
-          img.thumb{
-          width:@w1;
-          margin-top:0;
-          margin-left:0;
-        }
-        
-        .texts{
-          margin-left:@size1;
-          margin-bottom:@size1;
-          padding:20px;
-          padding-top:5px;
-          h1{
-            padding-top:5px;
-            font-size:13px;
-            color:@c1;
-            p{
-              padding-top:5px;
-            }
-            a.from{
-              color:#888;
-              font-size:12px; 
-            }
-          }
-          p.desc{
-            padding-top:15px;
-            padding-bottom:25px;
-            line-height: 19px;
-            color:#444;
-          }
-          div.more{
-            position:absolute;
-            right:15px;
-            bottom:15px;
-            div.arrow-right{
-              width: 0; 
-              height: 0; 
-              border-top: 5px solid transparent;
-              border-bottom: 5px solid transparent;
-              border-left: 5px solid black;
-              position:absolute;
-              right:4px;
-              top:1px;
-            }
-            a{
-              padding-right:15px;
-            }
-          }
-        }
-      }
-      &.page-2{
-
-      }
-    }
-
-    .arrow-up{
-        width: 0; 
-        height: 0; 
-        border-left: @size solid transparent;
-        border-right: @size solid transparent;
-        
-        border-bottom: @size solid white;
-        position: absolute;
-        top:0;
-        left : calc((@w1 - @size)/2);
-    }
-    .arrow-down{
-        display: none;
-        width: 0; 
-        height: 0; 
-        border-left: 20px solid transparent;
-        border-right: 20px solid transparent;
-        
-        border-top: 20px solid #f00;
     }
   }
 }
