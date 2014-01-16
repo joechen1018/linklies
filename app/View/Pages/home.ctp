@@ -72,7 +72,7 @@
 
 		<div id="link-drop-preview" ng-style="{
 			left : grid.sideWidth + linkPreviewGrid[0] * (grid.gridWidth + grid.gridMargin),
-			top : grid.topHeight + linkPreviewGrid[1] * (grid.gridHeight + grid.gridMargin),
+			top : linkPreviewGrid[1] * (grid.gridHeight + grid.gridMargin),
 			width : grid.linkWidth,
 			height : grid.gridHeight,
 			display : showLinkPreview ? 'block' : 'none'

@@ -20,7 +20,7 @@ app.service("gridService", function($timeout){
 	var folders, links;
 	var scrollWidth = 20;
 	var sideWidth = 90;
-	var topHeight = 50;
+	var topHeight = 90;
 	var getRects = {
 		folder : function(){
 			var h = Math.ceil(getHGridNum() / 4);
@@ -46,7 +46,7 @@ app.service("gridService", function($timeout){
 			var v = getVisibleVGridNum();
 			var rects = [], rect;
 			for(var i = 0; i<h; i++){
-				for(var j = 0; j<v; j++){
+				for(var j = 1; j<v; j++){
 					rect = new goog.math.Rect(
 						sideWidth + j*(self.gridWidth + self.gridMargin),
 						topHeight + i*(self.gridHeight + self.gridMargin),
@@ -313,7 +313,6 @@ app.service("gridService", function($timeout){
 	}
 
 	this.rectToGrid = function(rect){
-		var left = rect.left, top = rect.top;
 
 	}
 
