@@ -21,10 +21,12 @@ app.service("gridService", function($timeout){
 	var scrollWidth = 20;
 	var sideWidth = 90;
 	var topHeight = 90;
+	var defaultGridWidth = 150;
+	var bottomHeight = 20;
 	var getRects = {
 		folder : function(){
-			var h = Math.ceil(getHGridNum() / 4);
-			var v = getVGridNum();
+			var h = Math.ceil(getRowNum() / 4);
+			var v = getColNum();
 			var rects = [], rect;
 			for(var i = 0; i<h; i++){
 				for(var j = 0; j<v; j++){
@@ -42,7 +44,7 @@ app.service("gridService", function($timeout){
 			return rects;
 		}, 
 		link : function(){
-			var h = getHGridNum();
+			var h = getRowNum();
 			var v = getVisibleVGridNum();
 			var rects = [], rect;
 			for(var i = 0; i<h; i++){
@@ -61,13 +63,15 @@ app.service("gridService", function($timeout){
 		}
 	}
 
-	var getHGridNum = function(){
-		var h = self.viewHeight;
-		return Math.ceil((h - self.gridMargin) / (self.gridHeight + self.gridMargin));
+	var getColNum = function(){
+		var n = Math.ceil((self.boardWidth - self.gridMargin) / (self.gridWidth + self.gridMargin));
+		return n;
 	}
 
-	var getVGridNum = function(){
-		return Math.ceil(self.viewWidth - (2*sideWidth) / (self.gridWidth + self.gridMargin));
+	var getRowNum = function(){
+		var h = self.viewHeight - self.topHeight;
+		var n = Math.floor((h - self.gridMargin) / (self.gridHeight + self.gridMargin));
+		return n;
 	}
 
 	var getVisibleVGridNum = function(){
@@ -108,7 +112,7 @@ app.service("gridService", function($timeout){
 	}
 
 	var getGrids = function(){
-		var y = 0, x = 0, grids = [], col = getVGridNum();
+		var y = 0, x = 0, grids = [], col = getColNum();
 		var w = (self.gridWidth + self.gridMargin), h = (self.gridHeight + self.gridMargin);
 		while((y * h) <= self.viewHeight - h){
 			grids.push([x, y]);
@@ -122,8 +126,8 @@ app.service("gridService", function($timeout){
 	}
 
 	var getFolderGrids = function(){
-		var h = Math.ceil(getHGridNum() / 4);
-		var v = getVGridNum();
+		var h = Math.ceil(getRowNum() / 4);
+		var v = getColNum();
 		var grids = [], grid;
 		for(var i = 0; i<h; i++){
 			for(var j = 0; j<v; j++){
@@ -137,21 +141,26 @@ app.service("gridService", function($timeout){
 
 	this.sideWidth = sideWidth;
 	this.topHeight = topHeight;
+	this.bottomHeight = bottomHeight;
 	this.hasScrollbar = function(){
 		return $(window).height() > self.contentHeight ? false : true;
 	}
 
 	this.getGridWidth = function(){
-		var bool = this.hasScrollbar();
-		var viewportWidth = bool ? self.viewWidth - 10 : self.viewWidth - 2*(sideWidth + self.gridMargin);
-		var num = Math.floor(viewportWidth/150);
-		var extra = Math.round((viewportWidth - num*(150 + self.gridMargin))/num);
-		return 150 + extra;
+		// console.log(self.boardWidth);
+		var num = Math.ceil((self.boardWidth - self.gridMargin) / (defaultGridWidth + self.gridMargin));
+		// console.log(num);
+		var extra = self.boardWidth + self.gridMargin - (defaultGridWidth + self.gridMargin) * num;
+		// console.log(extra);
+		extra /= num;
+		var w = defaultGridWidth + extra;
+		// console.log(w);
+		return w;
 	}
 	
 	//this needs to be called after links and folders rendered
-	this.getViewHeight = function(){
-		var wh = $(window).height()
+	this.getSreenHeight = function(){
+		var wh = $(window).height();
 		var h = wh , eh = 0;
 		$(".folder, .link").each(function(i, e){
 			eh = $(e).offset().top + $(e).height();
@@ -174,20 +183,23 @@ app.service("gridService", function($timeout){
 	}
 
 	this.getHLines = function(){
-		var h = self.viewHeight;
-		var n = Math.ceil((h - self.gridMargin) / (self.gridHeight + self.gridMargin));
+		var n = getRowNum();
 		var a = [];
 		for(var i = 0; i<n; i++)
-			a.push({i : i});
+			a.push({
+				"top" : i * (self.gridHeight + self.gridMargin)
+			});
 		
 		return a;
 	}
 
 	this.getVLines = function(){
 		vlines = [];
-		var n = Math.ceil(self.viewWidth / (self.gridWidth + self.gridMargin)) + 1;
+		var n = getColNum();
 		for(i = 0; i<n; i++)
-			vlines.push({"i" : i});
+			vlines.push({
+				"index" : i
+			});
 		
 		return vlines;
 	}
@@ -195,12 +207,15 @@ app.service("gridService", function($timeout){
 	this.update = function(){
 
 		//new height comes from dragged element exceeding viewport
-		self.viewHeight = self.getViewHeight();
+		self.viewHeight = self.getSreenHeight();
 		self.contentHeight = self.getContentHeight();
 		self.viewWidth = self.hasScrollbar() ? $(window).width() - scrollWidth : $(window).width();
+		self.boardHeight = self.viewHeight - self.topHeight - bottomHeight;
+		self.boardWidth = self.viewWidth - 2 * self.sideWidth;
 		self.gridWidth = self.getGridWidth();
-		self.rows = getHGridNum();
-		self.cols = getVGridNum();
+		
+		self.rows = getRowNum();
+		self.cols = getColNum();
 		self.folderHeight = 4*self.gridHeight + 3*self.gridMargin;
 		self.linkWidth = 2*self.gridWidth + self.gridMargin;
 
@@ -445,7 +460,7 @@ app.service("gridService", function($timeout){
 				// 	}
 				// });
 
-			}, 300);
+			}, 500);
 		});
 
 		keyboardManager.bind("ctrl+l", function(){
@@ -488,8 +503,8 @@ app.service("gridService", function($timeout){
 	$scope.getLinkStyle = function(link){
 		
 		return {
-			left : sideWidth + link.grid[0] * (gridService.gridWidth + gridService.gridMargin),
-			top : link.grid[1] * (gridService.gridHeight + gridService.gridMargin) + gridService.topHeight - gridService.gridMargin,
+			left : link.grid[0] * (gridService.gridWidth + gridService.gridMargin),
+			top : link.grid[1] * (gridService.gridHeight + gridService.gridMargin),
 			height : gridService.gridHeight,
 			width : gridService.linkWidth
 		}
@@ -497,8 +512,8 @@ app.service("gridService", function($timeout){
 
 	$scope.getFolderStyle = function(folder){
 		return {
-			left : sideWidth + folder.grid[0] * (gridService.gridWidth + gridService.gridMargin),
-			top : gridService.topHeight + folder.grid[1] * (gridService.gridHeight+ gridService.gridMargin) * 4  - gridService.gridMargin,
+			left : folder.grid[0] * (gridService.gridWidth + gridService.gridMargin),
+			top : folder.grid[1] * (gridService.gridHeight+ gridService.gridMargin) * 4,
 			width : gridService.gridWidth,
 			height : gridService.folderHeight
 		}

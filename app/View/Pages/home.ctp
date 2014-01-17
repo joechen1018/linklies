@@ -3,9 +3,8 @@
 		<a class="save" href="javascript:saveBoard()">Save</a>
 		<a class="clear" href="javascript:clearBoard()">Clear</a>
 </div> -->
-
 <div id="desktop-view" ng-controller="desktopCtrl" ng-style="getDesktopStyle()">
-	
+		
 	<!-- Antique Photo Theme -->
 	<!-- <ul id="color-theme">
 		<li style="background:#518C7C">
@@ -29,35 +28,32 @@
 		<p class="msg-body">Hello Linklies!</p>
 	</div>
 
+	<div id="topbar">
+		<p><span data-icon="g" class="icon"></span><span class="logo">LiNKlies</span></p>
+		<div class="funcs-1">
+			<a class="addNew" href="" data-icon="d"><span></span></a>
+			<a href="" class="options" data-icon="o"></a>
+		</div>
+	</div>
+
+	<div id="board" ng-style="{
+		width : grid.boardWidth,
+		height : grid.boardHeight,
+		left : grid.sideWidth,
+		top : grid.topHeight
+	}">
+
 	<ul id="grid" ng-class="gridClass()">
 		<li class="hline gline" ng-repeat="line in grid.hlines" ng-style="{
-			top : grid.topHeight + $index * (grid.gridHeight + grid.gridMargin) - gridMargin
+			top : line.top
 		}"></li>
 		<li class="vline gline" ng-repeat="line in grid.vlines" ng-style="{
-			left : grid.sideWidth + $index * (grid.gridWidth + grid.gridMargin), 
+			left : line.index * (grid.gridWidth + grid.gridMargin), 
 			width : grid.gridWidth,
-			height : grid.viewHeight
+			height : grid.boardHeight
 		}"></li>
 	</ul>
-
-	<div id="board">
 		
-		<div id="topbar">
-			<p><span data-icon="g" class="icon"></span><span class="logo">LiNKlies</span></p>
-			<div class="funcs-1">
-				<a class="addNew" href="" data-icon="d"><span></span></a>
-				<a href="" class="options" data-icon="o"></a>
-			</div>
-		</div>
-
-		<div id="footer">
-			<div id="div-1"></div>
-			<div id="div-2"></div>
-			<div id="div-3"></div>
-			<div id="div-4"></div>
-			<div id="div-5"></div>
-		</div>
-
 		<div class="folder {{folder.type}}" ng-repeat="folder in folders" folder-directive id="{{folder.id}}" data-grid="{{folder.grid}}" data-grid-index="{{$index}}" ng-style="getFolderStyle(folder)">
 			<p class="name">{{folder.name}}</p>
 		</div>
@@ -65,8 +61,8 @@
 		<div id="folder-drop-preview" ng-style="{
 			width : grid.gridWidth,
 			height : grid.folderHeight,
-			left : grid.sideWidth + folderPreviewGrid[0] * (grid.gridWidth + grid.gridMargin),
-			top : grid.topHeight + folderPreviewGrid[1] * (grid.gridHeight+ grid.gridMargin) * 4,
+			left : folderPreviewGrid[0] * (grid.gridWidth + grid.gridMargin),
+			top : folderPreviewGrid[1] * (grid.gridHeight+ grid.gridMargin) * 4,
 			display : showFolderPreview ? 'block' : 'none'
 		}"></div>
 
@@ -114,9 +110,4 @@
 	</div>
 
 	<div id="bg-dot"></div>
-	<script type="text/javascript" charset="utf-8">
-		// var linkyTmp = $(".link").remove().clone();
-		// var root = "<?php echo $this -> webroot?>";
-		// $("body").append(linkyTmp);
-	</script>
 </div>
