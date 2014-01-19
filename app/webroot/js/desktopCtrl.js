@@ -31,8 +31,8 @@ app.service("gridService", function($timeout){
 			for(var i = 0; i<h; i++){
 				for(var j = 0; j<v; j++){
 					rect = new goog.math.Rect(
-						sideWidth + j*(self.gridWidth + self.gridMargin),
-						topHeight + i*(self.folderHeight + self.gridMargin),
+						j*(self.gridWidth + self.gridMargin),
+						i*(self.folderHeight + self.gridMargin),
 						self.gridWidth,
 						self.folderHeight
 					);
@@ -45,13 +45,13 @@ app.service("gridService", function($timeout){
 		}, 
 		link : function(){
 			var h = getRowNum();
-			var v = getVisibleVGridNum();
+			var v = getColNum();
 			var rects = [], rect;
 			for(var i = 0; i<h; i++){
-				for(var j = 1; j<v; j++){
+				for(var j = 0; j<v; j++){
 					rect = new goog.math.Rect(
-						sideWidth + j*(self.gridWidth + self.gridMargin),
-						topHeight + i*(self.gridHeight + self.gridMargin),
+						j*(self.gridWidth + self.gridMargin),
+						i*(self.gridHeight + self.gridMargin),
 						self.linkWidth,
 						self.gridHeight
 					);
@@ -72,10 +72,6 @@ app.service("gridService", function($timeout){
 		var h = self.viewHeight - self.topHeight;
 		var n = Math.floor((h - self.gridMargin) / (self.gridHeight + self.gridMargin));
 		return n;
-	}
-
-	var getVisibleVGridNum = function(){
-		return Math.floor(($(window).width() - 2*sideWidth) / (self.gridWidth + self.gridMargin));
 	}
 
 	var getScrollbarWidth = function(){
@@ -231,12 +227,12 @@ app.service("gridService", function($timeout){
 	}
 
 	this.getRect = function($target){
-		var offset = $target.offset();
+		var offset = $target.position();
 		return new goog.math.Rect(offset.left, offset.top, $target.width(), $target.height());
 	}
 
 	this.outOfBoundry = function($ele){
-		return $ele.offset().left + $ele.width() > $(window).width();
+		return $ele.position().left + $ele.width() > $(window).width();
 	}
 
 	this.occupied = {
@@ -429,7 +425,7 @@ app.service("gridService", function($timeout){
 			folders.push({
 				id : "folder-" + (i+1),
 				type : i % 2 === 0 ? "" : "youtube",
-				name : "test folder",
+				name : "Lorem ipsum dolor sit amet sit amet Lorem",
 				grid : [i, 0],
 				state : ""
 			});
@@ -486,6 +482,11 @@ app.service("gridService", function($timeout){
 	$scope.showGrid = false;
 
 	gridService.init(folders, links);
+
+	$scope.showMenu = function(){
+		alert("show menu");
+		return false;
+	}
 
 	$scope.getDesktopStyle = function(){
 		var hasScrollbar = gridService.hasScrollbar();
@@ -594,7 +595,6 @@ app.service("gridService", function($timeout){
 				$scope.$apply();
 
 				var near = gs.findNearistGrid.folder(selectedGrid);
-				console.log(near);
 			}
 		});
 	}
@@ -617,7 +617,6 @@ app.service("gridService", function($timeout){
 
 				draggingRect = gs.getRect($link);
 				selectedGrid = gs.findSelectedGrid.link(originRect, draggingRect);
-				
 				if(selectedGrid !== undefined && !gs.occupied.link(selectedGrid)){
 					$scope.showDragPreview(selectedGrid, "link");
 				}else{

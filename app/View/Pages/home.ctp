@@ -29,7 +29,14 @@
 	</div>
 
 	<div id="topbar">
-		<p><span data-icon="g" class="icon"></span><span class="logo">LiNKlies</span></p>
+		<!-- <p><span data-icon="g" class="icon"></span><span class="logo">LiNKlies</span></p> -->
+		<div class="search">
+			<input type="text" placeholder="enter keywords">
+			<span data-icon="n"></span>
+		</div>
+		<div class="home">
+			<span data-icon="r"></span>
+		</div>
 		<div class="funcs-1">
 			<a class="addNew" href="" data-icon="d"><span></span></a>
 			<a href="" class="options" data-icon="o"></a>
@@ -55,6 +62,8 @@
 	</ul>
 		
 		<div class="folder {{folder.type}}" ng-repeat="folder in folders" folder-directive id="{{folder.id}}" data-grid="{{folder.grid}}" data-grid-index="{{$index}}" ng-style="getFolderStyle(folder)">
+			<span class="icon" data-icon="{{folder.type === 'youtube' ? 'l' : 'a'}}" ></span>
+			<div class="close" data-icon="s"></div>
 			<p class="name">{{folder.name}}</p>
 		</div>
 
@@ -67,7 +76,7 @@
 		}"></div>
 
 		<div id="link-drop-preview" ng-style="{
-			left : grid.sideWidth + linkPreviewGrid[0] * (grid.gridWidth + grid.gridMargin),
+			left : linkPreviewGrid[0] * (grid.gridWidth + grid.gridMargin),
 			top : linkPreviewGrid[1] * (grid.gridHeight + grid.gridMargin),
 			width : grid.linkWidth,
 			height : grid.gridHeight,
@@ -83,7 +92,9 @@
 					<div class="icon" style="background:url(http://www.youtube.com/favicon.ico) center center no-repeat">
 						<!-- <img src="http://www.youtube.com/favicon.ico" /> -->
 					</div>
-					<a class="title" target="_blank">{{link.pageTitle}}</a>
+					<a class="title" target="_blank" ng-style="{
+						width : grid.linkWidth - 35
+					}">{{link.pageTitle}}</a>
 				</div>
 				<div class="link-details hide">
 					<div class="arrow arrow-up"></div>

@@ -8,7 +8,9 @@
 @gridPadding : 10px;
 @folderHeight : 4*@gridHeight + 3*@gridPadding;
 @bg-color : #dde6e4;
-
+@blue : #66998c;
+@green : #c9dabb;
+@red : #bb2c26;
 #color-theme{
   position: absolute;
   right:10px;
@@ -42,63 +44,96 @@ body-html{
   background: @bg-color;
 
 @sideWidth : 90px;
+#topbar{
+  position:relative;
+  .search{
+    position:relative;
+    left : @sideWidth;
+    top : 13px;
+    width : 200px;
+    input{
+      border : 1px solid darken(@bg-color, 15%);
+      .border-radius(3px);
+      width : 180px;
+      height : 20px;      
+      background: lighten(@bg-color, 0%);
+      padding-left : 10px;
+    }
+    span{
+      position:absolute;
+      right : 15px;
+      display: block;
+      top : 4px;
+      font-size:15px;
+      color : darken(@bg-color, 15%);
+    }
+  }
+  .home{
+    position: absolute;
+    left : @sideWidth + 200px;
+    top : 13px;
+    width : 30px;
+    span{
+      color:darken(@bg-color, 35%);
+      font-size:25px;
+      display: block;
+    }
+  }
+  .icon{
+    color: darken(@bg-color, 45%);
+    font-size:30px;
+    position:relative;
+    top:10px;
+    left : @sideWidth;
+  }
+  .logo{
+    color: darken(@bg-color, 15%);
+    font-size:25px;
+    position:relative;
+    top:5px;
+    left : @sideWidth + 10px;
+    letter-spacing: 2px;
+    //text-shadow: -1px -1px 0px #999;
+  }
+  .funcs-1{
+    width : 300px;
+    position: absolute;
+    right:@sideWidth;
+    top : 10px;
+    a{
+      float:right;
+      display: block;
+      margin-left : 10px;
+      color:darken(@bg-color, 20%);
+      font-size:15px;
+      padding:5px 5px 0px 5px;
+      border : 1px solid;
+      border-color : darken(@bg-color, 3%);
+      margin-top:3px;
+    }
+  }
+  height: 50px;
+  width:100%;
+  background: white;
+  position: fixed;
+  left:0;
+  top:0;
+  .shadow-light;
+  z-index:2;
+  div.funcs{
+    height:100%;
+    position:absolute;
+    right:17px;
+    top:17px;
+    .add25{
+      fill : #ffffff;
+    }
+  }
+}
 #board{
-      background: darken(@bg-color, 15%);
+      //background: darken(@bg-color, 15%);
       position: relative;
       top:50px;
-
-      #topbar{
-        .icon{
-          color: darken(@bg-color, 45%);
-          font-size:30px;
-          position:relative;
-          top:10px;
-          left : @sideWidth;
-        }
-        .logo{
-          color: darken(@bg-color, 15%);
-          font-size:25px;
-          position:relative;
-          top:5px;
-          left : @sideWidth + 10px;
-          letter-spacing: 2px;
-          //text-shadow: -1px -1px 0px #999;
-        }
-        .funcs-1{
-          width : 300px;
-          position: absolute;
-          right:@sideWidth;
-          top : 5px;
-          a{
-            float:right;
-            display: block;
-            margin-left : 10px;
-            color:darken(@bg-color, 20%);
-            font-size:25px;
-            padding:5px 5px 0px 5px;
-            border : 1px solid;
-            border-color : darken(@bg-color, 3%);
-            margin-top:3px;
-          }
-        }
-        height: 50px;
-        width:100%;
-        background: white;
-        position: fixed;
-        left:0;
-        top:0;
-        .shadow-light;
-        z-index:2;
-        div.funcs{
-          height:100%;
-          position:absolute;
-          right:17px;
-          top:17px;
-          .add25{
-            fill : #ffffff;
-          }
-        }
-      }
 
       #footer{
         display: none;
@@ -134,43 +169,73 @@ body-html{
       }
 
       .folder{
-      @size : 4*@gridHeight + 3*@gridVPadding;
-      position:absolute;
-      width : 150px;
-      height : @size;
-      background: @c1 url(../img/icons-3/SVG/folder12.svg) center 10px no-repeat;
-      background-size:@size*0.7;
-      z-index:2;
-      .alpha(0.85);
-      cursor : pointer;
-      .shadow-light;
-      
-      &.youtube{
-        background: @c2 url(../img/icons-3/SVG/movie3.svg) center 10px no-repeat;
-        background-size:@size*0.7;
-
-        // &:after{
-        //   position:absolute;
-        //   width:16px;
-        //   height:16px;
-        //   background: url(http://www.youtube.com/favicon.ico) left top no-repeat;
-        //   content : "";
-        //   right : 10px;
-        //   top : 10px;
-        // }
-      }
-      .name{
-        position: relative;
-        top:@size - 30px;
-        font-size:10px;
-        text-align: center;
-        line-height:20px;
-        padding:0 10px 0 10px;
-        width:150px - 10px;
-        white-space: nowrap;
+        @size : 4*@gridHeight + 3*@gridVPadding;
+        position:absolute;
+        width : 150px;
+        height : @size;
+        background: lighten(@blue, 20%);
+        // background: @blue url(../img/icons-3/SVG/folder12.svg) center 0px no-repeat;
+        // background-size:@size*0.7;
+        z-index:2;
+        .alpha(0.85);
+        cursor : pointer;
+        .shadow-light;
         overflow: hidden;
-        text-overflow: ellipsis;
-      }
+        -webkit-border-radius: 3px 3px 0 0;
+        border-radius: 3px;
+        
+        div.close{
+          display: none;
+        }
+        &:hover{
+          div.close{
+            display: block;
+            position: absolute;
+            right : 5px;
+            top : 5px;
+            font-size:20px;
+            //color : darken(@red, 15%);
+            color : black;
+          }
+        };
+        span.icon{
+          position:absolute;
+          font-size:50px;
+          left : 45px;
+          top : 25px;
+          color : darken(@blue, 30%);
+        }
+
+        &.youtube{
+          // background: @blue url(../img/icons-3/SVG/movie3.svg) center 0px no-repeat;
+          // background-size:@size*0.7;
+          background: @green;
+          // &:after{
+          //   position:absolute;
+          //   width:16px;
+          //   height:16px;
+          //   background: url(http://www.youtube.com/favicon.ico) left top no-repeat;
+          //   content : "";
+          //   right : 10px;
+          //   top : 10px;
+          // }
+          span.icon{
+            color : darken(@green, 50%);
+          }
+        }
+        .name{
+          display: block;
+          position: absolute;
+          font-size:13.5px;
+          text-align: left;
+          line-height:18px;
+          padding:0 15px 0 15px;
+          bottom: 10px;
+          //width:150px - 10px;
+          //white-space: nowrap;
+          text-overflow: ellipsis;
+          font-weight: 400;
+        }
     }
 
     .external{
@@ -261,7 +326,7 @@ body-html{
               h1{
                 padding-top:5px;
                 font-size:13px;
-                color:@c1;
+                color:@blue;
                 p{
                   padding-top:5px;
                 }
@@ -386,14 +451,10 @@ h1.links-left{
 
 #folder-drop-preview, #link-drop-preview{
   position : absolute;
-  background: black;
-  .alpha(0.3);
+  background: darken(@bg-color, 5%);
   z-index: 1;
 }
 
-#gridWrap{
-
-}
 #grid{
   width:100%;
   height:100%;
@@ -403,7 +464,7 @@ h1.links-left{
     .alpha(0.21);
   }
   &.hideGrid>li{
-    .alpha(0.21);
+    .alpha(0.01);
   }
   li{
     display: block;
@@ -417,15 +478,18 @@ h1.links-left{
       width: 100%;
       height:@gridHeight;
       left : 0;
-      border-top : 1px solid darken(@bg-color, 80%);
-      border-bottom : 1px solid darken(@bg-color, 85%);
+      border-top : 1px solid darken(@bg-color, 25%);
+      border-bottom : 1px solid darken(@bg-color, 25%);
     }
     &.vline{
       width : @gridWidth;
       height : 100%;
       top : 0;
-      border-left : 1px solid darken(@bg-color, 85%);
-      border-right : 1px solid darken(@bg-color, 85%);
+      border-left : 1px solid darken(@bg-color, 25%); 
+      border-right : 1px solid darken(@bg-color, 25%);
+      &:last-child{
+        //border-right : 0;
+      };
     }
     &.over{
       background:blue;
