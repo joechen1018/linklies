@@ -1,5 +1,29 @@
 'use strict';
 
+/*
+var pushAction = function(){
+
+	this.evtTarget;
+	this.pushTarget;
+	this.restoreEvent = "collapes";
+	this.restoreGrid; //original grid
+	this.direction; //string x, -x, y, -y;
+	this.distance; //number of grid
+
+}
+
+
+var reposAction = function(resizeManager){
+
+	var self = this;
+	this.evtTarget;
+	this.pushTarget;
+	this.restoreGrid = [4, 5]; //original grid
+	this.push = [3, -3]; // x + 3, y - 3
+
+	resizeManager.watchSizeUp("width", 1000, this);
+}*/
+
 goog.require('goog.math.Rect');
 app.service("gridService", function($timeout){
 	// Array.prototype.max = function() {
@@ -232,7 +256,7 @@ app.service("gridService", function($timeout){
 	}
 
 	this.outOfBoundry = function($ele){
-		return $ele.position().left + $ele.width() > $(window).width();
+		return $ele.offset().left + $ele.width() > $(window).width();
 	}
 
 	this.occupied = {
@@ -403,6 +427,21 @@ app.service("gridService", function($timeout){
 		// this.linkRects = getRects.link();
 	}
 })
+.service("resizeService", function(){
+
+	var evt = {};
+	var currentWidth = $(window).width(), currentHeight = $(window).height();
+	var lastWidth, lastHeight;
+	var timeout;
+	$(window).resize(function(){
+
+		lastWidth = currentWidth;
+		lastHeight = currentHeight;
+
+		currentWidth = $(window).width();
+		currentHeight = $(window).height();
+	})
+})
 .controller("desktopCtrl", function($scope, $timeout, gridService, keyboardManager){
 	var links = [], folders = [], $allElements;
 	var lastDragged;
@@ -431,30 +470,29 @@ app.service("gridService", function($timeout){
 			});
 		}
 
-		// folders.push({
-		// 	id : "folder-" + (7),
-		// 	type : i % 2 === 0 ? "" : "youtube",
-		// 	name : "test folder",
-		// 	grid : [0, 7],
-		// 	state : ""
-		// });
-
-
 		$(window).resize(function(){
 			//lazy call
 			clearTimeout(timeout);
-			timeout = $timeout(function(){
+			timeout = setTimeout(function(){
 				gridService.update();
 				var folders = $scope.folders;
 				var cols = gridService.cols;
 				
 				// $(".folder").each(function(i, e){
-				// 	if(gs.outOfBoundry($(e))){
-				// 		var newGrid = gs.findNearistGrid.folder(folders[i].grid);
-				// 		$scope.folders[i].grid = newGrid;
-				// 		console.log(newGrid);
+				// 	var rs = gs.outOfBoundry($(e));
+				// 	if(rs){
+				// 		console.log(e);
 				// 	}
 				// });
+				$(".folder").each(function(i, e){
+					if(gs.outOfBoundry($(e))){
+						var newGrid = gs.findNearistGrid.folder(folders[i].grid);
+						$scope.folders[i].grid = newGrid;
+						console.log(newGrid);
+					}
+				});
+
+				$scope.$apply();
 
 			}, 500);
 		});
