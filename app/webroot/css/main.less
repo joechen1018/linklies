@@ -187,17 +187,6 @@ body-html{
         div.close{
           display: none;
         }
-        &:hover{
-          div.close{
-            display: block;
-            position: absolute;
-            right : 5px;
-            top : 5px;
-            font-size:20px;
-            //color : darken(@red, 15%);
-            color : black;
-          }
-        };
         span.icon{
           position:absolute;
           font-size:50px;
@@ -236,6 +225,19 @@ body-html{
           text-overflow: ellipsis;
           font-weight: 400;
         }
+        &:hover{
+          background: white;
+          .alpha(1);
+          div.close{
+            display: block;
+            position: absolute;
+            right : 5px;
+            top : 5px;
+            font-size:20px;
+            //color : darken(@red, 15%);
+            color : black;
+          }
+        };
     }
 
     .external{
