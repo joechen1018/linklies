@@ -12,6 +12,16 @@ var pushAction = function(){
 
 }
 
+var w = lastWidth - currentWidth;
+folders = gs.getOutBoundElements();
+for(var i = 0; i<folders.length; i++){
+	folder = folders[i];
+	newGrid = gs.findNearestGrid(folder);
+	resizeManager.when(w, function(){
+		folder.grid = folder.grid;
+	});
+	folder.grid = newGrid;
+}
 
 var reposAction = function(resizeManager){
 
@@ -95,7 +105,7 @@ app.service("gridService", function($timeout){
 	var getRowNum = function(){
 		var h = self.viewHeight - self.topHeight;
 		var n = Math.floor((h - self.gridMargin) / (self.gridHeight + self.gridMargin));
-		return n;
+		return n + 5;
 	}
 
 	var getScrollbarWidth = function(){
@@ -227,6 +237,8 @@ app.service("gridService", function($timeout){
 	this.update = function(){
 
 		//new height comes from dragged element exceeding viewport
+		self.rows = getRowNum();
+		self.cols = getColNum();
 		self.viewHeight = self.getSreenHeight();
 		self.contentHeight = self.getContentHeight();
 		self.viewWidth = self.hasScrollbar() ? $(window).width() - scrollWidth : $(window).width();
@@ -234,8 +246,6 @@ app.service("gridService", function($timeout){
 		self.boardWidth = self.viewWidth - 2 * self.sideWidth;
 		self.gridWidth = self.getGridWidth();
 		
-		self.rows = getRowNum();
-		self.cols = getColNum();
 		self.folderHeight = 4*self.gridHeight + 3*self.gridMargin;
 		self.linkWidth = 2*self.gridWidth + self.gridMargin;
 
@@ -372,10 +382,10 @@ app.service("gridService", function($timeout){
 				return 0;
 			});
 
-			//get only nearests
+			//get only nearest folder grids
 			min = (function(){
 				var last = min[0].distance, arr = [], i = 0;
-				while(min[i].distance === last){
+				while(min[i].distance && min[i].distance === last){
 					arr.push(min[i]);
 					i++;
 				}
@@ -401,7 +411,21 @@ app.service("gridService", function($timeout){
 
 	this.findNextGrid = {
 		folder : function(){
+			var folderGrids = self.folderGrids, 
+			folderGrid, availableGrids = [], distances = [], bool;
 
+			var cols = self.cols;
+			var rows = self.rows;
+			for(var i = 0; i<cols*rows; i++){
+				folderGrid = folderGrids[i];
+				bool = self.occupied.folder(folderGrid);
+				//console.log(folderGrid, bool);
+				if(!bool){
+					return folderGrid;
+				}
+			}
+
+			return false;
 		},
 		link : function(){
 
@@ -428,25 +452,63 @@ app.service("gridService", function($timeout){
 	}
 })
 .service("resizeService", function(){
-
-	var evt = {};
-	var currentWidth = $(window).width(), currentHeight = $(window).height();
-	var lastWidth, lastHeight;
+	
+	var lastWidth = $(window).width();
+	var currentWidth = lastWidth;
+	var queue = [];
 	var timeout;
+	var delay = 500;
+	var self = this, item;
+	var checkQueue = function(){
+		for(var i = queue.length - 1; i>-1; i--){
+			if(currentWidth > queue[i].width){
+				item = queue[i];
+				item.deferred.resolve(item.index, item.grid);
+				queue.pop();
+
+				/*delay ececution
+				(function(item){
+					setTimeout(function(){
+						
+					}, 10 * i);
+				})(queue[i]);*/
+			}
+		}
+	}
+	this.whenWidthGreater = function(width, index, grid){
+		var d = $.Deferred();
+		queue.push({
+			width : width,
+			index : index,
+			grid : grid,
+			deferred : d
+		});
+		return d.promise();
+	}	
+
 	$(window).resize(function(){
+		$(self).trigger("resize", [lastWidth]);
+		clearTimeout(timeout);
+		timeout = setTimeout(function(){
+			currentWidth = $(window).width();
+			$(self).trigger("sizeChange", [lastWidth]);
+			if(currentWidth > lastWidth){
+				$(self).trigger("sizeUp", [lastWidth]);
+			}else if(currentWidth < lastWidth){
+				$(self).trigger("sizeDown", [lastWidth]);
+			}
 
-		lastWidth = currentWidth;
-		lastHeight = currentHeight;
-
-		currentWidth = $(window).width();
-		currentHeight = $(window).height();
-	})
+			checkQueue();
+			lastWidth = currentWidth;
+		}, delay);
+	});
 })
-.controller("desktopCtrl", function($scope, $timeout, gridService, keyboardManager){
+.controller("desktopCtrl", function($scope, $timeout, gridService, keyboardManager, resizeService){
 	var links = [], folders = [], $allElements;
 	var lastDragged;
 	var timeout;
 	var pushedX, pushedY;
+	var rs = resizeService;
 	var gs = gridService;
 	var sideWidth = gs.sideWidth;
 	var init = function(){
@@ -470,32 +532,66 @@ app.service("gridService", function($timeout){
 			});
 		}
 
-		$(window).resize(function(){
-			//lazy call
-			clearTimeout(timeout);
-			timeout = setTimeout(function(){
-				gridService.update();
-				var folders = $scope.folders;
-				var cols = gridService.cols;
+		var onSizeChange = function(){
+			gridService.update();
+		}
+		var onSizeDown = function(e, lastWidth){
+
+			var folders = $scope.folders, folder, grid, rect, dist, newGrid;
+			var cols = gs.cols;
+			$(folders).each(function(i, e){
+
+				(function(i, e){
+					setTimeout(function(){
+						folder = e;
+						grid = folder.grid;
+						rect = gs.gridToRect.folder(grid);
+						dist = 1 * gs.sideWidth + rect.left + rect.width
+						if(gs.cols - 1 <= grid[0]){
+							rs.whenWidthGreater(dist, i, grid).then(function(index, grid){
+								$scope.$apply(function(){
+									$scope.folders[index].grid = grid;
+								});
+							});
+							$scope.$apply(function(){
+								newGrid = gs.findNextGrid.folder(folder.grid);
+								$scope.folders[i].grid = newGrid;
+							});
+						}
+					}, i * 30)
+				})(i, e);
+			});
+		}
+
+		$(rs).on("sizeDown", onSizeDown);
+		$(rs).on("sizeChange", onSizeChange);
+
+		// $(window).resize(function(){
+		// 	//lazy call
+		// 	clearTimeout(timeout);
+		// 	timeout = setTimeout(function(){
+		// 		gridService.update();
+		// 		var folders = $scope.folders;
+		// 		var cols = gridService.cols;
 				
-				// $(".folder").each(function(i, e){
-				// 	var rs = gs.outOfBoundry($(e));
-				// 	if(rs){
-				// 		console.log(e);
-				// 	}
-				// });
-				$(".folder").each(function(i, e){
-					if(gs.outOfBoundry($(e))){
-						var newGrid = gs.findNearistGrid.folder(folders[i].grid);
-						$scope.folders[i].grid = newGrid;
-						console.log(newGrid);
-					}
-				});
+		// 		// $(".folder").each(function(i, e){
+		// 		// 	var rs = gs.outOfBoundry($(e));
+		// 		// 	if(rs){
+		// 		// 		console.log(e);
+		// 		// 	}
+		// 		// });
+		// 		$(".folder").each(function(i, e){
+		// 			if(gs.outOfBoundry($(e))){
+		// 				var newGrid = gs.findNearistGrid.folder(folders[i].grid);
+		// 				$scope.folders[i].grid = newGrid;
+		// 				console.log(newGrid);
+		// 			}
+		// 		});
 
-				$scope.$apply();
+		// 		$scope.$apply();
 
-			}, 500);
-		});
+		// 	}, 500);
+		// });
 
 		keyboardManager.bind("ctrl+l", function(){
 			$scope.showGrid = !$scope.showGrid;
@@ -521,10 +617,10 @@ app.service("gridService", function($timeout){
 
 	gridService.init(folders, links);
 
-	$scope.showMenu = function(){
-		alert("show menu");
-		return false;
-	}
+	// $scope.showMenu = function(){
+	// 	alert("show menu");
+	// 	return false;
+	// }
 
 	$scope.getDesktopStyle = function(){
 		var hasScrollbar = gridService.hasScrollbar();
