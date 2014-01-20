@@ -535,18 +535,18 @@ app.service("gridService", function($timeout){
 		var onSizeChange = function(){
 			gridService.update();
 		}
-		var onSizeDown = function(e, lastWidth){
-
+		var onSizeDown = function(evt, lastWidth){
 			var folders = $scope.folders, folder, grid, rect, dist, newGrid;
 			var cols = gs.cols;
 			$(folders).each(function(i, e){
-
 				(function(i, e){
 					setTimeout(function(){
+						gs.update();
 						folder = e;
 						grid = folder.grid;
 						rect = gs.gridToRect.folder(grid);
 						dist = 1 * gs.sideWidth + rect.left + rect.width
+						cols = gs.cols;
 						if(gs.cols - 1 <= grid[0]){
 							rs.whenWidthGreater(dist, i, grid).then(function(index, grid){
 								$scope.$apply(function(){
@@ -558,7 +558,7 @@ app.service("gridService", function($timeout){
 								$scope.folders[i].grid = newGrid;
 							});
 						}
-					}, i * 30)
+					}, i * 30);
 				})(i, e);
 			});
 		}
