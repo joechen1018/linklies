@@ -305,8 +305,8 @@ app.service("gridService", function($timeout){
 	this.gridToRect = {
 		folder :function(grid){
 			var rect = new goog.math.Rect(
-				sideWidth + grid[0] * (self.gridWidth + self.gridMargin),
-				topHeight + grid[1] * (self.gridHeight + self.gridMargin) * 4 ,
+				grid[0] * (self.gridWidth + self.gridMargin),
+				grid[1] * (self.gridHeight + self.gridMargin) * 4 ,
 				self.gridWidth,
 				self.folderHeight
 			);
@@ -314,8 +314,8 @@ app.service("gridService", function($timeout){
 		},
 		link : function(grid){
 			var rect = new goog.math.Rect(
-				sideWidth + grid[0] * (self.gridWidth + self.gridMargin),
-				grid[1] * (self.gridHeight + self.gridMargin) + topHeight,
+				grid[0] * (self.gridWidth + self.gridMargin),
+				grid[1] * (self.gridHeight + self.gridMargin),
 				self.linkWidth,
 				self.gridHeight
 			);
@@ -594,7 +594,7 @@ app.service("gridService", function($timeout){
 				
 				$scope.$apply();
 
-				var near = gs.findNearistGrid.folder(selectedGrid);
+				//var near = gs.findNearistGrid.folder(selectedGrid);
 			}
 		});
 	}
