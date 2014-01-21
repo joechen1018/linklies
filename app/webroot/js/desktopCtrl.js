@@ -52,7 +52,7 @@ app.service("gridService", function($timeout){
 	var $desk = $("#desktop-view");
 	var hlines = [], vlines = [];
 	var folders, links;
-	var scrollWidth = 10;
+	var scrollWidth = 0;
 	var sideWidth = 90;
 	var topHeight = 90;
 	var defaultGridWidth = 150;
@@ -283,6 +283,7 @@ app.service("gridService", function($timeout){
 			links = self.links;
 			for(var i = 0; i<folders.length; i++){
 				if(arrayEquals(folders[i].grid, grid)){
+					//console.log(folders[i].grid, grid);
 					return true;
 				}
 			}
@@ -297,7 +298,7 @@ app.service("gridService", function($timeout){
 		link : function(grid){
 			var links = self.links;
 			for(var i = 0; i<links.length; i++){
-				if(goog.array.equals(links[i].grid, grid))
+				if(arrayEquals(links[i].grid, grid))
 					return true;
 			}
 			return false;
@@ -546,14 +547,14 @@ app.service("gridService", function($timeout){
 			gs.update($scope.folders, $scope.links);
 
 			lastWidth = $(window).width();
-			for(var i = 0; i<folders.length; i++){
+			for(var i = folders.length - 1; i>-1; i--){
 				folder = folders[i];
 				grid = folder.grid;
 				rect = gs.gridToRect.folder(grid);
 				dist = 1 * gs.sideWidth + rect.left + rect.width;
 				if(lastWidth <= dist + 1 * gs.sideWidth){
 
-					rs.whenWidthGreater(dist + 1 * gs.sideWidth, i, grid).then(function(index, grid){
+					rs.whenWidthGreater(dist, i, grid).then(function(index, grid){
 						$scope.$apply(function(){
 							$scope.folders[index].grid = grid;
 							//gs.update($scope.folders, $scope.links);
@@ -562,9 +563,10 @@ app.service("gridService", function($timeout){
 
 					newGrid = gs.findNextGrid.folder(folder.grid);
 					$scope.folders[i].grid = newGrid;
+					$scope.$apply();
 				}
 			}
-			$scope.$apply();
+			
 			gs.update($scope.folders, $scope.links);
 		}
 
