@@ -279,8 +279,8 @@ app.service("gridService", function($timeout){
 
 	this.occupied = {
 		folder : function(grid){
-			folders = self.folders;
-			links = self.links;
+			var folders = self.folders;
+			var links = self.links;
 			for(var i = 0; i<folders.length; i++){
 				if(arrayEquals(folders[i].grid, grid)){
 					//console.log(folders[i].grid, grid);
@@ -419,7 +419,7 @@ app.service("gridService", function($timeout){
 	}
 
 	this.findNextGrid = {
-		folder : function(thisGrid){
+		folder : function(thisGrid, n){
 
 			var folderGrids = self.folderGrids, 
 			folderGrid, bool;
@@ -544,6 +544,8 @@ app.service("gridService", function($timeout){
 			var folders = $scope.folders, folder, grid, rect, dist, newGrid;
 			var cols = gs.cols;
 
+			gs.update($scope.folders, $scope.links);
+
 			//lastWidth = $(window).width();
 			for(var i = folders.length - 1; i>-1; i--){
 
@@ -562,12 +564,12 @@ app.service("gridService", function($timeout){
 						});
 					});
 
-					newGrid = gs.findNextGrid.folder(grid);
+					newGrid = gs.findNextGrid.folder(grid, i);
 					$scope.folders[i].grid = newGrid;
 				}
 			}
 			$scope.$apply();
-			//gs.update($scope.folders, $scope.links);
+			gs.update($scope.folders, $scope.links);
 		}
 
 		$(rs).on("sizeChange", onSizeDown);
