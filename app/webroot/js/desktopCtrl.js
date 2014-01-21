@@ -427,7 +427,7 @@ app.service("gridService", function($timeout){
 				folderGrid = folderGrids[i];
 				bool = self.occupied.folder(folderGrid);
 
-				if(!bool && !arrayEquals(thisGrid, folderGrid))
+				if(!bool)
 					return folderGrid;
 			}
 
@@ -461,7 +461,7 @@ app.service("gridService", function($timeout){
 	var currentWidth = lastWidth;
 	var queue = [];
 	var timeout;
-	var delay = 100;
+	var delay = 300;
 	var self = this, item;
 	var checkQueue = function(){
 		for(var i = queue.length - 1; i>-1; i--){
@@ -544,14 +544,16 @@ app.service("gridService", function($timeout){
 			var cols = gs.cols;
 
 			gs.update($scope.folders, $scope.links);
+
+			lastWidth = $(window).width();
 			for(var i = 0; i<folders.length; i++){
 				folder = folders[i];
 				grid = folder.grid;
 				rect = gs.gridToRect.folder(grid);
 				dist = 1 * gs.sideWidth + rect.left + rect.width;
-				if(lastWidth < dist + 2 * gs.sideWidth){
+				if(lastWidth <= dist + 1 * gs.sideWidth){
 
-					rs.whenWidthGreater(dist, i, grid).then(function(index, grid){
+					rs.whenWidthGreater(dist + 1 * gs.sideWidth, i, grid).then(function(index, grid){
 						$scope.$apply(function(){
 							$scope.folders[index].grid = grid;
 							//gs.update($scope.folders, $scope.links);
