@@ -52,7 +52,7 @@ app.service("gridService", function($timeout){
 	var $desk = $("#desktop-view");
 	var hlines = [], vlines = [];
 	var folders, links;
-	var scrollWidth = 20;
+	var scrollWidth = 10;
 	var sideWidth = 90;
 	var topHeight = 90;
 	var defaultGridWidth = 150;
@@ -165,10 +165,12 @@ app.service("gridService", function($timeout){
 				grids.push(grid);
 			}
 		}
-		//console.log(rects);
 		return grids;
 	}
 
+	var newOccupation = [];
+	var arrayEquals = goog.array.equals;
+	var intersects = goog.math.Rect.intersects;
 	this.sideWidth = sideWidth;
 	this.topHeight = topHeight;
 	this.bottomHeight = bottomHeight;
@@ -234,18 +236,23 @@ app.service("gridService", function($timeout){
 		return vlines;
 	}
 
-	this.update = function(){
+	this.update = function(folders, links){
+
+		if(folders && links){
+			self.folders = folders;
+			self.links = links;
+		}
 
 		//new height comes from dragged element exceeding viewport
-		self.rows = getRowNum();
-		self.cols = getColNum();
-		self.viewHeight = self.getSreenHeight();
 		self.contentHeight = self.getContentHeight();
+		self.viewHeight = self.getSreenHeight();
 		self.viewWidth = self.hasScrollbar() ? $(window).width() - scrollWidth : $(window).width();
 		self.boardHeight = self.viewHeight - self.topHeight - bottomHeight;
 		self.boardWidth = self.viewWidth - 2 * self.sideWidth;
+		self.rows = getRowNum();
+		self.cols = getColNum();
 		self.gridWidth = self.getGridWidth();
-		
+
 		self.folderHeight = 4*self.gridHeight + 3*self.gridMargin;
 		self.linkWidth = 2*self.gridWidth + self.gridMargin;
 
@@ -254,6 +261,7 @@ app.service("gridService", function($timeout){
 
 		//require viewWidth
 		self.vlines = self.getVLines();
+
 		self.folderRects = getRects.folder();
 		self.linkRects = getRects.link();
 		self.grids = getGrids();
@@ -274,7 +282,7 @@ app.service("gridService", function($timeout){
 			folders = self.folders;
 			links = self.links;
 			for(var i = 0; i<folders.length; i++){
-				if(goog.array.equals(folders[i].grid, grid)){
+				if(arrayEquals(folders[i].grid, grid)){
 					return true;
 				}
 			}
@@ -410,19 +418,17 @@ app.service("gridService", function($timeout){
 	}
 
 	this.findNextGrid = {
-		folder : function(){
-			var folderGrids = self.folderGrids, 
-			folderGrid, availableGrids = [], distances = [], bool;
+		folder : function(thisGrid){
 
-			var cols = self.cols;
-			var rows = self.rows;
-			for(var i = 0; i<cols*rows; i++){
+			var folderGrids = self.folderGrids, 
+			folderGrid, bool;
+
+			for(var i = 0; i<folderGrids.length; i++){
 				folderGrid = folderGrids[i];
 				bool = self.occupied.folder(folderGrid);
-				//console.log(folderGrid, bool);
-				if(!bool){
+
+				if(!bool && !arrayEquals(thisGrid, folderGrid))
 					return folderGrid;
-				}
 			}
 
 			return false;
@@ -446,9 +452,7 @@ app.service("gridService", function($timeout){
 		self.gridHeight = 30;
 		self.gridMargin = 10;
 
-		this.update();
-		// this.folderRects = getRects.folder();
-		// this.linkRects = getRects.link();
+		this.update(folders, links);
 	}
 })
 .service("resizeService", function(){
@@ -457,11 +461,11 @@ app.service("gridService", function($timeout){
 	var currentWidth = lastWidth;
 	var queue = [];
 	var timeout;
-	var delay = 500;
+	var delay = 100;
 	var self = this, item;
 	var checkQueue = function(){
 		for(var i = queue.length - 1; i>-1; i--){
-			if(currentWidth > queue[i].width){
+			if(currentWidth >= queue[i].width){
 				item = queue[i];
 				item.deferred.resolve(item.index, item.grid);
 				queue.pop();
@@ -533,65 +537,37 @@ app.service("gridService", function($timeout){
 		}
 
 		var onSizeChange = function(){
-			gridService.update();
+			//gs.update();
 		}
 		var onSizeDown = function(evt, lastWidth){
 			var folders = $scope.folders, folder, grid, rect, dist, newGrid;
 			var cols = gs.cols;
-			$(folders).each(function(i, e){
-				(function(i, e){
-					setTimeout(function(){
-						gs.update();
-						folder = e;
-						grid = folder.grid;
-						rect = gs.gridToRect.folder(grid);
-						dist = 1 * gs.sideWidth + rect.left + rect.width
-						cols = gs.cols;
-						if(gs.cols - 1 <= grid[0]){
-							rs.whenWidthGreater(dist, i, grid).then(function(index, grid){
-								$scope.$apply(function(){
-									$scope.folders[index].grid = grid;
-								});
-							});
-							$scope.$apply(function(){
-								newGrid = gs.findNextGrid.folder(folder.grid);
-								$scope.folders[i].grid = newGrid;
-							});
-						}
-					}, i * 30);
-				})(i, e);
-			});
+
+			gs.update($scope.folders, $scope.links);
+			for(var i = 0; i<folders.length; i++){
+				folder = folders[i];
+				grid = folder.grid;
+				rect = gs.gridToRect.folder(grid);
+				dist = 1 * gs.sideWidth + rect.left + rect.width;
+				if(lastWidth < dist + 2 * gs.sideWidth){
+
+					rs.whenWidthGreater(dist, i, grid).then(function(index, grid){
+						$scope.$apply(function(){
+							$scope.folders[index].grid = grid;
+							//gs.update($scope.folders, $scope.links);
+						});
+					});
+
+					newGrid = gs.findNextGrid.folder(folder.grid);
+					$scope.folders[i].grid = newGrid;
+				}
+			}
+			$scope.$apply();
+			gs.update($scope.folders, $scope.links);
 		}
 
-		$(rs).on("sizeDown", onSizeDown);
 		$(rs).on("sizeChange", onSizeChange);
-
-		// $(window).resize(function(){
-		// 	//lazy call
-		// 	clearTimeout(timeout);
-		// 	timeout = setTimeout(function(){
-		// 		gridService.update();
-		// 		var folders = $scope.folders;
-		// 		var cols = gridService.cols;
-				
-		// 		// $(".folder").each(function(i, e){
-		// 		// 	var rs = gs.outOfBoundry($(e));
-		// 		// 	if(rs){
-		// 		// 		console.log(e);
-		// 		// 	}
-		// 		// });
-		// 		$(".folder").each(function(i, e){
-		// 			if(gs.outOfBoundry($(e))){
-		// 				var newGrid = gs.findNearistGrid.folder(folders[i].grid);
-		// 				$scope.folders[i].grid = newGrid;
-		// 				console.log(newGrid);
-		// 			}
-		// 		});
-
-		// 		$scope.$apply();
-
-		// 	}, 500);
-		// });
+		$(rs).on("sizeDown", onSizeDown);
 
 		keyboardManager.bind("ctrl+l", function(){
 			$scope.showGrid = !$scope.showGrid;

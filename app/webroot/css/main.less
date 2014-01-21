@@ -41,7 +41,8 @@ body-html{
   //background: url(../img/bg-blur-1.jpg);  
   overflow:hidden;
   z-index: 1;
-  background: @bg-color;
+  //background: @bg-color;
+  background: #eaeaea;
 
 @sideWidth : 90px;
 #topbar{
@@ -190,7 +191,7 @@ body-html{
         span.icon{
           position:absolute;
           font-size:50px;
-          left : 45px;
+          left : ~"calc(50% - 25px)";
           top : 25px;
           color : darken(@blue, 30%);
         }
@@ -217,9 +218,11 @@ body-html{
           position: absolute;
           font-size:13.5px;
           text-align: left;
-          line-height:18px;
+          line-height:15px;
           padding:0 15px 0 15px;
           bottom: 10px;
+          height : 45px;
+          overflow: hidden;
           //width:150px - 10px;
           //white-space: nowrap;
           text-overflow: ellipsis;
