@@ -554,7 +554,7 @@ app.service("gridService", function($timeout){
 				rect = gs.gridToRect.folder(grid);
 				dist = 1 * gs.sideWidth + rect.left + rect.width;
 				//lastWidth = $(window).width();
-				if(lastWidth <= dist + 2 * gs.sideWidth){
+				if($(window).width() <= dist + 2 * gs.sideWidth){
 
 					rs.whenWidthGreater(dist, i, grid).then(function(index, grid){
 						$scope.$apply(function(){
@@ -570,8 +570,8 @@ app.service("gridService", function($timeout){
 			//gs.update($scope.folders, $scope.links);
 		}
 
-		$(rs).on("sizeChange", onSizeChange);
-		$(rs).on("sizeDown", onSizeDown);
+		$(rs).on("sizeChange", onSizeDown);
+		//$(rs).on("sizeDown", onSizeDown);
 
 		keyboardManager.bind("ctrl+l", function(){
 			$scope.showGrid = !$scope.showGrid;
