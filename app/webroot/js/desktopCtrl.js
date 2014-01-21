@@ -544,30 +544,30 @@ app.service("gridService", function($timeout){
 			var folders = $scope.folders, folder, grid, rect, dist, newGrid;
 			var cols = gs.cols;
 
-			gs.update($scope.folders, $scope.links);
-
-			lastWidth = $(window).width();
+			//lastWidth = $(window).width();
 			for(var i = folders.length - 1; i>-1; i--){
+
+				gs.update($scope.folders, $scope.links);
+
 				folder = folders[i];
 				grid = folder.grid;
 				rect = gs.gridToRect.folder(grid);
 				dist = 1 * gs.sideWidth + rect.left + rect.width;
-				if(lastWidth <= dist + 1 * gs.sideWidth){
+				//lastWidth = $(window).width();
+				if(lastWidth <= dist + 2 * gs.sideWidth){
 
 					rs.whenWidthGreater(dist, i, grid).then(function(index, grid){
 						$scope.$apply(function(){
 							$scope.folders[index].grid = grid;
-							//gs.update($scope.folders, $scope.links);
 						});
 					});
 
-					newGrid = gs.findNextGrid.folder(folder.grid);
+					newGrid = gs.findNextGrid.folder(grid);
 					$scope.folders[i].grid = newGrid;
-					$scope.$apply();
 				}
 			}
-			
-			gs.update($scope.folders, $scope.links);
+			$scope.$apply();
+			//gs.update($scope.folders, $scope.links);
 		}
 
 		$(rs).on("sizeChange", onSizeChange);
