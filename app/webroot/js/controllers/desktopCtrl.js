@@ -35,7 +35,6 @@ var reposAction = function(resizeManager){
 }*/
 
 goog.require('goog.math.Rect');
-
 app.controller("desktopCtrl", function($scope, $timeout, gridService, keyboardManager, resizeService){
 	var links = [], folders = [], $allElements;
 	var lastDragged;
@@ -108,10 +107,7 @@ app.controller("desktopCtrl", function($scope, $timeout, gridService, keyboardMa
 			$scope.$apply();
 		});
 
-		//wait for folder directive construction
-		$timeout(function(){
-			gridService.update();
-		}, 100);
+		gridService.update();
 	}
 
 	init();
@@ -125,7 +121,7 @@ app.controller("desktopCtrl", function($scope, $timeout, gridService, keyboardMa
 	$scope.showLinkPreview = false;
 	$scope.showGrid = false;
 
-	gridService.init(folders, links);
+	gs.init(folders, links);
 
 	// $scope.showMenu = function(){
 	// 	alert("show menu");
@@ -184,5 +180,3 @@ app.controller("desktopCtrl", function($scope, $timeout, gridService, keyboardMa
 		$scope.$apply();
 	}
 });
-
-
