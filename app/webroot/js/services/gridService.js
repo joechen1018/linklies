@@ -388,11 +388,13 @@ app.service("gridService", function($timeout){
 			folderGrid, bool;
 
 			for(var i = 0; i<folderGrids.length; i++){
-				folderGrid = folderGrids[i];
-				bool = self.occupied.folder(folderGrid);
+				if(i !== n){
+					folderGrid = folderGrids[i];
+					bool = self.occupied.folder(folderGrid);
 
-				if(!bool)
-					return folderGrid;
+					if(!bool)
+						return folderGrid;
+				}
 			}
 
 			return false;

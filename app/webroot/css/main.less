@@ -47,44 +47,56 @@ body-html{
 @sideWidth : 90px;
 #topbar{
   position:relative;
+  height: 40px;
+  width:100%;
+  background: white;
+  position: fixed;
+  left:0;
+  top:0;
+  .shadow-light;
+  z-index:3;
+
   .search{
     position:relative;
     left : @sideWidth;
-    top : 13px;
+    top : ~"calc(50% - 10px)";
     width : 200px;
+    height : 20px;
     input{
-      border : 1px solid darken(@bg-color, 15%);
+      border : 0px solid darken(@bg-color, 15%);
       .border-radius(3px);
       width : 180px;
       height : 20px;      
       background: lighten(@bg-color, 0%);
+      padding:0;
       padding-left : 10px;
     }
+    //search icon
     span{
       position:absolute;
-      right : 15px;
+      right : 16px;
       display: block;
-      top : 4px;
-      font-size:15px;
+      top : 2px;
+      font-size:10px;
       color : darken(@bg-color, 15%);
     }
   }
   .home{
     position: absolute;
     left : @sideWidth + 200px;
-    top : 13px;
+    top : 10px;
     width : 30px;
     span{
       color:darken(@bg-color, 35%);
-      font-size:25px;
+      font-size:20px;
       display: block;
     }
   }
   .icon{
     color: darken(@bg-color, 45%);
-    font-size:30px;
+    font-size:20px;
     position:relative;
-    top:10px;
+    top:~"calc(50% - 10px)";
     left : @sideWidth;
   }
   .logo{
@@ -100,27 +112,18 @@ body-html{
     width : 300px;
     position: absolute;
     right:@sideWidth;
-    top : 10px;
+    top : ~"calc(50% - 12px)";
     a{
       float:right;
       display: block;
       margin-left : 10px;
       color:darken(@bg-color, 20%);
-      font-size:15px;
-      padding:5px 5px 0px 5px;
+      font-size:10px;
+      padding:5px 5px 3px 5px;
       border : 1px solid;
       border-color : darken(@bg-color, 3%);
-      margin-top:3px;
     }
   }
-  height: 50px;
-  width:100%;
-  background: white;
-  position: fixed;
-  left:0;
-  top:0;
-  .shadow-light;
-  z-index:2;
   div.funcs{
     height:100%;
     position:absolute;

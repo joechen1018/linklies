@@ -65,18 +65,16 @@ app.controller("desktopCtrl", function($scope, $timeout, gridService, keyboardMa
 		}
 
 		var onSizeChange = function(){
-			//gs.update();
+			gs.update();
 		}
 		var onSizeDown = function(evt, lastWidth){
 			var folders = $scope.folders, folder, grid, rect, dist, newGrid;
 			var cols = gs.cols;
 
-			gs.update($scope.folders, $scope.links);
+			//gs.update($scope.folders, $scope.links);
 
 			//lastWidth = $(window).width();
 			for(var i = folders.length - 1; i>-1; i--){
-
-				gs.update($scope.folders, $scope.links);
 
 				folder = folders[i];
 				grid = folder.grid;
@@ -92,11 +90,12 @@ app.controller("desktopCtrl", function($scope, $timeout, gridService, keyboardMa
 					});
 
 					newGrid = gs.findNextGrid.folder(grid, i);
+					//console.log(newGrid, i);
 					$scope.folders[i].grid = newGrid;
 				}
 			}
 			$scope.$apply();
-			gs.update($scope.folders, $scope.links);
+			gs.update();
 		}
 
 		$(rs).on("sizeChange", onSizeDown);
