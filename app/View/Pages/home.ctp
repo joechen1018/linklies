@@ -61,7 +61,7 @@
 				}"></li>
 			</ul>
 			
-			<div lk-folder id="{{folder.id}}" ng-repeat="folder in folders" class="folder {{folder.type}}" data-grid="{{folder.grid}}" data-grid-index="{{$index}}" ng-style="getFolderStyle(folder)"></div>
+			<div lk-folder data="folder" ng-repeat="folder in folders"></div>
 
 			<div id="folder-drop-preview" ng-style="{
 				width : grid.gridWidth,

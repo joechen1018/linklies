@@ -3,14 +3,39 @@ app.directive("lkFolder", function(gridService){
 		restrict : "EA",
 		templateUrl : "templates/folder.html",
 		controller : function($scope){
-			
+			$scope.grid = gridService;
+			$scope.previewGrid = [0,0];
+			$scope.preview = true;
+		},
+		replace : true,
+		scope: {
+		    data : "=",
+		    dkCtrl : "@"
 		},
 		link : function(scope, ele, attrs, ctrl){
 
+			scope.getStyle = function(){
+				return {
+					left : scope.data.grid[0] * (gridService.gridWidth + gridService.gridMargin),
+					top : scope.data.grid[1] * (gridService.gridHeight+ gridService.gridMargin) * 4,
+					width : gridService.gridWidth,
+					height : gridService.folderHeight
+				}
+			}
+
+			scope.getPos = function(){
+				var arr = [$(ele).offset().left, $(ele).offset().top];
+				return arr;
+			}
+
+			scope.grid = gs;
+
+			var $folder = $(ele);
 			var timeout;
 			var originRect, originGrid, draggingRect, selectedGrid, $folder, $link;
 			var gs = gridService;
 			var sideWidth = gs.sideWidth;
+			var data = scope.data;
 
 			$(ele).draggable({
 				containment : "#board",
@@ -18,23 +43,23 @@ app.directive("lkFolder", function(gridService){
 				start : function(e, ui){
 					originRect = gs.getRect($(ele));
 					selectedGrid = undefined;
-					$folder = $(ele);
-					originGrid = JSON.parse($folder.attr("data-grid"));
+					originGrid = data.grid;
 				},
 				drag : function(e, ui){
 
 					draggingRect = gs.getRect($folder);
 					selectedGrid = gs.findSelectedGrid.folder(originGrid, draggingRect);
 					if(selectedGrid !== undefined && !gs.occupied.folder(selectedGrid)){
-						scope.showDragPreview(selectedGrid, "folder");
+						scope.preview = true;
+						scope.previewGrid = selectedGrid;
 					}else{
-						scope.hideDragPreview("folder");
+						scope.preview = false;
 					}
+					scope.$apply();
 				},
 				stop : function(e, ui){
 
-					//hide the dragging preview div
-					scope.hideDragPreview("folder");
+					scope.preview = false;
 					
 					//get rect by current dom position
 					draggingRect = gs.getRect($folder);
@@ -44,13 +69,7 @@ app.directive("lkFolder", function(gridService){
 					
 					//if there is a selected grid and the selected grid is not occupied
 					if(selectedGrid !== undefined && !gs.occupied.folder(selectedGrid)){
-
-						//find the model by dom id
-						for(var i = 0; i<scope.folders.length; i ++){
-							if(scope.folders[i].id == $folder.attr("id")){
-								scope.folders[i].grid = selectedGrid;
-							}
-						}
+						scope.data.grid = selectedGrid;
 					}else{
 						$folder.animate({
 							left : originRect.left,
@@ -127,6 +146,16 @@ app.directive("lkFolder", function(gridService){
 					}
 				}
 			});
+		}
+	}
+})
+
+.directive("folderDropPreview", function(){
+	return {
+		restrict : "A",
+		require : "lkFolder",
+		link : function(scope, ele, attrs, folderCtrl){
+			console.log(folderCtrl);
 		}
 	}
 });

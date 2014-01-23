@@ -1,6 +1,5 @@
 var app = angular.module("lk", []);
-
-
+var dnd = angular.module('drag-and-drop', ['ngDragDrop']);
 
 var wall;
 $(document).ready(function(){

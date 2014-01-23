@@ -150,15 +150,6 @@ app.controller("desktopCtrl", function($scope, $timeout, gridService, keyboardMa
 		}
 	}
 
-	$scope.getFolderStyle = function(folder){
-		return {
-			left : folder.grid[0] * (gridService.gridWidth + gridService.gridMargin),
-			top : folder.grid[1] * (gridService.gridHeight+ gridService.gridMargin) * 4,
-			width : gridService.gridWidth,
-			height : gridService.folderHeight
-		}
-	}
-
 	$scope.showDragPreview = function(selectedGrid, type){
 		if(type === "folder"){
 			$scope.folderPreviewGrid = selectedGrid;
