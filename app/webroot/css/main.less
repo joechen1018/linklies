@@ -7,10 +7,18 @@
 @gridHPadding : 10px;
 @gridPadding : 10px;
 @folderHeight : 4*@gridHeight + 3*@gridPadding;
-@bg-color : #dde6e4;
-@blue : #66998c;
-@green : #c9dabb;
-@red : #bb2c26;
+
+//@bg-color : #dde6e4;
+
+@blue : #4b9884;
+//@green : #c9dabb;
+@green : #aacc8e;
+@red : #cd342e;
+@orange : #fe9d04;
+//@brown : #876631;
+@brown : darken(@bg-color, 40%);
+@bg-color : #f0f1e3;
+//@bg-color : @red;
 #color-theme{
   position: absolute;
   right:10px;
@@ -34,7 +42,7 @@ body-html{
 }
 
 #dev-view{
-  
+
 }
 
 #desktop-view{
@@ -45,20 +53,23 @@ body-html{
   //background: url(../img/bg-blur-1.jpg);  
   overflow:hidden;
   z-index: 1;
-  //background: @bg-color;
-  background: #eaeaea;
+  //background: lighten(@red, 5%);
+  background: @bg-color;
 
 @sideWidth : 90px;
 #topbar{
+  @c : lighten(#000, 5%);
   position:relative;
-  height: 40px;
+  height: 45px;
   width:100%;
-  background: white;
+  background: @red;
   position: fixed;
   left:0;
   top:0;
-  .shadow-light;
+  // -webkit-box-shadow: 2px 2px 7px 1px darken(@bg-color, 0%);
+  // box-shadow: 2px 2px 7px 1px  darken(@bg-color, 0%);
   z-index:3;
+  border-bottom : 1px solid @c;
 
   .search{
     position:relative;
@@ -67,11 +78,11 @@ body-html{
     width : 200px;
     height : 20px;
     input{
-      border : 0px solid darken(@bg-color, 15%);
+      border : 1px solid @c;
       .border-radius(3px);
       width : 180px;
       height : 20px;      
-      background: lighten(@bg-color, 0%);
+      background: lighten(white, 0%);
       padding:0;
       padding-left : 10px;
     }
@@ -80,31 +91,31 @@ body-html{
       position:absolute;
       right : 16px;
       display: block;
-      top : 2px;
+      top : 4px;
       font-size:10px;
-      color : darken(@bg-color, 15%);
+      color : @c;
     }
   }
   .home{
     position: absolute;
     left : @sideWidth + 200px;
-    top : 10px;
+    top : 15px;
     width : 30px;
     span{
-      color:darken(@bg-color, 35%);
+      color: @c;
       font-size:20px;
       display: block;
     }
   }
   .icon{
-    color: darken(@bg-color, 45%);
+    color: @c;
     font-size:20px;
     position:relative;
     top:~"calc(50% - 10px)";
     left : @sideWidth;
   }
   .logo{
-    color: darken(@bg-color, 15%);
+    color: @c;
     font-size:25px;
     position:relative;
     top:5px;
@@ -121,11 +132,11 @@ body-html{
       float:right;
       display: block;
       margin-left : 10px;
-      color:darken(@bg-color, 20%);
+      color: @c;
       font-size:10px;
       padding:5px 5px 3px 5px;
       border : 1px solid;
-      border-color : darken(@bg-color, 3%);
+      border-color : @c;
     }
   }
   div.funcs{
@@ -181,7 +192,7 @@ body-html{
         position:absolute;
         width : 150px;
         height : @size;
-        background: lighten(@blue, 20%);
+        background: lighten(@blue, 10%);
         // background: @blue url(../img/icons-3/SVG/folder12.svg) center 0px no-repeat;
         // background-size:@size*0.7;
         z-index:2;
@@ -199,14 +210,28 @@ body-html{
           position:absolute;
           font-size:50px;
           left : ~"calc(50% - 25px)";
-          top : 25px;
+          top : 30px;
           color : darken(@blue, 30%);
         }
-
+        &.stackOverflow{
+          background: lighten(@orange, 10%);
+          color : darken(@orange, 40%);
+          span.icon{
+            color : darken(@orange, 40%);
+          }
+        }
+        @yellow : #faec0a;
+        &.googleSearch{
+          background: lighten(@yellow, 10%);
+          color : darken(@yellow, 40%);
+          span.icon{
+            color : darken(@yellow, 40%);
+          }
+        }
         &.youtube{
           // background: @blue url(../img/icons-3/SVG/movie3.svg) center 0px no-repeat;
           // background-size:@size*0.7;
-          background: @green;
+          background: lighten(@green, 10%);
           .name{
             color:darken(@green, 70%); 
           }

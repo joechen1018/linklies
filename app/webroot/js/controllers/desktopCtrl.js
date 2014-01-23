@@ -45,7 +45,7 @@ app.controller("desktopCtrl", function($scope, $timeout, gridService, keyboardMa
 	var gs = gridService;
 	var sideWidth = gs.sideWidth;
 	var init = function(){
-		for(var i = 0; i<6; i++){
+		for(var i = 0; i<4; i++){
 			links.push({
 				id : "link-" + (i+1),
 				grid : [0, 4+i],
@@ -61,9 +61,28 @@ app.controller("desktopCtrl", function($scope, $timeout, gridService, keyboardMa
 				type : i % 2 === 0 ? "" : "youtube",
 				name : "Lorem ipsum dolor sit amet sit amet Lorem",
 				grid : [i, 0],
-				state : ""
+				state : "",
+				icon : i % 2 === 0 ? "a" : "l"
 			});
 		}
+
+		folders.push({
+			id : "folder-" + (4),
+			type : "stackOverflow",
+			name : "Lorem ipsum dolor sit amet sit amet Lorem",
+			grid : [4, 0],
+			state : "",
+			icon : "m"
+		});
+
+		folders.push({
+			id : "folder-" + (5),
+			type : "googleSearch",
+			name : "Lorem ipsum dolor sit amet sit amet Lorem",
+			grid : [2, 1],
+			state : "",
+			icon : "n"
+		});
 
 		var onSizeChange = function(){
 			gs.update();
