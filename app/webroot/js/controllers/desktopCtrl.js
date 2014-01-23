@@ -36,6 +36,7 @@ var reposAction = function(resizeManager){
 
 goog.require('goog.math.Rect');
 app.controller("desktopCtrl", function($scope, $timeout, gridService, keyboardManager, resizeService){
+
 	var links = [], folders = [], $allElements;
 	var lastDragged;
 	var timeout;
@@ -114,14 +115,20 @@ app.controller("desktopCtrl", function($scope, $timeout, gridService, keyboardMa
 	$scope.links = links;
 	$scope.folders = folders;
 	$scope.grid = gridService;
-	$scope.folderPreviewGrid = [2, 1];
-	$scope.showFolderPreview = false;
-	$scope.linkPreviewGrid = [3, 4];
-	$scope.showLinkPreview = false;
 	$scope.showGrid = false;
+	$scope.dragPreview = {
+		folder : {
+			grid : [0, 0],
+			show : false
+		},
+		link : {
+			grid : [0,0],
+			show : false
+		}
+	};
+	$scope.show = true;
 
 	gs.init(folders, links);
-
 	// $scope.showMenu = function(){
 	// 	alert("show menu");
 	// 	return false;
@@ -130,43 +137,16 @@ app.controller("desktopCtrl", function($scope, $timeout, gridService, keyboardMa
 	$scope.getDesktopStyle = function(){
 		var hasScrollbar = gridService.hasScrollbar();
 		if(hasScrollbar){
-			return {height : gridService.viewHeight + 20}
+			return {
+				height : gridService.viewHeight + 20,
+				display : $scope.show ? "block" : "none"
+			}
 		}else{
-			return {height : gridService.viewHeight}
+			return {
+				height : gridService.viewHeight,
+				display : $scope.show ? "block" : "none"
+			}
 		}
 	}
 
-	$scope.gridClass = function(){
-		return $scope.showGrid ? "shawGrid" : "hideGrid";
-	}
-
-	$scope.getLinkStyle = function(link){
-		
-		return {
-			left : link.grid[0] * (gridService.gridWidth + gridService.gridMargin),
-			top : link.grid[1] * (gridService.gridHeight + gridService.gridMargin),
-			height : gridService.gridHeight,
-			width : gridService.linkWidth
-		}
-	}
-
-	$scope.showDragPreview = function(selectedGrid, type){
-		if(type === "folder"){
-			$scope.folderPreviewGrid = selectedGrid;
-			$scope.showFolderPreview = true;
-		}else{
-			$scope.linkPreviewGrid = selectedGrid;
-			$scope.showLinkPreview = true;
-		}
-		$scope.$apply();
-	}
-
-	$scope.hideDragPreview = function(type){
-		if(type === "folder"){
-			$scope.showFolderPreview = false;
-		}else{
-			$scope.showLinkPreview = false;
-		}
-		$scope.$apply();
-	}
 });

@@ -3,6 +3,12 @@
 		<a class="save" href="javascript:saveBoard()">Save</a>
 		<a class="clear" href="javascript:clearBoard()">Clear</a>
 </div> -->
+
+<!-- <div id="dev-view" ng-controller="devCtrl">
+	<h1>{{obj.a}} + {{obj.b}} = {{result}}</h1>
+	<a href="#" ng-click="onclick">click</a>
+</div> -->
+
 <div id="desktop-view" ng-controller="desktopCtrl" ng-style="getDesktopStyle()">
 		
 	<!-- Antique Photo Theme -->
@@ -49,37 +55,36 @@
 		left : grid.sideWidth,
 		top : grid.topHeight
 	}">
-
-			<ul id="grid" ng-class="gridClass()">
-				<li class="hline gline" ng-repeat="line in grid.hlines" ng-style="{
-					top : line.top
+			<ul id="grid" ng-show="showGrid">
+				<!-- <li class="hline gline" ng-repeat="line in grid.hlines" ng-style="{
+					top : $index * (grid.gridHeight + grid.gridMargin)
 				}"></li>
 				<li class="vline gline" ng-repeat="line in grid.vlines" ng-style="{
 					left : line.index * (grid.gridWidth + grid.gridMargin), 
 					width : grid.gridWidth,
 					height : grid.boardHeight
-				}"></li>
+				}"></li> -->
 			</ul>
 			
-			<div lk-folder data="folder" ng-repeat="folder in folders"></div>
+			<div lk-folder data="folder" drag-preview="dragPreview.folder" ng-repeat="folder in folders"></div>
+			<div lk-link data="link"  drag-preview="dragPreview.link" ng-repeat="link in links"></div>	
 
 			<div id="folder-drop-preview" ng-style="{
 				width : grid.gridWidth,
 				height : grid.folderHeight,
-				left : folderPreviewGrid[0] * (grid.gridWidth + grid.gridMargin),
-				top : folderPreviewGrid[1] * (grid.gridHeight+ grid.gridMargin) * 4,
-				display : showFolderPreview ? 'block' : 'none'
+				left : dragPreview.folder.grid[0] * (grid.gridWidth + grid.gridMargin),
+				top : dragPreview.folder.grid[1] * (grid.gridHeight+ grid.gridMargin) * 4,
+				display : dragPreview.folder.show ? 'block' : 'none'
 			}"></div>
 
 			<div id="link-drop-preview" ng-style="{
-				left : linkPreviewGrid[0] * (grid.gridWidth + grid.gridMargin),
-				top : linkPreviewGrid[1] * (grid.gridHeight + grid.gridMargin),
+				left : dragPreview.link.grid[0] * (grid.gridWidth + grid.gridMargin),
+				top : dragPreview.link.grid[1] * (grid.gridHeight + grid.gridMargin),
 				width : grid.linkWidth,
 				height : grid.gridHeight,
-				display : showLinkPreview ? 'block' : 'none'
+				display : dragPreview.link.show ? 'block' : 'none'
 			}"></div>
-			
-			<div lk-link ng-repeat="link in links" id="{{link.id}}" class="link" data-grid="{{link.grid}}" ng-style="getLinkStyle(link)"></div>			
+					
 	</div>
 
 	<div id="bg-dot"></div>

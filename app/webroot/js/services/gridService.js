@@ -20,6 +20,8 @@ app.service("gridService", function($timeout){
 	var topHeight = 90;
 	var defaultGridWidth = 150;
 	var bottomHeight = 20;
+	var gridHeight = 30;
+	var gridMargin = 10;
 	var getRects = {
 		folder : function(){
 			var h = Math.ceil(getRowNum() / 4);
@@ -137,6 +139,8 @@ app.service("gridService", function($timeout){
 	this.sideWidth = sideWidth;
 	this.topHeight = topHeight;
 	this.bottomHeight = bottomHeight;
+	this.gridHeight = gridHeight;
+	this.gridMargin = gridMargin;
 	this.hasScrollbar = function(){
 		return $(window).height() > self.contentHeight ? false : true;
 	}
@@ -178,24 +182,24 @@ app.service("gridService", function($timeout){
 	}
 
 	this.getHLines = function(){
+		var hlins = [];
 		var n = getRowNum();
-		var a = [];
-		for(var i = 0; i<n; i++)
-			a.push({
-				"top" : i * (self.gridHeight + self.gridMargin)
-			});
-		
-		return a;
+		//console.log(n);
+		for(var i = 0; i<n; i++){
+			hlins.push({"index" : i});
+		}
+		return hlins;
 	}
 
 	this.getVLines = function(){
-		vlines = [];
+		var vlines = [];
 		var n = getColNum();
-		for(i = 0; i<n; i++)
+		//console.log(n);
+		for(i = 0; i<n; i++){
 			vlines.push({
 				"index" : i
 			});
-		
+		}
 		return vlines;
 	}
 
@@ -415,8 +419,6 @@ app.service("gridService", function($timeout){
 
 		this.folders = folders;
 		this.links = links;
-		self.gridHeight = 30;
-		self.gridMargin = 10;
 
 		this.update(folders, links);
 	}

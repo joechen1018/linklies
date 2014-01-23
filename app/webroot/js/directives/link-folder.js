@@ -4,13 +4,11 @@ app.directive("lkFolder", function(gridService){
 		templateUrl : "templates/folder.html",
 		controller : function($scope){
 			$scope.grid = gridService;
-			$scope.previewGrid = [0,0];
-			$scope.preview = true;
 		},
 		replace : true,
 		scope: {
 		    data : "=",
-		    dkCtrl : "@"
+		    dragPreview : "="
 		},
 		link : function(scope, ele, attrs, ctrl){
 
@@ -32,7 +30,7 @@ app.directive("lkFolder", function(gridService){
 
 			var $folder = $(ele);
 			var timeout;
-			var originRect, originGrid, draggingRect, selectedGrid, $folder, $link;
+			var originRect, originGrid, dragRect, dragGrid, $folder, $link;
 			var gs = gridService;
 			var sideWidth = gs.sideWidth;
 			var data = scope.data;
@@ -42,34 +40,34 @@ app.directive("lkFolder", function(gridService){
 				scroll: false,
 				start : function(e, ui){
 					originRect = gs.getRect($(ele));
-					selectedGrid = undefined;
+					dragGrid = undefined;
 					originGrid = data.grid;
 				},
 				drag : function(e, ui){
 
-					draggingRect = gs.getRect($folder);
-					selectedGrid = gs.findSelectedGrid.folder(originGrid, draggingRect);
-					if(selectedGrid !== undefined && !gs.occupied.folder(selectedGrid)){
-						scope.preview = true;
-						scope.previewGrid = selectedGrid;
+					dragRect = gs.getRect($folder);
+					dragGrid = gs.findSelectedGrid.folder(originGrid, dragRect);
+					if(dragGrid !== undefined && !gs.occupied.folder(dragGrid)){
+						scope.dragPreview.show = true;
+						scope.dragPreview.grid = dragGrid;
 					}else{
-						scope.preview = false;
+						scope.dragPreview.show = false;
 					}
 					scope.$apply();
 				},
 				stop : function(e, ui){
 
-					scope.preview = false;
+					scope.dragPreview.show = false;
 					
 					//get rect by current dom position
-					draggingRect = gs.getRect($folder);
+					dragRect = gs.getRect($folder);
 
 					//find selected grid, if current position is original grid, return undefined
-					selectedGrid = gs.findSelectedGrid.folder(originGrid, draggingRect);
+					dragGrid = gs.findSelectedGrid.folder(originGrid, dragRect);
 					
 					//if there is a selected grid and the selected grid is not occupied
-					if(selectedGrid !== undefined && !gs.occupied.folder(selectedGrid)){
-						scope.data.grid = selectedGrid;
+					if(dragGrid !== undefined && !gs.occupied.folder(dragGrid)){
+						scope.data.grid = dragGrid;
 					}else{
 						$folder.animate({
 							left : originRect.left,
@@ -90,11 +88,31 @@ app.directive("lkFolder", function(gridService){
 		restrict : "EA",
 		templateUrl : "templates/link.html",
 		controller : function($scope){
-
+			$scope.linkWidth = function(){
+				gridService.update();
+				return gridService.linkWidth;
+			}
 		},
+		scope : {
+			data : "=",
+			dragPreview : "="
+		},
+		replace : true,
 		link : function(scope, ele, attrs){
+
+			var data = scope.data;
+			scope.linkStyle = function(){
+				return {
+					left : data.grid[0] * (gridService.gridWidth + gridService.gridMargin),
+					top : data.grid[1] * (gridService.gridHeight + gridService.gridMargin),
+					height : gridService.gridHeight,
+					width : gridService.linkWidth
+				}
+			}
+
+
 			var gs = gridService;
-			var originRect, originGrid, draggingRect, selectedGrid, $folder, $link;
+			var originRect, originGrid, dragRect, selectedGrid, $folder, $link;
 			var sideWidth = gs.sideWidth;
 			$(ele).draggable({
 				containment : "#board",
@@ -107,55 +125,41 @@ app.directive("lkFolder", function(gridService){
 				},
 				drag : function(e, ui){
 
-					draggingRect = gs.getRect($link);
-					selectedGrid = gs.findSelectedGrid.link(originRect, draggingRect);
+					dragRect = gs.getRect($link);
+					selectedGrid = gs.findSelectedGrid.link(originRect, dragRect);
 					if(selectedGrid !== undefined && !gs.occupied.link(selectedGrid)){
-						scope.showDragPreview(selectedGrid, "link");
+						scope.dragPreview.show = true;
+						scope.dragPreview.grid = selectedGrid;
 					}else{
-						scope.hideDragPreview("link");
+						scope.dragPreview.show = false;
 					}
+					scope.$apply();
 				},
 				stop : function(e, ui){
+
+					scope.dragPreview.show = false;
 
 					//check if element exceeds bottom boundry and update
 					gs.updateOverFlow(ui.position.top + $(ele).height());
 
-					//hide the dragging preview div
-					scope.hideDragPreview("link");
-					
 					//get rect by current dom position
-					draggingRect = gs.getRect($link);
+					dragRect = gs.getRect($link);
 					//find selected grid, if current position is original grid, return undefined
-					selectedGrid = gs.findSelectedGrid.link(originGrid, draggingRect);
-					
+					selectedGrid = gs.findSelectedGrid.link(originGrid, dragRect);
 					//if there is a selected grid and the selected grid is not occupied
 					if(selectedGrid !== undefined && !gs.occupied.link(selectedGrid)){
-
-						//find the model by dom id
-						for(var i = 0; i<scope.links.length; i ++){
-							if(scope.links[i].id == $link.attr("id")){
-								scope.links[i].grid = selectedGrid;
-								scope.$apply();
-							}
-						}
+						scope.data.grid = selectedGrid;
 					}else{
 						$link.animate({
 							left : originRect.left,
 							top : originRect.top
 						}, 200);
 					}
+
+					scope.$apply();
 				}
 			});
-		}
-	}
-})
 
-.directive("folderDropPreview", function(){
-	return {
-		restrict : "A",
-		require : "lkFolder",
-		link : function(scope, ele, attrs, folderCtrl){
-			console.log(folderCtrl);
 		}
 	}
 });
