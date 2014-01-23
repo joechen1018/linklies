@@ -17,6 +17,7 @@
 @orange : #fe9d04;
 //@brown : #876631;
 @brown : darken(@bg-color, 40%);
+@yellow : #faec0a;
 @bg-color : #f0f1e3;
 //@bg-color : @red;
 #color-theme{
@@ -58,11 +59,12 @@ body-html{
 
 @sideWidth : 90px;
 #topbar{
-  @c : lighten(#000, 5%);
+  @c : darken(@blue, 10%);
   position:relative;
   height: 45px;
   width:100%;
-  background: @red;
+  //background: lighten(@red, 30%);
+  background : white;
   position: fixed;
   left:0;
   top:0;
@@ -220,7 +222,6 @@ body-html{
             color : darken(@orange, 40%);
           }
         }
-        @yellow : #faec0a;
         &.googleSearch{
           background: lighten(@yellow, 10%);
           color : darken(@yellow, 40%);
