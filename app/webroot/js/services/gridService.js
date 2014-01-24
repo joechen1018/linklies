@@ -292,10 +292,6 @@ app.service("gridService", function($rootScope, $timeout, resize){
 		}
 	}
 
-	this.rectToGrid = function(rect){
-
-	}
-
 	this.findNearistGrid = {
 		folder : function(grid){
 			var folderGrids = self.folderGrids, folderGrid, availableGrids = [], distances = [], bool;
@@ -374,6 +370,68 @@ app.service("gridService", function($rootScope, $timeout, resize){
 		this.update(folders, links);
 	}
 })
+.service("gridSystem", function(resize){
+
+	var self = this;
+	var $board = $("#board");
+	var getGridWidth = function(width){
+		var num = Math.ceil((width - _d.margin) / (_d.gridWidth + _d.margin));
+		var extra = width + _d.margin - (_d.gridWidth + _d.margin) * num;
+		extra /= num;
+		var w = _d.gridWidth + extra;
+		return w;
+	}
+	var getColNum = function(width){
+		var n = Math.ceil((width - _d.margin) / self.gridFullWidth);
+		return n;
+	}
+
+	var getRowNum = function(height){
+		var n = Math.floor((height - _d.margin) / self.gridFullHeight);
+		return n + 4;
+	}
+	var defaults = {
+		gridWidth : 150,
+		gridHeight : 30,
+		margin : 10,
+		sideWidth : 90,
+		topHeight : 90,
+		bottomHeight : 40
+	}
+	var _d = defaults;
+	var gridProto = function(x, y){
+
+	}
+	this.defaults = defaults;
+	this.width = $(window).width() - 2 * _d.sideWidth;
+	this.height = resize.getHeight() - _d.topHeight - _d.bottomHeight;
+	this.gridHeight = _d.gridHeight;
+	this.gridFullHeight = _d.gridHeight + _d.margin;
+	this.show = true;
+	this.onResize = function(size){
+		if(size && size.width)
+			this.width = size.width - 2 * _d.sideWidth;
+		if(size && size.height)
+			this.height = size.height - _d.topHeight - _d.bottomHeight;
+
+		this.update();
+	}
+	this.update = function(){
+		this.gridWidth = getGridWidth(this.width);
+		this.gridFullWidth = this.gridWidth + _d.margin;
+		this.cols = _.range(getColNum(this.width));
+		this.rows = _.range(getRowNum(this.height));
+		this.folderSize = {
+			width : this.gridWidth,
+			height : 4 * _d.gridHeight + 3 * _d.margin
+		}
+		this.linkSize = {
+			width : 2 * this.gridWidth + _d.margin,
+			height : _d.gridHeight
+		}
+	}
+	this.update();
+})
 .service("resize", function(){
 	
 	var lastWidth = $(window).width();
@@ -382,6 +440,9 @@ app.service("gridService", function($rootScope, $timeout, resize){
 	var timeout;
 	var delay = 300;
 	var self = this, item;
+	var getBottom = function($item){
+		return $item.offset().top + $item.height();
+	}
 	var checkQueue = function(){
 		for(var i = queue.length - 1; i>-1; i--){
 			if(currentWidth >= queue[i].width){
@@ -398,7 +459,6 @@ app.service("gridService", function($rootScope, $timeout, resize){
 			}
 		}
 	}
-	self.currentWidth = $(window).width();
 	this.whenWidthGreater = function(width, index, grid){
 		var d = $.Deferred();
 		queue.push({
@@ -410,6 +470,20 @@ app.service("gridService", function($rootScope, $timeout, resize){
 		return d.promise();
 	}	
 
+	this.getHeight = function(){
+
+		var height = $(window).height();
+		var b;
+		$("body").children().each(function(i, e){
+			b = getBottom($(e));
+			if(b > height){
+				height = b;
+			}
+		});
+		return b;
+	}
+	this.currentWidth = $(window).width();
+	this.currentHeight = this.getHeight();
 	$(window).resize(function(){
 		$(self).trigger("resize", [lastWidth]);
 		clearTimeout(timeout);

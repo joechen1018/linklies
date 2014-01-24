@@ -1,7 +1,7 @@
 'use strict';
 
 goog.require('goog.math.Rect');
-app.controller("desktopCtrl", function($scope, $timeout, gridService, keyboardManager, resize){
+app.controller("desktopCtrl", function($scope, $timeout, gridService, keyboardManager, resize, gridSystem){
 
 	var links = [], folders = [], $allElements;
 	var lastDragged;
@@ -101,6 +101,7 @@ app.controller("desktopCtrl", function($scope, $timeout, gridService, keyboardMa
 	$scope.folders = folders;
 	$scope.grid = gridService;
 	$scope.resize = resize;
+	$scope.grids = gridSystem;
 	$scope.showGrid = false;
 	$scope.dragPreview = {
 		folder : {
@@ -120,11 +121,18 @@ app.controller("desktopCtrl", function($scope, $timeout, gridService, keyboardMa
 		// console.log(oldVal);
 	});
 
+	$scope.$watch("grids.gridWidth", function(newVal, oldVal){
+		//console.log("new grid width : " + newVal);
+	});
+
 	$scope.$watch('resize.currentWidth', function(newVal, oldVal){
 		// console.log(newVal);
 		// console.log(oldVal);
 		if(newVal && newVal !== oldVal){
-			
+			var size = {
+				width : newVal
+			}
+			gridSystem.onResize(size);
 		}
 	});
 

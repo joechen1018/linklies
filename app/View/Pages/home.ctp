@@ -50,19 +50,19 @@
 	</div>
 
 	<div id="board" ng-style="{
-		width : grid.boardWidth,
-		height : grid.boardHeight,
-		left : grid.sideWidth,
-		top : grid.topHeight
+		width : grids.width,
+		height : grids.height,
+		left : grids.defaults.sideWidth,
+		top : grids.defaults.topHeight
 	}">
-			<ul id="grid" ng-show="showGrid">
-				<li class="hline gline" ng-repeat="line in grid.hlines" ng-style="{
-					top : $index * (grid.gridHeight + grid.gridMargin)
+			<ul id="gridLines" ng-show="grids.show">
+				<li class="hline gline" ng-repeat="item in grids.rows" ng-style="{
+					top : $index * grids.gridFullHeight
 				}"></li>
-				<li class="vline gline" ng-repeat="line in grid.vlines" ng-style="{
-					left : $index * (grid.gridWidth + grid.gridMargin), 
-					width : grid.gridWidth,
-					height : grid.boardHeight
+				<li class="vline gline" ng-repeat="item in grids.cols" ng-style="{
+					left : $index * grids.gridFullWidth, 
+					width : grids.gridWidth,
+					height : grids.height
 				}"></li>
 			</ul>
 			
