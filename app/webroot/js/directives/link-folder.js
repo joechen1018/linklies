@@ -53,6 +53,7 @@ app.directive("lkFolder", function(gridService){
 					}else{
 						scope.dragPreview.show = false;
 					}
+					scope.data.dragGrid = dragGrid;
 					scope.$apply();
 				},
 				stop : function(e, ui){
@@ -140,7 +141,7 @@ app.directive("lkFolder", function(gridService){
 					scope.dragPreview.show = false;
 
 					//check if element exceeds bottom boundry and update
-					gs.updateOverFlow(ui.position.top + $(ele).height());
+					//gs.updateOverFlow(ui.position.top + $(ele).height());
 
 					//get rect by current dom position
 					dragRect = gs.getRect($link);

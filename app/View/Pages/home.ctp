@@ -56,18 +56,18 @@
 		top : grid.topHeight
 	}">
 			<ul id="grid" ng-show="showGrid">
-				<!-- <li class="hline gline" ng-repeat="line in grid.hlines" ng-style="{
+				<li class="hline gline" ng-repeat="line in grid.hlines" ng-style="{
 					top : $index * (grid.gridHeight + grid.gridMargin)
 				}"></li>
 				<li class="vline gline" ng-repeat="line in grid.vlines" ng-style="{
-					left : line.index * (grid.gridWidth + grid.gridMargin), 
+					left : $index * (grid.gridWidth + grid.gridMargin), 
 					width : grid.gridWidth,
 					height : grid.boardHeight
-				}"></li> -->
+				}"></li>
 			</ul>
 			
 			<div lk-folder data="folder" drag-preview="dragPreview.folder" ng-repeat="folder in folders"></div>
-			<div lk-link data="link"  drag-preview="dragPreview.link" ng-repeat="link in links"></div>	
+			<div lk-link data="link"  drag-preview="dragPreview.link" ng-repeat="link in links"></div>
 
 			<div id="folder-drop-preview" ng-style="{
 				width : grid.gridWidth,

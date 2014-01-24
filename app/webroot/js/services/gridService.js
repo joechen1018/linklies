@@ -1,16 +1,4 @@
-app.service("gridService", function($timeout){
-	// Array.prototype.max = function() {
-	// 	var max = this[0];
-	// 	var len = this.length;
-	// 	for (var i = 1; i < len; i++) if (this[i] > max) max = this[i];
-	// 	return max;
-	// }
-	// Array.prototype.min = function() {
-	// 	var min = this[0];
-	// 	var len = this.length;
-	// 	for (var i = 1; i < len; i++) if (this[i] < min) min = this[i];
-	// 	return min;
-	// }
+app.service("gridService", function($rootScope, $timeout, resize){
 	var self = this;
 	var $desk = $("#desktop-view");
 	var hlines = [], vlines = [];
@@ -133,7 +121,6 @@ app.service("gridService", function($timeout){
 		return grids;
 	}
 
-	var newOccupation = [];
 	var arrayEquals = goog.array.equals;
 	var intersects = goog.math.Rect.intersects;
 	this.sideWidth = sideWidth;
@@ -181,28 +168,6 @@ app.service("gridService", function($timeout){
 		return h;
 	}
 
-	this.getHLines = function(){
-		var hlins = [];
-		var n = getRowNum();
-		//console.log(n);
-		for(var i = 0; i<n; i++){
-			hlins.push({"index" : i});
-		}
-		return hlins;
-	}
-
-	this.getVLines = function(){
-		var vlines = [];
-		var n = getColNum();
-		//console.log(n);
-		for(i = 0; i<n; i++){
-			vlines.push({
-				"index" : i
-			});
-		}
-		return vlines;
-	}
-
 	this.update = function(folders, links){
 
 		if(folders && links){
@@ -219,16 +184,10 @@ app.service("gridService", function($timeout){
 		self.rows = getRowNum();
 		self.cols = getColNum();
 		self.gridWidth = self.getGridWidth();
-
 		self.folderHeight = 4*self.gridHeight + 3*self.gridMargin;
 		self.linkWidth = 2*self.gridWidth + self.gridMargin;
-
-		//require viewHeight
-		self.hlines = self.getHLines();
-
-		//require viewWidth
-		self.vlines = self.getVLines();
-
+		self.hlines = _.range(self.rows);
+		self.vlines = _.range(self.cols);
 		self.folderRects = getRects.folder();
 		self.linkRects = getRects.link();
 		self.grids = getGrids();
@@ -408,22 +367,14 @@ app.service("gridService", function($timeout){
 		}
 	}
 
-	this.updateOverFlow = function(bottom){
-		bottom += topHeight;
-		if(bottom > this.viewHeight){
-			this.update();
-		}
-	}
-
 	this.init = function(folders, links){
 
 		this.folders = folders;
 		this.links = links;
-
 		this.update(folders, links);
 	}
 })
-.service("resizeService", function(){
+.service("resize", function(){
 	
 	var lastWidth = $(window).width();
 	var currentWidth = lastWidth;
@@ -447,6 +398,7 @@ app.service("gridService", function($timeout){
 			}
 		}
 	}
+	self.currentWidth = $(window).width();
 	this.whenWidthGreater = function(width, index, grid){
 		var d = $.Deferred();
 		queue.push({
@@ -462,16 +414,16 @@ app.service("gridService", function($timeout){
 		$(self).trigger("resize", [lastWidth]);
 		clearTimeout(timeout);
 		timeout = setTimeout(function(){
-			currentWidth = $(window).width();
+			self.currentWidth = $(window).width();
 			$(self).trigger("sizeChange", [lastWidth]);
-			if(currentWidth > lastWidth){
+			if(self.currentWidth > lastWidth){
 				$(self).trigger("sizeUp", [lastWidth]);
-			}else if(currentWidth < lastWidth){
+			}else if(self.currentWidth < lastWidth){
 				$(self).trigger("sizeDown", [lastWidth]);
 			}
 
 			checkQueue();
-			lastWidth = currentWidth;
+			lastWidth = self.currentWidth;
 		}, delay);
 	});
 })

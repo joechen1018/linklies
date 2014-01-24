@@ -1,47 +1,13 @@
 'use strict';
 
-/*
-var pushAction = function(){
-
-	this.evtTarget;
-	this.pushTarget;
-	this.restoreEvent = "collapes";
-	this.restoreGrid; //original grid
-	this.direction; //string x, -x, y, -y;
-	this.distance; //number of grid
-
-}
-
-var w = lastWidth - currentWidth;
-folders = gs.getOutBoundElements();
-for(var i = 0; i<folders.length; i++){
-	folder = folders[i];
-	newGrid = gs.findNearestGrid(folder);
-	resizeManager.when(w, function(){
-		folder.grid = folder.grid;
-	});
-	folder.grid = newGrid;
-}
-
-var reposAction = function(resizeManager){
-
-	var self = this;
-	this.evtTarget;
-	this.pushTarget;
-	this.restoreGrid = [4, 5]; //original grid
-	this.push = [3, -3]; // x + 3, y - 3
-
-	resizeManager.watchSizeUp("width", 1000, this);
-}*/
-
 goog.require('goog.math.Rect');
-app.controller("desktopCtrl", function($scope, $timeout, gridService, keyboardManager, resizeService){
+app.controller("desktopCtrl", function($scope, $timeout, gridService, keyboardManager, resize){
 
 	var links = [], folders = [], $allElements;
 	var lastDragged;
 	var timeout;
 	var pushedX, pushedY;
-	var rs = resizeService;
+	var rs = resize;
 	var gs = gridService;
 	var sideWidth = gs.sideWidth;
 	var init = function(){
@@ -134,6 +100,7 @@ app.controller("desktopCtrl", function($scope, $timeout, gridService, keyboardMa
 	$scope.links = links;
 	$scope.folders = folders;
 	$scope.grid = gridService;
+	$scope.resize = resize;
 	$scope.showGrid = false;
 	$scope.dragPreview = {
 		folder : {
@@ -146,12 +113,20 @@ app.controller("desktopCtrl", function($scope, $timeout, gridService, keyboardMa
 		}
 	};
 	$scope.show = true;
-
 	gs.init(folders, links);
-	// $scope.showMenu = function(){
-	// 	alert("show menu");
-	// 	return false;
-	// }
+
+	$scope.$watch('grid.gridWidth', function(newVal, oldVal, scope){
+		// console.log(newVal);
+		// console.log(oldVal);
+	});
+
+	$scope.$watch('resize.currentWidth', function(newVal, oldVal){
+		// console.log(newVal);
+		// console.log(oldVal);
+		if(newVal && newVal !== oldVal){
+			
+		}
+	});
 
 	$scope.getDesktopStyle = function(){
 		var hasScrollbar = gridService.hasScrollbar();
@@ -167,5 +142,4 @@ app.controller("desktopCtrl", function($scope, $timeout, gridService, keyboardMa
 			}
 		}
 	}
-
 });
