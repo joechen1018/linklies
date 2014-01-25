@@ -1,4 +1,4 @@
-app.directive("lkFolder", function(gridService, gridSystem){
+app.directive("lkFolder", function(gridService, gridSystem, gridRects){
 	return {
 		restrict : "EA",
 		templateUrl : "templates/folder.html",
@@ -10,10 +10,12 @@ app.directive("lkFolder", function(gridService, gridSystem){
 		scope: {
 		    data : "=",
 		    dragPreview : "=",
-		    gridSystem : "="
+		    gridSystem : "=",
+		    gridRects : "="
 		},
 		link : function(scope, ele, attrs, ctrl){
 
+			var gs = gridService;
 			var grids = gridSystem;
 			scope.getStyle = function(){
 				return {
@@ -30,7 +32,8 @@ app.directive("lkFolder", function(gridService, gridSystem){
 			}
 
 			scope.grid = gs;
-
+			var rects = gridRects;
+			var folderRects = gridRects.folder;
 			var $folder = $(ele);
 			var timeout;
 			var originRect, originGrid, dragRect, dragGrid, $folder, $link;
@@ -50,6 +53,13 @@ app.directive("lkFolder", function(gridService, gridSystem){
 
 					dragRect = gs.getRect($folder);
 					dragGrid = gs.findSelectedGrid.folder(originGrid, dragRect);
+
+					dragRect = rects.getDomRect($folder);
+					dragGrid = folderRects.findSelectedGrid(
+						originGrid, 
+						dragRect
+					);
+
 					if(dragGrid !== undefined && !gs.occupied.folder(dragGrid)){
 						scope.dragPreview.show = true;
 						scope.dragPreview.grid = dragGrid;
@@ -84,6 +94,8 @@ app.directive("lkFolder", function(gridService, gridSystem){
 					//var near = gs.findNearistGrid.folder(selectedGrid);
 				}
 			});
+			
+
 		}
 	}
 })

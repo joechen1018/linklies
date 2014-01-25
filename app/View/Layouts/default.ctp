@@ -22,6 +22,7 @@
 	<script src="js/controllers/desktopCtrl.js" type="text/javascript" charset="utf-8"></script>
 	<script src="js/services/keyboardManager.js" type="text/javascript" charset="utf-8"></script>
 	<script src="js/services/gridService.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/services/gridRects.js" type="text/javascript" charset="utf-8"></script>
 	<script src="js/directives/link-folder.js" type="text/javascript" charset="utf-8"></script>
 </head>
 <body>
