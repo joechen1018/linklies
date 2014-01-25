@@ -1,23 +1,26 @@
-app.directive("lkFolder", function(gridService){
+app.directive("lkFolder", function(gridService, gridSystem){
 	return {
 		restrict : "EA",
 		templateUrl : "templates/folder.html",
 		controller : function($scope){
 			$scope.grid = gridService;
+			$scope.grids = gridSystem;
 		},
 		replace : true,
 		scope: {
 		    data : "=",
-		    dragPreview : "="
+		    dragPreview : "=",
+		    gridSystem : "="
 		},
 		link : function(scope, ele, attrs, ctrl){
 
+			var grids = gridSystem;
 			scope.getStyle = function(){
 				return {
-					left : scope.data.grid[0] * (gridService.gridWidth + gridService.gridMargin),
-					top : scope.data.grid[1] * (gridService.gridHeight+ gridService.gridMargin) * 4,
-					width : gridService.gridWidth,
-					height : gridService.folderHeight
+					left : scope.data.grid[0] * grids.gridFullWidth,
+					top : scope.data.grid[1] * grids.folderSize.fullHeight,
+					width : grids.gridWidth,
+					height : grids.folderSize.height
 				}
 			}
 
@@ -84,15 +87,12 @@ app.directive("lkFolder", function(gridService){
 		}
 	}
 })
-.directive("lkLink", function(gridService){
+.directive("lkLink", function(gridService, gridSystem){
 	return {
 		restrict : "EA",
 		templateUrl : "templates/link.html",
 		controller : function($scope){
-			$scope.linkWidth = function(){
-				gridService.update();
-				return gridService.linkWidth;
-			}
+			$scope.grids = gridSystem;
 		},
 		scope : {
 			data : "=",
@@ -100,14 +100,14 @@ app.directive("lkFolder", function(gridService){
 		},
 		replace : true,
 		link : function(scope, ele, attrs){
-
+			var grids = gridSystem;
 			var data = scope.data;
 			scope.linkStyle = function(){
 				return {
-					left : data.grid[0] * (gridService.gridWidth + gridService.gridMargin),
-					top : data.grid[1] * (gridService.gridHeight + gridService.gridMargin),
-					height : gridService.gridHeight,
-					width : gridService.linkWidth
+					left : grids.getLeft(data.grid[0]),
+					top : grids.getTop(data.grid[1]),
+					height : grids.linkSize.height,
+					width : grids.linkSize.width
 				}
 			}
 

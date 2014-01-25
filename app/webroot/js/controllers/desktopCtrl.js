@@ -125,16 +125,11 @@ app.controller("desktopCtrl", function($scope, $timeout, gridService, keyboardMa
 		//console.log("new grid width : " + newVal);
 	});
 
-	$scope.$watch('resize.currentWidth', function(newVal, oldVal){
+	$scope.$watch('resize.size', function(newSize, oldSize){
 		// console.log(newVal);
 		// console.log(oldVal);
-		if(newVal && newVal !== oldVal){
-			var size = {
-				width : newVal
-			}
-			gridSystem.onResize(size);
-		}
-	});
+		gridSystem.onResize(newSize);
+	}, true);
 
 	$scope.getDesktopStyle = function(){
 		var hasScrollbar = gridService.hasScrollbar();

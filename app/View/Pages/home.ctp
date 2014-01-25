@@ -57,7 +57,8 @@
 	}">
 			<ul id="gridLines" ng-show="grids.show">
 				<li class="hline gline" ng-repeat="item in grids.rows" ng-style="{
-					top : $index * grids.gridFullHeight
+					top : $index * grids.gridFullHeight,
+					height : grids.gridHeight
 				}"></li>
 				<li class="vline gline" ng-repeat="item in grids.cols" ng-style="{
 					left : $index * grids.gridFullWidth, 
@@ -70,18 +71,18 @@
 			<div lk-link data="link"  drag-preview="dragPreview.link" ng-repeat="link in links"></div>
 
 			<div id="folder-drop-preview" ng-style="{
-				width : grid.gridWidth,
-				height : grid.folderHeight,
-				left : dragPreview.folder.grid[0] * (grid.gridWidth + grid.gridMargin),
-				top : dragPreview.folder.grid[1] * (grid.gridHeight+ grid.gridMargin) * 4,
+				width : grids.gridWidth,
+				height : grids.folderSize.height,
+				left : dragPreview.folder.grid[0] * grids.gridFullWidth,
+				top : dragPreview.folder.grid[1] * grids.folderSize.fullHeight,
 				display : dragPreview.folder.show ? 'block' : 'none'
 			}"></div>
 
 			<div id="link-drop-preview" ng-style="{
-				left : dragPreview.link.grid[0] * (grid.gridWidth + grid.gridMargin),
-				top : dragPreview.link.grid[1] * (grid.gridHeight + grid.gridMargin),
-				width : grid.linkWidth,
-				height : grid.gridHeight,
+				left : dragPreview.link.grid[0] * grids.gridFullWidth,
+				top : dragPreview.link.grid[1] * grids.linkSize.fullHeight,
+				width : grids.linkSize.width,
+				height : grids.gridHeight,
 				display : dragPreview.link.show ? 'block' : 'none'
 			}"></div>
 					

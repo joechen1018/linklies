@@ -381,14 +381,22 @@ app.service("gridService", function($rootScope, $timeout, resize){
 		var w = _d.gridWidth + extra;
 		return w;
 	}
-	var getColNum = function(width){
-		var n = Math.ceil((width - _d.margin) / self.gridFullWidth);
-		return n;
+
+	var getGridHeight = function(height){
+
+		var n = getRowNum(height, _d.gridHeight + _d.margin) - 1;
+		var h = (height - (n-1) * _d.margin) / n;
+		return h;
 	}
 
-	var getRowNum = function(height){
-		var n = Math.floor((height - _d.margin) / self.gridFullHeight);
-		return n + 4;
+	var getColNum = function(width, gridWidth){
+		var n = Math.ceil((width - _d.margin) / gridWidth);
+		return n - 1;
+	}
+
+	var getRowNum = function(height, gridFullHeight){
+		var n = Math.ceil((height - _d.margin) / gridFullHeight);
+		return n;
 	}
 	var defaults = {
 		gridWidth : 150,
@@ -399,12 +407,7 @@ app.service("gridService", function($rootScope, $timeout, resize){
 		bottomHeight : 40
 	}
 	var _d = defaults;
-	var gridProto = function(x, y){
-
-	}
 	this.defaults = defaults;
-	this.width = $(window).width() - 2 * _d.sideWidth;
-	this.height = resize.getHeight() - _d.topHeight - _d.bottomHeight;
 	this.gridHeight = _d.gridHeight;
 	this.gridFullHeight = _d.gridHeight + _d.margin;
 	this.show = true;
@@ -417,18 +420,37 @@ app.service("gridService", function($rootScope, $timeout, resize){
 		this.update();
 	}
 	this.update = function(){
+		this.width = $(window).width() - 2 * _d.sideWidth;
+		this.height = resize.getHeight() - _d.topHeight - _d.bottomHeight;
 		this.gridWidth = getGridWidth(this.width);
 		this.gridFullWidth = this.gridWidth + _d.margin;
-		this.cols = _.range(getColNum(this.width));
-		this.rows = _.range(getRowNum(this.height));
+		this.gridHeight = getGridHeight(this.height);
+		this.gridFullHeight = this.gridHeight + _d.margin;
+		this.cols = _.range(getColNum(this.width, this.gridWidth));
+		this.rows = _.range(getRowNum(this.height, this.gridHeight + _d.margin));
 		this.folderSize = {
 			width : this.gridWidth,
-			height : 4 * _d.gridHeight + 3 * _d.margin
+			fullWidth : this.gridWidth + _d.margin,
+			height : 4 * this.gridHeight + 3 * _d.margin,
+			fullHeight : 4 * (this.gridHeight + _d.margin)
 		}
 		this.linkSize = {
 			width : 2 * this.gridWidth + _d.margin,
-			height : _d.gridHeight
+			fullWidth : 2 * this.gridFullWidth,
+			height : this.gridHeight,
+			fullHeight : _d.gridHeight + _d.margin
 		}
+
+		// console.log("board height : " + this.height);
+		// console.log("grid height : " + this.gridHeight);
+		// console.log("folder height : " + this.folderSize.fullHeight);
+	}
+
+	this.getLeft = function(x){
+		return x * this.gridFullWidth;
+	}
+	this.getTop = function(y){
+		return y * this.gridFullHeight;
 	}
 	this.update();
 })
@@ -440,6 +462,7 @@ app.service("gridService", function($rootScope, $timeout, resize){
 	var timeout;
 	var delay = 300;
 	var self = this, item;
+	var $elements = $(".folder, .link");
 	var getBottom = function($item){
 		return $item.offset().top + $item.height();
 	}
@@ -473,31 +496,39 @@ app.service("gridService", function($rootScope, $timeout, resize){
 	this.getHeight = function(){
 
 		var height = $(window).height();
-		var b;
-		$("body").children().each(function(i, e){
-			b = getBottom($(e));
-			if(b > height){
-				height = b;
+		var tmp;
+
+		$elements = $(".folder, .link");
+		$elements.each(function(i, e){
+			tmp = getBottom($(e));
+			if(tmp > height){
+				height = tmp;
 			}
 		});
-		return b;
+		return height;
 	}
 	this.currentWidth = $(window).width();
 	this.currentHeight = this.getHeight();
+	this.size = {
+		width : this.currentWidth,
+		height : this.currentHeight
+	}
 	$(window).resize(function(){
 		$(self).trigger("resize", [lastWidth]);
 		clearTimeout(timeout);
 		timeout = setTimeout(function(){
-			self.currentWidth = $(window).width();
+			self.size.width = $(window).width();
+			self.size.height = self.getHeight();
+
 			$(self).trigger("sizeChange", [lastWidth]);
-			if(self.currentWidth > lastWidth){
+			if(self.size.width > lastWidth){
 				$(self).trigger("sizeUp", [lastWidth]);
-			}else if(self.currentWidth < lastWidth){
+			}else if(self.size.width < lastWidth){
 				$(self).trigger("sizeDown", [lastWidth]);
 			}
 
 			checkQueue();
-			lastWidth = self.currentWidth;
+			lastWidth = self.size.width;
 		}, delay);
 	});
 })
