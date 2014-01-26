@@ -30,7 +30,7 @@ app.service("gridRects", function(gridSystem, apiService){
 			var rows = grids.rows;
 			var cols = grids.cols;
 			var arr = [];
-			for(var i = 0; i<rows.length; i++){
+			for(var i = 0; i<rows.length*2; i++){
 				for(var j = 0; j<cols.length; j++){
 					if(i % 2 === 0){
 						arr.push([rows[j], cols[i]]);

@@ -60,11 +60,14 @@ body-html{
 @sideWidth : 90px;
 #topbar{
   @c : darken(@blue, 10%);
+  @color1 : darken(@bg-color, 35%);
+  @color2 : #666666;
   position:relative;
   height: 45px;
   width:100%;
   //background: lighten(@red, 30%);
-  background : white;
+  background : darken(@bg-color, 75%);
+  //background: #1a1a1a;
   position: fixed;
   left:0;
   top:0;
@@ -80,7 +83,7 @@ body-html{
     width : 200px;
     height : 20px;
     input{
-      border : 1px solid darken(@bg-color, 25%);
+      border : 1px solid @color2;
       .border-radius(3px);
       width : 180px;
       height : 20px;      
@@ -95,7 +98,7 @@ body-html{
       display: block;
       top : 4px;
       font-size:10px;
-      color : darken(@bg-color, 25%);
+      color : @color2;
     }
   }
   .home{
@@ -104,13 +107,13 @@ body-html{
     top : 15px;
     width : 30px;
     span{
-      color: darken(@bg-color, 25%);
+      color: @color2;
       font-size:20px;
       display: block;
     }
   }
   .icon{
-    color: darken(@bg-color, 25%);
+    color: @color2;
     font-size:20px;
     position:relative;
     top:~"calc(50% - 10px)";
@@ -134,11 +137,11 @@ body-html{
       float:right;
       display: block;
       margin-left : 10px;
-      color: darken(@bg-color, 25%);
+      color: @color2;
       font-size:10px;
       padding:5px 5px 3px 5px;
       border : 1px solid;
-      border-color : darken(@bg-color, 25%);
+      border-color : @color2;
     }
   }
   div.funcs{
