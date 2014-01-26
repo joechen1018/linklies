@@ -7,10 +7,6 @@ app.service("gridRects", function(gridSystem, apiService){
 	var Rect = function(x, y, w, h){
 		return new gRect(x, y, w, h);
 	}
-	this.gridToRect = function(grid){
-		var rect;
-		return rect;
-	}
 	this.rectToGrid = function(rect){
 		var grid;
 		return grid;
@@ -89,7 +85,7 @@ app.service("gridRects", function(gridSystem, apiService){
 				};
 			for(var i = 0; i<folderGrids.length; i++){
 				if(! goog.array.equals(folderGrids[i], originGrid)){
-					rect = self.gridToRect(folderGrids[i]);
+					rect = self.folder.gridToRect(folderGrids[i]);
 					// console.log("rect");
 					// console.log(rect);
 					// console.log("dragRect");
@@ -150,11 +146,33 @@ app.service("gridRects", function(gridSystem, apiService){
 			}
 			return arr;
 		},
+		gridToRect : function(grid){
+			var rect = new goog.math.Rect(
+				grid[0] * gridSystem.gridFullWidth,
+				grid[1] * gridSystem.gridFullHeight,
+				gridSystem.linkSize.width,
+				gridSystem.linkSize.height
+			);
+			return rect;
+		},
 		rectToGrid : function(rect){
 			var grid;
 			return grid;
 		},
-		findDragRectGrid : function(originRect, dragRect){
+		gridAvailable : function(grid){
+			if(!grid){
+				return false;
+			}
+			var links = self.links;
+			for(var i = 0; i<links.length; i++){
+				if(arrayEquals(links[i].grid, grid)){
+					//console.log(folders[i].grid, grid);
+					return false;
+				}
+			}
+			return true;
+		},
+		findDragRectGrid : function(originGrid, dragRect){
 			var linkGrids = self.linkGrids, 
 				rect, 
 				intersection, 
@@ -163,9 +181,10 @@ app.service("gridRects", function(gridSystem, apiService){
 					area : 0, 
 					grid : undefined
 				};
+
 			for(var i = 0; i<linkGrids.length; i++){
 				if(! goog.array.equals(linkGrids[i], originGrid)){
-					rect = self.gridToRect(linkGrids[i]);
+					rect = self.link.gridToRect(linkGrids[i]);
 					if(rect.intersects(dragRect) ){	
 
 							intersection = gRect.intersection(rect, dragRect);
@@ -194,20 +213,9 @@ app.service("gridRects", function(gridSystem, apiService){
 	}
 	this.folderGrids = this.folder.getGrids();
 	this.linkGrids = this.link.getGrids();
-	var folders  = [], links = [];
-	for(var i = 0; i<4; i++){
-		links.push({
-			id : "link-" + (i+1),
-			grid : [0, 4+i],
-			pageTitle : "Nina Simone - Feeling good (Nicolas Jaar edit) \"Nico's feeling Good\" - YouTube",
-			thumb : "https://fbexternal-a.akamaihd.net/safe_image.php?d=AQBdfgUT1fJTToGl&w=398&h=208&url=http%3A%2F%2Fi1.ytimg.com%2Fvi%2FBkzvSf9NLTY%2Fhqdefault.jpg&cfs=1&upscale",
-			contentTitle : "Nicolas Jaar - Sonar 2012 (full set)",
-			from : "www.youtube.com",
-			desc : "THIS IS THE FIRST 11 MINUTES OF THE DARKSIDE ALBUM. FOOTAGE WAS FILMED IN MONTICELLO, NY. RECORD WAS WRITTEN AND RECORDED AT OTHER PEOPLE STUDIOS, NY, STUDIO DE LA REINE, PARIS & THE BARN, GARRISON, NY."
-		});
-	}
+	
 	this.folders = apiService.getFolders().then(function(folders){
 		self.folders = folders;
 	});
-	this.links = links;
+	this.links = apiService.getLinks();
 })

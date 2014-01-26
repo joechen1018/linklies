@@ -48,7 +48,8 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects){
 				containment : "#board",
 				scroll: false,
 				start : function(e, ui){
-					originRect = gs.getRect($(ele));
+					$folder = $(ele);
+					originRect = rects.getDomRect($folder);
 					dragGrid = undefined;
 					originGrid = data.grid;
 				},
@@ -105,7 +106,7 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects){
 		}
 	}
 })
-.directive("lkLink", function(gridService, gridSystem){
+.directive("lkLink", function(gridService, gridSystem, gridRects){
 	return {
 		restrict : "EA",
 		templateUrl : "templates/link.html",
@@ -122,14 +123,15 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects){
 			var data = scope.data;
 			scope.linkStyle = function(){
 				return {
-					left : grids.getLeft(data.grid[0]),
-					top : grids.getTop(data.grid[1]),
+					left : grids.getLeft(scope.data.grid[0]),
+					top : grids.getTop(scope.data.grid[1]),
 					height : grids.linkSize.height,
 					width : grids.linkSize.width
 				}
 			}
 
-
+			var rects = gridRects;
+			var linkRects = gridRects.link;
 			var gs = gridService;
 			var originRect, originGrid, dragRect, selectedGrid, $folder, $link;
 			var sideWidth = gs.sideWidth;
@@ -138,19 +140,19 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects){
 				scroll: false,
 				start : function(e, ui){
 					$link = $(ele);
-					originRect = gs.getRect($link);
-					selectedGrid = undefined;
-					originGrid = JSON.parse($link.attr("data-grid"));
+					originRect = rects.getDomRect($link);
+					//originRect = gs.getRect($link);
+					dragGrid = undefined;
+					originGrid = data.grid;
 				},
 				drag : function(e, ui){
 
-					dragRect = rects.getDomRect($folder);
-					dragGrid = folderRects.findDragRectGrid(
+					dragRect = rects.getDomRect($link);
+					dragGrid = linkRects.findDragRectGrid(
 						originGrid,
 						dragRect
 					);
-
-					isAvailable = folderRects.gridAvailable(dragGrid);
+					isAvailable = linkRects.gridAvailable(dragGrid);
 					//if(selectedGrid !== undefined && !gs.occupied.link(selectedGrid)){
 					if(isAvailable){
 						scope.dragPreview.show = true;
@@ -164,14 +166,13 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects){
 
 					scope.dragPreview.show = false;
 
-					selectedGrid = gs.findSelectedGrid.link(originGrid, dragRect);
-					dragRect = rects.getDomRect($folder);
-					dragGrid = folderRects.findDragRectGrid(
+					dragRect = rects.getDomRect($link);
+					dragGrid = linkRects.findDragRectGrid(
 						originGrid,
 						dragRect
 					);
 
-					isAvailable = folderRects.gridAvailable(dragGrid);
+					isAvailable = linkRects.gridAvailable(dragGrid);
 					//if there is a selected grid and the selected grid is not occupied
 					//if(selectedGrid !== undefined && !gs.occupied.link(selectedGrid)){
 					if(isAvailable){	

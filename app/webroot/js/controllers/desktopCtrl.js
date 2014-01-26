@@ -1,7 +1,7 @@
 'use strict';
 
 goog.require('goog.math.Rect');
-app.controller("desktopCtrl", function($scope, $timeout, gridService, keyboardManager, resize, gridSystem, gridRects){
+app.controller("desktopCtrl", function($scope, $timeout, gridService, keyboardManager, resize, gridSystem, gridRects, apiService){
 
 	var $allElements;
 	var timeout;
@@ -14,7 +14,7 @@ app.controller("desktopCtrl", function($scope, $timeout, gridService, keyboardMa
 			gs.update();
 		}
 		var onSizeDown = function(evt, lastWidth){
-			var folders = $scope.folders, folder, grid, rect, dist, newGrid;
+			/*var folders = $scope.folders, folder, grid, rect, dist, newGrid;
 			var cols = gs.cols;
 
 			//gs.update($scope.folders, $scope.links);
@@ -39,9 +39,9 @@ app.controller("desktopCtrl", function($scope, $timeout, gridService, keyboardMa
 					//console.log(newGrid, i);
 					$scope.folders[i].grid = newGrid;
 				}
-			}
+			}*/
 			$scope.$apply();
-			gs.update();
+			//gs.update();
 		}
 
 		$(rs).on("sizeChange", onSizeDown);
@@ -76,7 +76,7 @@ app.controller("desktopCtrl", function($scope, $timeout, gridService, keyboardMa
 		}
 	};
 	$scope.show = true;
-	gs.init($scope.folders, $scope.links);
+	//gs.init($scope.folders, $scope.links);
 
 	$scope.$watch('grid.gridWidth', function(newVal, oldVal, scope){
 		// console.log(newVal);
