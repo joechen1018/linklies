@@ -74,13 +74,13 @@
 				width : grids.gridWidth,
 				height : grids.folderSize.height,
 				left : dragPreview.folder.grid[0] * grids.gridFullWidth,
-				top : dragPreview.folder.grid[1] * grids.folderSize.fullHeight,
+				top : dragPreview.folder.grid[1] * grids.gridFullHeight,
 				display : dragPreview.folder.show ? 'block' : 'none'
 			}"></div>
 
 			<div id="link-drop-preview" ng-style="{
 				left : dragPreview.link.grid[0] * grids.gridFullWidth,
-				top : dragPreview.link.grid[1] * grids.linkSize.fullHeight,
+				top : dragPreview.link.grid[1] * grids.gridFullHeight,
 				width : grids.linkSize.width,
 				height : grids.gridHeight,
 				display : dragPreview.link.show ? 'block' : 'none'

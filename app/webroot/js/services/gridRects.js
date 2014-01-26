@@ -1,8 +1,9 @@
-app.service("gridRects", function(gridSystem){
+app.service("gridRects", function(gridSystem, apiService){
 
 	var self = this;
 	var grids = gridSystem;
 	var gRect = goog.math.Rect;
+	var arrayEquals = goog.array.equals;
 	var Rect = function(x, y, w, h){
 		return new gRect(x, y, w, h);
 	}
@@ -15,8 +16,18 @@ app.service("gridRects", function(gridSystem){
 		return grid;
 	}
 	this.getDomRect = function($dom){
-		var offset = $dom.position();
-		return Rect(offset.left, offset.top, $dom.width, $dom.height);
+		var pos = $dom.position();
+		var rect = new goog.math.Rect(pos.left, pos.top, $dom.width(), $dom.height());
+		return rect;
+	}
+	this.gridToRect = function(grid){
+		var rect = new goog.math.Rect(
+			grid[0] * gridSystem.gridFullWidth,
+			grid[1] * gridSystem.gridFullHeight,
+			gridSystem.gridWidth,
+			gridSystem.folderSize.height
+		);
+		return rect;
 	}
 	this.folder = {
 		getGrids : function(){
@@ -25,7 +36,7 @@ app.service("gridRects", function(gridSystem){
 			var arr = [];
 			for(var i = 0; i<rows.length; i++){
 				for(var j = 0; j<cols.length; j++){
-					if(i % 4 === 0){
+					if(i % 2 === 0){
 						arr.push([rows[j], cols[i]]);
 					}
 				}
@@ -45,7 +56,28 @@ app.service("gridRects", function(gridSystem){
 			var grid;
 			return grid;
 		},
-		findSelectedGrid : function(originGrid, dragRect){
+		gridAvailable : function(grid){
+			if(!grid){
+				return false;
+			}
+			var folders = self.folders;
+			var links = self.links;
+			for(var i = 0; i<folders.length; i++){
+				if(arrayEquals(folders[i].grid, grid)){
+					//console.log(folders[i].grid, grid);
+					return false;
+				}
+			}
+			return true;
+			var rect1, rect2 = self.gridToRect.folder(grid);
+			for(var i = 0; i<links.length; i++){
+				rect1 = self.gridToRect.link(links[i].grid);
+				if(rect1.intersects(rect2))
+					return true;
+			}
+			return false;
+		},
+		findDragRectGrid : function(originGrid, dragRect){
 
 			var folderGrids = self.folderGrids, 
 				rect, 
@@ -56,28 +88,24 @@ app.service("gridRects", function(gridSystem){
 					grid : undefined
 				};
 			for(var i = 0; i<folderGrids.length; i++){
-				rect = self.folder.gridToRect(folderGrids[i]);
-				if(rect.intersects(dragRect)){
-					console.log(folderGrids[i]);
-				}
-				if(folderGrids[i][0] == 4 && folderGrids[i][1] == 4){
+				if(! goog.array.equals(folderGrids[i], originGrid)){
+					rect = self.gridToRect(folderGrids[i]);
+					// console.log("rect");
 					// console.log(rect);
+					// console.log("dragRect");
 					// console.log(dragRect);
-				}
-				//if(rect.intersects(draggingRect) && (!goog.math.Rect.equals(originRect, rect))){
-				if(rect.intersects(dragRect) && 
-					(!goog.array.equals(folderGrids[i], originGrid))){	
+					//if(rect.intersects(draggingRect) && (!goog.math.Rect.equals(originRect, rect))){
+					if(rect.intersects(dragRect) ){	
 
-						intersection = gRect.intersection(rect, dragRect);
-						intersection.area = intersection.width * intersection.height;
-						console.log(intersection.area);
-						if(intersection.area > max.area){
-							max.area = area;
-							max.grid = folderGrids[i];
-						}
+							intersection = gRect.intersection(rect, dragRect);
+							intersection.area = intersection.width * intersection.height;
+							if(intersection.area > max.area){
+								max.area = intersection.area;
+								max.grid = folderGrids[i];
+							}
+					}
 				}
 			}
-			//console.log(max.grid);
 			return max.grid;
 			//find in all available rects, which has most intersection
 			var folderRects = self.folderRects, rect, intersection, area, max = {area : 0, grid : undefined};
@@ -114,7 +142,7 @@ app.service("gridRects", function(gridSystem){
 		getGrids : function(){
 			var rows = grids.rows;
 			var cols = grids.cols;
-			var arr;
+			var arr = [];
 			for(var i = 0; i<cols.length; i++){
 				for(var j = 0; j<rows.length; j++){
 					arr.push([cols[i], rows[j]]);
@@ -122,17 +150,34 @@ app.service("gridRects", function(gridSystem){
 			}
 			return arr;
 		},
-		gridToRect : function(grid){
-			var rect;
-			return rect;
-		},
 		rectToGrid : function(rect){
 			var grid;
 			return grid;
 		},
-		findSelectedRect : function(originRect, dragRect){
-			var selectedRect;
-			return selectedRect;
+		findDragRectGrid : function(originRect, dragRect){
+			var linkGrids = self.linkGrids, 
+				rect, 
+				intersection, 
+				area, 
+				max = {
+					area : 0, 
+					grid : undefined
+				};
+			for(var i = 0; i<linkGrids.length; i++){
+				if(! goog.array.equals(linkGrids[i], originGrid)){
+					rect = self.gridToRect(linkGrids[i]);
+					if(rect.intersects(dragRect) ){	
+
+							intersection = gRect.intersection(rect, dragRect);
+							intersection.area = intersection.width * intersection.height;
+							if(intersection.area > max.area){
+								max.area = intersection.area;
+								max.grid = linkGrids[i];
+							}
+					}
+				}
+			}
+			return max.grid;
 		},
 		gridOccupied : function(grid){
 			var bool = false;
@@ -148,4 +193,21 @@ app.service("gridRects", function(gridSystem){
 		}
 	}
 	this.folderGrids = this.folder.getGrids();
+	this.linkGrids = this.link.getGrids();
+	var folders  = [], links = [];
+	for(var i = 0; i<4; i++){
+		links.push({
+			id : "link-" + (i+1),
+			grid : [0, 4+i],
+			pageTitle : "Nina Simone - Feeling good (Nicolas Jaar edit) \"Nico's feeling Good\" - YouTube",
+			thumb : "https://fbexternal-a.akamaihd.net/safe_image.php?d=AQBdfgUT1fJTToGl&w=398&h=208&url=http%3A%2F%2Fi1.ytimg.com%2Fvi%2FBkzvSf9NLTY%2Fhqdefault.jpg&cfs=1&upscale",
+			contentTitle : "Nicolas Jaar - Sonar 2012 (full set)",
+			from : "www.youtube.com",
+			desc : "THIS IS THE FIRST 11 MINUTES OF THE DARKSIDE ALBUM. FOOTAGE WAS FILMED IN MONTICELLO, NY. RECORD WAS WRITTEN AND RECORDED AT OTHER PEOPLE STUDIOS, NY, STUDIO DE LA REINE, PARIS & THE BARN, GARRISON, NY."
+		});
+	}
+	this.folders = apiService.getFolders().then(function(folders){
+		self.folders = folders;
+	});
+	this.links = links;
 })

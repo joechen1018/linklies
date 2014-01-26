@@ -1,54 +1,14 @@
 'use strict';
 
 goog.require('goog.math.Rect');
-app.controller("desktopCtrl", function($scope, $timeout, gridService, keyboardManager, resize, gridSystem){
+app.controller("desktopCtrl", function($scope, $timeout, gridService, keyboardManager, resize, gridSystem, gridRects){
 
-	var links = [], folders = [], $allElements;
-	var lastDragged;
+	var $allElements;
 	var timeout;
-	var pushedX, pushedY;
 	var rs = resize;
 	var gs = gridService;
 	var sideWidth = gs.sideWidth;
 	var init = function(){
-		for(var i = 0; i<4; i++){
-			links.push({
-				id : "link-" + (i+1),
-				grid : [0, 4+i],
-				pageTitle : "Nina Simone - Feeling good (Nicolas Jaar edit) \"Nico's feeling Good\" - YouTube",
-				thumb : "https://fbexternal-a.akamaihd.net/safe_image.php?d=AQBdfgUT1fJTToGl&w=398&h=208&url=http%3A%2F%2Fi1.ytimg.com%2Fvi%2FBkzvSf9NLTY%2Fhqdefault.jpg&cfs=1&upscale",
-				contentTitle : "Nicolas Jaar - Sonar 2012 (full set)",
-				from : "www.youtube.com",
-				desc : "THIS IS THE FIRST 11 MINUTES OF THE DARKSIDE ALBUM. FOOTAGE WAS FILMED IN MONTICELLO, NY. RECORD WAS WRITTEN AND RECORDED AT OTHER PEOPLE STUDIOS, NY, STUDIO DE LA REINE, PARIS & THE BARN, GARRISON, NY."
-			});
-
-			folders.push({
-				id : "folder-" + (i+1),
-				type : i % 2 === 0 ? "" : "youtube",
-				name : "Lorem ipsum dolor sit amet sit amet Lorem",
-				grid : [i, 0],
-				state : "",
-				icon : i % 2 === 0 ? "a" : "l"
-			});
-		}
-
-		folders.push({
-			id : "folder-" + (4),
-			type : "stackOverflow",
-			name : "Lorem ipsum dolor sit amet sit amet Lorem",
-			grid : [4, 0],
-			state : "",
-			icon : "m"
-		});
-
-		folders.push({
-			id : "folder-" + (5),
-			type : "googleSearch",
-			name : "Lorem ipsum dolor sit amet sit amet Lorem",
-			grid : [2, 1],
-			state : "",
-			icon : "n"
-		});
 
 		var onSizeChange = function(){
 			gs.update();
@@ -97,8 +57,10 @@ app.controller("desktopCtrl", function($scope, $timeout, gridService, keyboardMa
 
 	init();
 
-	$scope.links = links;
-	$scope.folders = folders;
+	$scope.links = gridRects.links;
+	$scope.folders = gridRects.folders.then(function(folders){
+		$scope.folders = gridRects.folders;
+	});
 	$scope.grid = gridService;
 	$scope.resize = resize;
 	$scope.grids = gridSystem;
@@ -114,15 +76,15 @@ app.controller("desktopCtrl", function($scope, $timeout, gridService, keyboardMa
 		}
 	};
 	$scope.show = true;
-	gs.init(folders, links);
+	gs.init($scope.folders, $scope.links);
 
 	$scope.$watch('grid.gridWidth', function(newVal, oldVal, scope){
 		// console.log(newVal);
 		// console.log(oldVal);
 	});
 
-	$scope.$watch("grids.gridWidth", function(newVal, oldVal){
-		//console.log("new grid width : " + newVal);
+	$scope.$watch("gridRects.folders", function(newVal, oldVal){
+		//$scope.folders = newVal;
 	});
 
 	$scope.$watch('resize.size', function(newSize, oldSize){

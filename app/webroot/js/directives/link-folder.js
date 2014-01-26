@@ -18,11 +18,13 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects){
 			var gs = gridService;
 			var grids = gridSystem;
 			scope.getStyle = function(){
-				return {
-					left : scope.data.grid[0] * grids.gridFullWidth,
-					top : scope.data.grid[1] * grids.folderSize.fullHeight,
-					width : grids.gridWidth,
-					height : grids.folderSize.height
+				if(scope.data){
+					return {
+						left : scope.data.grid[0] * grids.gridFullWidth,
+						top : scope.data.grid[1] * grids.gridFullHeight,
+						width : grids.gridWidth,
+						height : grids.folderSize.height
+					}
 				}
 			}
 
@@ -40,6 +42,7 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects){
 			var gs = gridService;
 			var sideWidth = gs.sideWidth;
 			var data = scope.data;
+			var isAvailable = false;
 
 			$(ele).draggable({
 				containment : "#board",
@@ -51,46 +54,49 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects){
 				},
 				drag : function(e, ui){
 
-					dragRect = gs.getRect($folder);
-					dragGrid = gs.findSelectedGrid.folder(originGrid, dragRect);
-
 					dragRect = rects.getDomRect($folder);
-					dragGrid = folderRects.findSelectedGrid(
-						originGrid, 
+					dragGrid = folderRects.findDragRectGrid(
+						originGrid,
 						dragRect
 					);
 
-					if(dragGrid !== undefined && !gs.occupied.folder(dragGrid)){
+					isAvailable = folderRects.gridAvailable(dragGrid);
+					//console.log(isAvailable);
+					//(!goog.array.equals(folderGrids[i], originGrid))
+					if(isAvailable){
 						scope.dragPreview.show = true;
 						scope.dragPreview.grid = dragGrid;
 					}else{
 						scope.dragPreview.show = false;
 					}
-					scope.data.dragGrid = dragGrid;
-					scope.$apply();
+					
+					scope.$apply(function(){
+						scope.data.dragGrid = dragGrid;	
+					});
 				},
 				stop : function(e, ui){
 
 					scope.dragPreview.show = false;
 					
-					//get rect by current dom position
-					dragRect = gs.getRect($folder);
+					dragRect = rects.getDomRect($folder);
+					dragGrid = folderRects.findDragRectGrid(
+						originGrid,
+						dragRect
+					);
 
-					//find selected grid, if current position is original grid, return undefined
-					dragGrid = gs.findSelectedGrid.folder(originGrid, dragRect);
-					
+					isAvailable = folderRects.gridAvailable(dragGrid);
 					//if there is a selected grid and the selected grid is not occupied
-					if(dragGrid !== undefined && !gs.occupied.folder(dragGrid)){
-						scope.data.grid = dragGrid;
+					//if(dragGrid !== undefined && !gs.occupied.folder(dragGrid)){
+					if(isAvailable){
+						scope.$apply(function(){
+							scope.data.grid = dragGrid;
+						});
 					}else{
 						$folder.animate({
 							left : originRect.left,
 							top : originRect.top
 						}, 200);
 					}
-					
-					scope.$apply();
-
 					//var near = gs.findNearistGrid.folder(selectedGrid);
 				}
 			});
@@ -138,11 +144,17 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects){
 				},
 				drag : function(e, ui){
 
-					dragRect = gs.getRect($link);
-					selectedGrid = gs.findSelectedGrid.link(originRect, dragRect);
-					if(selectedGrid !== undefined && !gs.occupied.link(selectedGrid)){
+					dragRect = rects.getDomRect($folder);
+					dragGrid = folderRects.findDragRectGrid(
+						originGrid,
+						dragRect
+					);
+
+					isAvailable = folderRects.gridAvailable(dragGrid);
+					//if(selectedGrid !== undefined && !gs.occupied.link(selectedGrid)){
+					if(isAvailable){
 						scope.dragPreview.show = true;
-						scope.dragPreview.grid = selectedGrid;
+						scope.dragPreview.grid = dragGrid;
 					}else{
 						scope.dragPreview.show = false;
 					}
@@ -152,16 +164,18 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects){
 
 					scope.dragPreview.show = false;
 
-					//check if element exceeds bottom boundry and update
-					//gs.updateOverFlow(ui.position.top + $(ele).height());
-
-					//get rect by current dom position
-					dragRect = gs.getRect($link);
-					//find selected grid, if current position is original grid, return undefined
 					selectedGrid = gs.findSelectedGrid.link(originGrid, dragRect);
+					dragRect = rects.getDomRect($folder);
+					dragGrid = folderRects.findDragRectGrid(
+						originGrid,
+						dragRect
+					);
+
+					isAvailable = folderRects.gridAvailable(dragGrid);
 					//if there is a selected grid and the selected grid is not occupied
-					if(selectedGrid !== undefined && !gs.occupied.link(selectedGrid)){
-						scope.data.grid = selectedGrid;
+					//if(selectedGrid !== undefined && !gs.occupied.link(selectedGrid)){
+					if(isAvailable){	
+						scope.data.grid = dragGrid;
 					}else{
 						$link.animate({
 							left : originRect.left,

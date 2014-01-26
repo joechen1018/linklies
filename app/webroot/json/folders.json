@@ -1,0 +1,50 @@
+[
+	{
+		"id" : "folder-1",
+		"type" : "youtube",
+		"name" : "Lorem ipsum dolor sit amet sit amet Lorem",
+		"grid" : [0, 0],
+		"state" : "",
+		"icon" : "a"
+	},
+	{
+		"id" : "folder-2",
+		"type" : "",
+		"name" : "Lorem ipsum dolor sit amet sit amet Lorem",
+		"grid" : [1, 0],
+		"state" : "",
+		"icon" : "l"
+	},
+	{
+		"id" : "folder-3",
+		"type" : "youtube",
+		"name" : "Lorem ipsum dolor sit amet sit amet Lorem",
+		"grid" : [2, 0],
+		"state" : "",
+		"icon" : "a"
+	},
+	{
+		"id" : "folder-4",
+		"type" : "",
+		"name" : "Lorem ipsum dolor sit amet sit amet Lorem",
+		"grid" : [3, 0],
+		"state" : "",
+		"icon" : "l"
+	},
+	{
+		"id" : "folder-5",
+		"type" : "stackOverflow",
+		"name" : "Lorem ipsum dolor sit amet sit amet Lorem",
+		"grid" : [4, 0],
+		"state" : "",
+		"icon" : "m"
+	},
+	{
+		"id" : "folder-6",
+		"type" : "googleSearch",
+		"name" : "Lorem ipsum dolor sit amet sit amet Lorem",
+		"grid" : [2, 4],
+		"state" : "",
+		"icon" : "m"
+	}
+]
