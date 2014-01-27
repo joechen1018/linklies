@@ -40,9 +40,9 @@
 			<input type="text" placeholder="enter keywords">
 			<span data-icon="n"></span>
 		</div>
-		<div class="home">
+		<!-- <div class="home">
 			<span data-icon="r"></span>
-		</div>
+		</div> -->
 		<div class="funcs-1">
 			<a class="addNew" href="" data-icon="d"><span></span></a>
 			<a href="" class="options" data-icon="o"></a>
@@ -54,7 +54,7 @@
 		height : grids.height,
 		left : grids.defaults.sideWidth,
 		top : grids.defaults.topHeight
-	}">
+	}" ng-click="onBoardClick($event)">
 			<ul id="gridLines" ng-show="grids.show">
 				<li class="hline gline" ng-repeat="item in grids.rows" ng-style="{
 					top : $index * grids.gridFullHeight,

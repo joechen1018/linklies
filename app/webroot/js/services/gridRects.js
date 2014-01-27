@@ -75,6 +75,7 @@ app.service("gridRects", function(gridSystem, apiService){
 		},
 		findDragRectGrid : function(originGrid, dragRect){
 
+			self.folderGrids = self.folder.getGrids();
 			var folderGrids = self.folderGrids, 
 				rect, 
 				intersection, 
@@ -125,13 +126,16 @@ app.service("gridRects", function(gridSystem, apiService){
 			var bool = false;
 			return bool;
 		},
-		findNearByGrid : function(grid){
+		findNearGrid : function(grid){
 			var nearByGrid;
 			return nearByGrid;
 		},
 		findNextGrid : function(){
 			var nextGrid;
 			return nextGrid;
+		},
+		findNearGridByPoint : function(x, y){
+
 		}
 	}
 	this.link = {
@@ -139,9 +143,9 @@ app.service("gridRects", function(gridSystem, apiService){
 			var rows = grids.rows;
 			var cols = grids.cols;
 			var arr = [];
-			for(var i = 0; i<cols.length; i++){
-				for(var j = 0; j<rows.length; j++){
-					arr.push([cols[i], rows[j]]);
+			for(var i = 0; i<rows.length; i++){
+				for(var j = 0; j<cols.length; j++){
+					arr.push([rows[i], cols[j]]);
 				}
 			}
 			return arr;
@@ -202,13 +206,28 @@ app.service("gridRects", function(gridSystem, apiService){
 			var bool = false;
 			return bool;
 		},
-		findNearByGrid : function(grid){
+		findNearGrid : function(grid){
 			var nearByGrid;
 			return nearByGrid;
 		},
 		findNextGrid : function(){
 			var nextGrid;
 			return nextGrid;
+		},
+		findNearGridByPoint : function(x, y){
+			var clickRect = new goog.math.Rect(x - 10, y - 10, 20, 20);
+			var links = self.link.getGrids(), rect;
+			var max = 0, inters, nearGrid;
+			for(var i = 0; i<links.length; i++){
+				rect = self.link.gridToRect(links[i]);
+				inters = clickRect.intersects(rect);	
+				//if(inters.width * inters.height > max){
+				if(inters){
+					max = inters.width * inters.height;
+					nearGrid = links[i];
+				}
+			}
+			return nearGrid;
 		}
 	}
 	this.folderGrids = this.folder.getGrids();

@@ -48,7 +48,7 @@ app.controller("desktopCtrl", function($scope, $timeout, gridService, keyboardMa
 		//$(rs).on("sizeDown", onSizeDown);
 
 		keyboardManager.bind("ctrl+l", function(){
-			$scope.showGrid = !$scope.showGrid;
+			$scope.grids.show = !$scope.grids.show;
 			$scope.$apply();
 		});
 
@@ -106,5 +106,22 @@ app.controller("desktopCtrl", function($scope, $timeout, gridService, keyboardMa
 				display : $scope.show ? "block" : "none"
 			}
 		}
+	}
+
+	$scope.onBoardClick = function($event){
+		var x = $event.pageX - gridSystem.defaults.sideWidth;
+		var y = $event.pageY - gridSystem.defaults.topHeight;
+		var grid = gridRects.link.findNearGridByPoint(x, y);
+		console.log(grid);
+		var newLink = {
+			id : "link-new",
+			grid : grid,
+			pageTitle : "",
+			thumb : "",
+			contentTitle : "some new title",
+			from : "",
+			desc : ""
+		}
+		$scope.links.push(newLink);
 	}
 });

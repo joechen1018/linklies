@@ -19,6 +19,7 @@
 @brown : darken(@bg-color, 40%);
 @yellow : #faec0a;
 @bg-color : #f0f1e3;
+@dark:#292821;
 //@bg-color : @red;
 #color-theme{
   position: absolute;
@@ -66,8 +67,8 @@ body-html{
   height: 45px;
   width:100%;
   //background: lighten(@red, 30%);
-  background : darken(@bg-color, 75%);
-  //background: #1a1a1a;
+  //background : darken(@bg-color, 75%);
+  background: lighten(@dark, 10%);
   position: fixed;
   left:0;
   top:0;
@@ -107,13 +108,13 @@ body-html{
     top : 15px;
     width : 30px;
     span{
-      color: @color2;
+      color: lighten(@dark, 30%);
       font-size:20px;
       display: block;
     }
   }
   .icon{
-    color: @color2;
+    color: lighten(@dark, 30%);
     font-size:20px;
     position:relative;
     top:~"calc(50% - 10px)";
@@ -137,11 +138,11 @@ body-html{
       float:right;
       display: block;
       margin-left : 10px;
-      color: @color2;
+      color: lighten(@dark, 40%);
       font-size:10px;
       padding:5px 5px 3px 5px;
       border : 1px solid;
-      border-color : @color2;
+      border-color : lighten(@dark, 13%);;
     }
   }
   div.funcs{
@@ -253,7 +254,7 @@ body-html{
           background: white;
           .alpha(1);
           div.close{
-            display: block;
+            //display: block;
             position: absolute;
             right : 5px;
             top : 5px;
@@ -283,9 +284,12 @@ body-html{
       -webkit-border-radius: 3px 3px 0 0;
       border-radius: 3px;
       .shadow-light;
-      background:white;
+      background: lighten(@bg-color, 3%);
       z-index:2;
       cursor:pointer;
+      &:hover{
+        background: white;
+      };
 
       .state-paste-url{
         display: none;
@@ -487,7 +491,7 @@ h1.links-left{
   display:block;
   position:absolute;
   &.showGrid>li{
-    .alpha(0.21);
+    .alpha(0.2);
   }
   &.hideGrid>li{
     .alpha(0.01);
@@ -496,7 +500,7 @@ h1.links-left{
     display: block;
     position:absolute;
     z-index: 2;
-    .alpha(0.31);
+    .alpha(0.5);
     margin:0;
     padding:0;
     pointer-events:none;
