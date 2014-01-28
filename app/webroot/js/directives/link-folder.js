@@ -112,9 +112,9 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects){
 		templateUrl : "templates/link.html",
 		controller : function($scope){
 			$scope.grids = gridSystem;
-			$scope.state = $scope.data.state || "paste-url";
+			$scope.state = $scope.data.state || { name : "paste-url" };
 			$scope.checkState = function(state){
-				if(state === $scope.state)
+				if(state === $scope.state.name)
 					return true;
 				return false;
 			}

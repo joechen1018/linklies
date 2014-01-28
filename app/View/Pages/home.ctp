@@ -80,7 +80,7 @@
 			</div> -->
 			
 			<div lk-folder data="folder" drag-preview="dragPreview.folder" ng-repeat="folder in folders"></div>
-			<div lk-link data="link"  drag-preview="dragPreview.link" ng-repeat="link in links"></div>
+			<div lk-link data="link"  drag-preview="dragPreview.link" ng-repeat="link in links"  ng-click="onLinkClick($event)"></div>
 
 			<div id="folder-drop-preview" ng-style="{
 				width : grids.gridWidth,

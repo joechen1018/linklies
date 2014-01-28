@@ -1,4 +1,12 @@
-var app = angular.module("lk", []);
+var app = angular.module("lk", [])
+.directive('xngFocus', function() {
+    return function(scope, element, attrs) {
+       scope.$watch(attrs.xngFocus, 
+         function (newValue) { 
+            newValue && element.focus();
+         },true);
+      };    
+});      
 //var dnd = angular.module('drag-and-drop', ['ngDragDrop']);
 var glob = {};
 var wall;

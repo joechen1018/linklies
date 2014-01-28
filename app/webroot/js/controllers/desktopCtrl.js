@@ -112,7 +112,6 @@ app.controller("desktopCtrl", function($scope, $timeout, gridService, keyboardMa
 		var x = $event.pageX - gridSystem.defaults.sideWidth;
 		var y = $event.pageY - gridSystem.defaults.topHeight;
 		var grid = gridRects.link.findNearGridByPoint(x, y);
-		console.log(grid);
 		var newLink = {
 			id : "link-new",
 			grid : grid,
@@ -121,8 +120,16 @@ app.controller("desktopCtrl", function($scope, $timeout, gridService, keyboardMa
 			contentTitle : "some new title",
 			from : "",
 			desc : "",
-			state : "paste-url"
+			state : {
+				name : "paste-url",
+				focus : true
+			}
 		}
 		$scope.links.push(newLink);
+	}
+
+	$scope.onLinkClick = function($event){
+		$event.stopPropagation();
+		//$event.preventDefault();
 	}
 });
