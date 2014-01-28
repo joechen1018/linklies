@@ -1,11 +1,21 @@
-<div id="{{data.id}}" class="link" data-grid="{{data.grid}}" ng-style="linkStyle()">
-	<div class="state-paste-url">
-		<input />
+<div id="{{data.id}}" class="link {{data.state}}" data-grid="{{data.grid}}" ng-style="linkStyle()">
+	<div class="state-paste-url"  ng-show="checkState('paste-url')">
+		<span data-icon="g" ng-style="{
+			display:block,
+			height : grids.gridHeight
+		}">
+			<input placeholder="Paste in url" ng-style="{
+				width : grids.linkSize.width - 50,
+				height : grids.linkSize.height - 10
+			}" />
+		</span>
+		
 	</div>
-	<div class="state-ready">
+	<div class="state-ready" ng-show="checkState('ready')">
 		<div class="link-body">
 			<div class="icon" style="background:url(http://www.youtube.com/favicon.ico) center center no-repeat">
 				<!-- <img src="http://www.youtube.com/favicon.ico" /> -->
+
 			</div>
 			<a class="title" target="_blank" ng-style="{
 				width : grids.linkSize.width - 35,

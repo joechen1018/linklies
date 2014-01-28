@@ -120,7 +120,8 @@ app.controller("desktopCtrl", function($scope, $timeout, gridService, keyboardMa
 			thumb : "",
 			contentTitle : "some new title",
 			from : "",
-			desc : ""
+			desc : "",
+			state : "paste-url"
 		}
 		$scope.links.push(newLink);
 	}

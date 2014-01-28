@@ -35,10 +35,18 @@
 	</div>
 
 	<div id="topbar">
+
+		<div class="bg-left" ng-style="{
+			width : grids.defaults.sideWidth + 2.0 * grids.gridFullWidth
+		}">
+			
+		</div>
 		<!-- <p><span data-icon="g" class="icon"></span><span class="logo">LiNKlies</span></p> -->
-		<div class="search">
-			<input type="text" placeholder="enter keywords">
-			<span data-icon="n"></span>
+		<div class="search" ng-style="{width : grids.gridFullWidth * 1.5}">
+			<input type="text" placeholder="enter keywords" ng-style="{
+				width : grids.gridFullWidth * 1.5
+			}">
+			<span data-icon="n" ></span>
 		</div>
 		<!-- <div class="home">
 			<span data-icon="r"></span>
@@ -66,6 +74,10 @@
 					height : grids.height
 				}"></li>
 			</ul>
+
+			<!-- <div id="how-many-links">
+				<p><span>30</span> links</p>
+			</div> -->
 			
 			<div lk-folder data="folder" drag-preview="dragPreview.folder" ng-repeat="folder in folders"></div>
 			<div lk-link data="link"  drag-preview="dragPreview.link" ng-repeat="link in links"></div>
