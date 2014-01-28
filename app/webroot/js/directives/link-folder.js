@@ -118,6 +118,9 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects){
 					return true;
 				return false;
 			}
+			$scope.onPaste = function(){
+				scope.data.state = "ready";
+			}
 		},
 		scope : {
 			data : "=",

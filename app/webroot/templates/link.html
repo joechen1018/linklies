@@ -9,7 +9,7 @@
 			<input ng-model="data.url" placeholder="Paste url here" ng-style="{
 				width : grids.linkSize.width - 45,
 				height : grids.linkSize.height - 10
-			}" xng-focus="data.state.focus" />
+			}" xng-focus="data.state.focus" ng-paste="onPasted($event.originalEvent.clipboardData.getData('text/plain'))" />
 		</span>
 		
 	</div>
