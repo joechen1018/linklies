@@ -6,7 +6,14 @@ var app = angular.module("lk", [])
             newValue && element.focus();
          },true);
       };    
-});      
+});
+
+app.utils = app.utils || {};
+app.utils.isUrl = function(s){
+	var regexp = /^s?https?:\/\/[-_.!~*'()a-zA-Z0-9;\/?:\@&=+\$,%#]+$/
+	return regexp.test(s);
+}
+
 //var dnd = angular.module('drag-and-drop', ['ngDragDrop']);
 var glob = {};
 var wall;

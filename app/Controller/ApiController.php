@@ -4,6 +4,27 @@ App::import('Vendor', 'simple_html_dom');
 class ApiController extends AppController{
 	
 	public $uses = array("Wall");
+
+	public function createLink($url){
+		$output = $this -> curl_get($url);
+		$html  = str_get_html($output);
+		$title = $html -> find("title", 0) -> text();
+		//$meta = $html -> find("script", 0);
+
+		debug($html);
+		return;
+		$res = array(
+			"url" => $url,
+			"output" => $output,
+			"title" => $title,
+			"url" => $url
+		);
+		
+		$this -> viewClass = "Json";
+		$this -> response -> type("json");
+		$this -> set("res", $res);
+		$this -> set("_serialize", array("res"));
+	}
 	public function fetch(){
 		
 		$url = $this -> data["url"];

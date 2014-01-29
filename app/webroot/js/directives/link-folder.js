@@ -1,4 +1,4 @@
-app.directive("lkFolder", function(gridService, gridSystem, gridRects){
+app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiService){
 	return {
 		restrict : "EA",
 		templateUrl : "templates/folder.html",
@@ -18,7 +18,7 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects){
 			var gs = gridService;
 			var grids = gridSystem;
 			scope.getStyle = function(){
-				if(scope.data){
+				if(scope.data && scope.data.grid){
 					return {
 						left : scope.data.grid[0] * grids.gridFullWidth,
 						top : scope.data.grid[1] * grids.gridFullHeight,
@@ -106,21 +106,18 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects){
 		}
 	}
 })
-.directive("lkLink", function(gridService, gridSystem, gridRects){
+.directive("lkLink", function(gridService, gridSystem, gridRects, apiService){
 	return {
 		restrict : "EA",
 		templateUrl : "templates/link.html",
 		controller : function($scope){
+
 			$scope.grids = gridSystem;
 			$scope.state = $scope.data.state || { name : "paste-url" };
 			$scope.checkState = function(state){
 				if(state === $scope.state.name)
 					return true;
 				return false;
-			}
-			$scope.onPasted = function(url){
-				//scope.data.state = "ready";
-				console.log(url);
 			}
 		},
 		scope : {
@@ -131,12 +128,41 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects){
 		link : function(scope, ele, attrs){
 			var grids = gridSystem;
 			var data = scope.data;
+			var linkService = apiService.linkService;
 			scope.linkStyle = function(){
 				return {
 					left : grids.getLeft(scope.data.grid[0]),
 					top : grids.getTop(scope.data.grid[1]),
 					height : grids.linkSize.height,
 					width : grids.linkSize.width
+				}
+			}
+
+			scope.onPasted = function(url){
+				//scope.data.state = "ready";
+				if(app.utils.isUrl(url)){
+					scope.data.url = url;
+					scope.state.name = "loading";
+					linkService.create(url).then(function(data){
+						console.log(data);
+						var $html = $.parseHTML(data.contents);
+						$("#dom-holder").html("");
+						$("#dom-holder").append($html);
+						$("#dom-holder").find("meta[property], meta[name]").each(function(i, e){
+							var name = $(this).attr("property") || $(this).attr("name");
+							console.log(name + " : " + $(e).attr("content"));
+						});
+						$("#dom-holder").html("");
+						var arr = [];
+						// $html.find("meta").each(function(i, e){
+						// 	if($(e).attr("property") !== undefined){
+						// 		arr.push(e);
+						// 	}
+						// });
+						console.log(arr);
+					});
+				}else{
+					
 				}
 			}
 

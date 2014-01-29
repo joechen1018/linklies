@@ -47,6 +47,16 @@ body-html{
 
 }
 
+#dom-holder{
+  display: none;
+  position: absolute;
+  left : 0;
+  top : 0;
+  z-index: 10;
+  width:0;
+  height:0;
+}
+
 #desktop-view{
   top : 0px;
   width:100%;
@@ -344,8 +354,20 @@ body-html{
         }
       }
 
-      .state-paste-url{
+      .state-paste-url, .state-loading{
         position:relative;
+
+        p.url{
+          top : ~"calc(50% - 10px)";
+          position: absolute;
+          left : 24px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          font-size : 13px;
+          top : ~"calc(50% - 5px)";
+          color : #999999;
+        }
         span{
 
             font-size:20px;
@@ -353,7 +375,6 @@ body-html{
             display: block;
             position:absolute;
             color : darken(@blue, 10%);
-
             input{
               border:0;
               background: darken(@bg-color, 3%);

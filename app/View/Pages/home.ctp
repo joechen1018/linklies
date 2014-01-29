@@ -10,7 +10,10 @@
 </div> -->
 
 <div id="desktop-view" ng-controller="desktopCtrl" ng-style="getDesktopStyle()">
+	
+	<div id="dom-holder">
 		
+	</div>	
 	<!-- Antique Photo Theme -->
 	<!-- <ul id="color-theme">
 		<li style="background:#518C7C">

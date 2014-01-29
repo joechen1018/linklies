@@ -1,5 +1,17 @@
 app.service("apiService", function($http){
 	return {
+		linkService : {
+			create : function(url){
+				//url = "http://www.youtube.com/watch?v=eWnHL-M8g3g ";
+				return $.getJSON('http://anyorigin.com/get?url=' + encodeURIComponent(url) + '&callback=?', function(data){
+					return data;
+				});
+				/*return $http.get('http://whateverorigin.org/get?url=' + 
+				          encodeURIComponent(url) + '&callback=?').then(function(rs){
+							return rs.data;
+						  });*/
+			}
+		},
 		getFolders : function(){
 
 			return $http.get("json/folders.json").then(function(rs){
@@ -25,8 +37,9 @@ app.service("apiService", function($http){
 				});
 			}
 
-			links[3].state.name = "paste-url";
+			links[3].state.name = "loading";
 			links[3].state.focus = true;
+			links[3].url = "http://www.youtube.com/watch?v=IUjWumGIqe8&list=RDwnpVWvCDINU";
 			return links;
 			return $http.get("json/folder.json").then(function(rs){
 
