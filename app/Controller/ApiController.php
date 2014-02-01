@@ -5,6 +5,49 @@ class ApiController extends AppController{
 	
 	public $uses = array("Wall");
 
+	public function getUrlHtml(){
+		$url = $this -> data["url"];
+		//$url = "https://maps.google.com.tw/";
+		$output = $this -> curl_get($url);
+		$html  = str_get_html($output);
+		$this -> viewClass = "Json";
+		$this -> response -> type("json");
+
+		$this -> set("data", $html);
+		$this -> set("_serialize", array("data"));
+	}
+	public function saveLink(){
+		$data = $this -> data;
+		$this -> loadModel("Link");
+
+		$data["grid"] = $data["grid"][0] . "," . $data["grid"][1];
+		$this -> Link -> save($data);
+
+		$this -> viewClass = "Json";
+		$this -> response -> type("json");
+
+		$this -> set("data", $data);
+		$this -> set("_serialize", array("data"));
+	}
+
+	public function getLinks(){
+		$this -> loadModel("Link");
+
+		$data = $this -> Link -> find("all");
+		$links = array();
+		for($i = 0; $i<count($data); $i++){
+			$link = $data[$i]["Link"];
+			$link["grid"] = explode(",", $link["grid"]);
+			array_push($links, $link);
+		}
+
+		$this -> viewClass = "Json";
+		$this -> response -> type("json");
+
+		$this -> set("links", $links);
+		$this -> set("_serialize", array("links"));
+	}
+
 	public function createLink($url){
 		$output = $this -> curl_get($url);
 		$html  = str_get_html($output);
@@ -72,21 +115,25 @@ class ApiController extends AppController{
 		$this -> set("res", $res);
 		$this -> set("_serialize", array("res"));
 	}
-	public function curl_get($url, array $get = array(), array $options = array())
-	{   
+
+	private function curl_get($url, array $get = array(), array $options = array()){   
 	    $defaults = array(
-	        CURLOPT_URL => $url. (strpos($url, '?') === FALSE ? '?' : ''). http_build_query($get),
-	        CURLOPT_HEADER => 0,
-	        CURLOPT_RETURNTRANSFER => TRUE,
-	        CURLOPT_TIMEOUT => 4,
+	        //CURLOPT_URL => $url. (strpos($url, '?') === FALSE ? '?' : ''). http_build_query($get),
+	        CURLOPT_URL => $url,
+	        CURLOPT_HEADER => array(
+				"content-type: application/x-www-form-urlencoded; 
+				charset=UTF-8"
+			),
+	        CURLOPT_RETURNTRANSFER => false,
+	        CURLOPT_TIMEOUT => 10,
 	        CURLOPT_SSL_VERIFYPEER =>  false,
-	        CURLOPT_FOLLOWLOCATION => true
+	        CURLOPT_FOLLOWLOCATION => true,
+	        CURLOPT_USERAGENT => "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22"
 	    );
 	   
 	    $ch = curl_init();
 	    curl_setopt_array($ch, ($options + $defaults));
-	    if( ! $result = curl_exec($ch))
-	    {
+	    if( ! $result = curl_exec($ch)){
 	        trigger_error(curl_error($ch));
 	    }
 	    curl_close($ch);

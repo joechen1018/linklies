@@ -52,12 +52,25 @@ app.controller("desktopCtrl", function($scope, $timeout, gridService, keyboardMa
 			$scope.$apply();
 		});
 
+		keyboardManager.bind("esc", function(){
+			clearLinks();
+			$scope.$apply();
+		});
+
 		gridService.update();
 	}
-
+	var clearLinks = function(){
+		for(var i = $scope.links.length - 1; i>-1; i--){
+			if($scope.links[i].state && $scope.links[i].state.name == "paste-url"){
+				$scope.links.splice(i, 1);
+			}
+		}
+	}
 	init();
 
-	$scope.links = gridRects.links;
+	apiService.getLinks().then(function(links){
+		$scope.links = links;
+	});
 	$scope.folders = gridRects.folders.then(function(folders){
 		$scope.folders = gridRects.folders;
 	});
@@ -113,18 +126,13 @@ app.controller("desktopCtrl", function($scope, $timeout, gridService, keyboardMa
 		var y = $event.pageY - gridSystem.defaults.topHeight;
 		var grid = gridRects.link.findNearGridByPoint(x, y);
 		var newLink = {
-			id : "link-new",
 			grid : grid,
-			pageTitle : "",
-			thumb : "",
-			contentTitle : "some new title",
-			from : "",
-			desc : "",
 			state : {
 				name : "paste-url",
 				focus : true
 			}
 		}
+		clearLinks();
 		$scope.links.push(newLink);
 	}
 

@@ -33,7 +33,7 @@ app.service("gridRects", function(gridSystem, apiService){
 			for(var i = 0; i<rows.length*2; i++){
 				for(var j = 0; j<cols.length; j++){
 					if(i % 2 === 0){
-						arr.push([rows[j], cols[i]]);
+						arr.push([cols[j], rows[i]]);
 					}
 				}
 			}
@@ -145,7 +145,7 @@ app.service("gridRects", function(gridSystem, apiService){
 			var arr = [];
 			for(var i = 0; i<rows.length; i++){
 				for(var j = 0; j<cols.length; j++){
-					arr.push([rows[i], cols[j]]);
+					arr.push([cols[j], rows[i]]);
 				}
 			}
 			return arr;
@@ -190,7 +190,6 @@ app.service("gridRects", function(gridSystem, apiService){
 				if(! goog.array.equals(linkGrids[i], originGrid)){
 					rect = self.link.gridToRect(linkGrids[i]);
 					if(rect.intersects(dragRect) ){	
-
 							intersection = gRect.intersection(rect, dragRect);
 							intersection.area = intersection.width * intersection.height;
 							if(intersection.area > max.area){
@@ -236,5 +235,8 @@ app.service("gridRects", function(gridSystem, apiService){
 	this.folders = apiService.getFolders().then(function(folders){
 		self.folders = folders;
 	});
-	this.links = apiService.getLinks();
+	this.links = apiService.getLinks().then(function(links){
+		console.log(links);
+		self.links = links;
+	});
 })

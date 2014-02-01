@@ -13,7 +13,10 @@ app.utils.isUrl = function(s){
 	var regexp = /^s?https?:\/\/[-_.!~*'()a-zA-Z0-9;\/?:\@&=+\$,%#]+$/
 	return regexp.test(s);
 }
-
+var yqlcallback = function(data){
+	console.log("yql callback");
+	console.log(data);
+}
 //var dnd = angular.module('drag-and-drop', ['ngDragDrop']);
 var glob = {};
 var wall;

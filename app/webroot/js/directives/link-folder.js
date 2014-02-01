@@ -130,11 +130,13 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 			var data = scope.data;
 			var linkService = apiService.linkService;
 			scope.linkStyle = function(){
-				return {
-					left : grids.getLeft(scope.data.grid[0]),
-					top : grids.getTop(scope.data.grid[1]),
-					height : grids.linkSize.height,
-					width : grids.linkSize.width
+				if(scope.data.grid){
+					return {
+						left : grids.getLeft(scope.data.grid[0]),
+						top : grids.getTop(scope.data.grid[1]),
+						height : grids.linkSize.height,
+						width : grids.linkSize.width
+					}
 				}
 			}
 
@@ -144,22 +146,17 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 					scope.data.url = url;
 					scope.state.name = "loading";
 					linkService.create(url).then(function(data){
-						console.log(data);
-						var $html = $.parseHTML(data.contents);
-						$("#dom-holder").html("");
-						$("#dom-holder").append($html);
-						$("#dom-holder").find("meta[property], meta[name]").each(function(i, e){
-							var name = $(this).attr("property") || $(this).attr("name");
-							console.log(name + " : " + $(e).attr("content"));
-						});
-						$("#dom-holder").html("");
-						var arr = [];
-						// $html.find("meta").each(function(i, e){
-						// 	if($(e).attr("property") !== undefined){
-						// 		arr.push(e);
-						// 	}
-						// });
-						console.log(arr);
+
+						scope.data.meta = data.meta;
+						scope.data.ico = data.ico;
+						scope.data.title = data.meta["og:title"] || data.title;
+						scope.state = {
+							name : "ready"
+						};
+						console.log(scope.data);
+						scope.$apply();
+
+						linkService.save(scope.data);
 					});
 				}else{
 					

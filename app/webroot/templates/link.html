@@ -15,26 +15,40 @@
 		
 	</div>
 	<div class="state-loading" ng-show="checkState('loading')">
-		<span data-icon="g" ng-style="{
+		<!-- <span data-icon="g" ng-style="{
+			display:block,
+			top : grids.linkSize.height / 2 - 10,
+			height : grids.linkSize.height - 10
+		}"> -->
+		<img class="loader" src="img/loader-1.gif" ng-style="{
+			top : grids.linkSize.height / 2 - 7,
+			height : grids.linkSize.height - 14 
+		}" alt="">
+		<span ng-style="{
 			display:block,
 			top : grids.linkSize.height / 2 - 10,
 			height : grids.linkSize.height - 10
 		}">
 			<p class="url" ng-style="{
 				width : grids.linkSize.width - 35
-			}">{{data.url}}</p>
+			}">{{data.url}}</p>	
 		</span>
+		<!-- </span> -->
 	</div>
-	<div class="state-ready" ng-show="checkState('ready')">
-		<div class="link-body">
-			<div class="icon" style="background:url(http://www.youtube.com/favicon.ico) center center no-repeat">
+	<div class="state-ready" ng-show="checkState('ready')" ng-style="{
+		height : grids.gridHeight
+	}">
+		<div class="link-body" ng-style="{
+		height : grids.gridHeight
+	}">
+			<div class="icon" style="background:url({{data.ico}}) center center no-repeat; background-size:16px 16px">
 				<!-- <img src="http://www.youtube.com/favicon.ico" /> -->
 
 			</div>
 			<a class="title" target="_blank" ng-style="{
 				width : grids.linkSize.width - 35,
-				lineHeight : grids.gridHeight + 'px'
-			}">{{data.pageTitle}}</a>
+				lineHeight : grids.gridHeight + 3 + 'px'
+			}">{{data.title}}</a>
 		</div>
 		<div class="link-details hide">
 			<div class="arrow arrow-up"></div>
