@@ -1,7 +1,7 @@
 'use strict';
 
 goog.require('goog.math.Rect');
-app.controller("desktopCtrl", function($scope, $timeout, gridService, keyboardManager, resize, gridSystem, gridRects, apiService){
+app.controller("desktopCtrl", function($scope, $rootScope, $timeout, gridService, keyboardManager, resize, gridSystem, gridRects, apiService){
 
 	var $allElements;
 	var timeout;
@@ -140,4 +140,18 @@ app.controller("desktopCtrl", function($scope, $timeout, gridService, keyboardMa
 		$event.stopPropagation();
 		//$event.preventDefault();
 	}
+
+	$rootScope.$on("removeLink", function(e, id){
+		console.log(id);
+		apiService.linkService.remove(id).then(function(){
+			for(var i = 0; i<$scope.links.length; i++){
+				if($scope.links[i].id == id){
+					console.log(id);
+					$scope.links.splice(i, 1);
+					$scope.$apply();
+					return;
+				}
+			}
+		});
+	});
 });

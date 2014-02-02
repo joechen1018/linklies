@@ -106,7 +106,7 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 		}
 	}
 })
-.directive("lkLink", function(gridService, gridSystem, gridRects, apiService){
+.directive("lkLink", function(gridService, gridSystem, gridRects, apiService, $rootScope){
 	return {
 		restrict : "EA",
 		templateUrl : "templates/link.html",
@@ -147,13 +147,14 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 					scope.state.name = "loading";
 					linkService.create(url).then(function(data){
 
+						//console.log(data);
 						scope.data.meta = data.meta;
 						scope.data.ico = data.ico;
 						scope.data.title = data.meta["og:title"] || data.title;
 						scope.state = {
 							name : "ready"
 						};
-						console.log(scope.data);
+						//console.log(scope.data);
 						scope.$apply();
 
 						linkService.save(scope.data);
@@ -162,7 +163,9 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 					
 				}
 			}
-
+			scope.removeLink = function(){
+				$rootScope.$broadcast("removeLink", scope.data.id);
+			}
 			var rects = gridRects;
 			var linkRects = gridRects.link;
 			var gs = gridService;
@@ -210,6 +213,7 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 					//if(selectedGrid !== undefined && !gs.occupied.link(selectedGrid)){
 					if(isAvailable){	
 						scope.data.grid = dragGrid;
+						linkService.save(scope.data);
 					}else{
 						$link.animate({
 							left : originRect.left,

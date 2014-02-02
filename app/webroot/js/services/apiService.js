@@ -29,6 +29,7 @@ app.service("apiService", function($http, contentParser){
 					data : {"url" : url},
 					success : function(res){
 						obj = contentParser.parse(res, url);
+						console.log(obj);
 						_d.resolve(obj);
 					},
 					fail : function(err){
@@ -52,15 +53,27 @@ app.service("apiService", function($http, contentParser){
 					data : link,
 					success : function(res){
 						//console.log(res);
-						_d.resolve(_d);
+						_d.resolve(res);
 					}
 				});
+				return _d.promise();
+			},
+			remove : function(id){
+				var _d = $.Deferred();
+				$.ajax({
+					url : "api/removeLink/" + id,
+					method : "get",
+					success : function(res){
+						_d.resolve(res);
+					}
+				});
+				return _d.promise();
 			}
 		},
 		getFolders : function(){
 
-			return $http.get("json/folders.json").then(function(rs){
-				//return rs.data;
+			return $http.get("json/folders1.json").then(function(rs){
+				return rs.data;
 			})
 		},
 		getLinks : function(){

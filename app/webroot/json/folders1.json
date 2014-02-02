@@ -1,0 +1,18 @@
+[
+	{
+		"id" : "folder-1",
+		"type" : "youtube",
+		"name" : "Lorem ipsum dolor sit amet sit amet Lorem",
+		"grid" : [0, 0],
+		"state" : "",
+		"icon" : "a"
+	},
+	{
+		"id" : "folder-2",
+		"type" : "",
+		"name" : "Lorem ipsum dolor sit amet sit amet Lorem",
+		"grid" : [1, 0],
+		"state" : "",
+		"icon" : "l"
+	}
+]

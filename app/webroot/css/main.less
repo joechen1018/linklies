@@ -409,6 +409,11 @@ body-html{
       }
       .state-ready{
         .link-body{
+          &:hover{
+            .opt span{
+              display: block;
+            }
+          };
           .icon{
             height:@h;
             width:35px;
@@ -429,6 +434,16 @@ body-html{
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+          }
+          .opt{
+            span{
+              cursor:pointer;
+              display: none;
+              position:absolute;
+              font-size:12px;
+              right : 5px;
+              top : ~"calc(50% - 6px)";
+            }
           }
         }
       }

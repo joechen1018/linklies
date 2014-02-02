@@ -236,7 +236,6 @@ app.service("gridRects", function(gridSystem, apiService){
 		self.folders = folders;
 	});
 	this.links = apiService.getLinks().then(function(links){
-		console.log(links);
 		self.links = links;
 	});
 })

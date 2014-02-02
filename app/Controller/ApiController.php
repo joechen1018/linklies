@@ -68,6 +68,17 @@ class ApiController extends AppController{
 		$this -> set("res", $res);
 		$this -> set("_serialize", array("res"));
 	}
+
+	public function removeLink($id){
+		$this -> loadModel("Link");
+		$this -> Link -> delete($id);
+
+		$this -> viewClass = "Json";
+		$this -> response -> type("json");
+
+		$this -> set("data", array("success"));
+		$this -> set("_serialize", array("data"));
+	}
 	public function fetch(){
 		
 		$url = $this -> data["url"];
