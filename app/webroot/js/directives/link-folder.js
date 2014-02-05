@@ -141,6 +141,7 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 			}
 
 			scope.onPasted = function(url){
+
 				//scope.data.state = "ready";
 				if(app.utils.isUrl(url)){
 					scope.data.url = url;
@@ -166,6 +167,12 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 			scope.removeLink = function(){
 				$rootScope.$broadcast("removeLink", scope.data.id);
 			}
+			scope.showOpt = false;
+			$(ele).on("mouseover", function(){
+				scope.showOpt = true;
+				scope.$apply();
+			});
+
 			var rects = gridRects;
 			var linkRects = gridRects.link;
 			var gs = gridService;
@@ -182,6 +189,8 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 					originGrid = data.grid;
 				},
 				drag : function(e, ui){
+
+					scope.showOpt = false;
 
 					dragRect = rects.getDomRect($link);
 					dragGrid = linkRects.findDragRectGrid(
