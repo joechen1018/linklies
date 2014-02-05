@@ -1,4 +1,26 @@
-var app = angular.module("lk", [])
+var signinCallback = function(data){
+	console.log(data);
+}
+var glob = {};
+var app = angular.module("lk", ["ngRoute"])
+.run(function($location){
+
+	glob.cookie = $.cookie("linklies.com");
+	console.log(glob.cookie);
+	if(glob.cookie === undefined){
+		glob.requireSign = true;
+	}
+})
+.config(function($routeProvider){
+	// $routeProvider
+	// .when("/sign", {
+	// 	templateUrl : "templates/blank.html",
+	// 	controller : function(){
+	// 		console.log("going to sign");
+	// 	}
+	// });
+	//.otherwise();
+})
 .directive('xngFocus', function() {
     return function(scope, element, attrs) {
        scope.$watch(attrs.xngFocus, 
@@ -18,7 +40,6 @@ var yqlcallback = function(data){
 	console.log(data);
 }
 //var dnd = angular.module('drag-and-drop', ['ngDragDrop']);
-var glob = {};
 var wall;
 $(document).ready(function(){
 	

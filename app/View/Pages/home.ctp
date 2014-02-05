@@ -10,10 +10,24 @@
 </div> -->
 
 <div id="desktop-view" ng-controller="desktopCtrl" ng-style="getDesktopStyle()">
-	
-	<div id="dom-holder">
 		
-	</div>	
+	<div id="dom-holder"></div>	
+	<div id="overlay-layer">
+		<div id="signIn" ng-show="requireSign">
+			<!-- <a id="signInButton" href="">Sign In With Google</a> -->
+			<span id="signinButton">
+			  <span
+			    class="g-signin"
+			    data-callback="signinCallback"
+			    data-clientid="205449938055.apps.googleusercontent.com"
+			    data-cookiepolicy="single_host_origin"
+			    data-requestvisibleactions="http://schemas.google.com/AddActivity"
+			    data-scope="https://www.googleapis.com/auth/plus.login">
+			  </span>
+			</span>
+		</div>
+		<div class="bg"></div>
+	</div>
 	<!-- Antique Photo Theme -->
 	<!-- <ul id="color-theme">
 		<li style="background:#518C7C">

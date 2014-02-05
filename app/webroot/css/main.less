@@ -57,6 +57,27 @@ body-html{
   height:0;
 }
 
+#overlay-layer{
+  #signIn{
+    position: fixed;
+    width : 550px;
+    height:300px;
+    background: white;
+    z-index: 10;
+    .shadow;
+    left : ~"calc(50% - 275px)";
+    top : ~"calc(50% - 150px)";
+  }
+  .bg{
+    position: fixed;
+    width:100%;
+    height:100%;
+    background: black;
+    .alpha(0.7);
+    z-index: 9;
+  }
+}
+
 #desktop-view{
   top : 0px;
   width:100%;

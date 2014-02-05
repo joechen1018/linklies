@@ -57,6 +57,33 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, gridService
 			$scope.$apply();
 		});
 
+		if(glob.requireSign === true){
+			$scope.requireSign = true;
+
+	      (function() {
+	       var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+	       po.src = 'https://apis.google.com/js/client:plusone.js';
+	       var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+	     })();
+
+
+			var url = "https://accounts.google.com/o/oauth2/auth?state={1}&redirect_uri={2}&response_type=code&client_id={3}&approval_prompt=force";
+			$("#signInButton").click(function(){
+
+				
+				/*$.ajax({
+					method : "post",
+					url : url.replace("{0}", "1")
+							 .replace("{1}", "0")
+							 .replace("{2}", "http://localhost/linklies.com/oauth/")
+							 .replace("{3}", "205449938055-06501obglsfmcellrtc67opqs6ogbs19.apps.googleusercontent.com"),
+					success : function(res){
+						console.log(res);
+					}		 
+				});		 */
+			});
+		}
+
 		gridService.update();
 	}
 	var clearLinks = function(){
@@ -154,4 +181,7 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, gridService
 			}
 		});
 	});
+})
+.controller("signCtrl", function($scope){
+	console.log("going to sign");
 });

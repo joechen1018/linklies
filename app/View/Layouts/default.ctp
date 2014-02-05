@@ -6,8 +6,10 @@
 	<link rel="icon" href="logo.ico" type="image/x-icon"/>
 	
 	<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular.min.js"></script>
-	
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular-route.js"></script>
+
 	<!-- <link href='http://fonts.googleapis.com/css?family=Ubuntu Condensed' rel='stylesheet' type='text/css'> -->
 	<link href='http://fonts.googleapis.com/css?family=Droid Sans' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" href="css/reset.css" type="text/css" media="screen"  charset="utf-8"/>
