@@ -437,10 +437,14 @@ body-html{
           };
           .icon{
             height:@h;
-            width:35px;
+            width:30px;
             overflow: hidden;
             img{
-              position:absolute;
+              width:16px;
+              height:16px;
+              position: relative;
+              left : ~"calc(50% - 8px)";
+              top : ~"calc(50% - 8px)";
             }
           }
           a.title{
@@ -449,7 +453,7 @@ body-html{
             font-size:14px;
             line-height:@h;
             position:absolute;
-            left:35px;
+            left:30px;
             top:0;
             width:@w - 35px;
             white-space: nowrap;

@@ -2,6 +2,65 @@ var signinCallback = function(data){
 	console.log(data);
 }
 var glob = {};
+var onGApiLoaded = function(){
+	gapi.client.setApiKey(clientId);
+	window.setTimeout(checkAuth,1);
+}
+var checkAuth = function() {
+	gapi.auth.authorize({client_id: clientId, scope: scopes, immediate: true}, onAuthorizeOver);
+}
+var onAuthorizeOver = function(rs){
+	console.log(rs);
+	var authorizeButton = document.getElementById('authorize-button');
+	if (rs && !rs.error) {
+	  authorizeButton.style.visibility = 'hidden';
+	  token = rs["access_token"];
+	  makeApiCall();
+	} else {
+	  authorizeButton.style.visibility = '';
+	  authorizeButton.onclick = onAuthBtnClick;
+	}
+}
+
+var onAuthBtnClick = function(){
+	gapi.auth.authorize({client_id: clientId, scope: scopes, immediate: false}, onAuthorizeOver);
+	return false;
+}
+
+var makeApiCall = function(){
+	gapi.client.setApiKey("");
+
+    gapi.client.load('plus', 'v1', function() {
+    	//console.log(gapi.client);
+        var request = gapi.client.plus.people.get({
+            'userId': 'me'
+        });
+        request.execute(function(resp) {
+        	console.log(resp);
+            var heading = document.createElement('h4');
+            var image = document.createElement('img');
+            image.src = resp.image.url;
+            heading.appendChild(image);
+            heading.appendChild(document.createTextNode(resp.displayName));
+
+            document.getElementById('content').appendChild(heading);
+         });
+    });
+
+    gapi.client.load("drive", "v2", function(){
+    	console.log(gapi.client.drive);
+    	var request = gapi.client.drive.about.get({
+        });
+        request.execute(function(resp) {
+        	console.log(resp);
+         });
+    });
+}
+
+var clientId = "205449938055-06501obglsfmcellrtc67opqs6ogbs19.apps.googleusercontent.com";
+var scopes = 'https://www.googleapis.com/auth/plus.me https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/userinfo.email';
+var token;
+var secret = "zo03y8aW30ZAJnJLKYSH4b4v";
 var app = angular.module("lk", ["ngRoute"])
 .run(function($location){
 
@@ -10,6 +69,12 @@ var app = angular.module("lk", ["ngRoute"])
 	if(glob.cookie === undefined){
 		glob.requireSign = true;
 	}
+
+	(function() {
+	    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+	    po.src = 'https://apis.google.com/js/client.js?onload=onGApiLoaded';
+	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+	  })();
 })
 .config(function($routeProvider){
 	// $routeProvider
