@@ -5,7 +5,7 @@
 <script>
 
 var clientId = "205449938055-06501obglsfmcellrtc67opqs6ogbs19.apps.googleusercontent.com";
-var scopes = 'https://www.googleapis.com/auth/plus.me';
+var scopes = 'https://www.googleapis.com/auth/plus.me https://www.googleapis.com/auth/drive';
 var token;
 var secret = "zo03y8aW30ZAJnJLKYSH4b4v";
 function handleClientLoad() {
@@ -17,7 +17,7 @@ function checkAuth() {
 }
 
 function handleAuthResult(authResult) {
-	console.log(authResult);
+	//console.log(authResult);
 	var authorizeButton = document.getElementById('authorize-button');
 	if (authResult && !authResult.error) {
 	  authorizeButton.style.visibility = 'hidden';
@@ -25,7 +25,7 @@ function handleAuthResult(authResult) {
 	  makeApiCall();
 	} else {
 	  authorizeButton.style.visibility = '';
-	  //authorizeButton.onclick = handleAuthClick;
+	  authorizeButton.onclick = handleAuthClick;
 	}
 }
 function handleAuthClick(event) {
@@ -35,12 +35,14 @@ function handleAuthClick(event) {
 // Load the API and make an API call.  Display the results on the screen.
 function makeApiCall() {
 		gapi.client.setApiKey("");
+
         gapi.client.load('plus', 'v1', function() {
-        	console.log(gapi.client);
+        	//console.log(gapi.client);
             var request = gapi.client.plus.people.get({
 	            'userId': 'me'
 	        });
 	        request.execute(function(resp) {
+	        	//console.log(resp);
 	            var heading = document.createElement('h4');
 	            var image = document.createElement('img');
 	            image.src = resp.image.url;
@@ -50,6 +52,15 @@ function makeApiCall() {
 	            document.getElementById('content').appendChild(heading);
 	         });
         });
+
+        gapi.client.load("drive", "v2", function(){
+        	console.log(gapi.client.drive);
+        	var request = gapi.client.drive.about.get({
+	        });
+	        request.execute(function(resp) {
+	        	console.log(resp);
+	         });
+        })
       }
 </script>
 
