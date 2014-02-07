@@ -67,6 +67,39 @@ body-html{
     .shadow;
     left : ~"calc(50% - 275px)";
     top : ~"calc(50% - 150px)";
+
+    h1{
+      font-size : 25px;
+      color : black;
+    }
+    #authorize-button{
+      width : 250px;
+      height : 40px;
+      background: #d95232;
+      color:white;
+      font-size:30px;
+      position:absolute;
+      display: block;
+      .border-radius(3px);
+      bottom : 20px;
+      //right : ~"calc(50% - 125px)";
+      right :20px;
+
+      &[data-icon3]:before{
+        position:relative;
+        left : 5px;
+        top : 5px;
+      }
+      span{
+          font-size:20px;
+          padding: 0px 15px 0px 15px;
+          display: block;
+          position:absolute;
+          left : 30px;
+          top : ~"calc(50% - 10px)";
+          font-family: Arial;
+      }
+    }
   }
   .bg{
     position: fixed;

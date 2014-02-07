@@ -58,8 +58,8 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, gridService
 		});
 
 		if(glob.requireSign === true){
-			// $scope.showOverlay = true;
-			// $scope.requireSign = true;
+			$scope.showOverlay = true;
+			$scope.requireSign = true;
 		}
 
 		gridService.update();
