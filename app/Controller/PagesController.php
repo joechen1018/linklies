@@ -51,9 +51,18 @@ class PagesController extends AppController {
  * @param mixed What page to display
  * @return void
  */
+	public function beforeFilter(){
+		if($this -> Auth -> loggedIn()){
+			$this -> Auth -> allow();
+		}
+	}
 	public function display() {
-		$path = func_get_args();
+		$user_id = $this -> params["user_id"];
+		if(!$this -> Auth -> loggedIn() || !$user_id){
+			$this -> redirect("/users/login");
+		}
 
+		$path = func_get_args();
 		$count = count($path);
 		if (!$count) {
 			$this->redirect('/');

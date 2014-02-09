@@ -29,7 +29,7 @@ app.service("apiService", function($http, contentParser){
 					data : {"url" : url},
 					success : function(res){
 						obj = contentParser.parse(res, url);
-						console.log(obj);
+						//console.log(obj);
 						_d.resolve(obj);
 					},
 					fail : function(err){
@@ -100,16 +100,29 @@ app.service("apiService", function($http, contentParser){
 			links[3].state.name = "loading";
 			links[3].state.focus = true;
 			links[3].url = "http://www.youtube.com/watch?v=IUjWumGIqe8&list=RDwnpVWvCDINU";*/
-
-			return $http.get("api/getLinks").then(function(rs){
-				var links = rs.data.links;
-				for(var i = 0; i<links.length; i++){
-					links[i].state = {
-						name : "ready"
+			var url = $.url();
+			var path = url.attr("path").split("/");
+			var user_id = path[path.length - 1];
+			var _d = $.Deferred();
+			$.ajax({
+				url : "api/getLinks/" + user_id,
+				method : "GET",
+				success : function(data){
+					//_c.log(data);
+					var links = data.links;
+					for(var i = 0; i<links.length; i++){
+						links[i].state = {
+							name : "ready"
+						}
 					}
-				}
-				return links;
+					return _d.resolve(links);
+				},
+				error : function(data){
+					_c.error(data);
+					//location.href = root + "users/login";
+				}	
 			});
+			return _d.promise();
 		}
 	}
 })
@@ -135,6 +148,10 @@ app.service("apiService", function($http, contentParser){
 		},
 		"google.drive" : {
 			match : "^(http(s|)\:\/\/)?(www\.)?(drive\.google\.com)\/.+$",
+			ico : "https://ssl.gstatic.com/docs/doclist/images/infinite_arrow_favicon_4.ico"
+		},
+		"google.docs" : {
+			match : "^(http(s|)\:\/\/)?(www\.)?(docs\.google\.com)\/.+$",
 			ico : "https://ssl.gstatic.com/docs/doclist/images/infinite_arrow_favicon_4.ico"
 		},
 		"google.docs.spreadsheet" : {
@@ -203,6 +220,7 @@ app.service("apiService", function($http, contentParser){
 			'query' : purl.attr("query"),
 			'fragment' : purl.attr("fragment")
 		};
+		rs.url = purl;
 
 		//find title
 		rs.title = holder.find("title").eq(0).html();
@@ -286,9 +304,23 @@ app.service("apiService", function($http, contentParser){
 
 		//get typed data
 		rs.typed = {};
-		switch(rs.type){
+		//console.log(rs.type.name);
+		switch(rs.type.name){
 			case 'youtube.watch' :
 				rs.typed.videoId = url.split("v=")[1].split("&")[0];
+			break;
+			case 'google.docs.spreadsheet' : 
+				rs.gdocKey = rs.url.param("key");
+				var request = gapi.client.drive.files.get({
+				    'fileId': rs.gdocKey
+				});
+				request.execute(function(resp) {
+					_c.log(resp);
+				    // console.log('Title: ' + resp.title);
+				    // console.log('Description: ' + resp.description);
+				    // console.log('MIME type: ' + resp.mimeType);
+				});
+				_c.log(rs);
 			break;
 		}
 

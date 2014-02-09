@@ -1,7 +1,7 @@
 'use strict';
 
 goog.require('goog.math.Rect');
-app.controller("desktopCtrl", function($scope, $rootScope, $timeout, gridService, keyboardManager, resize, gridSystem, gridRects, apiService){
+app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, gridService, keyboardManager, resize, gridSystem, gridRects, apiService){
 
 	var $allElements;
 	var timeout;
@@ -58,8 +58,8 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, gridService
 		});
 
 		if(glob.requireSign === true){
-			$scope.showOverlay = true;
-			$scope.requireSign = true;
+			// $scope.showOverlay = true;
+			// $scope.requireSign = true;
 		}
 
 		gridService.update();
@@ -71,10 +71,38 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, gridService
 			}
 		}
 	}
-	init();
+
+	//user identifier
+	var url = $.url();
+	var uid = url.attr("path");
+	uid = uid.split("/");
+	uid = uid[uid.length - 1];
+	$scope.user = (function(){
+		var d = $.Deferred();
+		$.ajax({
+			url : "users/findById/" + uid,
+			success : function(rs){
+				d.resolve(rs);
+
+				/*init when got user*/
+
+				init();
+			}
+		});
+		return d.promise();
+	})().then(function(user){
+		user = user.user.User;
+		//_c.log(user);
+		$scope.user_id = user.id;
+		$scope.username_id = user.username_id;
+		glob.user = user;
+		$scope.$apply();
+	});
 
 	apiService.getLinks().then(function(links){
+		//_c.log(links);
 		$scope.links = links;
+		$scope.$apply();
 	});
 	$scope.folders = gridRects.folders.then(function(folders){
 		$scope.folders = gridRects.folders;
@@ -147,11 +175,11 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, gridService
 	}
 
 	$rootScope.$on("removeLink", function(e, id){
-		console.log(id);
+		//console.log(id);
 		apiService.linkService.remove(id).then(function(){
 			for(var i = 0; i<$scope.links.length; i++){
 				if($scope.links[i].id == id){
-					console.log(id);
+					//console.log(id);
 					$scope.links.splice(i, 1);
 					$scope.$apply();
 					return;
@@ -159,7 +187,4 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, gridService
 			}
 		});
 	});
-})
-.controller("signCtrl", function($scope){
-	console.log("going to sign");
 });

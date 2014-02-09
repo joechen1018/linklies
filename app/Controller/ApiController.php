@@ -3,8 +3,11 @@ App::import('Vendor', 'simple_html_dom');
 
 class ApiController extends AppController{
 	
-	public $uses = array("Wall");
-
+	public function beforeFilter(){
+		if($this -> Auth -> loggedIn()){
+			$this -> Auth -> allow();
+		}
+	}
 	public function getUrlHtml(){
 		$url = $this -> data["url"];
 		//$url = "https://maps.google.com.tw/";
@@ -21,6 +24,7 @@ class ApiController extends AppController{
 		$this -> loadModel("Link");
 
 		$data["grid"] = $data["grid"][0] . "," . $data["grid"][1];
+		debug($data);
 		$this -> Link -> save($data);
 
 		$this -> viewClass = "Json";
@@ -30,22 +34,35 @@ class ApiController extends AppController{
 		$this -> set("_serialize", array("data"));
 	}
 
-	public function getLinks(){
-		$this -> loadModel("Link");
-
-		$data = $this -> Link -> find("all");
+	public function getLinks($user_id){
+		$ava = true;
 		$links = array();
-		for($i = 0; $i<count($data); $i++){
-			$link = $data[$i]["Link"];
-			$link["grid"] = explode(",", $link["grid"]);
-			array_push($links, $link);
+		$rs = array();
+		$rs["authorized"] = true;
+		$rs["reason"] = array(
+			"user_id" => $user_id,
+			"logged" => $this -> Auth -> loggedIn()
+		);
+		// if(empty($user_id) || ($this -> Auth -> loggedIn() !== true)){
+		// 	$ava = false;
+		// }
+		if(!$ava){
+			$rs["authorized"] = false;
+		}else{
+			$this -> loadModel("Link");
+			$data = $this -> Link -> find("all", array("conditions" => array("username_id" => $user_id)));
+			for($i = 0; $i<count($data); $i++){
+				$link = $data[$i]["Link"];
+				$link["grid"] = explode(",", $link["grid"]);
+				array_push($links, $link);
+			}
 		}
-
 		$this -> viewClass = "Json";
 		$this -> response -> type("json");
 
+		$this -> set("rs", $rs);
 		$this -> set("links", $links);
-		$this -> set("_serialize", array("links"));
+		$this -> set("_serialize", array("links", "rs"));
 	}
 
 	public function createLink($url){
@@ -79,6 +96,7 @@ class ApiController extends AppController{
 		$this -> set("data", array("success"));
 		$this -> set("_serialize", array("data"));
 	}
+
 	public function fetch(){
 		
 		$url = $this -> data["url"];
@@ -151,41 +169,6 @@ class ApiController extends AppController{
 	    return $result;
 	} 
 	
-	public function getID(){
-		
-		$this -> Wall -> create();
-		$id = $this -> wall -> id;
-		$str = $id . date("md");
-		$hash = md5($str);
-		$this -> Wall -> save(array(
-			"id" => $id,
-			"hash" => $hash
-		));
-		$res = array(
-			"hash" => $hash
-		);
-		
-		$this -> viewClass = "Json";
-		$this -> response -> type("json");
-		$this -> set("res", $res);
-		$this -> set("_serialize", array("res"));
-	}
 }
 
-class Linky{
-	
-	public $url;
-	public $html;
-	public function __construct($url){
-		$this -> url = $url;
-		$html  = file_get_html($this -> url);
-		echo $html -> find("title", 0) -> text();
-	}
-	public function title(){
-		
-	}
-	public function ico(){
-		return "ico";
-	}
-}
 ?>

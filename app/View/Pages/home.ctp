@@ -8,20 +8,17 @@
 	<h1>{{obj.a}} + {{obj.b}} = {{result}}</h1>
 	<a href="#" ng-click="onclick">click</a>
 </div> -->
+<div id="overlay-layer" ng-show="showOverlay">
+	<div id="signIn" ng-show="requireSign">
+		<a href="" data-icon3="r"  id="authorize-button" style="visibility: hidden"><span>Sign In With Google</span></a>
+	</div>
+	<div class="bg"></div>
+</div>
+
 
 <div id="desktop-view" ng-controller="desktopCtrl" ng-style="getDesktopStyle()">
 		
 	<div id="dom-holder"></div>	
-	<div id="overlay-layer" ng-show="showOverlay">
-		<div id="signIn" ng-show="requireSign">
-			<!-- <a id="signInButton" href="">Sign In With Google</a> -->
-			<div id="content"></div>
-
-			<h1>Linklies is Integreated with Google Drive, please</h1>
-			<a href="" data-icon3="r"  id="authorize-button" style="visibility: hidden"><span>Sign In With Google</span></a>
-		</div>
-		<div class="bg"></div>
-	</div>
 	<!-- Antique Photo Theme -->
 	<!-- <ul id="color-theme">
 		<li style="background:#518C7C">
