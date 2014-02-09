@@ -24,7 +24,6 @@ class ApiController extends AppController{
 		$this -> loadModel("Link");
 
 		$data["grid"] = $data["grid"][0] . "," . $data["grid"][1];
-		debug($data);
 		$this -> Link -> save($data);
 
 		$this -> viewClass = "Json";
