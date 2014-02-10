@@ -151,7 +151,7 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 						//console.log(data);
 						scope.data.meta = data.meta;
 						scope.data.ico = data.ico;
-						scope.data.title = data.meta["og:title"] || data.title;
+						scope.data.title = data.title;
 						//_c.log(glob.user);
 						scope.data.username_id = glob.user.username_id;
 						scope.data.user_id = glob.user.id;

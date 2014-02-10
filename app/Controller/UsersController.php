@@ -2,6 +2,7 @@
 class UsersController extends AppController{
 
 	public function beforeFilter(){
+		$this -> Auth -> allow("login");
 		if($this -> Auth -> loggedIn()){
 			$this -> Auth -> allow();
 		}else{

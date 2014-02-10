@@ -2,47 +2,22 @@ app.service("apiService", function($http, contentParser){
 	return {
 		linkService : {
 			create : function(url){
-				//url = "http://www.youtube.com/watch?v=eWnHL-M8g3g ";
-				//select * from geo.places where text="sunnyvale, ca"
-
-				// url = "http://www.books.com.tw/books/new/79newbooks.php";
-				// url = 'http://query.yahooapis.com/v1/public/yql?q=select * from geo.places where text="sunnyvale, ca"&format=json&callback=yqlcallback';
-				// var yql = encodeURI(url);
-		
-				/*var yql = 'select * from html where url = "' + encodeURI(url) + '"';
-				var req = 'http://query.yahooapis.com/v1/public/yql?q=' + yql;
-				console.log(req);
-				$.ajax({
-					method : "get",
-					url : req,
-					success : function(data){
-						console.log(data);
-					},
-					error : function(e){
-						console.debug(e);
-					}
-				});*/
 				var _d = $.Deferred();
 				$.ajax({
 					url : "api/getUrlHtml/",
 					method : "post",
 					data : {"url" : url},
 					success : function(res){
-						obj = contentParser.parse(res, url);
-						//console.log(obj);
-						_d.resolve(obj);
+						//console.log(res);
+						contentParser.parse(res, url).then(function(obj){
+							//console.log(obj);
+							_d.resolve(obj);
+						});
 					},
 					fail : function(err){
 						console.log(err);
 					}
 				});
-				
-				/*//var graber = "http://whateverorigin.org/";
-				var graber = "http://anyorigin.com/";
-				$.getJSON(graber + 'get?url=' + encodeURIComponent(url) + '&callback=?').done(function(data){
-					obj = contentParser.parse(data.contents, url);
-					_d.resolve(obj);
-				});*/
 				return _d.promise();
 			},
 			save : function(link){
@@ -177,6 +152,7 @@ app.service("apiService", function($http, contentParser){
 	};
 	this.parse = function(content, url){
 		var rs = {};
+		var d = $.Deferred();
 		rs.type = "default";
 		rs.types = [];
 
@@ -304,10 +280,11 @@ app.service("apiService", function($http, contentParser){
 
 		//get typed data
 		rs.typed = {};
-		//console.log(rs.type.name);
+		console.log(rs.type.name);
 		switch(rs.type.name){
 			case 'youtube.watch' :
 				rs.typed.videoId = url.split("v=")[1].split("&")[0];
+				d.resolve(rs);
 			break;
 			case 'google.docs.spreadsheet' : 
 				rs.gdocKey = rs.url.param("key");
@@ -315,18 +292,24 @@ app.service("apiService", function($http, contentParser){
 				    'fileId': rs.gdocKey
 				});
 				request.execute(function(resp) {
-					_c.log(resp);
+					//_c.log(resp);
+					rs.doc = {};
+					rs.doc.spreadsheet = resp;
+					rs.title = resp.title;
+
+					d.resolve(rs);
 				    // console.log('Title: ' + resp.title);
 				    // console.log('Description: ' + resp.description);
 				    // console.log('MIME type: ' + resp.mimeType);
 				});
-				_c.log(rs);
+			break;
+			default : 
+				d.resolve(rs);
 			break;
 		}
-
 		//remove dom
 		holder.html("");
-		return rs;
+		return d.promise();
 
 	}
 })

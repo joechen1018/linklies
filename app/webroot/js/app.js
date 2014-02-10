@@ -1,5 +1,7 @@
 var glob = {};
-var app = angular.module("lk", ["ngRoute"])
+var app = angular.module("lk", ["ngRoute"], function($httpProvider){
+
+})
 .run(function($location){
 
 	(function() {
@@ -66,3 +68,4 @@ app.utils.isUrl = function(s){
 	var regexp = /^s?https?:\/\/[-_.!~*'()a-zA-Z0-9;\/?:\@&=+\$,%#]+$/
 	return regexp.test(s);
 }
+
