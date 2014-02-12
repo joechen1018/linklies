@@ -61,8 +61,6 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 			// $scope.showOverlay = true;
 			// $scope.requireSign = true;
 		}
-
-		gridService.update();
 	}
 	var clearLinks = function(){
 		for(var i = $scope.links.length - 1; i>-1; i--){
@@ -103,6 +101,10 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 		//_c.log(links);
 		$scope.links = links;
 		$scope.$apply();
+
+		$timeout(function(){
+			gridSystem.update();
+		}, 100);
 	});
 	$scope.folders = gridRects.folders.then(function(folders){
 		$scope.folders = gridRects.folders;
@@ -143,12 +145,12 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 		var hasScrollbar = gridService.hasScrollbar();
 		if(hasScrollbar){
 			return {
-				height : gridService.viewHeight + 20,
+				height : gridSystem.height + gridSystem.defaults.bottomHeight + gridSystem.defaults.topHeight + 40,
 				display : $scope.show ? "block" : "none"
 			}
 		}else{
 			return {
-				height : gridService.viewHeight,
+				height : gridSystem.height + gridSystem.defaults.bottomHeight + gridSystem.defaults.topHeight + 40,
 				display : $scope.show ? "block" : "none"
 			}
 		}

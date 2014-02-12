@@ -76,6 +76,7 @@ app.service("gridRects", function(gridSystem, apiService){
 		findDragRectGrid : function(originGrid, dragRect){
 
 			self.folderGrids = self.folder.getGrids();
+			console.log(self.folderGrids);
 			var folderGrids = self.folderGrids, 
 				rect, 
 				intersection, 
@@ -177,7 +178,7 @@ app.service("gridRects", function(gridSystem, apiService){
 			return true;
 		},
 		findDragRectGrid : function(originGrid, dragRect){
-			var linkGrids = self.linkGrids, 
+			var linkGrids = self.link.getGrids(), 
 				rect, 
 				intersection, 
 				area, 

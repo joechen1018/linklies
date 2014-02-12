@@ -383,8 +383,7 @@ app.service("gridService", function($rootScope, $timeout, resize){
 	}
 
 	var getGridHeight = function(height){
-
-		var n = getRowNum(height, _d.gridHeight + _d.margin) - 1;
+		var n = getRowNum(height, _d.gridHeight + _d.margin);
 		var h = (height - (n-1) * _d.margin) / n;
 		return h;
 	}
@@ -395,7 +394,7 @@ app.service("gridService", function($rootScope, $timeout, resize){
 	}
 
 	var getRowNum = function(height, gridFullHeight){
-		var n = Math.ceil((height - _d.margin) / gridFullHeight);
+		var n = Math.ceil((height) / gridFullHeight);
 		return n;
 	}
 	var defaults = {
@@ -424,10 +423,10 @@ app.service("gridService", function($rootScope, $timeout, resize){
 		this.height = resize.getHeight() - _d.topHeight - _d.bottomHeight;
 		this.gridWidth = getGridWidth(this.width);
 		this.gridFullWidth = this.gridWidth + _d.margin;
-		this.gridHeight = getGridHeight(this.height);
+		this.gridHeight = _d.gridHeight;
 		this.gridFullHeight = this.gridHeight + _d.margin;
 		this.cols = _.range(getColNum(this.width, this.gridWidth));
-		this.rows = _.range(getRowNum(this.height, this.gridHeight + _d.margin));
+		this.rows = _.range(getRowNum(this.height, _d.gridHeight + _d.margin) + 3);
 		this.folderSize = {
 			width : this.gridWidth,
 			fullWidth : this.gridWidth + _d.margin,
@@ -441,6 +440,7 @@ app.service("gridService", function($rootScope, $timeout, resize){
 			fullHeight : _d.gridHeight + _d.margin
 		}
 
+		this.height = this.rows.length * this.gridFullHeight - _d.margin;
 		// console.log("board height : " + this.height);
 		// console.log("grid height : " + this.gridHeight);
 		// console.log("folder height : " + this.folderSize.fullHeight);
@@ -494,10 +494,8 @@ app.service("gridService", function($rootScope, $timeout, resize){
 	}	
 
 	this.getHeight = function(){
-
 		var height = $(window).height();
 		var tmp;
-
 		$elements = $(".folder, .link");
 		$elements.each(function(i, e){
 			tmp = getBottom($(e));

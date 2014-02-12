@@ -279,6 +279,18 @@ app.service("apiService", function($http, contentParser){
 		//console.log(rs.ico);
 
 		//get typed data
+		var findKey = {
+			d : function(){
+				var split = url.split("/"), i = 0, key;
+				while(i <split.length){
+					if(split[i] === "d" && i<split.length-1){
+						key = split[i+1];
+					}
+					i++;
+				}
+				return key;
+			}
+		}
 		rs.typed = {};
 		console.log(rs.type.name);
 		switch(rs.type.name){
@@ -292,9 +304,44 @@ app.service("apiService", function($http, contentParser){
 				    'fileId': rs.gdocKey
 				});
 				request.execute(function(resp) {
-					//_c.log(resp);
+					_c.log(resp);
 					rs.doc = {};
 					rs.doc.spreadsheet = resp;
+					rs.title = resp.title;
+
+					d.resolve(rs);
+				    // console.log('Title: ' + resp.title);
+				    // console.log('Description: ' + resp.description);
+				    // console.log('MIME type: ' + resp.mimeType);
+				});
+			break;
+			case 'google.docs.document' : 
+				rs.gdocKey = findKey.d();
+				var request = gapi.client.drive.files.get({
+				    'fileId': rs.gdocKey
+				});
+				request.execute(function(resp) {
+					//_c.log(resp);
+					rs.doc = {};
+					rs.doc.document = resp;
+					rs.title = resp.title;
+
+					d.resolve(rs);
+				    // console.log('Title: ' + resp.title);
+				    // console.log('Description: ' + resp.description);
+				    // console.log('MIME type: ' + resp.mimeType);
+				});
+			break;
+			case "google.docs.presentations" :
+				rs.gdocKey = findKey.d();
+				console.log(rs.gdocKey);
+				var request = gapi.client.drive.files.get({
+				    'fileId': rs.gdocKey
+				});
+				request.execute(function(resp) {
+					_c.log(resp);
+					rs.doc = {};
+					rs.doc.presentation = resp;
 					rs.title = resp.title;
 
 					d.resolve(rs);

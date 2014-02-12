@@ -2,11 +2,14 @@
 class UsersController extends AppController{
 
 	public function beforeFilter(){
-		$this -> Auth -> allow("login");
+		//$this -> Auth -> allow("login");
+		$action = $this -> request -> params["action"];
 		if($this -> Auth -> loggedIn()){
 			$this -> Auth -> allow();
 		}else{
-			$this -> redirect("login");
+			if($action !== "login"){
+				$this -> redirect("login");
+			}
 		}
 	}
 	public function index(){
