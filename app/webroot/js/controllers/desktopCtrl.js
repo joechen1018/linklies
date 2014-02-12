@@ -142,6 +142,10 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 	}, true);
 
 	$scope.getDesktopStyle = function(){
+		return {
+			height : gridSystem.height + gridSystem.defaults.bottomHeight + gridSystem.defaults.topHeight,
+			display : $scope.show ? "block" : "none"
+		}
 		var hasScrollbar = gridService.hasScrollbar();
 		if(hasScrollbar){
 			return {
