@@ -67,6 +67,7 @@
 
 	<div id="board" ng-style="{
 		width : grids.width,
+		height : grids.height,
 		left : grids.defaults.sideWidth,
 		top : grids.defaults.topHeight
 	}" ng-click="onBoardClick($event)">
