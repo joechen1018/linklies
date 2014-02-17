@@ -177,6 +177,7 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 				scope.$apply();
 			});
 
+			return;
 			var rects = gridRects;
 			var linkRects = gridRects.link;
 			var gs = gridService;
@@ -234,6 +235,77 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 						}, 200);
 					}
 
+					scope.$apply();
+				}
+			});
+
+		}
+	}
+})
+.directive("lkDrag", function(gridService, gridSystem, gridRects, apiService){
+	return {
+		restrict : "EA",
+		controller : function($scope){
+
+		},
+		replace : true,
+		link : function(scope, ele, attrs){
+			var rects = gridRects;
+			var allRects = $(ele).hasClass("link") ? gridRects.link : gridRects.folder;
+			var data = $(ele).hasClass("link") ? scope.link : scope.folder;
+			var linkService = apiService.linkService;
+			var gs = gridService;
+			var originRect, originGrid, dragRect, selectedGrid, $ele;
+			var sideWidth = gs.sideWidth;
+			$(ele).draggable({
+				containment : "#board",
+				scroll: false,
+				start : function(e, ui){
+					$ele = $(ele);
+					originRect = rects.getDomRect($ele);
+					dragGrid = undefined;
+					originGrid = data.grid;
+				},
+				drag : function(e, ui){
+
+					scope.showOpt = false;
+					dragRect = rects.getDomRect($ele);
+					dragGrid = allRects.findDragRectGrid(
+						originGrid,
+						dragRect
+					);
+					isAvailable = allRects.gridAvailable(dragGrid);
+					//if(selectedGrid !== undefined && !gs.occupied.link(selectedGrid)){
+					if(isAvailable){
+						scope.dragPreview.show = true;
+						scope.dragPreview.grid = dragGrid;
+					}else{
+						scope.dragPreview.show = false;
+					}
+					scope.$apply();
+				},
+				stop : function(e, ui){
+
+					scope.dragPreview.show = false;
+
+					dragRect = rects.getDomRect($ele);
+					dragGrid = allRects.findDragRectGrid(
+						originGrid,
+						dragRect
+					);
+
+					isAvailable = allRects.gridAvailable(dragGrid);
+					//if there is a selected grid and the selected grid is not occupied
+					//if(selectedGrid !== undefined && !gs.occupied.link(selectedGrid)){
+					if(isAvailable){	
+						scope.link.grid = dragGrid;
+						linkService.save(scope.data);
+					}else{
+						$ele.animate({
+							left : originRect.left,
+							top : originRect.top
+						}, 200);
+					}
 					scope.$apply();
 				}
 			});

@@ -126,14 +126,14 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 	$scope.show = true;
 	//gs.init($scope.folders, $scope.links);
 
-	$scope.$watch('grid.gridWidth', function(newVal, oldVal, scope){
+	/*$scope.$watch('grid.gridWidth', function(newVal, oldVal, scope){
 		// console.log(newVal);
 		// console.log(oldVal);
 	});
 
 	$scope.$watch("gridRects.folders", function(newVal, oldVal){
 		//$scope.folders = newVal;
-	});
+	});*/
 
 	$scope.$watch('resize.size', function(newSize, oldSize){
 		// console.log(newVal);
@@ -171,8 +171,20 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 				focus : true
 			}
 		}
-		clearLinks();
-		$scope.links.push(newLink);
+		//clearLinks();
+
+		setTimeout(function(){
+			$scope.$apply(function(){
+				$scope.links.push(newLink);
+				$event.preventDefault();   //prevent the click from jumping esp on hashes
+		    	$event.stopPropagation();  //prevent from any parent click handlers that didn't prevent the jump
+		    	return false;
+			});
+		}, 1);
+
+		/*$event.preventDefault();   //prevent the click from jumping esp on hashes
+    	$event.stopPropagation();  //prevent from any parent click handlers that didn't prevent the jump
+    	return false;*/
 	}
 
 	$scope.onLinkClick = function($event){
