@@ -54,7 +54,7 @@ var app = angular.module("lk", ["ngRoute"])
 	}
 
 	var authorize = function(rs){
-		//console.log(rs);
+		console.log(rs);
 		if (rs && !rs.error && rs["access_token"]) {
 			//authorized
 
@@ -63,6 +63,7 @@ var app = angular.module("lk", ["ngRoute"])
 			$.cookie("user.token", token);
 
 			//location.href = root + $.cookie("user.token");
+
 			gapi.client.setApiKey("");
 		    gapi.client.load('plus', 'v1', function() {
 		        var request = gapi.client.plus.people.get({
@@ -72,24 +73,30 @@ var app = angular.module("lk", ["ngRoute"])
 		        request.execute(function(resp) {
 		        	//resp.token = token;
 		        	//console.log(resp);
-		        	$.ajax({
-		        		url : "login",
-		        		method : "post",
-		        		data : resp,
-		        		success : function(res){
-		        			console.log(res);
-		        			var user = res.data.User;
-		        			if(user && user.username_id){
-		        				location.href = root + user.username_id
-		        				console.log(root + user.username_id);
-		        				return;
-		        			}
-		        			//location.href = root + res.userId;
-		        		},
-		        		error : function(){
+		        	if(resp.isPlusUser){
+		        		$.ajax({
+			        		url : "login",
+			        		method : "post",
+			        		data : resp,
+			        		success : function(res){
+			        			console.log(res);
+			        			var user = res.data.User;
+			        			if(user && user.username_id){
+			        				location.href = root + user.username_id
+			        				console.log(root + user.username_id);
+			        				return;
+			        			}
+			        			//location.href = root + res.userId;
+			        		},
+			        		error : function(){
 
-		        		}
-		        	});
+			        		}
+			        	});
+		        	}else{
+		        		alert("You need to be a Google+ user to continue");
+		        		$scope.state = "sign";
+						$scope.$apply();
+		        	}
 
 		         });
 		    });
