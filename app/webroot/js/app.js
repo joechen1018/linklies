@@ -1,5 +1,16 @@
 var glob = {};
-var app = angular.module("lk", ["ngRoute"])
+/*var $AnchorScrollProvider = function() {
+  this.$get = ['$window', '$location', '$rootScope', function($window, $location, $rootScope) {
+    function scroll() {
+    }
+    return scroll;
+  }];
+}*/
+var app = angular.module("lk", ["ngRoute"], function($httpProvider){
+
+})
+.value('$anchorScroll', angular.noop)
+//.provider('$anchorScroll', $AnchorScrollProvider)
 .run(function($location){
 
 	(function() {
@@ -66,3 +77,7 @@ app.utils.isUrl = function(s){
 	var regexp = /^s?https?:\/\/[-_.!~*'()a-zA-Z0-9;\/?:\@&=+\$,%#]+$/
 	return regexp.test(s);
 }
+
+$(document).ready(function(){
+	//$('body').perfectScrollbar();
+});

@@ -61,8 +61,6 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 			// $scope.showOverlay = true;
 			// $scope.requireSign = true;
 		}
-
-		gridService.update();
 	}
 	var clearLinks = function(){
 		for(var i = $scope.links.length - 1; i>-1; i--){
@@ -103,6 +101,10 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 		//_c.log(links);
 		$scope.links = links;
 		$scope.$apply();
+
+		$timeout(function(){
+			gridSystem.update();
+		}, 100);
 	});
 	$scope.folders = gridRects.folders.then(function(folders){
 		$scope.folders = gridRects.folders;
@@ -124,14 +126,14 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 	$scope.show = true;
 	//gs.init($scope.folders, $scope.links);
 
-	$scope.$watch('grid.gridWidth', function(newVal, oldVal, scope){
+	/*$scope.$watch('grid.gridWidth', function(newVal, oldVal, scope){
 		// console.log(newVal);
 		// console.log(oldVal);
 	});
 
 	$scope.$watch("gridRects.folders", function(newVal, oldVal){
 		//$scope.folders = newVal;
-	});
+	});*/
 
 	$scope.$watch('resize.size', function(newSize, oldSize){
 		// console.log(newVal);
@@ -140,15 +142,19 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 	}, true);
 
 	$scope.getDesktopStyle = function(){
+		return {
+			height : gridSystem.height + gridSystem.defaults.bottomHeight + gridSystem.defaults.topHeight,
+			display : $scope.show ? "block" : "none"
+		}
 		var hasScrollbar = gridService.hasScrollbar();
 		if(hasScrollbar){
 			return {
-				height : gridService.viewHeight + 20,
+				height : gridSystem.height + gridSystem.defaults.bottomHeight + gridSystem.defaults.topHeight + 40,
 				display : $scope.show ? "block" : "none"
 			}
 		}else{
 			return {
-				height : gridService.viewHeight,
+				height : gridSystem.height + gridSystem.defaults.bottomHeight + gridSystem.defaults.topHeight + 40,
 				display : $scope.show ? "block" : "none"
 			}
 		}
@@ -165,8 +171,20 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 				focus : true
 			}
 		}
-		clearLinks();
-		$scope.links.push(newLink);
+		//clearLinks();
+
+		setTimeout(function(){
+			$scope.$apply(function(){
+				$scope.links.push(newLink);
+				$event.preventDefault();   //prevent the click from jumping esp on hashes
+		    	$event.stopPropagation();  //prevent from any parent click handlers that didn't prevent the jump
+		    	return false;
+			});
+		}, 1);
+
+		/*$event.preventDefault();   //prevent the click from jumping esp on hashes
+    	$event.stopPropagation();  //prevent from any parent click handlers that didn't prevent the jump
+    	return false;*/
 	}
 
 	$scope.onLinkClick = function($event){

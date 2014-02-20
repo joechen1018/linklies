@@ -2,13 +2,15 @@
 class UsersController extends AppController{
 
 	public function beforeFilter(){
-
-		$this -> Auth -> allow("login");
-		// if($this -> Auth -> loggedIn()){
-		// 	$this -> Auth -> allow();
-		// }else{
-		// 	$this -> redirect("login");
-		// }
+		//$this -> Auth -> allow("login");
+		$action = $this -> request -> params["action"];
+		if($this -> Auth -> loggedIn()){
+			$this -> Auth -> allow();
+		}else{
+			if($action !== "login"){
+				$this -> redirect("login");
+			}
+		}
 	}
 	public function index(){
 
@@ -36,6 +38,7 @@ class UsersController extends AppController{
 	}
 
 	public function login(){
+
 		//if 'me' object is posted
 		if($this -> data){
 			$user_id = $this -> data["id"];

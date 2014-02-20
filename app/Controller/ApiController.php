@@ -4,8 +4,9 @@ App::import('Vendor', 'simple_html_dom');
 class ApiController extends AppController{
 	
 	public function beforeFilter(){
+		$this -> Auth -> allow();
 		if($this -> Auth -> loggedIn()){
-			$this -> Auth -> allow();
+			
 		}
 	}
 	public function getUrlHtml(){

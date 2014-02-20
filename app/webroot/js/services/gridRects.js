@@ -177,8 +177,8 @@ app.service("gridRects", function(gridSystem, apiService){
 			return true;
 		},
 		findDragRectGrid : function(originGrid, dragRect){
-			var linkGrids = self.linkGrids, 
-				rect, 
+			var linkGrids = self.link.getGrids();
+			var	rect, 
 				intersection, 
 				area, 
 				max = {

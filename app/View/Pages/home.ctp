@@ -71,7 +71,7 @@
 		left : grids.defaults.sideWidth,
 		top : grids.defaults.topHeight
 	}" ng-click="onBoardClick($event)">
-			<ul id="gridLines" ng-show="grids.show">
+			<ul id="gridLines" ng-class="grids.show ? 'showGrid' : 'hideGrid'">
 				<li class="hline gline" ng-repeat="item in grids.rows" ng-style="{
 					top : $index * grids.gridFullHeight,
 					height : grids.gridHeight
@@ -88,7 +88,7 @@
 			</div> -->
 			
 			<div lk-folder data="folder" drag-preview="dragPreview.folder" ng-repeat="folder in folders"></div>
-			<div lk-link data="link"  drag-preview="dragPreview.link" ng-repeat="link in links"  ng-click="onLinkClick($event)"></div>
+			<div lk-link lk-drag data="link"  drag-preview="dragPreview.link" ng-repeat="link in links"  ng-click="onLinkClick($event)"></div>
 
 			<div id="folder-drop-preview" ng-style="{
 				width : grids.gridWidth,
