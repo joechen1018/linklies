@@ -21,13 +21,14 @@ app.service("apiService", function($http, contentParser){
 				return _d.promise();
 			},
 			save : function(link){
+				console.log(link);
 				var _d = $.Deferred();
 				$.ajax({
 					url : "api/saveLink",
 					method : "post",
 					data : link,
 					success : function(res){
-						//console.log(res);
+						console.log(res);
 						_d.resolve(res);
 					}
 				});
@@ -43,6 +44,17 @@ app.service("apiService", function($http, contentParser){
 					}
 				});
 				return _d.promise();
+			}
+		},
+		folderService : {
+			create : function(){
+
+			},
+			save : function(){
+
+			},
+			remove : function(){
+
 			}
 		},
 		getFolders : function(){

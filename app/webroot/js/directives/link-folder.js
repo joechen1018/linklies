@@ -177,7 +177,6 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 				scope.$apply();
 			});
 
-			//return;
 			var rects = gridRects;
 			var linkRects = gridRects.link;
 			var gs = gridService;
@@ -248,12 +247,18 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 		controller : function($scope){
 
 		},
+		scope : false,
 		replace : true,
 		link : function(scope, ele, attrs){
+			//console.log(attrs);
+			var ctrlScope = scope.$parent;
 			var rects = gridRects;
-			var allRects = $(ele).hasClass("link") ? gridRects.link : gridRects.folder;
-			var data = $(ele).hasClass("link") ? scope.link : scope.folder;
-			var linkService = apiService.linkService;
+			var allRects = attrs.data === "link" ? gridRects.link : gridRects.folder;
+			var data = attrs.data === "link" ? scope.link : scope.folder;
+			var service = attrs.data === "link" ? apiService.linkService : apiService.folderService;
+			var preview = attrs.data === "link" ? ctrlScope.dragPreview.link : ctrlScope.dragPreview.folder;
+			var ref = attrs.data === "link" ? scope.link : scope.folder;
+
 			var gs = gridService;
 			var originRect, originGrid, dragRect, selectedGrid, $ele;
 			var sideWidth = gs.sideWidth;
@@ -277,16 +282,16 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 					isAvailable = allRects.gridAvailable(dragGrid);
 					//if(selectedGrid !== undefined && !gs.occupied.link(selectedGrid)){
 					if(isAvailable){
-						scope.dragPreview.show = true;
-						scope.dragPreview.grid = dragGrid;
+						preview.show = true;
+						preview.grid = dragGrid;
 					}else{
-						scope.dragPreview.show = false;
+						preview.show = false;
 					}
 					scope.$apply();
 				},
 				stop : function(e, ui){
 
-					scope.dragPreview.show = false;
+					preview.show = false;
 
 					dragRect = rects.getDomRect($ele);
 					dragGrid = allRects.findDragRectGrid(
@@ -298,15 +303,15 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 					//if there is a selected grid and the selected grid is not occupied
 					//if(selectedGrid !== undefined && !gs.occupied.link(selectedGrid)){
 					if(isAvailable){	
-						scope.link.grid = dragGrid;
-						linkService.save(scope.data);
+						ref.grid = dragGrid;
+						service.save(ref);
 					}else{
 						$ele.animate({
 							left : originRect.left,
 							top : originRect.top
 						}, 200);
 					}
-					scope.$apply();
+					ctrlScope.$apply();
 				}
 			});
 
