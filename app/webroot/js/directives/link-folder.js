@@ -176,68 +176,6 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 				scope.showOpt = true;
 				scope.$apply();
 			});
-
-			var rects = gridRects;
-			var linkRects = gridRects.link;
-			var gs = gridService;
-			var originRect, originGrid, dragRect, selectedGrid, $folder, $link;
-			var sideWidth = gs.sideWidth;
-			$(ele).draggable({
-				containment : "#board",
-				scroll: false,
-				start : function(e, ui){
-					$link = $(ele);
-					originRect = rects.getDomRect($link);
-					//originRect = gs.getRect($link);
-					dragGrid = undefined;
-					originGrid = data.grid;
-				},
-				drag : function(e, ui){
-
-					scope.showOpt = false;
-
-					dragRect = rects.getDomRect($link);
-					dragGrid = linkRects.findDragRectGrid(
-						originGrid,
-						dragRect
-					);
-					isAvailable = linkRects.gridAvailable(dragGrid);
-					//if(selectedGrid !== undefined && !gs.occupied.link(selectedGrid)){
-					if(isAvailable){
-						scope.dragPreview.show = true;
-						scope.dragPreview.grid = dragGrid;
-					}else{
-						scope.dragPreview.show = false;
-					}
-					scope.$apply();
-				},
-				stop : function(e, ui){
-
-					scope.dragPreview.show = false;
-
-					dragRect = rects.getDomRect($link);
-					dragGrid = linkRects.findDragRectGrid(
-						originGrid,
-						dragRect
-					);
-
-					isAvailable = linkRects.gridAvailable(dragGrid);
-					//if there is a selected grid and the selected grid is not occupied
-					//if(selectedGrid !== undefined && !gs.occupied.link(selectedGrid)){
-					if(isAvailable){	
-						scope.data.grid = dragGrid;
-						linkService.save(scope.data);
-					}else{
-						$link.animate({
-							left : originRect.left,
-							top : originRect.top
-						}, 200);
-					}
-
-					scope.$apply();
-				}
-			});
-
 		}
 	}
 })
