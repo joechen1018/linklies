@@ -50,8 +50,18 @@ app.service("apiService", function($http, contentParser){
 			create : function(){
 
 			},
-			save : function(){
-
+			save : function(folder){
+				var _d = $.Deferred();
+				$.ajax({
+					url : "api/saveFolder",
+					method : "post",
+					data : folder,
+					success : function(res){
+						console.log(res);
+						_d.resolve(res);
+					}
+				});
+				return _d.promise();
 			},
 			remove : function(){
 

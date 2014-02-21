@@ -145,6 +145,20 @@ class ApiController extends AppController{
 		$this -> set("_serialize", array("res"));
 	}
 
+	public function saveFolder(){
+		$data = $this -> data;
+		$this -> loadModel("Folder");
+
+		$data["grid"] = $data["grid"][0] . "," . $data["grid"][1];
+		$this -> Folder -> save($data);
+
+		$this -> viewClass = "Json";
+		$this -> response -> type("json");
+
+		$this -> set("data", $data);
+		$this -> set("_serialize", array("data"));
+	}	
+
 	private function curl_get($url, array $get = array(), array $options = array()){   
 	    $defaults = array(
 	        //CURLOPT_URL => $url. (strpos($url, '?') === FALSE ? '?' : ''). http_build_query($get),
