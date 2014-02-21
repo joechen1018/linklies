@@ -10,8 +10,6 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 		scope: {
 		    data : "=",
 		    dragPreview : "=",
-		    gridSystem : "=",
-		    gridRects : "="
 		},
 		link : function(scope, ele, attrs, ctrl){
 
@@ -32,77 +30,6 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 				var arr = [$(ele).offset().left, $(ele).offset().top];
 				return arr;
 			}
-
-			scope.grid = gs;
-			var rects = gridRects;
-			var folderRects = gridRects.folder;
-			var $folder = $(ele);
-			var timeout;
-			var originRect, originGrid, dragRect, dragGrid, $folder, $link;
-			var gs = gridService;
-			var sideWidth = gs.sideWidth;
-			var data = scope.data;
-			var isAvailable = false;
-
-			$(ele).draggable({
-				containment : "#board",
-				scroll: false,
-				start : function(e, ui){
-					$folder = $(ele);
-					originRect = rects.getDomRect($folder);
-					dragGrid = undefined;
-					originGrid = data.grid;
-				},
-				drag : function(e, ui){
-
-					dragRect = rects.getDomRect($folder);
-					dragGrid = folderRects.findDragRectGrid(
-						originGrid,
-						dragRect
-					);
-
-					isAvailable = folderRects.gridAvailable(dragGrid);
-					//console.log(isAvailable);
-					//(!goog.array.equals(folderGrids[i], originGrid))
-					if(isAvailable){
-						scope.dragPreview.show = true;
-						scope.dragPreview.grid = dragGrid;
-					}else{
-						scope.dragPreview.show = false;
-					}
-					
-					scope.$apply(function(){
-						scope.data.dragGrid = dragGrid;	
-					});
-				},
-				stop : function(e, ui){
-
-					scope.dragPreview.show = false;
-					
-					dragRect = rects.getDomRect($folder);
-					dragGrid = folderRects.findDragRectGrid(
-						originGrid,
-						dragRect
-					);
-
-					isAvailable = folderRects.gridAvailable(dragGrid);
-					//if there is a selected grid and the selected grid is not occupied
-					//if(dragGrid !== undefined && !gs.occupied.folder(dragGrid)){
-					if(isAvailable){
-						scope.$apply(function(){
-							scope.data.grid = dragGrid;
-						});
-					}else{
-						$folder.animate({
-							left : originRect.left,
-							top : originRect.top
-						}, 200);
-					}
-					//var near = gs.findNearistGrid.folder(selectedGrid);
-				}
-			});
-			
-
 		}
 	}
 })
@@ -179,7 +106,7 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 		}
 	}
 })
-.directive("lkDrag", function(gridService, gridSystem, gridRects, apiService){
+.directive("lkDrag", function(gridService, gridSystem, gridRects, apiService, $timeout){
 	return {
 		restrict : "EA",
 		controller : function($scope){
@@ -189,70 +116,75 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 		replace : true,
 		link : function(scope, ele, attrs){
 			//console.log(attrs);
-			var ctrlScope = scope.$parent;
-			var rects = gridRects;
-			var allRects = attrs.data === "link" ? gridRects.link : gridRects.folder;
-			var data = attrs.data === "link" ? scope.link : scope.folder;
-			var service = attrs.data === "link" ? apiService.linkService : apiService.folderService;
-			var preview = attrs.data === "link" ? ctrlScope.dragPreview.link : ctrlScope.dragPreview.folder;
-			var ref = attrs.data === "link" ? scope.link : scope.folder;
+			var ctrlScope;// = scope.$parent;
+			$timeout(function(){
 
-			var gs = gridService;
-			var originRect, originGrid, dragRect, selectedGrid, $ele;
-			var sideWidth = gs.sideWidth;
-			$(ele).draggable({
-				containment : "#board",
-				scroll: false,
-				start : function(e, ui){
-					$ele = $(ele);
-					originRect = rects.getDomRect($ele);
-					dragGrid = undefined;
-					originGrid = data.grid;
-				},
-				drag : function(e, ui){
+				ctrlScope = scope;
 
-					scope.showOpt = false;
-					dragRect = rects.getDomRect($ele);
-					dragGrid = allRects.findDragRectGrid(
-						originGrid,
-						dragRect
-					);
-					isAvailable = allRects.gridAvailable(dragGrid);
-					//if(selectedGrid !== undefined && !gs.occupied.link(selectedGrid)){
-					if(isAvailable){
-						preview.show = true;
-						preview.grid = dragGrid;
-					}else{
+				var rects = gridRects;
+				var allRects = attrs.data === "link" ? gridRects.link : gridRects.folder;
+				var data = attrs.data === "link" ? scope.link : scope.folder;
+				var service = attrs.data === "link" ? apiService.linkService : apiService.folderService;
+				var preview = attrs.data === "link" ? ctrlScope.dragPreview.link : ctrlScope.dragPreview.folder;
+				var ref = attrs.data === "link" ? scope.link : scope.folder;
+
+				var gs = gridService;
+				var originRect, originGrid, dragRect, selectedGrid, $ele;
+				var sideWidth = gs.sideWidth;
+				$(ele).draggable({
+					containment : "#board",
+					scroll: false,
+					start : function(e, ui){
+						$ele = $(ele);
+						originRect = rects.getDomRect($ele);
+						dragGrid = undefined;
+						originGrid = data.grid;
+					},
+					drag : function(e, ui){
+
+						scope.showOpt = false;
+						dragRect = rects.getDomRect($ele);
+						dragGrid = allRects.findDragRectGrid(
+							originGrid,
+							dragRect
+						);
+						isAvailable = allRects.gridAvailable(dragGrid);
+						//if(selectedGrid !== undefined && !gs.occupied.link(selectedGrid)){
+						if(isAvailable){
+							preview.show = true;
+							preview.grid = dragGrid;
+						}else{
+							preview.show = false;
+						}
+						scope.$apply();
+					},
+					stop : function(e, ui){
+
 						preview.show = false;
+
+						dragRect = rects.getDomRect($ele);
+						dragGrid = allRects.findDragRectGrid(
+							originGrid,
+							dragRect
+						);
+
+						isAvailable = allRects.gridAvailable(dragGrid);
+						//if there is a selected grid and the selected grid is not occupied
+						//if(selectedGrid !== undefined && !gs.occupied.link(selectedGrid)){
+						if(isAvailable){	
+							ref.grid = dragGrid;
+							service.save(ref);
+						}else{
+							$ele.animate({
+								left : originRect.left,
+								top : originRect.top
+							}, 200);
+						}
+						ctrlScope.$apply();
 					}
-					scope.$apply();
-				},
-				stop : function(e, ui){
-
-					preview.show = false;
-
-					dragRect = rects.getDomRect($ele);
-					dragGrid = allRects.findDragRectGrid(
-						originGrid,
-						dragRect
-					);
-
-					isAvailable = allRects.gridAvailable(dragGrid);
-					//if there is a selected grid and the selected grid is not occupied
-					//if(selectedGrid !== undefined && !gs.occupied.link(selectedGrid)){
-					if(isAvailable){	
-						ref.grid = dragGrid;
-						service.save(ref);
-					}else{
-						$ele.animate({
-							left : originRect.left,
-							top : originRect.top
-						}, 200);
-					}
-					ctrlScope.$apply();
-				}
-			});
-
+				});
+			}, 1);
+			return;
 		}
 	}
 });
