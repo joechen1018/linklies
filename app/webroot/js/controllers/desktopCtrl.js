@@ -53,8 +53,9 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 		});
 
 		keyboardManager.bind("esc", function(){
-			clearLinks();
-			$scope.$apply();
+			$scope.$apply(function(){
+				clearLinks();
+			});
 		});
 
 		if(glob.requireSign === true){
@@ -172,24 +173,17 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 			}
 		}
 		//clearLinks();
+		$scope.links.push(newLink);
 
-		setTimeout(function(){
-			$scope.$apply(function(){
-				$scope.links.push(newLink);
-				$event.preventDefault();   //prevent the click from jumping esp on hashes
-		    	$event.stopPropagation();  //prevent from any parent click handlers that didn't prevent the jump
-		    	return false;
-			});
-		}, 1);
-
-		/*$event.preventDefault();   //prevent the click from jumping esp on hashes
+		$event.preventDefault();   //prevent the click from jumping esp on hashes
     	$event.stopPropagation();  //prevent from any parent click handlers that didn't prevent the jump
-    	return false;*/
+    	return false;
 	}
+
 
 	$scope.onLinkClick = function($event){
 		$event.stopPropagation();
-		//$event.preventDefault();
+		$event.preventDefault();
 	}
 
 	$rootScope.$on("removeLink", function(e, id){

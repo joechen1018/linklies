@@ -177,7 +177,7 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 				scope.$apply();
 			});
 
-			return;
+			//return;
 			var rects = gridRects;
 			var linkRects = gridRects.link;
 			var gs = gridService;
