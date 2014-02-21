@@ -33,7 +33,9 @@ var app = angular.module("lk", ["ngRoute"], function($httpProvider){
     return function(scope, element, attrs) {
        scope.$watch(attrs.xngFocus, 
          function (newValue) { 
+         	var x = window.scrollX, y = window.scrollY;
             newValue && element.focus();
+            window.scrollTo(x, y);
          },true);
       };    
 })
