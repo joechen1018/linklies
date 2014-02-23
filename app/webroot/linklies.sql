@@ -3,17 +3,11 @@
 -- http://www.phpmyadmin.net
 --
 -- 主機: localhost
--- 建立日期: Feb 23, 2014, 10:51 AM
+-- 建立日期: Feb 23, 2014, 05:18 PM
 -- 伺服器版本: 5.1.41
 -- PHP 版本: 5.3.1
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
 
 --
 -- 資料庫: `linklies`
@@ -32,8 +26,6 @@ CREATE TABLE IF NOT EXISTS `folders` (
   `name` varchar(255) NOT NULL,
   `grid` varchar(10) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `type` varchar(255) NOT NULL,
-  `icon` varchar(10) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
 
@@ -41,9 +33,9 @@ CREATE TABLE IF NOT EXISTS `folders` (
 -- 列出以下資料庫的數據： `folders`
 --
 
-INSERT INTO `folders` (`id`, `hash`, `folder_type_id`, `name`, `grid`, `user_id`, `type`, `icon`) VALUES
-(1, '', 1, 'Lorem ipsum dolor sit amet sit amet Lorem', '0,0', 1, '', 'a'),
-(2, '', 2, 'Lorem ipsum dolor sit amet sit amet Lorem', '1,0', 1, 'video', 'l');
+INSERT INTO `folders` (`id`, `hash`, `folder_type_id`, `name`, `grid`, `user_id`) VALUES
+(1, '', 1, 'Lorem ipsum dolor sit amet sit amet Lorem', '1,0', 1),
+(2, '', 2, 'Lorem ipsum dolor sit amet sit amet Lorem', '0,0', 1);
 
 -- --------------------------------------------------------
 
@@ -54,17 +46,19 @@ INSERT INTO `folders` (`id`, `hash`, `folder_type_id`, `name`, `grid`, `user_id`
 CREATE TABLE IF NOT EXISTS `folder_types` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
+  `link_types` varchar(255) NOT NULL,
   `icon` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
 
 --
 -- 列出以下資料庫的數據： `folder_types`
 --
 
-INSERT INTO `folder_types` (`id`, `name`, `icon`) VALUES
-(1, 'web', 'a'),
-(2, 'video', 'l');
+INSERT INTO `folder_types` (`id`, `name`, `link_types`, `icon`) VALUES
+(1, 'web', 'default', 'a'),
+(2, 'video', 'youtube.watch,vimeo.watch', 'l'),
+(3, 'search_result', 'google.search', 'n');
 
 -- --------------------------------------------------------
 
@@ -88,7 +82,7 @@ CREATE TABLE IF NOT EXISTS `links` (
   `hash` varchar(255) NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=166 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=171 ;
 
 --
 -- 列出以下資料庫的數據： `links`
@@ -97,13 +91,13 @@ CREATE TABLE IF NOT EXISTS `links` (
 INSERT INTO `links` (`id`, `user_id`, `folder_id`, `username_id`, `grid`, `ico`, `url`, `title`, `thumb`, `site`, `desc`, `html_source`, `hash`, `timestamp`) VALUES
 (13, 1, 0, 'joe.chen.1', '4,12', 'http://developers.google.com/_static/dd36832bd6/images/favicon.ico', 'https://developers.google.com/gadgets/docs/remote-content', 'Working with Remote Content - Gadgets API — Google Developers', '', '', '', '', '', '2014-02-09 10:51:58'),
 (14, 1, 0, 'joe.chen.1', '6,11', 'http://s.ytimg.com/yts/img/favicon_32-vflWoMFGx.png', 'http://www.youtube.com/watch?v=rp9sYmnoFEU&list=RDeWnHL-M8g3g', 'Nina Nesbitt - Little Lion Man (David Keller Remix)', '', '', '', '', '', '2014-02-09 10:51:58'),
-(103, 1, 0, 'joe.chen.1', '5,13', 'https://www.google.com.tw/favicon.ico', 'https://www.google.com.tw/search?q=angularjs+post+not+getting+data&oq=angularjs+post+not+getting+data&aqs=chrome..69i57.8650j0j7&sourceid=chrome&espv=210&es_sm=122&ie=UTF-8', 'angularjs post not getting data - Google 搜尋', '', '', '', '', '', '2014-02-10 13:29:53'),
+(103, 1, 0, 'joe.chen.1', '4,13', 'https://www.google.com.tw/favicon.ico', 'https://www.google.com.tw/search?q=angularjs+post+not+getting+data&oq=angularjs+post+not+getting+data&aqs=chrome..69i57.8650j0j7&sourceid=chrome&espv=210&es_sm=122&ie=UTF-8', 'angularjs post not getting data - Google 搜尋', '', '', '', '', '', '2014-02-10 13:29:53'),
 (104, 1, 0, 'joe.chen.1', '4,8', 'http://victorblog.com/images/favicon.png', 'http://victorblog.com/2012/12/20/make-angularjs-http-service-behave-like-jquery-ajax/', '  Make AngularJS $http service behave like jQuery.ajax() | Strength in Numbers Blog', '', '', '', '', '', '2014-02-10 13:31:18'),
 (17, 1, 0, 'joe.chen.1', '1,7', 'http://cache.ettoday.net/lemon/images/favicon.ico', 'http://www.ettoday.net/dalemon/post/2136?from=fb_et_pets', '我雄赳赳的哈士奇美容後怎麼變這樣！', '', '', '', '', '', '2014-02-09 10:51:58'),
-(9, 1, 0, 'joe.chen.1', '2,4', 'http://underscorejs.org/favicon.ico', 'http://underscorejs.org/', 'Underscore.js', '', '', '', '', '', '2014-02-09 10:51:58'),
+(9, 1, 0, 'joe.chen.1', '2,6', 'http://underscorejs.org/favicon.ico', 'http://underscorejs.org/', 'Underscore.js', '', '', '', '', '', '2014-02-09 10:51:58'),
 (12, 1, 0, 'joe.chen.1', '5,2', 'http://github.com/favicon.ico', 'https://github.com/allmarkedup/purl', 'allmarkedup/purl', '', '', '', '', '', '2014-02-09 10:51:58'),
 (122, 1, 0, 'joe.chen.1', '0,6', 'https://ssl.gstatic.com/docs/documents/images/kix-favicon6.ico', 'https://docs.google.com/document/d/12w8DGlz9JR3WLaxw0SBvv4RjkxMNf0Eg-rJjn6kO96U/edit', 'profile', '', '', '', '', '', '2014-02-12 02:31:59'),
-(126, 1, 0, 'joe.chen.1', '2,1', '//d1y9yo7q4hy8a7.cloudfront.net/static/00033/core/20140127_1390790332/img/favicon_v2.png', 'http://9gag.com/gag/azbObBj', '9GAG - I thought they were scary when they were fuzzy.', '', '', '', '', '', '2014-02-12 02:54:29'),
+(126, 1, 0, 'joe.chen.1', '3,1', '//d1y9yo7q4hy8a7.cloudfront.net/static/00033/core/20140127_1390790332/img/favicon_v2.png', 'http://9gag.com/gag/azbObBj', '9GAG - I thought they were scary when they were fuzzy.', '', '', '', '', '', '2014-02-12 02:54:29'),
 (25, 1, 0, 'joe.chen.1', '7,2', 'http://taipei.kijiji.com.tw/favicon.ico', 'http://taipei.kijiji.com.tw/c-Goods-home-appliances-TV-CHIMEI-37-W0QQAdIdZ563079706', '嶔縊中古二手家電 CHIMEI 奇美 37吋 液晶電視 台北地區免運費 (實體店面)', '', '', '', '', '', '2014-02-09 10:51:58'),
 (68, 1, 0, 'joe.chen.1', '5,5', 'http://lesscss.org/assets/favicon.ico', 'http://lesscss.org/#using-less-configuration', '\n  Getting started | Less.js\n', '', '', '', '', '', '2014-02-09 10:51:58'),
 (27, 1, 0, 'joe.chen.1', '4,22', 'http://developers.google.com/_static/dd36832bd6/images/favicon.ico', 'https://developers.google.com/accounts/docs/OAuth2?hl=zh-TW', 'Using OAuth 2.0 to Access Google APIs - Google Accounts Authentication and Authorization — Google Developers', '', '', '', '', '', '2014-02-09 10:51:58'),
@@ -117,14 +111,14 @@ INSERT INTO `links` (`id`, `user_id`, `folder_id`, `username_id`, `grid`, `ico`,
 (41, 1, 0, 'joe.chen.1', '1,5', 'http://developers.google.com/_static/dd36832bd6/images/favicon.ico', 'https://developers.google.com/accounts/docs/OAuth2?hl=zh-TW', 'Using OAuth 2.0 to Access Google APIs - Google Accounts Authentication and Authorization — Google Developers', '', '', '', '', '', '2014-02-09 10:51:58'),
 (116, 1, 0, 'joe.chen.1', '7,4', 'http://docs.angularjs.org/favicon.ico', 'http://docs.angularjs.org/api/ng.$http', 'AngularJS', '', '', '', '', '', '2014-02-10 14:50:24'),
 (117, 1, 0, 'joe.chen.1', '2,8', 'http://s.ytimg.com/yts/img/favicon_32-vflWoMFGx.png', 'http://www.youtube.com/watch?v=aU4YOOjUtcs&list=RDXm6rPrIJ0sE', 'Popof - Black Jesus - YouTube', '', '', '', '', '', '2014-02-10 15:27:31'),
-(112, 1, 0, 'joe.chen.1', '4,4', 'https://ssl.gstatic.com/docs/spreadsheets/favicon_jfk2.png', 'https://docs.google.com/spreadsheet/ccc?key=0AjJy4AXy73o_dHJnNk9BYVduQmRacncxX09PZHVGM2c&usp=drive_web#gid=0', '9x9.tv通訊錄', '', '', '', '', '', '2014-02-10 14:17:48'),
+(112, 1, 0, 'joe.chen.1', '3,4', 'https://ssl.gstatic.com/docs/spreadsheets/favicon_jfk2.png', 'https://docs.google.com/spreadsheet/ccc?key=0AjJy4AXy73o_dHJnNk9BYVduQmRacncxX09PZHVGM2c&usp=drive_web#gid=0', '9x9.tv通訊錄', '', '', '', '', '', '2014-02-10 14:17:48'),
 (44, 1, 0, 'joe.chen.1', '4,34', '//www.wolframcdn.com/images/alpha.fav.png', 'http://www.wolframalpha.com/input/?i=http%3A%2F%2Fjsfiddle.net%2F', ' http://jsfiddle.net/ - Wolfram|Alpha', '', '', '', '', '', '2014-02-09 10:51:58'),
-(45, 1, 0, 'joe.chen.1', '4,6', '//d1y9yo7q4hy8a7.cloudfront.net/static/00028/core/20140127_1390790346/img/favicon_v2.png', 'http://9gag.com/gag/ay5WnVp', 'Son, your new tutor is here!', '', '', '', '', '', '2014-02-09 10:51:58'),
+(45, 1, 0, 'joe.chen.1', '3,5', '//d1y9yo7q4hy8a7.cloudfront.net/static/00028/core/20140127_1390790346/img/favicon_v2.png', 'http://9gag.com/gag/ay5WnVp', 'Son, your new tutor is here!', '', '', '', '', '', '2014-02-09 10:51:58'),
 (47, 1, 0, 'joe.chen.1', '8,3', 'http://cdn.inside.com.tw/wp-content/themes/magnovus/favicon.ico', 'http://jobs.inside.com.tw/jobs/2961-%E7%B4%84%E8%81%98php%E7%B6%B2%E9%A0%81%E5%B7%A5%E7%A8%8B%E5%B8%AB-o2odate-llc', '約聘php網頁工程師 - O2ODATE LLC', '', '', '', '', '', '2014-02-09 10:51:58'),
 (50, 1, 0, 'joe.chen.1', '3,10', 'http://blog.roodo.com/favicon.ico', 'http://blog.roodo.com/hhung/archives/26894880.html', '力爭下游的大叔詩人──讀許赫《原來女孩不想嫁給阿北》@鴻鴻的過氣兒童樂園', '', '', '', '', '', '2014-02-09 10:51:58'),
 (66, 1, 0, 'joe.chen.1', '6,1', 'http://lesscss.org/assets/favicon.ico', 'http://lesscss.org/', '\n  Getting started | Less.js\n', '', '', '', '', '', '2014-02-09 10:51:58'),
 (67, 1, 0, 'joe.chen.1', '6,3', 'http://cdn.inside.com.tw/wp-content/themes/magnovus/favicon.ico', 'http://share.inside.com.tw/posts/3840?ref=sidebar', 'Google 釋出 Chromecast SDK - Inside 網摘', '', '', '', '', '', '2014-02-09 10:51:58'),
-(125, 1, 0, 'joe.chen.1', '6,6', 'https://ssl.gstatic.com/docs/documents/images/kix-favicon6.ico', 'https://docs.google.com/document/d/1hsdIH4O3FYmFPyWFMdl2lhvUziNRDYdo23DY_2dV35I/edit', 'exchange names', '', '', '', '', '', '2014-02-12 02:33:14'),
+(125, 1, 0, 'joe.chen.1', '7,6', 'https://ssl.gstatic.com/docs/documents/images/kix-favicon6.ico', 'https://docs.google.com/document/d/1hsdIH4O3FYmFPyWFMdl2lhvUziNRDYdo23DY_2dV35I/edit', 'exchange names', '', '', '', '', '', '2014-02-12 02:33:14'),
 (70, 0, 0, '', '3,5', 'https://www.google.com.tw/favicon.ico', 'https://www.google.com.tw/search?espv=210&es_sm=122&q=google+oauth+how+to+know+user+is+logged+out&oq=google+oauth+how+to+know+user+is+logged+out&gs_l=serp.3...70284.73595.0.73858.20.16.4.0.0.0.111.1014.14j2.16.0....0...1c.1.34.serp..17.3.153.MLs9RlWkn50', 'google oauth how to know user is logged out - Google 搜尋', '', '', '', '', '', '2014-02-09 12:21:39'),
 (71, 0, 0, '', '7,9', '//cdn.sstatic.net/stackoverflow/img/favicon.ico', 'http://stackoverflow.com/questions/6673867/google-oauth-sign-in-using-your-google-account', 'Google oauth Sign in using your Google account', '', '', '', '', '', '2014-02-09 12:22:50'),
 (72, 0, 0, '', '3,4', '//cdn.sstatic.net/stackoverflow/img/favicon.ico', 'http://stackoverflow.com/questions/6673867/google-oauth-sign-in-using-your-google-account', 'Google oauth Sign in using your Google account', '', '', '', '', '', '2014-02-09 12:24:31'),
@@ -156,7 +150,10 @@ INSERT INTO `links` (`id`, `user_id`, `folder_id`, `username_id`, `grid`, `ico`,
 (162, 1, 0, 'joe.chen.1', '7,28', 'https://www.google.com.tw/favicon.ico', 'https://www.google.com.tw/search?espv=210&es_sm=122&q=jquery+focus+scroll+top&oq=jquery+focus+scroll+top&gs_l=serp.3..0i30.17909.30799.0.31110.25.22.1.2.2.0.108.1197.21j1.22.0....0...1c.1.35.serp..0.25.1207.P85VnJHL8J0', 'jquery focus scroll top - Google 搜尋', '', '', '', '', '', '2014-02-20 14:04:20'),
 (163, 1, 0, 'joe.chen.1', '5,32', 'http://l.yimg.com/os/mit/media/p/presentation/images/icons/default-apple-touch-icon-1636137.png', 'http://tw.news.yahoo.com/%E5%9F%BA%E7%89%B9%E5%AD%A3%E5%BE%8C%E9%80%80%E4%BC%91-%E5%AA%92%E9%AB%94%E6%93%A0%E7%88%86%E8%A8%98%E8%80%85%E6%9C%83-060051235.html', '基特季後退休 媒體擠爆記者會 - Yahoo奇摩新聞', '', '', '', '', '', '2014-02-20 14:19:15'),
 (164, 0, 0, '', ',', '', '', '', '', '', '', '', '', '2014-02-20 15:28:29'),
-(165, 0, 0, '', ',', '', '', '', '', '', '', '', '', '2014-02-20 15:28:31');
+(165, 0, 0, '', ',', '', '', '', '', '', '', '', '', '2014-02-20 15:28:31'),
+(166, 1, 0, 'joe.chen.1', '7,5', 'http://l.yimg.com/os/mit/media/p/presentation/images/icons/default-apple-touch-icon-1636137.png', 'http://tw.news.yahoo.com/%E6%88%B0%E6%A9%9F%E7%B7%A8%E9%9A%8A%E9%A3%9B%E8%B6%8A%E7%8E%89%E5%B1%B1-%E7%85%A7%E7%89%87%E5%BC%95%E7%99%BC%E7%86%B1%E7%83%88%E8%A8%8E%E8%AB%96-004134320.html', '戰機編隊飛越玉山 照片引發熱烈討論 - Yahoo奇摩新聞', '', '', '', '', '', '2014-02-23 15:03:24'),
+(169, 1, 0, 'joe.chen.1', '1,4', 'http://l.yimg.com/os/mit/media/p/presentation/images/icons/default-apple-touch-icon-1636137.png', 'http://tw.news.yahoo.com/%E6%9C%AA%E4%BE%86-%E9%80%B1%E5%A5%BD%E5%A4%A9%E6%B0%A3-%E6%97%A5%E5%A4%9C%E6%BA%AB%E5%B7%AE%E5%A4%A7-101742180.html', '未來一週好天氣 日夜溫差大 - Yahoo奇摩新聞', '', '', '', '', '', '2014-02-23 15:17:11'),
+(170, 1, 0, 'joe.chen.1', '7,0', '//d1y9yo7q4hy8a7.cloudfront.net/static/00033/core/20140127_1390790332/img/favicon_v2.png', 'http://9gag.com/gag/apqbD6p', 'After hearing Facebook bought WhatsApp - 9GAG', '', '', '', '', '', '2014-02-23 15:21:37');
 
 -- --------------------------------------------------------
 
@@ -220,7 +217,3 @@ CREATE TABLE IF NOT EXISTS `users` (
 
 INSERT INTO `users` (`id`, `username_id`, `display_name`, `image`, `obj_auth`, `obj_me`, `obj_drive_about`, `google_id`) VALUES
 (1, 'joe.chen.1', 'joe chen', 'https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50', '', '', '', '104367538726866759911');
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
