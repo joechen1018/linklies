@@ -8,7 +8,62 @@ class ApiController extends AppController{
 		if($this -> Auth -> loggedIn()){
 			
 		}
+
+		$this -> viewClass = "Json";
+		$this -> response -> type("json");
 	}
+
+	public function afterFilter(){
+		
+	}
+
+	public function user($username_id){
+		$this -> loadModel("User");
+		$user = $this -> User -> find("first", array("conditions" => array("username_id" => $username_id)));
+		$this -> set("data", $user);
+		$this -> set("_serialize", array("data"));
+	}
+
+	public function fetchAll($model, $user_id){
+		$conditions = array_key_exists("conditions", $this -> data) ? $this -> data["conditions"] : array();
+		$model = ucwords($model);
+		$conditions["$model.user_id"] = $user_id;
+		$this -> loadModel($model);
+		$data = $this -> $model -> find("all", array(
+			"conditions" => $conditions
+		));
+		$this -> set("data", $data);
+		$this -> set("_serialize", array("data"));
+	}
+
+	public function fetchById($model, $id){
+		$model = ucwords($model);
+		$this -> loadModel($model);
+		$data = $this -> $model -> findById($id);
+		$this -> set("data", $data);
+		$this -> set("_serialize", array("data"));
+	}
+
+	public function fetchUrl($url){
+		$output = $this -> curl_get($url);
+		$html  = str_get_html($output);
+		$this -> set("data", $html);
+		$this -> set("_serialize", array("data"));
+	}
+
+	public function save($model){
+		$data = $this -> data;
+		$model = ucwords($model);
+		$this -> loadModel($model);
+		$rs = $this -> $model -> save($data);
+		$this -> set("data", $rs);
+		$this -> set("_serialize", array("data"));
+	}
+
+	public function removeById($model, $id){
+
+	}
+
 	public function getUrlHtml(){
 		$url = $this -> data["url"];
 		//$url = "https://maps.google.com.tw/";

@@ -62,6 +62,10 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 			// $scope.showOverlay = true;
 			// $scope.requireSign = true;
 		}
+
+		$timeout(function(){
+			gridSystem.update();
+		}, 10);
 	}
 	var clearLinks = function(){
 		for(var i = $scope.links.length - 1; i>-1; i--){
@@ -76,40 +80,38 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 	var uid = url.attr("path");
 	uid = uid.split("/");
 	uid = uid[uid.length - 1];
-	$scope.user = (function(){
-		var d = $.Deferred();
-		$.ajax({
-			url : "users/findById/" + uid,
-			success : function(rs){
-				d.resolve(rs);
+	glob.user = false;
 
-				/*init when got user*/
+	apiService.getUser(uid).then(function(rs){
+		
+		var data = rs.data;
+		var user = data.User;
+		var links = data.Link;
+		var folders = data.Folder;
 
-				init();
-			}
-		});
-		return d.promise();
-	})().then(function(user){
-		user = user.user.User;
-		//_c.log(user);
+		$scope.user = user;
 		$scope.user_id = user.id;
 		$scope.username_id = user.username_id;
-		glob.user = user;
-		$scope.$apply();
-	});
 
-	apiService.getLinks().then(function(links){
-		//_c.log(links);
+		for(var i = 0; i<links.length; i++){
+			links[i].state = {name : "ready"};
+			links[i].grid = links[i].grid.split(",");
+		}
+		for(i = 0; i<folders.length; i++){
+			folders[i].grid = folders[i].grid.split(",");
+		}
+
 		$scope.links = links;
-		$scope.$apply();
+		$scope.folders = folders;
+		gridRects.links = links;
+		gridRects.folders = folders;
 
-		$timeout(function(){
-			gridSystem.update();
-		}, 100);
+		glob.user = user;
+
+		$scope.$apply();
+		init();
 	});
-	$scope.folders = gridRects.folders.then(function(folders){
-		$scope.folders = gridRects.folders;
-	});
+
 	$scope.grid = gridService;
 	$scope.resize = resize;
 	$scope.grids = gridSystem;

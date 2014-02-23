@@ -1,4 +1,4 @@
-app.service("gridRects", function(gridSystem, apiService){
+app.service("gridRects", function(gridSystem){
 
 	var self = this;
 	var grids = gridSystem;
@@ -231,11 +231,4 @@ app.service("gridRects", function(gridSystem, apiService){
 	}
 	this.folderGrids = this.folder.getGrids();
 	this.linkGrids = this.link.getGrids();
-	
-	this.folders = apiService.getFolders().then(function(folders){
-		self.folders = folders;
-	});
-	this.links = apiService.getLinks().then(function(links){
-		self.links = links;
-	});
 })
