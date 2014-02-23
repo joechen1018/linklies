@@ -64,14 +64,13 @@ app.service("gridRects", function(gridSystem){
 					return false;
 				}
 			}
-			return true;
-			var rect1, rect2 = self.gridToRect.folder(grid);
+			var rect1, rect2 = self.folder.gridToRect(grid);
 			for(var i = 0; i<links.length; i++){
-				rect1 = self.gridToRect.link(links[i].grid);
+				rect1 = self.link.gridToRect(links[i].grid);
 				if(rect1.intersects(rect2))
-					return true;
+					return false;
 			}
-			return false;
+			return true;
 		},
 		findDragRectGrid : function(originGrid, dragRect){
 

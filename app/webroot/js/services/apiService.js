@@ -59,7 +59,8 @@ app.service("apiService", function($http, contentParser){
 					method : "post",
 					data : folder,
 					success : function(res){
-						var data = res.data.folder;
+						var data = res.data.Folder;
+						data.grid = data.grid.split(",");
 						_d.resolve(data);
 					}
 				});

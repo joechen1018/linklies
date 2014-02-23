@@ -16,6 +16,9 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 			var grids = gridSystem;
 			scope.getStyle = function(){
 				if(scope.data && scope.data.grid){
+					if(scope.data.grid.length !== 2){
+						scope.data.grid = scope.data.grid.split(",");
+					}
 					return {
 						left : scope.data.grid[0] * grids.gridFullWidth,
 						top : scope.data.grid[1] * grids.gridFullHeight,
@@ -56,6 +59,9 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 			var linkService = apiService.linkService;
 			scope.linkStyle = function(){
 				if(scope.data.grid){
+					if(scope.data.grid.length !== 2){
+						scope.data.grid = scope.data.grid.split(",");
+					}
 					return {
 						left : grids.getLeft(scope.data.grid[0]),
 						top : grids.getTop(scope.data.grid[1]),
@@ -129,6 +135,8 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 				var gs = gridService;
 				var originRect, originGrid, dragRect, selectedGrid, $ele;
 				var sideWidth = gs.sideWidth;
+				var zIndex = 0;
+				var timeout;
 				$(ele).draggable({
 					containment : "#board",
 					scroll: false,
@@ -137,6 +145,8 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 						originRect = rects.getDomRect($ele);
 						dragGrid = undefined;
 						originGrid = data.grid;
+						zIndex = $ele.css("z-index");
+						$ele.css("z-index", 100);
 					},
 					drag : function(e, ui){
 
@@ -159,6 +169,7 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 					stop : function(e, ui){
 
 						preview.show = false;
+						$ele.css("z-index", zIndex);
 
 						dragRect = rects.getDomRect($ele);
 						dragGrid = allRects.findDragRectGrid(
@@ -174,7 +185,12 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 							// _c.log(dragGrid);
 							ref.grid = dragGrid;
 							scope.$apply();
-							service.save(ref);
+
+							clearTimeout(timeout);
+							timeout = setTimeout(function(){
+								service.save(ref);
+							}, 100);
+
 						}else{
 							$ele.animate({
 								left : originRect.left,
