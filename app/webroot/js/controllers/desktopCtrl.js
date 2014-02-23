@@ -97,9 +97,11 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 		for(var i = 0; i<links.length; i++){
 			links[i].state = {name : "ready"};
 			links[i].grid = links[i].grid.split(",");
+			links[i].grid = [parseInt(links[i].grid[0], 10), parseInt(links[i].grid[1], 10)];
 		}
 		for(i = 0; i<folders.length; i++){
 			folders[i].grid = folders[i].grid.split(",");
+			folders[i].grid = [parseInt(folders[i].grid[0], 10), parseInt(folders[i].grid[1], 10)];
 		}
 
 		$scope.links = links;

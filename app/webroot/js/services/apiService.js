@@ -4,7 +4,7 @@ app.service("apiService", function($http, contentParser){
 			create : function(url){
 				var _d = $.Deferred();
 				$.ajax({
-					url : "api/getUrlHtml/",
+					url : "api/fetchUrl",
 					method : "post",
 					data : {"url" : url},
 					success : function(res){
@@ -21,14 +21,14 @@ app.service("apiService", function($http, contentParser){
 				return _d.promise();
 			},
 			save : function(link){
-				console.log(link);
+				link.grid = link.grid.join(",");
 				var _d = $.Deferred();
 				$.ajax({
-					url : "api/saveLink",
+					url : "api/save/link",
 					method : "post",
 					data : link,
 					success : function(res){
-						console.log(res);
+						// console.log(res);
 						_d.resolve(res);
 					}
 				});
@@ -37,7 +37,7 @@ app.service("apiService", function($http, contentParser){
 			remove : function(id){
 				var _d = $.Deferred();
 				$.ajax({
-					url : "api/removeLink/" + id,
+					url : "api/removeById/link/" + id,
 					method : "get",
 					success : function(res){
 						_d.resolve(res);
@@ -66,8 +66,16 @@ app.service("apiService", function($http, contentParser){
 				});
 				return _d.promise();
 			},
-			remove : function(){
-
+			remove : function(id){
+				var _d = $.Deferred();
+				$.ajax({
+					url : "api/removeById/folder/" + id,
+					method : "get",
+					success : function(res){
+						_d.resolve(res);
+					}
+				});
+				return _d.promise();
 			}
 		},
 		getUser : function(username_id){
@@ -275,7 +283,7 @@ app.service("apiService", function($http, contentParser){
 			}
 		}
 		rs.typed = {};
-		console.log(rs.type.name);
+		// console.log(rs.type.name);
 		switch(rs.type.name){
 			case 'youtube.watch' :
 				rs.typed.videoId = url.split("v=")[1].split("&")[0];
@@ -317,7 +325,7 @@ app.service("apiService", function($http, contentParser){
 			break;
 			case "google.docs.presentations" :
 				rs.gdocKey = findKey.d();
-				console.log(rs.gdocKey);
+				// console.log(rs.gdocKey);
 				var request = gapi.client.drive.files.get({
 				    'fileId': rs.gdocKey
 				});
@@ -326,11 +334,7 @@ app.service("apiService", function($http, contentParser){
 					rs.doc = {};
 					rs.doc.presentation = resp;
 					rs.title = resp.title;
-
 					d.resolve(rs);
-				    // console.log('Title: ' + resp.title);
-				    // console.log('Description: ' + resp.description);
-				    // console.log('MIME type: ' + resp.mimeType);
 				});
 			break;
 			default : 

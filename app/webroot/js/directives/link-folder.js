@@ -196,6 +196,7 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 								left : originRect.left,
 								top : originRect.top
 							}, 200);
+
 							scope.$apply();
 						}
 					}

@@ -1,6 +1,5 @@
 <?php  
-App::import('Vendor', 'simple_html_dom');
-
+// App::import('Vendor', 'simple_html_dom');
 class ApiController extends AppController{
 	
 	public function beforeFilter(){
@@ -21,7 +20,7 @@ class ApiController extends AppController{
 		$this -> loadModel("User");
 		$user = $this -> User -> find("first", array(
 			"conditions" => array("username_id" => $username_id),
-			'recursive' => 3
+			'recursive' => 2
 		));
 		$this -> set("data", $user);
 		$this -> set("_serialize", array("data"));
@@ -47,7 +46,8 @@ class ApiController extends AppController{
 		$this -> set("_serialize", array("data"));
 	}
 
-	public function fetchUrl($url){
+	public function fetchUrl(){
+		$url = $this -> data["url"];
 		$output = $this -> curl_get($url);
 		$html  = str_get_html($output);
 		$this -> set("data", $html);
@@ -64,158 +64,12 @@ class ApiController extends AppController{
 	}
 
 	public function removeById($model, $id){
-
-	}
-
-	public function getUrlHtml(){
-		$url = $this -> data["url"];
-		//$url = "https://maps.google.com.tw/";
-		$output = $this -> curl_get($url);
-		$html  = str_get_html($output);
-		$this -> viewClass = "Json";
-		$this -> response -> type("json");
-
-		$this -> set("data", $html);
+		$model = ucwords($model);
+		$this -> loadModel($model);
+		$rs = $this -> $model -> delete($id);
+		$this -> set("data", $rs);
 		$this -> set("_serialize", array("data"));
 	}
-	public function saveLink(){
-		$data = $this -> data;
-		$this -> loadModel("Link");
-
-		$data["grid"] = $data["grid"][0] . "," . $data["grid"][1];
-		$this -> Link -> save($data);
-
-		$this -> viewClass = "Json";
-		$this -> response -> type("json");
-
-		$this -> set("data", $data);
-		$this -> set("_serialize", array("data"));
-	}
-
-	public function getLinks($user_id){
-		$ava = true;
-		$links = array();
-		$rs = array();
-		$rs["authorized"] = true;
-		$rs["reason"] = array(
-			"user_id" => $user_id,
-			"logged" => $this -> Auth -> loggedIn()
-		);
-		// if(empty($user_id) || ($this -> Auth -> loggedIn() !== true)){
-		// 	$ava = false;
-		// }
-		if(!$ava){
-			$rs["authorized"] = false;
-		}else{
-			$this -> loadModel("Link");
-			$data = $this -> Link -> find("all", array("conditions" => array("username_id" => $user_id)));
-			for($i = 0; $i<count($data); $i++){
-				$link = $data[$i]["Link"];
-				$link["grid"] = explode(",", $link["grid"]);
-				array_push($links, $link);
-			}
-		}
-		$this -> viewClass = "Json";
-		$this -> response -> type("json");
-
-		$this -> set("rs", $rs);
-		$this -> set("links", $links);
-		$this -> set("_serialize", array("links", "rs"));
-	}
-
-	public function createLink($url){
-		$output = $this -> curl_get($url);
-		$html  = str_get_html($output);
-		$title = $html -> find("title", 0) -> text();
-		//$meta = $html -> find("script", 0);
-
-		debug($html);
-		return;
-		$res = array(
-			"url" => $url,
-			"output" => $output,
-			"title" => $title,
-			"url" => $url
-		);
-		
-		$this -> viewClass = "Json";
-		$this -> response -> type("json");
-		$this -> set("res", $res);
-		$this -> set("_serialize", array("res"));
-	}
-
-	public function removeLink($id){
-		$this -> loadModel("Link");
-		$this -> Link -> delete($id);
-
-		$this -> viewClass = "Json";
-		$this -> response -> type("json");
-
-		$this -> set("data", array("success"));
-		$this -> set("_serialize", array("data"));
-	}
-
-	public function fetch(){
-		
-		$url = $this -> data["url"];
-		$parsed = parse_url($url);
-		$host = $parsed["host"];
-		$ico = $parsed["scheme"] . "://" . $host . "/favicon.ico";
-		$title = "";
-		
-		//$curl = curl_init($url);
-		//curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
-		// curl_setopt_array($curl, array(
-			// CURLOPT_SSL_VERIFYPEER =>  false
-		// ));
-		$output = $this -> curl_get($url);
-		$html  = str_get_html($output);
-		$title = $html -> find("title", 0) -> text();
-		
-		$iurl = $ico;
-		$ch = curl_init($ico);
-		curl_setopt($ch, CURLOPT_NOBODY, true);
-		curl_exec($ch);
-		$retcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-		curl_close($ch);
-		
-		if($retcode > 400){
-			$ico = $html -> find("link[rel=icon], link[rel=ico]", 0);
-			if($ico){
-				$ico = $ico -> href;
-			}else{
-				$ico = false;
-			}
-		}
-		
-		$res = array(
-			"url" => $url,
-			"output" => $output,
-			"title" => $title,
-			"icon" => $ico, 
-			"url" => $url,
-			"host" => $host
-		);
-		
-		$this -> viewClass = "Json";
-		$this -> response -> type("json");
-		$this -> set("res", $res);
-		$this -> set("_serialize", array("res"));
-	}
-
-	public function saveFolder(){
-		$data = $this -> data;
-		$this -> loadModel("Folder");
-
-		$data["grid"] = $data["grid"][0] . "," . $data["grid"][1];
-		$this -> Folder -> save($data);
-
-		$this -> viewClass = "Json";
-		$this -> response -> type("json");
-
-		$this -> set("data", $data);
-		$this -> set("_serialize", array("data"));
-	}	
 
 	private function curl_get($url, array $get = array(), array $options = array()){   
 	    $defaults = array(
