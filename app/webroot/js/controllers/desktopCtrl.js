@@ -85,6 +85,7 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 	apiService.getUser(uid).then(function(rs){
 		
 		var data = rs.data;
+		// _c.log(data);
 		var user = data.User;
 		var links = data.Link;
 		var folders = data.Folder;

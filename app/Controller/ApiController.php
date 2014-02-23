@@ -19,7 +19,10 @@ class ApiController extends AppController{
 
 	public function user($username_id){
 		$this -> loadModel("User");
-		$user = $this -> User -> find("first", array("conditions" => array("username_id" => $username_id)));
+		$user = $this -> User -> find("first", array(
+			"conditions" => array("username_id" => $username_id),
+			'recursive' => 3
+		));
 		$this -> set("data", $user);
 		$this -> set("_serialize", array("data"));
 	}
