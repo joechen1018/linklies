@@ -35,7 +35,7 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 		}
 	}
 })
-.directive("lkLink", function(gridService, gridSystem, gridRects, apiService, $rootScope){
+.directive("lkLink", function(gridService, gridSystem, gridRects, apiService, $rootScope, contentParser){
 	return {
 		restrict : "EA",
 		templateUrl : "templates/link.html",
@@ -57,6 +57,7 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 			var grids = gridSystem;
 			var data = scope.data;
 			var linkService = apiService.linkService;
+			scope.showOpt = false;
 			scope.linkStyle = function(){
 				if(scope.data.grid){
 					if(scope.data.grid.length !== 2){
@@ -66,7 +67,8 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 						left : grids.getLeft(scope.data.grid[0]),
 						top : grids.getTop(scope.data.grid[1]),
 						height : grids.linkSize.height,
-						width : grids.linkSize.width
+						width : grids.linkSize.width,
+						zIndex : scope.showOpt ? 100 : 1
 					}
 				}
 			}
@@ -80,20 +82,26 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 					linkService.create(url).then(function(data){
 
 						//console.log(data);
-						scope.data.meta = data.meta;
+						//scope.data.html_source = data;
+						scope.data.html_source = data.content;
+						scope.data.meta = JSON.stringify(data.meta);
 						scope.data.ico = data.ico;
 						scope.data.title = data.title;
+						scope.data.thumb = data.thumb || data.meta["og:image"];
 						//_c.log(glob.user);
 						scope.data.username_id = glob.user.username_id;
 						scope.data.user_id = glob.user.id;
 						scope.state = {
 							name : "ready"
 						};
-						//console.log(scope.data);
+						console.log(scope.data);
 						scope.$apply();
 
 						//_c.log(scope.data);
-						linkService.save(scope.data);
+						linkService.save(scope.data).then(function(rs){
+							// console.log("saved:");
+							// console.log(rs);
+						});
 					});
 				}else{
 					
@@ -102,9 +110,13 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 			scope.removeLink = function(){
 				$rootScope.$broadcast("removeLink", scope.data.id);
 			}
-			scope.showOpt = false;
+			// console.log(data);
 			$(ele).on("mouseover", function(){
 				scope.showOpt = true;
+				scope.$apply();
+			});
+			$(ele).on("mouseout", function(){
+				scope.showOpt = false;
 				scope.$apply();
 			});
 		}
@@ -126,17 +138,21 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 				//ctrlScope = scope;
 
 				var rects = gridRects;
-				var allRects = attrs.data === "link" ? gridRects.link : gridRects.folder;
-				var data = attrs.data === "link" ? scope.link : scope.folder;
-				var service = attrs.data === "link" ? apiService.linkService : apiService.folderService;
-				var preview = attrs.data === "link" ? ctrlScope.dragPreview.link : ctrlScope.dragPreview.folder;
-				var ref = attrs.data === "link" ? scope.link : scope.folder;
+				var type = attrs.data;
+				var allRects = type === "link" ? gridRects.link : gridRects.folder;
+				var data = type === "link" ? scope.link : scope.folder;
+				var service = type === "link" ? apiService.linkService : apiService.folderService;
+				var preview = type === "link" ? ctrlScope.dragPreview.link : ctrlScope.dragPreview.folder;
+				var ref = type === "link" ? scope.link : scope.folder;
 				//console.log(ref.grid);
 				var gs = gridService;
 				var originRect, originGrid, dragRect, selectedGrid, $ele;
 				var sideWidth = gs.sideWidth;
 				var zIndex = 0;
 				var timeout;
+				var isAvailable = false;
+				var $selectedFolder, $folders = $(".folder");
+
 				$(ele).draggable({
 					containment : "#board",
 					scroll: false,
@@ -147,6 +163,10 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 						originGrid = data.grid;
 						zIndex = $ele.css("z-index");
 						$ele.css("z-index", 100);
+
+						scope.$apply(function(){
+							scope.dragging = true;
+						});
 					},
 					drag : function(e, ui){
 
@@ -161,14 +181,30 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 						if(isAvailable){
 							preview.show = true;
 							preview.grid = dragGrid;
+							$folders.removeClass("selected");
 						}else{
 							preview.show = false;
+							if(type === "link"){
+								$selectedFolder = allRects.findDragOverFolder(dragRect);
+								$folders = $(".folder");
+
+								$folders.removeClass("selected");
+								if($selectedFolder !== false){
+									$selectedFolder.addClass("selected");
+								}
+							}
 						}
 						ctrlScope.$apply();
 					},
 					stop : function(e, ui){
 
+						scope.dragging = false;
 						preview.show = false;
+						$selectedFolder = $(".folder.selected");
+						if($selectedFolder.length === 1){
+							//do drop folder
+						}
+						$folders.removeClass("selected");
 						$ele.css("z-index", zIndex);
 
 						dragRect = rects.getDomRect($ele);

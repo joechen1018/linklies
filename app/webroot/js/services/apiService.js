@@ -146,7 +146,7 @@ app.service("apiService", function($http, contentParser){
 		var d = $.Deferred();
 		rs.type = "default";
 		rs.types = [];
-
+		rs.content = content;
 		//append dom
 		var holder = $("#dom-holder");
 		var $html = $.parseHTML(content);
@@ -188,6 +188,7 @@ app.service("apiService", function($http, contentParser){
 			'fragment' : purl.attr("fragment")
 		};
 		rs.url = purl;
+		// console.log(rs.meta);
 
 		//find title
 		rs.title = holder.find("title").eq(0).html();

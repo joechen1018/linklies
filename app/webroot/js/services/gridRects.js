@@ -167,13 +167,38 @@ app.service("gridRects", function(gridSystem){
 				return false;
 			}
 			var links = self.links;
+			var folders = self.folders;
 			for(var i = 0; i<links.length; i++){
 				if(arrayEquals(links[i].grid, grid)){
 					//console.log(folders[i].grid, grid);
 					return false;
 				}
 			}
+			var rect1, rect2 = self.link.gridToRect(grid);
+			for(i = 0; i<folders.length; i++){
+				rect1 = self.folder.gridToRect(folders[i].grid);
+				if(rect1.intersects(rect2)){
+					return false;
+				}
+			}
 			return true;
+		},
+		findDragOverFolder : function(dragRect){
+			var folders = self.folders;
+			var rect1, rect2 = dragRect;
+			var max = 0, intersection, area, $folder = false;
+			for(var i = 0; i<folders.length; i++){
+				rect1 = self.folder.gridToRect(folders[i].grid);
+				if(rect1.intersects(dragRect)){
+					intersection = gRect.intersection(rect1, dragRect);
+					area = intersection.width * intersection.height;
+					if(area > max){
+						max = area;
+						$folder = $("#folder-" + folders[i].id);
+					}
+				}
+			}
+			return $folder;
 		},
 		findDragRectGrid : function(originGrid, dragRect){
 			var linkGrids = self.link.getGrids();

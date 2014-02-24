@@ -2,7 +2,7 @@
 class UsersController extends AppController{
 
 	public function beforeFilter(){
-		//$this -> Auth -> allow("login");
+		$this -> Auth -> allow("login");
 		$action = $this -> request -> params["action"];
 		if($this -> Auth -> loggedIn()){
 			$this -> Auth -> allow();
@@ -14,14 +14,6 @@ class UsersController extends AppController{
 	}
 	public function index(){
 
-	}
-
-	public function findById($uid){
-		$user = $this -> User -> findByUsernameId($uid);
-		$this -> viewClass = "Json";
-		$this -> response -> type("json");
-		$this -> set("user", $user);
-		$this -> set("_serialize", array("user"));
 	}
 
 	public function desktop(){

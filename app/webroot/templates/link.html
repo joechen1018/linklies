@@ -51,26 +51,23 @@
 
 			<div class="opt" ng-show="showOpt">
 				<a data-icon="q" ng-click="removeLink()"></a>
-				<a data-icon="c" ng-href="{{data.url}}" target="_blank"></a>
-				<a data-icon="w"></a>
+				<!-- <a data-icon="c" href="{{data.url}}" target="_blank"></a>
+				<a data-icon="w"></a> -->
 				<div class="bg"></div>
 			</div>
 		</div>
-		<div class="link-details" ng-show="{{false && showOpt}}">
+		<div class="link-details" ng-show="showOpt">
 			<div class="arrow arrow-up"></div>
 			<div class="arrow arrow-down"></div>
 
 			<div class="page page-1">
-				<img class="thumb" ng-src="{data.thumb}">
+				<img class="thumb" ng-src="{{data.thumb}}">
 				<div class="texts">
-					<h1>
-						{{data.title}}
-						<p><a class="from external" href="www.youtube.com" target="_blank">{{data.meta.url.host}}</a></p>
-					</h1>
-					<p class="desc">{{data.meta.description}}</p>	
+					<h1>{{data.title}}<!-- <p><a class="from external" href="www.youtube.com" target="_blank">{{data.meta.url.host}}</a></p> --></h1>
+					<!-- <p class="desc">{{data.meta.description}}</p>	 -->
 					<div class="more">
 						<div class="arrow-right"></div>
-						<a href="">Next</a>	
+						<a href="{{data.url}}" target="_blank">Go To URL</a>	
 					</div>
 				</div>	
 			</div>

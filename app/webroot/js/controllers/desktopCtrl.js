@@ -89,6 +89,15 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 		var user = data.User;
 		var links = data.Link;
 		var folders = data.Folder;
+		var _try = function(data){
+			var a;
+			try{
+		        a = JSON.parse(data);
+		    }catch(e){
+		    	return {};
+		    }
+		    return a;
+		}
 
 		$scope.user = user;
 		$scope.user_id = user.id;
@@ -98,6 +107,7 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 			links[i].state = {name : "ready"};
 			links[i].grid = links[i].grid.split(",");
 			links[i].grid = [parseInt(links[i].grid[0], 10), parseInt(links[i].grid[1], 10)];
+			links[i].meta = _try(links[i].meta);
 		}
 		for(i = 0; i<folders.length; i++){
 			folders[i].grid = folders[i].grid.split(",");
@@ -180,28 +190,29 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 		//clearLinks();
 		$scope.links.push(newLink);
 
-		$event.preventDefault();   //prevent the click from jumping esp on hashes
-    	$event.stopPropagation();  //prevent from any parent click handlers that didn't prevent the jump
-    	return false;
+		// $event.preventDefault();   //prevent the click from jumping esp on hashes
+  //   	$event.stopPropagation();  //prevent from any parent click handlers that didn't prevent the jump
+  //   	return false;
 	}
 
 
 	$scope.onLinkClick = function($event){
-		$event.stopPropagation();
-		$event.preventDefault();
+		// $event.stopPropagation();
+		// $event.preventDefault();
 	}
 
 	$rootScope.$on("removeLink", function(e, id){
 		//console.log(id);
-		apiService.linkService.remove(id).then(function(){
-			for(var i = 0; i<$scope.links.length; i++){
-				if($scope.links[i].id == id){
-					//console.log(id);
-					$scope.links.splice(i, 1);
-					$scope.$apply();
-					return;
-				}
+		for(var i = 0; i<$scope.links.length; i++){
+			if($scope.links[i].id == id){
+				//console.log(id);
+				$scope.links.splice(i, 1);
+				$scope.$apply();
+				return;
 			}
+		}
+		apiService.linkService.remove(id).then(function(){
+			
 		});
 	});
 });
