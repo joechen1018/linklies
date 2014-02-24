@@ -326,23 +326,27 @@
 			.shadow-light;
 
 			&.page-1{
-
+				
 				img.thumb{
 				  width:@w1;
-				  margin-top:0;
-				  margin-left:0;
+				  margin:0;
+				  padding:0;
+				  display: none;
 				}
 
 				.texts{
 					margin-left:0px;
 					margin-bottom:@size1;
-					padding:10px;
 					padding-top:5px;
+					position:relative;
+					background: lighten(@dark, 15%);
 					h1{
-						padding-top:0px;
-						padding-bottom:30px;
+						padding-top:27px;
+						padding-bottom:5px;
+						padding-left : 10px;
+						padding-right : 10px;
 						font-size:14px;
-						color:@dark;
+						color : lighten(@dark, 75%);
 						line-height: 18px;
 						font-weight: bold;
 						p{
@@ -361,14 +365,14 @@
 					}
 					div.more{
 						position:absolute;
-						right:15px;
-						bottom:10px;
+						right:5px;
+						top : 10px;
 						div.arrow-right{
 							width: 0; 
 							height: 0; 
 							border-top: 5px solid transparent;
 							border-bottom: 5px solid transparent;
-							border-left: 5px solid black;
+							border-left: 5px solid lighten(@dark, 55%);
 							position:absolute;
 							right:4px;
 							top:1px;
@@ -376,11 +380,23 @@
 						a{
 						  padding-right:15px;
 						  z-index: 200;
-						  color:@dark;
+						  color : lighten(@dark, 55%);
+						  &:hover{
+						  	color : white;
+						  };
 						}
 					}
 				}
 			}
+	    }
+
+	    .spacer{
+	    	width : 100%;
+			height : 20px;
+			position: absolute;
+			z-index: 0;
+			top : -10px;
+			left : 0;
 	    }
 
 	    .arrow-up{
@@ -389,7 +405,7 @@
 	        border-left: @size solid transparent;
 	        border-right: @size solid transparent;
 	        
-	        border-bottom: @size solid white;
+	        border-bottom: @size solid lighten(@dark, 15%);
 	        position: absolute;
 	        top:0;
 	        left : calc((@w1 - @size)/2);

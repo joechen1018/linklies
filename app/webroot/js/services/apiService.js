@@ -22,6 +22,7 @@ app.service("apiService", function($http, contentParser){
 			},
 			save : function(link){
 				link.grid = link.grid.join(",");
+				link.meta = JSON.stringify(link.meta);
 				var _d = $.Deferred();
 				$.ajax({
 					url : "api/save/link",
@@ -300,6 +301,7 @@ app.service("apiService", function($http, contentParser){
 					rs.doc = {};
 					rs.doc.spreadsheet = resp;
 					rs.title = resp.title;
+					rs.thumb = resp.thumbnailLink;
 
 					d.resolve(rs);
 				    // console.log('Title: ' + resp.title);
@@ -313,11 +315,12 @@ app.service("apiService", function($http, contentParser){
 				    'fileId': rs.gdocKey
 				});
 				request.execute(function(resp) {
-					//_c.log(resp);
+					_c.log(resp);
 					rs.doc = {};
 					rs.doc.document = resp;
 					rs.title = resp.title;
-
+					rs.thumb = resp.thumbnailLink;
+					_c.log(rs);
 					d.resolve(rs);
 				    // console.log('Title: ' + resp.title);
 				    // console.log('Description: ' + resp.description);
@@ -335,6 +338,7 @@ app.service("apiService", function($http, contentParser){
 					rs.doc = {};
 					rs.doc.presentation = resp;
 					rs.title = resp.title;
+					rs.thumb = resp.thumbnailLink;
 					d.resolve(rs);
 				});
 			break;

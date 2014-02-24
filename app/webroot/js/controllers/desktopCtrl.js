@@ -207,12 +207,11 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 			if($scope.links[i].id == id){
 				//console.log(id);
 				$scope.links.splice(i, 1);
-				$scope.$apply();
+				//$scope.$apply();
+				apiService.linkService.remove(id).then(function(res){
+				});
 				return;
 			}
 		}
-		apiService.linkService.remove(id).then(function(){
-			
-		});
 	});
 });

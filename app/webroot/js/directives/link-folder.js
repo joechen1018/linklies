@@ -119,6 +119,10 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 				scope.showOpt = false;
 				scope.$apply();
 			});
+
+			$(ele).find("img.thumb").bind('load', function() {
+                $(this).show();
+            });
 		}
 	}
 })
