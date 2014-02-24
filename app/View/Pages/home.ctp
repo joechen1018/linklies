@@ -108,6 +108,12 @@
 					
 	</div>
 
+	<div id="browser" ng-show="showBrowser">
+		<iframe src="" frameborder="0"></iframe>
+		<div class="bg"></div>
+		<span data-icon="q" ng-click="closeBrowser()"></span>
+	</div>
+
 	<div id="bg-dot"></div>
 </div>
 

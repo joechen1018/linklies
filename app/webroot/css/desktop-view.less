@@ -317,7 +317,23 @@
 	    left : (@w - @w1) / 2;
 	    width:@w1;
 	    //height:@h1;
-	        
+	    .funcs{
+			position:absolute;
+			left : 10px;
+			top : 18px;
+			z-index: 200;
+			span{
+				display: block;
+				float:left;
+				padding-right : 9px;
+				color : lighten(@dark, 55%);
+				font-size:9px;
+				&:hover{
+					color : white;
+				};
+			}
+		}
+
 		@size1 : calc((@w1 - 330px)/2);
 	    .page{
 			background: white;
@@ -333,7 +349,6 @@
 				  padding:0;
 				  display: none;
 				}
-
 				.texts{
 					margin-left:0px;
 					margin-bottom:@size1;
@@ -557,5 +572,43 @@
 		&.over{
 		  background:blue;
 		}
+	}
+}
+
+#browser{
+	width : 100%;
+	height : 100%;
+	position: fixed;
+	left : 0;
+	top : 0;
+	z-index: 201;
+	iframe {
+		width : 80%;
+		height : 100%;
+		z-index: 203;
+		position: fixed;
+		left : 10%;
+	};
+	.bg{
+		position: fixed;
+		width : 100%;
+		height: 100%;
+		z-index: 202;
+		left : 0;
+		top : 0;
+		background: black;
+		.alpha(0.8);
+	}
+	span{
+		font-size : 120px;
+		position: fixed;
+		right : 20px;
+		top : 0px;
+		z-index: 203;
+		color : lighten(@dark, 55%);
+		cursor: pointer;
+		&:hover{
+			color : white;
+		};
 	}
 }

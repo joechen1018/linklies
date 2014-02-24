@@ -200,6 +200,12 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 		// $event.stopPropagation();
 		// $event.preventDefault();
 	}
+	$scope.showBrowser = false;
+	$scope.closeBrowser = function(){
+		$scope.showBrowser = false;	
+		$("#browser iframe").attr("src", "");
+		$("body").css("overflow", "");
+	}
 
 	$rootScope.$on("removeLink", function(e, id){
 		//console.log(id);
@@ -213,5 +219,30 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 				return;
 			}
 		}
+	});
+
+	$rootScope.$on("openPage", function(e, url){
+		
+		$("#browser iframe").attr("src", url);
+		$("body").css("overflow", "hidden");
+
+		$("#browser iframe").one("load", function(){
+			// if(this.innerHTML){
+			// 	console.log("ok");
+			// }else{
+			// 	console.log("failed");
+			// }
+			$scope.$apply(function(){
+				$scope.showBrowser = true;
+			});
+		});
+		$("#browser iframe").error(function(){
+			console.log("error");
+			$scope.$apply(function(){
+				$scope.showBrowser = false;
+			});
+		})
+		
+		console.log(url);
 	});
 });

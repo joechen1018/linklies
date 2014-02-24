@@ -110,6 +110,11 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 			scope.removeLink = function(){
 				$rootScope.$broadcast("removeLink", scope.data.id);
 			}
+			scope.view = "page";
+			scope.openPage = function(){
+				$rootScope.$broadcast("openPage", scope.data.url);
+			}
+
 			// console.log(data);
 			$(ele).on("mouseover", function(){
 				scope.showOpt = true;
