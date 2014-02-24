@@ -314,7 +314,6 @@ app.service("apiService", function($http, contentParser){
 			}
 		}
 		rs.typed = {};
-		console.log(rs.type.name);
 		switch(rs.type.name){
 			case 'youtube.watch' :
 				rs.typed.videoId = url.split("v=")[1].split("&")[0];
