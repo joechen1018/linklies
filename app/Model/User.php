@@ -1,6 +1,10 @@
 <?php 
 class User extends AppModel{
 
+	public $hasMany = array(
+		"Link" => array(),
+		"Folder" => array()
+	);
 	public function createByMeObj($me){
 		$display_name = $me["displayName"];
 		$arr = explode(" ", $display_name);

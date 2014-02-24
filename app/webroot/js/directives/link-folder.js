@@ -8,8 +8,7 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 		},
 		replace : true,
 		scope: {
-		    data : "=",
-		    dragPreview : "=",
+		    data : "="
 		},
 		link : function(scope, ele, attrs, ctrl){
 
@@ -17,6 +16,9 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 			var grids = gridSystem;
 			scope.getStyle = function(){
 				if(scope.data && scope.data.grid){
+					if(scope.data.grid.length !== 2){
+						scope.data.grid = scope.data.grid.split(",");
+					}
 					return {
 						left : scope.data.grid[0] * grids.gridFullWidth,
 						top : scope.data.grid[1] * grids.gridFullHeight,
@@ -48,8 +50,7 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 			}
 		},
 		scope : {
-			data : "=",
-			dragPreview : "="
+			data : "="
 		},
 		replace : true,
 		link : function(scope, ele, attrs){
@@ -58,6 +59,9 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 			var linkService = apiService.linkService;
 			scope.linkStyle = function(){
 				if(scope.data.grid){
+					if(scope.data.grid.length !== 2){
+						scope.data.grid = scope.data.grid.split(",");
+					}
 					return {
 						left : grids.getLeft(scope.data.grid[0]),
 						top : grids.getTop(scope.data.grid[1]),
@@ -116,10 +120,10 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 		replace : true,
 		link : function(scope, ele, attrs){
 			//console.log(attrs);
-			var ctrlScope;// = scope.$parent;
+			var ctrlScope = scope.$parent;
 			$timeout(function(){
 
-				ctrlScope = scope;
+				//ctrlScope = scope;
 
 				var rects = gridRects;
 				var allRects = attrs.data === "link" ? gridRects.link : gridRects.folder;
@@ -127,10 +131,12 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 				var service = attrs.data === "link" ? apiService.linkService : apiService.folderService;
 				var preview = attrs.data === "link" ? ctrlScope.dragPreview.link : ctrlScope.dragPreview.folder;
 				var ref = attrs.data === "link" ? scope.link : scope.folder;
-
+				//console.log(ref.grid);
 				var gs = gridService;
 				var originRect, originGrid, dragRect, selectedGrid, $ele;
 				var sideWidth = gs.sideWidth;
+				var zIndex = 0;
+				var timeout;
 				$(ele).draggable({
 					containment : "#board",
 					scroll: false,
@@ -139,6 +145,8 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 						originRect = rects.getDomRect($ele);
 						dragGrid = undefined;
 						originGrid = data.grid;
+						zIndex = $ele.css("z-index");
+						$ele.css("z-index", 100);
 					},
 					drag : function(e, ui){
 
@@ -156,11 +164,12 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 						}else{
 							preview.show = false;
 						}
-						scope.$apply();
+						ctrlScope.$apply();
 					},
 					stop : function(e, ui){
 
 						preview.show = false;
+						$ele.css("z-index", zIndex);
 
 						dragRect = rects.getDomRect($ele);
 						dragGrid = allRects.findDragRectGrid(
@@ -172,15 +181,24 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 						//if there is a selected grid and the selected grid is not occupied
 						//if(selectedGrid !== undefined && !gs.occupied.link(selectedGrid)){
 						if(isAvailable){	
+							// _c.log(ref);
+							// _c.log(dragGrid);
 							ref.grid = dragGrid;
-							service.save(ref);
+							scope.$apply();
+
+							clearTimeout(timeout);
+							timeout = setTimeout(function(){
+								service.save(ref);
+							}, 100);
+
 						}else{
 							$ele.animate({
 								left : originRect.left,
 								top : originRect.top
 							}, 200);
+
+							scope.$apply();
 						}
-						ctrlScope.$apply();
 					}
 				});
 			}, 1);

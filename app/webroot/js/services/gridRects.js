@@ -1,4 +1,4 @@
-app.service("gridRects", function(gridSystem, apiService){
+app.service("gridRects", function(gridSystem){
 
 	var self = this;
 	var grids = gridSystem;
@@ -64,14 +64,13 @@ app.service("gridRects", function(gridSystem, apiService){
 					return false;
 				}
 			}
-			return true;
-			var rect1, rect2 = self.gridToRect.folder(grid);
+			var rect1, rect2 = self.folder.gridToRect(grid);
 			for(var i = 0; i<links.length; i++){
-				rect1 = self.gridToRect.link(links[i].grid);
+				rect1 = self.link.gridToRect(links[i].grid);
 				if(rect1.intersects(rect2))
-					return true;
+					return false;
 			}
-			return false;
+			return true;
 		},
 		findDragRectGrid : function(originGrid, dragRect){
 
@@ -231,11 +230,4 @@ app.service("gridRects", function(gridSystem, apiService){
 	}
 	this.folderGrids = this.folder.getGrids();
 	this.linkGrids = this.link.getGrids();
-	
-	this.folders = apiService.getFolders().then(function(folders){
-		self.folders = folders;
-	});
-	this.links = apiService.getLinks().then(function(links){
-		self.links = links;
-	});
 })

@@ -4,7 +4,7 @@ app.service("apiService", function($http, contentParser){
 			create : function(url){
 				var _d = $.Deferred();
 				$.ajax({
-					url : "api/getUrlHtml/",
+					url : "api/fetchUrl",
 					method : "post",
 					data : {"url" : url},
 					success : function(res){
@@ -21,14 +21,14 @@ app.service("apiService", function($http, contentParser){
 				return _d.promise();
 			},
 			save : function(link){
-				console.log(link);
+				link.grid = link.grid.join(",");
 				var _d = $.Deferred();
 				$.ajax({
-					url : "api/saveLink",
+					url : "api/save/link",
 					method : "post",
 					data : link,
 					success : function(res){
-						console.log(res);
+						// console.log(res);
 						_d.resolve(res);
 					}
 				});
@@ -37,7 +37,7 @@ app.service("apiService", function($http, contentParser){
 			remove : function(id){
 				var _d = $.Deferred();
 				$.ajax({
-					url : "api/removeLink/" + id,
+					url : "api/removeById/link/" + id,
 					method : "get",
 					success : function(res){
 						_d.resolve(res);
@@ -51,73 +51,42 @@ app.service("apiService", function($http, contentParser){
 
 			},
 			save : function(folder){
+				folder.grid = folder.grid.join(",");
+				//_c.log(folder);
 				var _d = $.Deferred();
 				$.ajax({
-					url : "api/saveFolder",
+					url : "api/save/folder",
 					method : "post",
 					data : folder,
 					success : function(res){
-						console.log(res);
-						_d.resolve(res);
+						var data = res.data.Folder;
+						data.grid = data.grid.split(",");
+						_d.resolve(data);
 					}
 				});
 				return _d.promise();
 			},
-			remove : function(){
-
-			}
-		},
-		getFolders : function(){
-
-			return $http.get("json/folders1.json").then(function(rs){
-				return rs.data;
-			})
-		},
-		getLinks : function(){
-			/*var links = [];
-			for(var i = 0; i<4; i++){
-				links.push({
-					id : "link-" + (i+1),
-					grid : [0, 4+i],
-					ico : "http://www.youtube.com/favicon.ico",
-					url : "site.com",
-					site : "www.youtube.com",
-					state : {
-						name : "ready",
-						focus : false
-					},
-					LinkPage : [{
-						title : "",
-						thumb : "",
-						desc : ""
-					}]
+			remove : function(id){
+				var _d = $.Deferred();
+				$.ajax({
+					url : "api/removeById/folder/" + id,
+					method : "get",
+					success : function(res){
+						_d.resolve(res);
+					}
 				});
+				return _d.promise();
 			}
-
-			links[3].state.name = "loading";
-			links[3].state.focus = true;
-			links[3].url = "http://www.youtube.com/watch?v=IUjWumGIqe8&list=RDwnpVWvCDINU";*/
-			var url = $.url();
-			var path = url.attr("path").split("/");
-			var user_id = path[path.length - 1];
+		},
+		getUser : function(username_id){
 			var _d = $.Deferred();
 			$.ajax({
-				url : "api/getLinks/" + user_id,
-				method : "GET",
+				url : "api/user/" + username_id,
+				method : "get",
 				success : function(data){
-					//_c.log(data);
-					var links = data.links;
-					for(var i = 0; i<links.length; i++){
-						links[i].state = {
-							name : "ready"
-						}
-					}
-					return _d.resolve(links);
-				},
-				error : function(data){
-					_c.error(data);
-					//location.href = root + "users/login";
-				}	
+					// console.log(data);
+					_d.resolve(data);
+				}
 			});
 			return _d.promise();
 		}
@@ -314,6 +283,7 @@ app.service("apiService", function($http, contentParser){
 			}
 		}
 		rs.typed = {};
+		// console.log(rs.type.name);
 		switch(rs.type.name){
 			case 'youtube.watch' :
 				rs.typed.videoId = url.split("v=")[1].split("&")[0];
@@ -355,7 +325,7 @@ app.service("apiService", function($http, contentParser){
 			break;
 			case "google.docs.presentations" :
 				rs.gdocKey = findKey.d();
-				console.log(rs.gdocKey);
+				// console.log(rs.gdocKey);
 				var request = gapi.client.drive.files.get({
 				    'fileId': rs.gdocKey
 				});
@@ -364,11 +334,7 @@ app.service("apiService", function($http, contentParser){
 					rs.doc = {};
 					rs.doc.presentation = resp;
 					rs.title = resp.title;
-
 					d.resolve(rs);
-				    // console.log('Title: ' + resp.title);
-				    // console.log('Description: ' + resp.description);
-				    // console.log('MIME type: ' + resp.mimeType);
 				});
 			break;
 			default : 
@@ -379,6 +345,15 @@ app.service("apiService", function($http, contentParser){
 		holder.html("");
 		return d.promise();
 
+	}
+
+	this.flatten = function(arr, model){
+		var rs = [], item;
+		for(var i = 0; i<arr.length; i++){
+			item = arr[i][model];
+			rs.push(item);
+		}
+		return rs;
 	}
 })
 
