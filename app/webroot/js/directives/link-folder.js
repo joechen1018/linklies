@@ -35,7 +35,7 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 		}
 	}
 })
-.directive("lkLink", function(gridService, gridSystem, gridRects, apiService, $rootScope, contentParser){
+.directive("lkLink", function(gridService, gridSystem, gridRects, apiService, $rootScope, contentParser, $timeout){
 	return {
 		restrict : "EA",
 		templateUrl : "templates/link.html",
@@ -115,15 +115,36 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 				//console.log(scope.data);
 				$rootScope.$broadcast("openPage", scope.data.url);
 			}
-
+			scope.showDetail = false;
 			// console.log(data);
+			var timer, timer1;
 			$(ele).on("mouseover", function(){
-				scope.showOpt = true;
-				scope.$apply();
+
+				if(timer1){
+					$timeout.cancel(timer1);
+				}
+
+				scope.$apply(function(){
+					scope.showOpt = true;
+				});
+
+				if(timer){
+					$timeout.cancel(timer)
+				}
+
+				timer = $timeout(function(){
+					scope.showDetail = true;
+				}, 600);
 			});
 			$(ele).on("mouseout", function(){
-				scope.showOpt = false;
-				scope.$apply();
+				timer1 = $timeout(function(){
+					scope.showOpt = false;
+					scope.showDetail = false;
+				}, 200);
+
+				if(timer){
+					$timeout.cancel(timer)
+				}
 			});
 
 			$(ele).find("img.thumb").bind('load', function() {
@@ -163,6 +184,10 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 				var isAvailable = false;
 				var $selectedFolder, $folders = $(".folder");
 
+				scope.$apply(function(){
+					ref.dragging = false;
+				});
+
 				$(ele).draggable({
 					containment : "#board",
 					scroll: false,
@@ -175,7 +200,7 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 						$ele.css("z-index", 100);
 
 						scope.$apply(function(){
-							scope.dragging = true;
+							ref.dragging = true;
 						});
 					},
 					drag : function(e, ui){
@@ -208,7 +233,7 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 					},
 					stop : function(e, ui){
 
-						scope.dragging = false;
+						ref.dragging = false;
 						preview.show = false;
 						$selectedFolder = $(".folder.selected");
 						if($selectedFolder.length === 1){
