@@ -89,6 +89,7 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 						scope.data.title = data.title;
 						scope.data.thumb = data.thumb || data.meta["og:image"];
 						scope.data.videoId = data.videoId || "";
+						scope.data.view = data.view || 'default';
 						//_c.log(glob.user);
 						scope.data.username_id = glob.user.username_id;
 						scope.data.user_id = glob.user.id;
