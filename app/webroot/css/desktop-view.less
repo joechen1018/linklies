@@ -188,14 +188,17 @@
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
-          font-size : 13px;
-          top : ~"calc(50% - 5px)";
+          font-size:14px;
+	      line-height:@h;
+	      height: @h;
+          //top : ~"calc(50% - 5px)";
           color : #999999;
         }
         img.loader{
           position:absolute;
           display: block;
           left : 7px;
+          top : ~"calc(50% - 3px)";
         }
         span{
 
@@ -582,6 +585,14 @@
 	left : 0;
 	top : 0;
 	z-index: 201;
+	.holder{
+		width : 80%;
+		height : 100%;
+		z-index: 203;
+		position: fixed;
+		left : 10%;
+		background: white;
+	}
 	iframe {
 		width : 80%;
 		height : 100%;

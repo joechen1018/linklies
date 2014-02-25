@@ -112,6 +112,7 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 			}
 			scope.view = "page";
 			scope.openPage = function(){
+				//console.log(scope.data);
 				$rootScope.$broadcast("openPage", scope.data.url);
 			}
 

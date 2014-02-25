@@ -242,7 +242,6 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 				$scope.showBrowser = false;
 			});
 		})
-		
-		console.log(url);
+		// console.log(url);
 	});
 });
