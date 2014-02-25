@@ -288,7 +288,9 @@ app.service("apiService", function($http, contentParser){
 		// console.log(rs.type.name);
 		switch(rs.type.name){
 			case 'youtube.watch' :
-				rs.typed.videoId = url.split("v=")[1].split("&")[0];
+			case 'vimeo.watch' :
+				rs.videoId = url.split("v=")[1].split("&")[0];
+				rs.view = "video";
 				d.resolve(rs);
 			break;
 			case 'google.docs.spreadsheet' : 
@@ -297,11 +299,12 @@ app.service("apiService", function($http, contentParser){
 				    'fileId': rs.gdocKey
 				});
 				request.execute(function(resp) {
-					_c.log(resp);
+					//_c.log(resp);
 					rs.doc = {};
 					rs.doc.spreadsheet = resp;
 					rs.title = resp.title;
 					rs.thumb = resp.thumbnailLink;
+					rs.view = "doc";
 
 					d.resolve(rs);
 				    // console.log('Title: ' + resp.title);
@@ -315,12 +318,13 @@ app.service("apiService", function($http, contentParser){
 				    'fileId': rs.gdocKey
 				});
 				request.execute(function(resp) {
-					_c.log(resp);
+					// _c.log(resp);
 					rs.doc = {};
 					rs.doc.document = resp;
 					rs.title = resp.title;
 					rs.thumb = resp.thumbnailLink;
-					_c.log(rs);
+					rs.view = "doc";
+					// _c.log(rs);
 					d.resolve(rs);
 				    // console.log('Title: ' + resp.title);
 				    // console.log('Description: ' + resp.description);
@@ -339,6 +343,8 @@ app.service("apiService", function($http, contentParser){
 					rs.doc.presentation = resp;
 					rs.title = resp.title;
 					rs.thumb = resp.thumbnailLink;
+					rs.view = "doc";
+					
 					d.resolve(rs);
 				});
 			break;

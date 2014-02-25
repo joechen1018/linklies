@@ -88,13 +88,14 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 						scope.data.ico = data.ico;
 						scope.data.title = data.title;
 						scope.data.thumb = data.thumb || data.meta["og:image"];
+						scope.data.videoId = data.videoId || "";
 						//_c.log(glob.user);
 						scope.data.username_id = glob.user.username_id;
 						scope.data.user_id = glob.user.id;
 						scope.state = {
 							name : "ready"
 						};
-						console.log(scope.data);
+						//console.log(scope.data);
 						scope.$apply();
 
 						//_c.log(scope.data);
@@ -134,13 +135,14 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 
 				timer = $timeout(function(){
 					scope.showDetail = true;
+					_c.log(scope.data);
 				}, 600);
 			});
 			$(ele).on("mouseout", function(){
 				timer1 = $timeout(function(){
 					scope.showOpt = false;
 					scope.showDetail = false;
-				}, 200);
+				}, 1);
 
 				if(timer){
 					$timeout.cancel(timer)
@@ -233,6 +235,7 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 					},
 					stop : function(e, ui){
 
+						$(ele).trigger("mouseout");
 						ref.dragging = false;
 						preview.show = false;
 						$selectedFolder = $(".folder.selected");

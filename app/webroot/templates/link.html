@@ -4,7 +4,7 @@
 	}">
 		<span data-icon="g" ng-style="{
 			display:block,
-			top : grids.linkSize.height / 2 - 10
+			top : grids.linkSize.height / 2 - 8
 		}">
 			<input placeholder="Paste url here" ng-style="{
 				width : grids.linkSize.width - 45,
@@ -21,7 +21,7 @@
 			height : grids.linkSize.height - 10
 		}"> -->
 		<img class="loader" src="img/loader-1.gif" ng-style="{
-			top : grids.linkSize.height / 2 - 7,
+			top : grids.linkSize.height / 2 - 3,
 			height : grids.linkSize.height - 14 
 		}" alt="">
 		<span ng-style="{
@@ -41,9 +41,18 @@
 		<div class="link-body" ng-style="{
 		height : grids.gridHeight
 	}">
-			<div class="icon" style="">
+			<div class="icon" style="" ng-show="data.view === 'default'">
 				<img class="ico" ng-src="{{data.ico}}" alt="">
 			</div>
+			
+			<div class="icon-video" ng-show="data.view === 'video'">
+				<span data-icon="l"></span>
+			</div>
+
+			<div class="icon-doc" ng-show="data.view === 'doc'">
+				<span data-icon="R"></span>
+			</div>
+
 			<a class="title" target="_blank" ng-style="{
 				width : grids.linkSize.width - 35,
 				lineHeight : grids.gridHeight + 3 + 'px'
