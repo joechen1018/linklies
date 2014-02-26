@@ -80,29 +80,19 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 					scope.data.url = url;
 					scope.state.name = "loading";
 					linkService.create(url).then(function(data){
-
-						//console.log(data);
-						//scope.data.html_source = data;
-						scope.data.html_source = data.content;
-						scope.data.meta = JSON.stringify(data.meta);
-						scope.data.ico = data.ico;
-						scope.data.title = data.title;
-						scope.data.thumb = data.thumb || data.meta["og:image"];
-						scope.data.videoId = data.videoId || "";
-						scope.data.view = data.view || 'default';
-						//_c.log(glob.user);
-						scope.data.username_id = glob.user.username_id;
-						scope.data.user_id = glob.user.id;
+						scope.data = $.extend(scope.data, data);
+						// console.log(scope.data);
+						scope.data.title = data.title || data.meta["og:image"];
 						scope.state = {
 							name : "ready"
 						};
-						//console.log(scope.data);
 						scope.$apply();
-
-						//_c.log(scope.data);
 						linkService.save(scope.data).then(function(rs){
-							// console.log("saved:");
-							// console.log(rs);
+							// console.log("saved");
+							//console.log(rs);
+							scope.data.id = rs.data.Link.id;
+							scope.$apply();
+
 						});
 					});
 				}else{
@@ -110,7 +100,8 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 				}
 			}
 			scope.removeLink = function(){
-				$rootScope.$broadcast("removeLink", scope.data.id);
+				$rootScope.$broadcast("removeLink", scope.data.id || scope.data.uuid);
+				//$(_events).trigger("removeLink", [scope.data.id || scope.data.uuid])
 			}
 			scope.view = "page";
 			scope.openPage = function(){

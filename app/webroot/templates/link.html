@@ -65,13 +65,13 @@
 				<div class="bg"></div>
 			</div>
 		</div>
-		<div class="link-details" ng-show="showDetail && data.dragging === false">
+		<div class="link-details" ng-show="showDetail && (data.dragging == false || data.dragging == 'false')">
 			<div class="arrow arrow-up"></div>
 			<div class="arrow arrow-down"></div>
 			<div class="spacer"></div>
 
 			<div class="funcs">
-				<span data-icon="C" ng-click="openPage()"></span>
+				<span data-icon="C" ng-click="openPage()" ng-show="data.allowIframe"></span>
 				<span data-icon="p"></span>
 				<span data-icon="H" ng-show="view === 'video'"></span>
 			</div>

@@ -148,6 +148,12 @@ app.service("apiService", function($http, contentParser){
 		rs.type = "default";
 		rs.types = [];
 		rs.content = content;
+		rs.view = "default";
+
+		rs.allowIframe = (function(str){
+			return str.indexOf("X-Frame-Options") === -1 ? true : false;
+		})(content);
+
 		//append dom
 		var holder = $("#dom-holder");
 		var $html = $.parseHTML(content);
@@ -155,7 +161,6 @@ app.service("apiService", function($http, contentParser){
 		holder.append($html);
 
 		url = url.replace("https", "http");
-
 		var type;
 		var pattern;
 		for(var i in contentTypes){
@@ -188,7 +193,7 @@ app.service("apiService", function($http, contentParser){
 			'query' : purl.attr("query"),
 			'fragment' : purl.attr("fragment")
 		};
-		rs.url = purl;
+		//rs.url = purl;
 		// console.log(rs.meta);
 
 		//find title
@@ -369,3 +374,16 @@ app.service("apiService", function($http, contentParser){
 })
 
 
+.service("uuid", function(){
+	return {
+		create : function(){
+			var d = new Date().getTime();
+		    var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+		        var r = (d + Math.random()*16)%16 | 0;
+		        d = Math.floor(d/16);
+		        return (c=='x' ? r : (r&0x7|0x8)).toString(16);
+		    });
+		    return uuid;
+		}
+	}
+});

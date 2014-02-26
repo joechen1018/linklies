@@ -1,7 +1,7 @@
 'use strict';
 
 goog.require('goog.math.Rect');
-app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, gridService, keyboardManager, resize, gridSystem, gridRects, apiService){
+app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, gridService, keyboardManager, resize, gridSystem, gridRects, apiService, uuid){
 
 	var $allElements;
 	var timeout;
@@ -182,6 +182,9 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 		var grid = gridRects.link.findNearGridByPoint(x, y);
 		var newLink = {
 			grid : grid,
+			uuid : uuid.create(),
+			username_id : glob.user.username_id,
+			user_id : glob.user.id,
 			state : {
 				name : "paste-url",
 				focus : true
@@ -207,15 +210,25 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 		$("body").css("overflow", "");
 	}
 
-	$rootScope.$on("removeLink", function(e, id){
-		//console.log(id);
+	$rootScope.$on("linkCreated", function(e, link){
+
+	});
+	/*$(_events).bind("removeLink", function(e, id){
 		for(var i = 0; i<$scope.links.length; i++){
-			if($scope.links[i].id == id){
-				//console.log(id);
+			if($scope.links[i].uuid == id || $scope.links[i].id == id){
 				$scope.links.splice(i, 1);
-				//$scope.$apply();
-				apiService.linkService.remove(id).then(function(res){
-				});
+				apiService.linkService.remove(id);
+				//.then(function(res){});
+				return;
+			}
+		}
+	});*/
+	$rootScope.$on("removeLink", function(e, id){
+		for(var i = 0; i<$scope.links.length; i++){
+			if($scope.links[i].uuid == id || $scope.links[i].id == id){
+				$scope.links.splice(i, 1);
+				apiService.linkService.remove(id);
+				//.then(function(res){});
 				return;
 			}
 		}

@@ -1,4 +1,5 @@
 var glob = {};
+var _events = {};
 /*var $AnchorScrollProvider = function() {
   this.$get = ['$window', '$location', '$rootScope', function($window, $location, $rootScope) {
     function scroll() {

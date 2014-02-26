@@ -1,5 +1,5 @@
 <?php  
-//App::import('Vendor', 'simple_html_dom');
+App::import('Vendor', 'simple_html_dom');
 class ApiController extends AppController{
 	
 	public function beforeFilter(){
@@ -54,11 +54,21 @@ class ApiController extends AppController{
 		$this -> set("_serialize", array("data"));
 	}
 
+	public function fetchUrl1(){
+		$url = "http://www.youtube.com/watch?v=S8bDpzpDVu4&list=RDwl6cGCJCHCU";
+
+		$header = get_headers($url);
+		$this -> set("data", $header);
+		$this -> set("_serialize", array("data"));
+	}
+
 	public function save($model){
 		$data = $this -> data;
 		$model = ucwords($model);
 		$this -> loadModel($model);
-		$rs = $this -> $model -> save($data);
+		$this -> $model -> save($data);
+		$id = $this -> $model -> id;
+		$rs = $this -> $model -> findById($id);
 		$this -> set("data", $rs);
 		$this -> set("_serialize", array("data"));
 	}
@@ -66,7 +76,22 @@ class ApiController extends AppController{
 	public function removeById($model, $id){
 		$model = ucwords($model);
 		$this -> loadModel($model);
-		$rs = $this -> $model -> delete($id);
+		$rs = $this -> $model -> deleteAll(array(
+			"OR" => array(
+				"$model.uuid" => $id,
+				"$model.id" => $id
+			)
+		));	
+		$this -> set("data", $rs);
+		$this -> set("_serialize", array("data"));
+	}
+
+	public function removeByUuid($model, $uuid){
+		$model = ucwords($model);
+		$this -> loadModel($model);
+		$rs = $this -> $model -> deleteAll(array(
+			"$model.uuid" => $uuid
+		));
 		$this -> set("data", $rs);
 		$this -> set("_serialize", array("data"));
 	}
