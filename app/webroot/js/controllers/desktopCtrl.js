@@ -142,8 +142,12 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 	$scope.show = true;
 	var buffer = (function(){
 		return new (function(){
-			var limit = 1200;
+			var limit = 800;
 			this.amount = 0;
+			this.limit = function(){
+				// _c.log(Math.max([averageDelta, limit]));
+				// return Math.max([averageDelta, limit]);
+			}
 			this.reset = function(){
 				this.amount = 0;
 			}
@@ -165,9 +169,20 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 			$scope.grids.update();
 		});
 	}
+	var average = [];
+	var averageDelta = 0;
 	$(window).on("mousewheel", function(event) {
 		//console.log(event.deltaX, event.deltaY, event.deltaFactor);
 		//_c.log(event.deltaY);
+		average.push(event.deltaY);
+		averageDelta = (function(){
+			var sum = 0;
+			for(var i = 0; i<average.length; i++){
+				sum += Math.abs(average[i]);
+			}
+			return sum / average.length;
+		})();
+
 		if(event.deltaY > 0){
 			buffer.reset();
 		}
