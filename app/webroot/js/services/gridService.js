@@ -410,6 +410,7 @@ app.service("gridService", function($rootScope, $timeout, resize){
 	this.gridHeight = _d.gridHeight;
 	this.gridFullHeight = _d.gridHeight + _d.margin;
 	this.show = false;
+	this.buffer = 0;
 	this.onResize = function(size){
 		if(size && size.width)
 			this.width = size.width - 2 * _d.sideWidth;
@@ -419,6 +420,8 @@ app.service("gridService", function($rootScope, $timeout, resize){
 		this.update();
 	}
 	this.update = function(){
+		this.windowWidth = $(window).width();
+		this.windowHeight = $(window).height();
 		this.width = $(window).width() - 2 * _d.sideWidth;
 		this.height = resize.getHeight() - _d.topHeight - _d.bottomHeight;
 		this.gridWidth = getGridWidth(this.width);
@@ -426,7 +429,7 @@ app.service("gridService", function($rootScope, $timeout, resize){
 		this.gridHeight = _d.gridHeight;
 		this.gridFullHeight = this.gridHeight + _d.margin;
 		this.cols = _.range(getColNum(this.width, this.gridWidth));
-		this.rows = _.range(getRowNum(this.height, _d.gridHeight + _d.margin) + 3);
+		this.rows = _.range(getRowNum(this.height, _d.gridHeight + _d.margin) + 5 + this.buffer);
 		this.folderSize = {
 			width : this.gridWidth,
 			fullWidth : this.gridWidth + _d.margin,

@@ -467,6 +467,10 @@
 	        
 	        border-top: 20px solid #f00;
 	    }
+
+	    &.video{
+	    	
+	    }
 	}	
 }
 
@@ -623,13 +627,19 @@
 		left : 10%;
 		background: white;
 	}
-	iframe {
+	.iframe-wrap{
+		z-index: 203;
+		position: absolute;
 		width : 80%;
 		height : 100%;
-		z-index: 203;
-		position: fixed;
+		overflow-x : hidden;
 		left : 10%;
-	};
+		iframe {
+			position: absolute;
+			height : 100%;
+			width : 100%;
+		};
+	}
 	.bg{
 		position: fixed;
 		width : 100%;

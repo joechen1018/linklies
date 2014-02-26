@@ -140,6 +140,43 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 		}
 	};
 	$scope.show = true;
+	var buffer = (function(){
+		return new (function(){
+			var limit = 1200;
+			this.amount = 0;
+			this.reset = function(){
+				this.amount = 0;
+			}
+			this.add = function(amount){
+				this.amount += amount;
+				if(this.amount >= limit){
+					this.onReachLimit();
+				}
+			}
+			this.onReachLimit = function(){
+
+			}
+		});
+	})();
+	buffer.onReachLimit = function(){
+		buffer.reset();
+		$scope.$apply(function(){
+			$scope.grids.buffer += 2;
+			$scope.grids.update();
+		});
+	}
+	$(window).on("mousewheel", function(event) {
+		//console.log(event.deltaX, event.deltaY, event.deltaFactor);
+		//_c.log(event.deltaY);
+		if(event.deltaY > 0){
+			buffer.reset();
+		}
+		//if scrolled to bottom...
+		if($(window).scrollTop() + $(window).height() == $(document).height()) {
+			buffer.add(event.deltaFactor);
+		}
+	});
+
 	//gs.init($scope.folders, $scope.links);
 
 	/*$scope.$watch('grid.gridWidth', function(newVal, oldVal, scope){

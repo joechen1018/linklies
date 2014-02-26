@@ -21,6 +21,7 @@ app.service("apiService", function($http, contentParser){
 				return _d.promise();
 			},
 			save : function(link){
+				_c.log(link);
 				link.grid = link.grid.join(",");
 				link.meta = JSON.stringify(link.meta);
 				var _d = $.Deferred();
@@ -106,7 +107,7 @@ app.service("apiService", function($http, contentParser){
 			ico : "http://s.ytimg.com/yts/img/favicon_32-vflWoMFGx.png"
 		},
 		"google" : {
-			match : "^(http(s|)\:\/\/)?(www\.)?(google\.com)\/.+$",
+			match : "^(http(s|)\:\/\/)?(www\.)?(google\.com.*)\/.+$",
 			ico : "https://www.google.com.tw/favicon.ico"
 		},
 		"tw.google" : {
@@ -114,8 +115,12 @@ app.service("apiService", function($http, contentParser){
 			ico : "https://www.google.com.tw/favicon.ico"
 		},
 		"google.drive" : {
-			match : "^(http(s|)\:\/\/)?(www\.)?(drive\.google\.com)\/.+$",
+			match : "^(http(s|)\:\/\/)?(www\.)?(drive\.google\.com.*)\/.+$",
 			ico : "https://ssl.gstatic.com/docs/doclist/images/infinite_arrow_favicon_4.ico"
+		},
+		"google.translate" : {
+			match : "^(http(s|)\:\/\/)?(www\.)?(translate\.google\.com.*)\/.+$",
+			ico : "http://translate.google.com.tw/favicon.ico"
 		},
 		"google.docs" : {
 			match : "^(http(s|)\:\/\/)?(www\.)?(docs\.google\.com)\/.+$",
@@ -145,7 +150,7 @@ app.service("apiService", function($http, contentParser){
 	this.parse = function(content, url){
 		var rs = {};
 		var d = $.Deferred();
-		rs.type = "default";
+		rs.type = {};
 		rs.types = [];
 		rs.content = content;
 		rs.view = "default";
@@ -193,13 +198,12 @@ app.service("apiService", function($http, contentParser){
 			'query' : purl.attr("query"),
 			'fragment' : purl.attr("fragment")
 		};
-		//rs.url = purl;
 		// console.log(rs.meta);
 
 		//find title
 		rs.title = holder.find("title").eq(0).html();
-		//find ico
 
+		//find ico
 		if(rs.type.ico){
 			rs.ico = rs.type.ico;
 		}else{
@@ -290,12 +294,18 @@ app.service("apiService", function($http, contentParser){
 			}
 		}
 		rs.typed = {};
-		// console.log(rs.type.name);
+		//console.log(rs.type.name);
 		switch(rs.type.name){
 			case 'youtube.watch' :
 			case 'vimeo.watch' :
 				rs.videoId = url.split("v=")[1].split("&")[0];
 				rs.view = "video";
+				d.resolve(rs);
+			break;
+			case 'google.translate':
+				// var source = holder.find("textarea#source").eq(0).val();
+				// var result = holder.find("span#result_box").eq(0).html();
+				// rs.title = source + " : " + result;
 				d.resolve(rs);
 			break;
 			case 'google.docs.spreadsheet' : 

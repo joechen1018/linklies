@@ -80,9 +80,11 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 					scope.data.url = url;
 					scope.state.name = "loading";
 					linkService.create(url).then(function(data){
+						// console.log(data);
 						scope.data = $.extend(scope.data, data);
 						// console.log(scope.data);
-						scope.data.title = data.title || data.meta["og:image"];
+						scope.data.title = data.title || data.meta["og:title"];
+						scope.data.thumb = data.thumb || data.meta["og:image"];
 						scope.state = {
 							name : "ready"
 						};
@@ -185,6 +187,7 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 				$(ele).draggable({
 					containment : "#board",
 					scroll: false,
+					delay : 100,
 					start : function(e, ui){
 						$ele = $(ele);
 						originRect = rects.getDomRect($ele);
