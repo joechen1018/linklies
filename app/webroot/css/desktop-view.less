@@ -451,14 +451,24 @@
 				  margin:0;
 				  padding:0;
 				  display: none;
+				  cursor:default;
+				  &.icon-hover{
+					.alpha(0.7);
+				  }
 				}
 				span.thumb-icon{
+					cursor: pointer;
 					position: absolute;
 					font-size : 80px;
+					width : 80px;
+					height : 80px;
 					color: lighten(@orange, 10%);
 					left : ~"calc(50% - 40px)";
 					top : ~"calc(50% - 50px)";
 					z-index: 102;
+					&:hover{
+						color : lighten(@orange, 40%);
+					};
 				}
 				div.video-bg{
 					position: absolute;

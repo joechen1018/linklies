@@ -116,6 +116,7 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 				//console.log(scope.data);
 				$rootScope.$broadcast("openPage", scope.data.url);
 			}
+			scope.iconHover = false;
 			scope.isPlayingVideo = false;
 			scope.playVideo = function(){
 				var pid = "player-" + uuid.create();
@@ -130,8 +131,9 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 
 				var player = new nn.Player(pid);
 				player.controls = 1;
+				// console.log(player);
 				player.ready().then(function(){
-
+					// console.log("ready");
 					player.loadVideoById(vid);
 					$(player).one("playing", function(){
 						$(ele).unbind();
@@ -140,6 +142,8 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 							scroll: false,
 							delay : 10,
 						});
+						// $detailWrap.addClass("shadow-strong");
+						$detailWrap.find(".texts").css("cursor","move");
 						scope.$apply(function(){
 							scope.isPlayingVideo = true;
 						});
@@ -153,6 +157,8 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 				enableHover();
 				$detailWrap.draggable("destroy");
 				$detailWrap.removeAttr("style");
+				// $detailWrap.removeClass("shadow-strong");
+				$detailWrap.find(".texts").removeAttr("style");
 				$timeout(function(){
 					scope.isPlayingVideo = false;
 					scope.showDetail = false;
