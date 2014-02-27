@@ -262,9 +262,6 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 		$("body").css("overflow", "");
 	}
 
-	$rootScope.$on("linkCreated", function(e, link){
-
-	});
 	/*$(_events).bind("removeLink", function(e, id){
 		for(var i = 0; i<$scope.links.length; i++){
 			if($scope.links[i].uuid == id || $scope.links[i].id == id){

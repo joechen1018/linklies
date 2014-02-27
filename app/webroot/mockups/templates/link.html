@@ -66,7 +66,7 @@
 			</div>
 		</div>
 		<div class="link-details {{data.view}}" ng-show="showDetail && (data.dragging == false || data.dragging == 'false')">
-			<div class="arrow arrow-up" ng-show="!isPlayingVideo"></div>
+			<div class="arrow arrow-up"></div>
 			<div class="arrow arrow-down"></div>
 			<div class="spacer"></div>
 
@@ -77,10 +77,6 @@
 			</div>
 
 			<div class="detail-wrap {{data.view}}">
-
-				<div class="close-btn" ng-show="isPlayingVideo" ng-click="stopVideo()">
-					<span data-icon="q"></span>
-				</div>
 				
 				<div class="texts">
 					<h1>{{data.title}}<!-- <p><a class="from external" href="www.youtube.com" target="_blank">{{data.meta.url.host}}</a></p> --></h1>
@@ -89,16 +85,11 @@
 						<div class="arrow-right"></div>
 						<a href="{{data.url}}" target="_blank">Go To URL</a>	
 					</div>
-				</div>
-
-				<div class="player-holder">
-					
-				</div>
+				</div>	
 				
-				<div class="img" ng-show="hasImageArea" ng-show="!isPlayingVideo">
+				<div class="img">
 					<img class="thumb" ng-src="{{data.thumb}}">
-
-					<span class="thumb-icon" data-icon="l" ng-show="data.view == 'video'" ng-click="playVideo()">
+					<span class="thumb-icon" data-icon="l" ng-show="data.view == 'video'">
 					</span>	
 					<div class="video-bg" ng-show="data.view == 'video'"></div>
 				</div>

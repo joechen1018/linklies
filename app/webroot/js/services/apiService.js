@@ -1,6 +1,22 @@
 app.service("apiService", function($http, contentParser){
 	return {
 		linkService : {
+			get : function(id){
+				var _d = $.Deferred();
+				$.ajax({
+					url : root + "api/fetchById/link/" + id,
+					method : "get",
+					success : function(res){
+						console.log(res);
+						var obj = res.data.Link;
+						_d.resolve(obj);
+					},
+					fail : function(err){
+						console.log(err);
+					}
+				});
+				return _d.promise();
+			},
 			create : function(url){
 				var _d = $.Deferred();
 				$.ajax({
@@ -24,13 +40,14 @@ app.service("apiService", function($http, contentParser){
 				_c.log(link);
 				link.grid = link.grid.join(",");
 				link.meta = JSON.stringify(link.meta);
+				link.allowIframe = link.allowIframe ? 1 : 0;
 				var _d = $.Deferred();
 				$.ajax({
 					url : "api/save/link",
 					method : "post",
 					data : link,
 					success : function(res){
-						// console.log(res);
+						console.log(res);
 						_d.resolve(res);
 					}
 				});
@@ -152,7 +169,7 @@ app.service("apiService", function($http, contentParser){
 		var d = $.Deferred();
 		rs.type = {};
 		rs.types = [];
-		rs.content = content;
+		rs.html_source = content;
 		rs.view = "default";
 
 		rs.allowIframe = (function(str){
@@ -319,7 +336,7 @@ app.service("apiService", function($http, contentParser){
 					rs.doc.spreadsheet = resp;
 					rs.title = resp.title;
 					rs.thumb = resp.thumbnailLink;
-					rs.view = "doc";
+					//rs.view = "doc";
 
 					d.resolve(rs);
 				    // console.log('Title: ' + resp.title);
@@ -338,7 +355,7 @@ app.service("apiService", function($http, contentParser){
 					rs.doc.document = resp;
 					rs.title = resp.title;
 					rs.thumb = resp.thumbnailLink;
-					rs.view = "doc";
+					//rs.view = "doc";
 					// _c.log(rs);
 					d.resolve(rs);
 				    // console.log('Title: ' + resp.title);
@@ -358,7 +375,7 @@ app.service("apiService", function($http, contentParser){
 					rs.doc.presentation = resp;
 					rs.title = resp.title;
 					rs.thumb = resp.thumbnailLink;
-					rs.view = "doc";
+					//rs.view = "doc";
 					
 					d.resolve(rs);
 				});

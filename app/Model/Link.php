@@ -7,5 +7,6 @@ class Link extends AppModel{
 		$key = array_search('html_source', $fields);
 		unset($fields[$key]);
 		$query["fields"] = $fields;
+		return $query;
 	}
 } ?>

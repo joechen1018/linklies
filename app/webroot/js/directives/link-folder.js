@@ -35,7 +35,7 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 		}
 	}
 })
-.directive("lkLink", function(gridService, gridSystem, gridRects, apiService, $rootScope, contentParser, $timeout){
+.directive("lkLink", function(gridService, gridSystem, gridRects, apiService, $rootScope, contentParser, $timeout, uuid){
 	return {
 		restrict : "EA",
 		templateUrl : "templates/link.html",
@@ -44,8 +44,7 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 			$scope.grids = gridSystem;
 			$scope.state = $scope.data.state || { name : "paste-url" };
 			$scope.checkState = function(state){
-				if(state === $scope.state.name)
-					return true;
+				if(state === $scope.state.name) return true;
 				return false;
 			}
 		},
@@ -57,6 +56,14 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 			var grids = gridSystem;
 			var data = scope.data;
 			var linkService = apiService.linkService;
+			var $playerHolder, $detailWrap;
+
+			$timeout(function(){
+				$playerHolder = $(ele).find(".video .player-holder").eq(0);
+				$detailWrap = $(ele).find(".link-details").eq(0);
+			}, 100);
+
+
 			scope.showOpt = false;
 			scope.linkStyle = function(){
 				if(scope.data.grid){
@@ -105,46 +112,95 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 				$rootScope.$broadcast("removeLink", scope.data.id || scope.data.uuid);
 				//$(_events).trigger("removeLink", [scope.data.id || scope.data.uuid])
 			}
-			scope.view = "page";
 			scope.openPage = function(){
 				//console.log(scope.data);
 				$rootScope.$broadcast("openPage", scope.data.url);
 			}
+			scope.isPlayingVideo = false;
+			scope.playVideo = function(){
+				var pid = "player-" + uuid.create();
+				$playerHolder.append("<div id='" + pid + "'></div>");
+				var vid = data.url.split("?v=")[1].split("&")[0];
+				var img = $detailWrap.find(".img");
+				img.hide();
+
+				$playerHolder.css('top', img.position().top)
+						   .css('width', img.width())
+						   .css('height', img.height());
+
+				var player = new nn.Player(pid);
+				player.controls = 1;
+				player.ready().then(function(){
+
+					player.loadVideoById(vid);
+					$(player).one("playing", function(){
+						$(ele).unbind();
+						$detailWrap.draggable({
+							containment : "#board",
+							scroll: false,
+							delay : 10,
+						});
+						scope.$apply(function(){
+							scope.isPlayingVideo = true;
+						});
+					});
+				});
+			}
+			scope.stopVideo = function(){
+				$playerHolder.html("").removeAttr("style");
+				var img = $detailWrap.find(".img");
+				img.show();
+				enableHover();
+				$detailWrap.draggable("destroy");
+				$detailWrap.removeAttr("style");
+				$timeout(function(){
+					scope.isPlayingVideo = false;
+					scope.showDetail = false;
+				}, 1);
+			}
+			scope.hasImageArea = false;
 			scope.showDetail = false;
 			// console.log(data);
 			var timer, timer1;
-			$(ele).on("mouseover", function(){
+			var enableHover = function(){
+				$(ele).unbind();
+				$(ele).on("mouseover", function(){
+					if(timer1){
+						$timeout.cancel(timer1);
+					}
 
-				if(timer1){
-					$timeout.cancel(timer1);
-				}
+					scope.$apply(function(){
+						scope.showOpt = true;
+					});
 
-				scope.$apply(function(){
-					scope.showOpt = true;
+					if(timer){
+						$timeout.cancel(timer)
+					}
+
+					timer = $timeout(function(){
+						scope.showDetail = true;
+						_c.log(scope.data);
+					}, 600);
 				});
+				$(ele).on("mouseout", function(){
+					timer1 = $timeout(function(){
+						scope.showOpt = false;
+						scope.showDetail = false;
+					}, 1);
 
-				if(timer){
-					$timeout.cancel(timer)
-				}
+					if(timer){
+						$timeout.cancel(timer)
+					}
+				});
+			}
 
-				timer = $timeout(function(){
-					scope.showDetail = true;
-					_c.log(scope.data);
-				}, 600);
-			});
-			$(ele).on("mouseout", function(){
-				timer1 = $timeout(function(){
-					scope.showOpt = false;
-					scope.showDetail = false;
-				}, 1);
-
-				if(timer){
-					$timeout.cancel(timer)
-				}
-			});
+			enableHover();
 
 			$(ele).find("img.thumb").bind('load', function() {
                 $(this).show();
+                scope.$apply(function(){
+                	scope.hasImageArea = true;
+                });
             });
 		}
 	}
