@@ -689,6 +689,7 @@
 			position: absolute;
 			height : 100%;
 			width : 100%;
+			left : -10%;
 		};
 	}
 	.bg{
@@ -698,19 +699,33 @@
 		z-index: 202;
 		left : 0;
 		top : 0;
-		background: black;
+		background: @dark;
 		.alpha(0.8);
 	}
-	span{
-		font-size : 120px;
-		position: fixed;
-		right : 20px;
+	.btns{
+		position: absolute;
+		right : ~"calc(10% - 60px)";
 		top : 0px;
+		width : 60px;
+		height : 500px;
 		z-index: 203;
-		color : lighten(@dark, 55%);
-		cursor: pointer;
-		&:hover{
-			color : white;
-		};
+		.btn{
+			float:right;
+			width : 60px;
+			height : 60px;
+			background: @blue;
+			position: relative;
+			span{
+				position: absolute;
+				font-size : 40px;
+				left : ~"calc(50% - 20px)";
+				top : ~"calc(50% - 20px)";
+				color : lighten(@blue, 35%);
+				cursor: pointer;
+				&:hover{
+					color : white;
+				};
+			}
+		}
 	}
 }

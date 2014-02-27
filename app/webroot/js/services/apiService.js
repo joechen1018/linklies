@@ -31,6 +31,7 @@ app.service("apiService", function($http, contentParser){
 						});
 					},
 					fail : function(err){
+						_d.reject();
 						console.log(err);
 					}
 				});
@@ -203,6 +204,7 @@ app.service("apiService", function($http, contentParser){
 		});
 
 		var purl = $.url(url);
+		rs.purl = purl;
 		rs.meta.url = {
 			'source' : url,
 			'protocol' : purl.attr("protocol"),
@@ -326,7 +328,7 @@ app.service("apiService", function($http, contentParser){
 				d.resolve(rs);
 			break;
 			case 'google.docs.spreadsheet' : 
-				rs.gdocKey = rs.url.param("key");
+				rs.gdocKey = rs.purl.param("key");
 				var request = gapi.client.drive.files.get({
 				    'fileId': rs.gdocKey
 				});

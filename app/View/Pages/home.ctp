@@ -115,7 +115,15 @@
 			}"></iframe>
 		</div>
 		<div class="bg"></div>
-		<span data-icon="q" ng-click="closeBrowser()"></span>
+
+		<div class="btns">
+			<div class="btn">
+				<span data-icon="q" ng-click="closeBrowser()"></span>	
+			</div>
+			<!-- <div class="btn">
+				<span data-icon="q" ng-click="closeBrowser()"></span>	
+			</div> -->
+		</div>
 	</div>
 
 	<div id="bg-dot"></div>
