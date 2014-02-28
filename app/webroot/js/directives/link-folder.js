@@ -122,10 +122,12 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 						scope.data.grid[0] = parseInt(scope.data.grid[0], 10);
 						scope.data.grid[1] = parseInt(scope.data.grid[1], 10);
 
-						//if($.type(scope.data.type) === "string"){
+						if($.type(scope.data.type) === "string"){
 						//if(true){	
-						if(false){		
-							scope.data.type = $.parseJSON(scope.data.type);
+						//if(false){		
+							try{
+								scope.data.type = $.parseJSON(scope.data.type);
+							}catch(e){}
 						}
 						scope.state = {
 							name : "ready"
@@ -159,14 +161,15 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 			scope.isPlayingVideo = false;
 			scope.playVideo = function(){
 
-				//prevent detail hidden when mouse out
+				//** prevent detail hidden when mouse out
 				$(ele).unbind();
 
 
-			/*	using embeded player instead of chromeless player
-				var pid = "player-" + uuid.create();
-				$playerHolder.append("<div id='" + pid + "'></div>");
-			*/
+				/*	
+				using embeded player instead of chromeless player
+					var pid = "player-" + uuid.create();
+					$playerHolder.append("<div id='" + pid + "'></div>");
+				*/
 				var type = scope.data.type;
 				if($.type(type) === "string"){
 					type = $.parseJSON(type);
@@ -296,6 +299,13 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
                 scope.$apply(function(){
                 	scope.hasImageArea = true;
                 });
+            });
+
+			scope.iconLoaded = false;
+            $(ele).find(".icon img").bind("load", function(){
+            	scope.$apply(function(){
+            		scope.iconLoaded = true;
+            	});
             });
 		}
 	}

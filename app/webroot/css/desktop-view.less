@@ -248,13 +248,22 @@
 	            width:26px;
 	            overflow: hidden;
 	            img{
-	              width:16px;
-	              height:16px;
+	              width:14px;
+	              height:14px;
 	              position: relative;
-	              left : ~"calc(50% - 8px)";
-	              top : ~"calc(50% - 8px)";
+	              left : ~"calc(50% - 7px)";
+	              top : ~"calc(50% - 7px)";
 	              z-index: 1;
 	            }
+	        }
+	        .no-icon{
+	        	width:16px;
+				height:16px;
+				position: absolute;
+				left : 5px;
+				top : 7px;
+				z-index: 1;
+				background: lighten(@blue, 40%);
 	        }
 	        .icon-video{
 	        	height:100%;
@@ -376,7 +385,7 @@
 
 		@size1 : calc((@w1 - 330px)/2);
 	    .detail-wrap{
-			background: white;
+			background: black;
 			position: relative;
 			top:10px;
 			.shadow-light;

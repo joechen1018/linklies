@@ -170,6 +170,10 @@ app.service("apiService", function($http, contentParser){
 		"google.docs.forms" : {
 			match : "^(http(s|)\:\/\/)?(www\.)?(docs\.google\.com/forms)\/.+$",
 			ico : "https://ssl.gstatic.com/docs/spreadsheets/forms/favicon_jfk2.png"
+		},
+		"youku" : {
+			match : ".+(youku\.com)\/.+",
+			ico : "http://v.youku.com/favicon.ico"
 		}
 	};
 	this.parse = function(content, url){
@@ -313,6 +317,10 @@ app.service("apiService", function($http, contentParser){
 				rs.view = "video";
 				rs.meta = meta;
 				rs.meta1 = meta;
+				d.resolve(rs);
+			break;
+			case 'youku':
+				rs.icon = type.ico;
 				d.resolve(rs);
 			break;
 			case 'google.translate':

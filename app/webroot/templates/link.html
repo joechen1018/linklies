@@ -42,8 +42,12 @@
 		height : grids.gridHeight
 	}">
 			<div class="icon" style="" ng-show="data.view === 'default' || true">
-				<img class="ico" ng-src="{{data.ico}}" alt="">
+				<img class="ico" ng-show="iconLoaded" ng-src="{{data.type.ico || data.ico}}" alt="">
 			</div>
+
+			<div class="no-icon" ng-show="!iconLoaded" ng-style="{
+				top : (grids.gridHeight - 16) / 2
+			}"></div>
 			
 			<div class="icon-video" ng-show="data.view === 'video'">
 				<!-- <span data-icon="l" ng-hide></span> -->
