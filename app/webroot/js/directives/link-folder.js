@@ -106,62 +106,69 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 						console.log(data);
 						console.log(scope.data);
 						*/
+						console.log(data);
+						console.log(scope.data);
 						//** use new data but keep a copy of the old
 						var oldData = scope.data;
-						scope.data = data;
+						var newData = data;
+						scope.state = data.state;
 
 						//** attribute that we will use from old
-						var list = ["dragging", "grid", "thumb", "url", "user_id", "username_id", "uuid"];
+						var list = ["id", "dragging", "grid", "thumb", "url", "user_id", "username_id", "uuid"];
 						for(var i in oldData){
 							for(var j = 0; j<list.length; j++){
 								if(i == list[j]){
-									scope.data[i] = oldData[list[j]];
+									newData[i] = oldData[list[j]];
 								}
 							}
 						}
 						var _try=function(e){var t;try{t=JSON.parse(e)}catch(n){return{}}return t}
-						scope.data.meta = data.meta1;
-						scope.data.title = data.title || scope.data.meta1["og:title"];
-						scope.data.title = $("<div/>").html(scope.data.title).text();
-						scope.data.thumb = data.thumb;
+						newData.meta = data.meta1;
+						newData.title = data.title || data.meta1["og:title"];
+						newData.title = $("<div/>").html(data.title).text();
+						newData.thumb = data.thumb;
 						if(data.thumb === "" || data.thumb === undefined){
-							if(scope.data.meta){
-								scope.data.thumb = scope.data.meta["og:image"];
+							if(newData.meta){
+								newData.thumb = newData.meta["og:image"];
 							}
 						}
 						// _c.log(scope.data.grid);
-						if($.type(scope.data.grid) !== "array"){
-							scope.data.grid = scope.data.grid.split(",");
+						if($.type(newData.grid) !== "array"){
+							newData.grid = newData.grid.split(",");
 						}
-						scope.data.grid[0] = parseInt(scope.data.grid[0], 10);
-						scope.data.grid[1] = parseInt(scope.data.grid[1], 10);
+						newData.grid[0] = parseInt(newData.grid[0], 10);
+						newData.grid[1] = parseInt(newData.grid[1], 10);
 
-						if($.type(scope.data.type) === "string"){
+						if($.type(newData.type) === "string"){
 						//if(true){	
 						//if(false){		
 							try{
-								scope.data.type = $.parseJSON(scope.data.type);
+								newData.type = $.parseJSON(newData.type);
 							}catch(e){}
 						}
 						scope.state = {
 							name : "ready"
 						}
-						scope.data.state = {
+						newData.state = {
 							name : "ready"
 						};
 
 						//_c.log($.type(scope.data.type));
 						clearInterval(colorShift);
-						scope.$apply();
+						scope.$apply(function(){
+							scope.data = newData;
+							_c.log(scope.data);
+						});
 						ctrlScope.$apply(function(){
 							ctrlScope.links.push(scope.data);
 						});
 
-						linkService.save(scope.data).then(function(rs){
-							//console.log("saved");
-							//console.log(rs);
+						_c.log(newData);
+						linkService.save(newData).then(function(rs){
+							console.log("saved");
+							console.log(rs);
 							scope.data.id = rs.data.Link.id;
-							scope.$apply();
+							//scope.$apply();
 						});
 					}).fail(function(){
 						alert("failed");
