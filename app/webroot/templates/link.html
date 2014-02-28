@@ -22,15 +22,20 @@
 		}"> -->
 		<img class="loader" src="img/loader-1.gif" ng-style="{
 			top : grids.linkSize.height / 2 - 3,
-			height : grids.linkSize.height - 14 
+			height : grids.linkSize.height - 14 ,
+			display : none
 		}" alt="">
+		<div class="no-icon" ng-show="!iconLoaded" ng-style="{
+				top : (grids.gridHeight - 16) / 2
+			}"></div>
 		<span ng-style="{
 			display:block,
 			top : grids.linkSize.height / 2 - 10,
 			height : grids.linkSize.height - 10
 		}">
 			<p class="url" ng-style="{
-				width : grids.linkSize.width - 35
+				width : grids.linkSize.width - 35,
+				lineHeight : grids.gridHeight + 'px'
 			}">{{data.url}}</p>	
 		</span>
 		<!-- </span> -->
@@ -59,7 +64,7 @@
 
 			<a class="title" target="_blank" ng-style="{
 				width : data.view === 'default' ? grids.linkSize.width - 35 : grids.linkSize.width - 45,
-				lineHeight : grids.gridHeight + 3 + 'px'
+				lineHeight : grids.gridHeight + 'px'
 			}">{{data.title}}</a>
 
 			<div class="opt" ng-show="showOpt">

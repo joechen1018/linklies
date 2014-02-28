@@ -232,9 +232,9 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 	$scope.onBoardClick = function($event){
 		var x = $event.pageX - gridSystem.defaults.sideWidth;
 		var y = $event.pageY - gridSystem.defaults.topHeight;
-		var grid = gridRects.link.findNearGridByPoint(x, y);
+		var g = gridRects.link.findNearGridByPoint(x, y);
 		var newLink = {
-			grid : grid,
+			grid : g,
 			uuid : uuid.create(),
 			username_id : glob.user.username_id,
 			user_id : glob.user.id,
@@ -243,12 +243,9 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 				focus : true
 			}
 		}
+		// _c.log(newLink);
 		//clearLinks();
 		$scope.links.push(newLink);
-
-		// $event.preventDefault();   //prevent the click from jumping esp on hashes
-  //   	$event.stopPropagation();  //prevent from any parent click handlers that didn't prevent the jump
-  //   	return false;
 	}
 
 
@@ -263,7 +260,8 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 		$("body").css("overflow", "");
 	}
 
-	/*$(_events).bind("removeLink", function(e, id){
+	/*
+	$(_events).bind("removeLink", function(e, id){
 		for(var i = 0; i<$scope.links.length; i++){
 			if($scope.links[i].uuid == id || $scope.links[i].id == id){
 				$scope.links.splice(i, 1);
@@ -272,7 +270,8 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 				return;
 			}
 		}
-	});*/
+	});
+	*/
 	$rootScope.$on("removeLink", function(e, id){
 		for(var i = 0; i<$scope.links.length; i++){
 			if($scope.links[i].uuid == id || $scope.links[i].id == id){
