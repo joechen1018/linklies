@@ -56,11 +56,12 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 			var grids = gridSystem;
 			var data = scope.data;
 			var linkService = apiService.linkService;
-			var $playerHolder, $detailWrap;
+			var $playerHolder, $detailWrap, $player;
 
 			$timeout(function(){
-				$playerHolder = $(ele).find(".video .player-holder").eq(0);
+				$playerHolder = $(ele).find(".player-holder").eq(0);
 				$detailWrap = $(ele).find(".link-details").eq(0);
+				$player = $playerHolder.find("iframe").eq(0);
 			}, 500);
 
 
@@ -87,21 +88,46 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 					scope.data.url = url;
 					scope.state.name = "loading";
 					linkService.create(url).then(function(data){
-						// console.log(data);
-						scope.data = $.extend(scope.data, data);
-						// console.log(scope.data);
-						scope.data.title = data.title || data.meta["og:title"];
-						scope.data.thumb = data.thumb || data.meta["og:image"];
+						/*
+						console.log(data);
+						console.log(scope.data);
+						*/
+						//** use new data but keep a copy of the old
+						var oldData = scope.data;
+						scope.data = data;
+
+						//** attribute that we will use from old
+						var list = ["dragging", "grid", "thumb", "url", "user_id", "username_id", "uuid"];
+						for(var i in oldData){
+							for(var j = 0; j<list.length; j++){
+								if(i == list[j]){
+									scope.data[i] = oldData[list[j]];
+								}
+							}
+						}
+						var _try=function(e){var t;try{t=JSON.parse(e)}catch(n){return{}}return t}
+						scope.data.meta = data.meta1;
+						scope.data.title = data.title || scope.data.meta["og:title"];
+						scope.data.title = $("<div/>").html(scope.data.title).text();
+						scope.data.thumb = data.thumb || scope.data.meta["og:image"];
+
+						//if($.type(scope.data.type) === "string"){
+						//if(true){	
+						if(false){		
+							scope.data.type = $.parseJSON(scope.data.type);
+						}
 						scope.state = {
 							name : "ready"
 						};
+
+						//_c.log($.type(scope.data.type));
 						scope.$apply();
+
 						linkService.save(scope.data).then(function(rs){
-							// console.log("saved");
+							console.log("saved");
 							//console.log(rs);
 							scope.data.id = rs.data.Link.id;
-							scope.$apply();
-
+							//scope.$apply();
 						});
 					}).fail(function(){
 						alert("failed");
@@ -121,18 +147,66 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 			scope.iconHover = false;
 			scope.isPlayingVideo = false;
 			scope.playVideo = function(){
+
+				//prevent detail hidden when mouse out
 				$(ele).unbind();
+
+
+			/*	using embeded player instead of chromeless player
 				var pid = "player-" + uuid.create();
 				$playerHolder.append("<div id='" + pid + "'></div>");
-				var vid = data.url.split("?v=")[1].split("&")[0];
+			*/
+				var type = scope.data.type;
+				if($.type(type) === "string"){
+					type = $.parseJSON(type);
+					scope.data.type = type;
+				}
+				/*
+				_c.log(scope.data);
+				_c.log(type);
+				_c.log($.type(type));
+				_c.log(type.name);
+				_c.log(type.embedUrl);
+				_c.log(scope.data.videoId);
+				*/
+				if(type.name === "youtube.watch"){
+					
+				}else if(type.name === "vimeo.watch"){
+
+				}
+				
+				//hide displayed image
 				var img = $detailWrap.find(".img");
 				img.hide();
 
+				//give iframe a src and show it
+				var src = utils.replace(type.embedUrl, {
+					"VIDEO_ID" : scope.data.videoId
+				});
+
+				$player.attr("src", src);
+				$player.show();
+				//_c.log($player);
+				
+				//set player size to match the image size
 				$playerHolder.css('top', img.position().top)
 						   .css('width', img.width())
 						   .css('height', img.height());
 
+				//allow drag around		  
+				$detailWrap.draggable({
+					containment : "#board",
+					scroll: false,
+					delay : 10,
+				});
+
+
+				// $detailWrap.addClass("shadow-strong");
+				$detailWrap.find(".texts").css("cursor","move");
+				scope.isPlayingVideo = true;   
+			/*			   
 				var player = new nn.Player(pid);
+
 				player.controls = 1;
 				// console.log(player);
 				player.ready().then(function(){
@@ -151,9 +225,11 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 						});
 					});
 				});
+			*/
 			}
 			scope.stopVideo = function(){
-				$playerHolder.html("").removeAttr("style");
+				$playerHolder.removeAttr("style");
+				$player.attr("src", "").hide();
 				var img = $detailWrap.find(".img");
 				img.show();
 				enableHover();

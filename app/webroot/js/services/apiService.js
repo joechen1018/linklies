@@ -7,7 +7,7 @@ app.service("apiService", function($http, contentParser){
 					url : root + "api/fetchById/link/" + id,
 					method : "get",
 					success : function(res){
-						console.log(res);
+						//console.log(res);
 						var obj = res.data.Link;
 						_d.resolve(obj);
 					},
@@ -40,6 +40,7 @@ app.service("apiService", function($http, contentParser){
 			save : function(link){
 				link.grid = link.grid.join(",");
 				link.meta = JSON.stringify(link.meta);
+				link.type = JSON.stringify(link.type);
 				link.allowIframe = link.allowIframe ? 1 : 0;
 				// _c.log(link);
 				var _d = $.Deferred();
@@ -122,7 +123,13 @@ app.service("apiService", function($http, contentParser){
 		},
 		"youtube.watch" : {
 			match : "^(http(s|)\:\/\/)?(www\.)?(youtube\.com|youtu\.?be)\/.+$",
-			ico : "http://s.ytimg.com/yts/img/favicon_32-vflWoMFGx.png"
+			ico : "http://s.ytimg.com/yts/img/favicon_32-vflWoMFGx.png",
+			embedUrl : "http://www.youtube.com/embed/{{VIDEO_ID}}?autoplay=1"
+		},
+		"vimeo.watch" : {
+			match : "^(http(s|)\:\/\/)?(www\.)?(vimeo\.com\/[0-9]+)",
+			ico : "http://a.vimeocdn.com/images_v6/favicon_32.ico",
+			embedUrl : "//player.vimeo.com/video/{{VIDEO_ID}}?autoplay=1"
 		},
 		"google" : {
 			match : "^(http(s|)\:\/\/)?(www\.)?(google\.com.*)\/.+$",
@@ -169,75 +176,78 @@ app.service("apiService", function($http, contentParser){
 		var rs = {};
 		var d = $.Deferred();
 		rs.type = {};
+		rs.type.name = "default";
 		rs.types = [];
 		rs.html_source = content;
 		rs.view = "default";
 
+		//** detect iframe policy
 		rs.allowIframe = (function(str){
 			return str.indexOf("X-Frame-Options") === -1 ? true : false;
 		})(content);
 
-		//append dom
+		//** append dom for manipulation
 		var holder = $("#dom-holder");
 		var $html = $.parseHTML(content);
 		for(var i = $html.length - 1; i>-1; i--){
 			//_c.log($html[i].nodeName);
-			if($html[i].nodeName.toLowerCase() == "link"){
+			if($html[i].nodeName.toLowerCase() == "link" || $html[i].nodeName.toLowerCase() == "script"){
 				$html.splice(i, 1);
 			}
 		}
 		//_c.log($html);
 		holder.html("").append($html);
-		url = url.replace("https", "http");
 		var type;
 		var pattern;
 		for(var i in contentTypes){
 			pattern = new RegExp(contentTypes[i].match);
 			if(pattern.test(url)){
-				rs.type = {};
+				for(var j in contentTypes[i]){
+					rs.type[j] = contentTypes[i][j];
+				}
 				rs.type.name = i;
-				rs.type.ico = contentTypes[i].ico || "";
 			}
 		}
 
 
-		//find meta
+		//** find meta
 		rs.meta = {};
+		var meta = {};
 		holder.find("meta[property], meta[name]").each(function(i, e){
 			var name = $(this).attr("property") || $(this).attr("name");
 			rs.meta[name] = $(e).attr("content");
+			meta[name] = $(e).attr("content");
 		});
+		/*
+		_c.log(rs.meta);
+		_c.log(rs);
+		_c.log(rs.hasOwnProperty("meta"));
+		*/
+		_c.log(url);
+		/*var pl = purl(url);
+		rs.purl = pl;*/
+		rs.url = url;
 
-		var pl = $.url(url);
-		rs.purl = pl;
-
-		//find title
+		//** find title
 		rs.title = holder.find("title").eq(0).html();
 
-		//find ico
+		//** find ico
 		if(rs.type.ico){
 			rs.ico = rs.type.ico;
 		}else{
 
+			//** get all link tag
 			var links = holder.find("link[rel*='ico'][href]");
 			var href;
-			var testLink = function($e){
-				var rels = $e.attr("rel");
+			var testLink=function(e){var t=e.attr("rel");if(t.split("-").length>1){return 0}if(t.indexOf("shortcut")!==-1&&t.indexOf("icon")!==-1){return 3}if(t.indexOf("shortcut")!==-1&&t.indexOf("ico")!==-1){return 2}if(t.indexOf("ico")!==-1||t.indexOf("icon")!==-1){return 1}}
 
-				if(rels.split("-").length > 1){
-					return 0;
-				}
-				if(rels.indexOf("shortcut") !== -1 && rels.indexOf("icon") !== -1){
-					return 3;
-				}
-				if(rels.indexOf("shortcut") !== -1 && rels.indexOf("ico") !== -1){
-					return 2;
-				}
-				if(rels.indexOf("ico") !== -1 || rels.indexOf("icon") !== -1){
-					return 1;
-				}
-
-			}
+			/**
+			 * give each link rel a score
+			 0 - rel contains '-' 
+			 1 - rel contains 'ico' or 'icon'
+			 2 - rel contains 'shortcut' or 'ico'
+			 3 - rel contains 'shortcut' and 'icon'
+			**/
 			var scores = [];
 			links.each(function(i, e){
 				scores.push({
@@ -245,23 +255,20 @@ app.service("apiService", function($http, contentParser){
 					href : $(e).attr("href")
 				});
 			});
-			var max = _.max(scores, function(score){
-				return score.score;
-			});
+
+			//** get the link with max score
+			var max=_.max(scores,function(e){return e.score})
+
+			//** get the index of the link with max score
 			var maxIndex = _.indexOf(scores, max);
 			href = max.href;
-			//console.log(href);
 
-			var testA = function(href){
-				if(href === undefined) return false;
-				if(/^https?:\/\//i.test(href) || href.substr(0,2) === "//"){
-					return true;
-				}
-				return false;
-			}
-			//absolute url
-			if(testA(href)){
-			//if(true){
+			//** test absolute url
+			var testA=function(e){if(e===undefined)return false;if(/^https?:\/\//i.test(e)||e.substr(0,2)==="//"){return true}return false}
+			
+
+			//if(testA(href)){
+			if(true){
 				rs.ico = href;
 			}else{
 				// relative url
@@ -291,27 +298,22 @@ app.service("apiService", function($http, contentParser){
 			}
 		}
 		//console.log(rs.ico);
-
-		//get typed data
-		var findKey = {
-			d : function(){
-				var split = url.split("/"), i = 0, key;
-				while(i <split.length){
-					if(split[i] === "d" && i<split.length-1){
-						key = split[i+1];
-					}
-					i++;
-				}
-				return key;
-			}
-		}
-		rs.typed = {};
 		//console.log(rs.type.name);
-		switch(rs.type.name){
+		var type = rs.type;
+		var arr = type.name.split(".");
+		switch(type.name){
 			case 'youtube.watch' :
 			case 'vimeo.watch' :
-				rs.videoId = url.split("v=")[1].split("&")[0];
+				if(arr[0] === "youtube"){
+					rs.videoId = url.split("?v=")[1].split("&")[0];
+				}else{
+					rs.videoId = url.split("/")[url.split("/").length - 1];
+				}
+				// _c.log(rs.videoId);
+				rs.type.videoId = rs.videoId;
 				rs.view = "video";
+				rs.meta = meta;
+				rs.meta1 = meta;
 				d.resolve(rs);
 			break;
 			case 'google.translate':
@@ -376,10 +378,11 @@ app.service("apiService", function($http, contentParser){
 				});
 			break;
 			default : 
+				_c.log(rs);
 				d.resolve(rs);
 			break;
 		}
-		//remove dom
+		//** dom query completed, remove dom
 		holder.html("");
 		return d.promise();
 

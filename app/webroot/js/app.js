@@ -80,6 +80,14 @@ app.utils.isUrl = function(s){
 	var regexp = /^s?https?:\/\/[-_.!~*'()a-zA-Z0-9;\/?:\@&=+\$,%#]+$/
 	return regexp.test(s);
 }
+app.utils.replace = function(str, obj){
+	for(var i in obj){
+		str = str.replace("{{" + i + "}}", obj[i]);
+	}
+	return str;
+}
+
+var utils = app.utils;
 
 $(document).ready(function(){
 	//$('body').perfectScrollbar();

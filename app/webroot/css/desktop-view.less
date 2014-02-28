@@ -253,14 +253,21 @@
 	              position: relative;
 	              left : ~"calc(50% - 8px)";
 	              top : ~"calc(50% - 8px)";
+	              z-index: 1;
 	            }
 	        }
 	        .icon-video{
-	        	height:@h - 4;
-	            width:26px;
+	        	height:100%;
+	            width:5px;
 	            overflow: hidden;
+				-webkit-border-radius: 5px; 
+				-moz-border-radius: 5px; 
+				border-radius: 5px; 
 	            background: lighten(@orange, 10%);
-	            position: relative;
+	            position: absolute;
+	            right : 0px;
+	            top : 0px;
+	            z-index: 0;
 	            span{
 	            	color : darken(@orange, 30%);
 					font-size : 15px;
@@ -293,7 +300,7 @@
 	            position:absolute;
 	            left:33px;
 	            top:0;
-	            width:@w - 35px;
+	            width:@w - 100px;
 	            white-space: nowrap;
 	            overflow: hidden;
 	            text-overflow: ellipsis;
@@ -689,8 +696,8 @@
 		iframe {
 			position: absolute;
 			height : 100%;
-			width : 100%;
-			left : -10%;
+			width : ~"calc(100% + 20px)";
+			left : 0%;
 		};
 	}
 	.bg{

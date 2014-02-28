@@ -41,12 +41,12 @@
 		<div class="link-body" ng-style="{
 		height : grids.gridHeight
 	}">
-			<div class="icon" style="" ng-show="data.view === 'default'">
+			<div class="icon" style="" ng-show="data.view === 'default' || true">
 				<img class="ico" ng-src="{{data.ico}}" alt="">
 			</div>
 			
 			<div class="icon-video" ng-show="data.view === 'video'">
-				<span data-icon="l"></span>
+				<!-- <span data-icon="l" ng-hide></span> -->
 			</div>
 
 			<div class="icon-doc" ng-show="data.view === 'doc'">
@@ -54,7 +54,7 @@
 			</div>
 
 			<a class="title" target="_blank" ng-style="{
-				width : grids.linkSize.width - 35,
+				width : data.view === 'default' ? grids.linkSize.width - 35 : grids.linkSize.width - 45,
 				lineHeight : grids.gridHeight + 3 + 'px'
 			}">{{data.title}}</a>
 
@@ -92,7 +92,7 @@
 				</div>
 
 				<div class="player-holder">
-					
+					<iframe style="display:none" src="" width="100%" height="100%" frameborder="0"></iframe>
 				</div>
 				
 				<div class="img" ng-show="hasImageArea" ng-show="!isPlayingVideo">

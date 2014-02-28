@@ -108,6 +108,7 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 			links[i].grid = links[i].grid.split(",");
 			links[i].grid = [parseInt(links[i].grid[0], 10), parseInt(links[i].grid[1], 10)];
 			links[i].meta = _try(links[i].meta);
+			links[i].type = _try(links[i].type);
 		}
 		for(i = 0; i<folders.length; i++){
 			folders[i].grid = folders[i].grid.split(",");
