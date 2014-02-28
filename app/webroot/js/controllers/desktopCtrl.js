@@ -285,20 +285,31 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 
 	$rootScope.$on("openPage", function(e, url){
 		
-		$("#browser iframe").attr("src", url);
-		$("body").css("overflow", "hidden");
+		var $iframe = $("#browser iframe");
+		var $body = $("body");
+		$iframe.attr("src", url);
+		$body.css("overflow", "hidden");
+		$scope.showBrowser = true;
+		$timeout(function(){
+			$scope.showWrap = true;
+		}, 500);
 
-		$("#browser iframe").one("load", function(){
+		$iframe.one("load", function(){
 			// if(this.innerHTML){
 			// 	console.log("ok");
 			// }else{
 			// 	console.log("failed");
 			// }
+			$iframe.show();
 			$scope.$apply(function(){
-				$scope.showBrowser = true;
+				
 			});
+
+			// setInterval(function(){
+			// 	_c.log($iframe.scrollTop());
+			// }, 1000);
 		});
-		$("#browser iframe").error(function(){
+		$iframe.error(function(){
 			console.log("error");
 			$scope.$apply(function(){
 				$scope.showBrowser = false;

@@ -38,17 +38,17 @@ app.service("apiService", function($http, contentParser){
 				return _d.promise();
 			},
 			save : function(link){
-				_c.log(link);
 				link.grid = link.grid.join(",");
 				link.meta = JSON.stringify(link.meta);
 				link.allowIframe = link.allowIframe ? 1 : 0;
+				// _c.log(link);
 				var _d = $.Deferred();
 				$.ajax({
 					url : "api/save/link",
 					method : "post",
 					data : link,
 					success : function(res){
-						console.log(res);
+						// console.log(res);
 						_d.resolve(res);
 					}
 				});
@@ -180,9 +180,14 @@ app.service("apiService", function($http, contentParser){
 		//append dom
 		var holder = $("#dom-holder");
 		var $html = $.parseHTML(content);
-		holder.html("");
-		holder.append($html);
-
+		for(var i = $html.length - 1; i>-1; i--){
+			//_c.log($html[i].nodeName);
+			if($html[i].nodeName.toLowerCase() == "link"){
+				$html.splice(i, 1);
+			}
+		}
+		//_c.log($html);
+		holder.html("").append($html);
 		url = url.replace("https", "http");
 		var type;
 		var pattern;
@@ -203,21 +208,8 @@ app.service("apiService", function($http, contentParser){
 			rs.meta[name] = $(e).attr("content");
 		});
 
-		var purl = $.url(url);
-		rs.purl = purl;
-		rs.meta.url = {
-			'source' : url,
-			'protocol' : purl.attr("protocol"),
-			'host' : purl.attr("host"),
-			'port' : purl.attr("port"),
-			'relative' : purl.attr("relative"),
-			'path' : purl.attr("path"),
-			'directory' : purl.attr("directory"),
-			'file' : purl.attr("file"),
-			'query' : purl.attr("query"),
-			'fragment' : purl.attr("fragment")
-		};
-		// console.log(rs.meta);
+		var pl = $.url(url);
+		rs.purl = pl;
 
 		//find title
 		rs.title = holder.find("title").eq(0).html();
@@ -269,14 +261,15 @@ app.service("apiService", function($http, contentParser){
 			}
 			//absolute url
 			if(testA(href)){
+			//if(true){
 				rs.ico = href;
 			}else{
 				// relative url
 				// example img/favicon.ico
+				var host = pl.attr("host");
 				var makeGuess = function(href){
 					//relative to current
-					var host = rs.meta.url.host;
-					var dir = rs.meta.url.directory;
+					var dir = pl.attr("directory");
 					var guess;
 					if(href === undefined){
 						guess = "http://" + host + "/favicon.ico";
@@ -291,7 +284,7 @@ app.service("apiService", function($http, contentParser){
 				}
 				else if(href.substr(0,1) == "/"){
 					//relative to base
-					rs.ico = "http://" + rs.meta.url.host + href;
+					rs.ico = "http://" + host + href;
 				}else{
 					makeGuess(href);
 				}

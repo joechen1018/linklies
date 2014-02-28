@@ -107,11 +107,11 @@
 			}"></div>
 					
 	</div>
-
 	<div id="browser" ng-show="showBrowser">
-		<div class="iframe-wrap">
+		<div class="iframe-wrap" ng-show="showBrowser && showWrap">
 			<iframe src="" frameborder="0" ng-style="{
-				width : grids.windowWidth
+				width : grids.windowWidth,
+				display : none
 			}"></iframe>
 		</div>
 		<div class="bg"></div>
