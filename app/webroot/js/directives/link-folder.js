@@ -109,7 +109,18 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 						scope.data.meta = data.meta1;
 						scope.data.title = data.title || scope.data.meta["og:title"];
 						scope.data.title = $("<div/>").html(scope.data.title).text();
-						scope.data.thumb = data.thumb || scope.data.meta["og:image"];
+						scope.data.thumb = data.thumb;
+						if(data.thumb === "" || data.thumb === undefined){
+							if(scope.data.meta){
+								scope.data.thumb = scope.data.meta["og:image"];
+							}
+						}
+						_c.log(scope.data.grid);
+						if(!$.isArray(scope.data.grid)){
+							scope.data.grid = scope.data.grid.split(",");
+						}
+						scope.data.grid[0] = parseInt(scope.data.grid[0], 10);
+						scope.data.grid[1] = parseInt(scope.data.grid[1], 10);
 
 						//if($.type(scope.data.type) === "string"){
 						//if(true){	
@@ -187,7 +198,7 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 				$player.attr("src", src);
 				$player.show();
 				//_c.log($player);
-				
+
 				//set player size to match the image size
 				$playerHolder.css('top', img.position().top)
 						   .css('width', img.width())
@@ -371,6 +382,7 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 					stop : function(e, ui){
 
 						$(ele).trigger("mouseout");
+						ref = type === "link" ? scope.link : scope.folder;
 						ref.dragging = false;
 						preview.show = false;
 						$selectedFolder = $(".folder.selected");
@@ -389,15 +401,18 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 						isAvailable = allRects.gridAvailable(dragGrid);
 						//if there is a selected grid and the selected grid is not occupied
 						//if(selectedGrid !== undefined && !gs.occupied.link(selectedGrid)){
-						if(isAvailable){	
-							// _c.log(ref);
-							// _c.log(dragGrid);
+						if(isAvailable){
+							/*	
+							_c.log(ref);
+							_c.log(dragGrid);
+							*/
 							ref.grid = dragGrid;
 							scope.$apply();
 
 							clearTimeout(timeout);
 							timeout = setTimeout(function(){
-								service.save(ref);
+								service.save(ref).then(function(res){
+								});
 							}, 100);
 
 						}else{

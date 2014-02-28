@@ -49,7 +49,7 @@ app.service("apiService", function($http, contentParser){
 					method : "post",
 					data : link,
 					success : function(res){
-						// console.log(res);
+						res.data.Link.grid = res.data.Link.grid.split(",");
 						_d.resolve(res);
 					}
 				});
@@ -223,7 +223,6 @@ app.service("apiService", function($http, contentParser){
 		_c.log(rs);
 		_c.log(rs.hasOwnProperty("meta"));
 		*/
-		_c.log(url);
 		/*var pl = purl(url);
 		rs.purl = pl;*/
 		rs.url = url;
