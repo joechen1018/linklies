@@ -38,6 +38,7 @@ app.service("apiService", function($http, contentParser){
 				return _d.promise();
 			},
 			save : function(link){
+				var link = link;
 				link.grid = link.grid.join(",");
 				link.meta = JSON.stringify(link.meta);
 				link.type = JSON.stringify(link.type);
@@ -50,6 +51,7 @@ app.service("apiService", function($http, contentParser){
 					data : link,
 					success : function(res){
 						res.data.Link.grid = res.data.Link.grid.split(",");
+						res.data.Link.type = $.parseJSON(res.data.Link.type);
 						_d.resolve(res);
 					}
 				});
@@ -139,9 +141,12 @@ app.service("apiService", function($http, contentParser){
 			match : "^(http(s|)\:\/\/)?(www\.)?(google\.com.*)\/.+$",
 			ico : "https://www.google.com.tw/favicon.ico"
 		},
-		"tw.google" : {
-			match : "^(http(s|)\:\/\/)?(www\.)?(google\.com\.tw)\/.+$",
-			ico : "https://www.google.com.tw/favicon.ico"
+		"google.search" : {
+			match : "^(http(s|)\:\/\/)?(www\.)?(google\.com.*)\/.+$",
+			ico : "https://www.google.com.tw/favicon.ico",
+			selectors : {
+				results : "#rso li.g"
+			}
 		},
 		"google.drive" : {
 			match : "^(http(s|)\:\/\/)?(www\.)?(drive\.google\.com.*)\/.+$",
@@ -180,9 +185,22 @@ app.service("apiService", function($http, contentParser){
 			ico : "http://v.youku.com/favicon.ico"
 		}
 	};
+	var self = this;
+	this.parseGoogleResult = function($list){
+		var rs = [];
+		$list.each(function(i, e){
+			rs.push({
+				title : $(e).find("h3.r>a:first-child").text(),
+				href : $(e).find("h3.r>a:first-child").attr("href"),
+				date : $(e).find("span.st>span.f").text().split("-")[0]
+			});
+		});
+		return rs;
+	}
 	this.parse = function(content, url){
 		var rs = {};
 		var d = $.Deferred();
+		var pl = $.url(url);
 		rs.type = {};
 		rs.type.name = "default";
 		rs.types = [];
@@ -274,8 +292,8 @@ app.service("apiService", function($http, contentParser){
 			var testA=function(e){if(e===undefined)return false;if(/^https?:\/\//i.test(e)||e.substr(0,2)==="//"){return true}return false}
 			
 
-			//if(testA(href)){
-			if(true){
+			if(testA(href)){
+			//if(true){
 				rs.ico = href;
 			}else{
 				// relative url
@@ -305,7 +323,6 @@ app.service("apiService", function($http, contentParser){
 			}
 		}
 		//console.log(rs.ico);
-		//console.log(rs.type.name);
 		var type = rs.type;
 		var arr = type.name.split(".");
 		switch(type.name){
@@ -329,6 +346,16 @@ app.service("apiService", function($http, contentParser){
 			break;
 			case 'youku':
 				rs.icon = type.ico;
+				d.resolve(rs);
+			break;
+			case 'google.search' :
+				var query = rs.type.selectors.results;
+				var list = $(query);
+				list = self.parseGoogleResult(list);
+				rs.type.results = list;
+				rs.view = "search";
+				rs.meta = meta;
+				rs.meta1 = meta;
 				d.resolve(rs);
 			break;
 			case 'google.translate':
@@ -393,7 +420,7 @@ app.service("apiService", function($http, contentParser){
 				});
 			break;
 			default : 
-				_c.log(rs);
+				// _c.log(rs);
 				d.resolve(rs);
 			break;
 		}

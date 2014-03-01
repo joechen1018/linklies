@@ -58,6 +58,10 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 			});
 		});
 
+		keyboardManager.bind("shift+d", function(){
+			_c.log(currentHoverLink);
+		});
+
 		if(glob.requireSign === true){
 			// $scope.showOverlay = true;
 			// $scope.requireSign = true;
@@ -92,8 +96,10 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 		var _try = function(data){
 			var a;
 			try{
-		        a = JSON.parse(data);
+		        a = $.parseJSON(data);
 		    }catch(e){
+		    	_c.warn("link type parse error");
+		    	_c.warn(data);
 		    	return {};
 		    }
 		    return a;
@@ -107,8 +113,20 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 			links[i].state = {name : "ready"};
 			links[i].grid = links[i].grid.split(",");
 			links[i].grid = [parseInt(links[i].grid[0], 10), parseInt(links[i].grid[1], 10)];
+
+			if(links[i].meta == ""){
+				links[i].meta = "{}";
+			}
 			links[i].meta = _try(links[i].meta);
-			links[i].type = _try(links[i].type);
+			//links[i].type = _try(links[i].type);
+			if(links[i].type == ""){
+				links[i].type = "{}";
+			}
+			links[i].type = _try(links[i].type.trim());
+			// _c.log(links[i].type);
+			if(links[i].view == "search"){
+				// _c.log(links[i].type);
+			}
 		}
 		for(i = 0; i<folders.length; i++){
 			folders[i].grid = folders[i].grid.split(",");
@@ -204,6 +222,21 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 		//$scope.folders = newVal;
 	});*/
 
+	var getLatestLink = function(links){
+		var max = 1, id, latestLink;
+		for(var i = 0; i<links.length; i++){
+			id = links[i].id;
+			if($.type(id) === "string"){
+				id = parseInt(id, 10);
+			}
+			if(id > max){
+				max = id;
+				latestLink = link;
+			}
+		}
+		return latestLink;
+	}
+
 	$scope.$watch('resize.size', function(newSize, oldSize){
 		// console.log(newVal);
 		// console.log(oldVal);
@@ -244,7 +277,7 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 			}
 		}
 		// _c.log(newLink);
-		//clearLinks();
+		clearLinks();
 		$scope.links.push(newLink);
 	}
 
@@ -272,6 +305,23 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 		}
 	});
 	*/
+	var currentHoverLink;
+	$rootScope.$on("linkCreationComplete", function(e, link){
+		for(var i = 0; i<$scope.links.length; i++){
+			if($scope.links[i].uuid === link.uuid){
+				if($.type(link.type) === "string"){
+					link.type = JSON.parse(link.type);
+				}
+				// _c.log(link.type);
+				$scope.$apply(function(){
+					$scope.links[i] = link;	
+				});
+			}
+		}
+	});
+	$rootScope.$on("linkHover", function(e, link){
+		currentHoverLink = link;
+	});
 	$rootScope.$on("removeLink", function(e, id){
 		for(var i = 0; i<$scope.links.length; i++){
 			if($scope.links[i].uuid == id || $scope.links[i].id == id){

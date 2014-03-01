@@ -106,8 +106,6 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 						console.log(data);
 						console.log(scope.data);
 						*/
-						console.log(data);
-						console.log(scope.data);
 						//** use new data but keep a copy of the old
 						var oldData = scope.data;
 						var newData = data;
@@ -133,7 +131,7 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 							}
 						}
 						// _c.log(scope.data.grid);
-						if($.type(newData.grid) !== "array"){
+						if($.type(newData.grid) === "string"){
 							newData.grid = newData.grid.split(",");
 						}
 						newData.grid[0] = parseInt(newData.grid[0], 10);
@@ -155,11 +153,12 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 
 						//_c.log($.type(scope.data.type));
 						clearInterval(colorShift);
-						scope.$apply(function(){
-							scope.data = newData;
-							_c.log(scope.data);
-						});
-						
+
+						scope.data = newData;
+						// scope.results = newData.type.results;
+						scope.$apply();
+						// _c.log(scope.results);
+
 						/*
 						ctrlScope.$apply(function(){
 							ctrlScope.links.push(scope.data);
@@ -167,10 +166,11 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 						*/
 
 						linkService.save(newData).then(function(rs){
-							console.log("saved");
-							console.log(rs);
+							// console.log("saved");
+							// console.log(rs);
 							scope.data.id = rs.data.Link.id;
 							scope.$apply();
+							$rootScope.$broadcast("linkCreationComplete", scope.data);
 						});
 					}).fail(function(){
 						alert("failed");
@@ -179,8 +179,24 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 					
 				}
 			}
+
+			scope.$watch("data", function(newVal, oldVal){
+				//newVal.type = JSON.parse(newVal.type.toString());
+				//scope.data = newVal;
+			});
+
+			scope.removeResult = function($index){
+				var type = scope.data.type;
+				if(type.results){
+					//_c.log(type.results);
+					type.results.splice($index, 1);
+					scope.data.type = type;
+				}else{
+					_c.warn("type result not found")
+				}
+			}
 			scope.removeLink = function(){
-				$rootScope.$broadcast("removeLink", scope.data.uuid);
+				$rootScope.$broadcast("removeLink", scope.data.uuid || scope.data.id);
 				//$(_events).trigger("removeLink", [scope.data.id || scope.data.uuid])
 			}
 			scope.openPage = function(){
@@ -289,36 +305,41 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 			scope.hasImageArea = false;
 			scope.showDetail = false;
 			// console.log(data);
-			var timer, timer1;
+			var timer, timer1, timer3;
 			var enableHover = function(){
 				$(ele).unbind();
-				$(ele).on("mouseover", function(){
-					if(timer1){
-						$timeout.cancel(timer1);
-					}
+				$(ele).on("mouseenter", function(){
+					$timeout.cancel(timer1);
+					$timeout.cancel(timer);
+					$timeout.cancel(timer3);
 
 					scope.$apply(function(){
 						scope.showOpt = true;
 					});
 
-					if(timer){
-						$timeout.cancel(timer)
-					}
-
 					timer = $timeout(function(){
-						scope.showDetail = true;
-						_c.log(scope.data);
+						scope.$apply(function(){
+							scope.showDetail = true;
+						});
 					}, 600);
+
+					$rootScope.$broadcast("linkHover", scope.data);
 				});
-				$(ele).on("mouseout", function(){
+				$(ele).on("mouseleave", function(){
 					timer1 = $timeout(function(){
 						scope.showOpt = false;
 						scope.showDetail = false;
 					}, 1);
 
-					if(timer){
-						$timeout.cancel(timer)
-					}
+					$timeout.cancel(timer3);
+					timer3 = $timeout(function(){
+						/*linkService.save(scope.data).then(function(rs){
+							console.log("saved");
+							// console.log(rs);
+						});*/
+					}, 6000);
+
+					$timeout.cancel(timer);
 				});
 			}
 

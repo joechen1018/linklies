@@ -14,5 +14,9 @@ class MockupsController extends AppController{
 
 	}
 
+	public function searchView(){
+		
+	}
+
 
 } ?>

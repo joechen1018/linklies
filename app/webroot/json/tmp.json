@@ -1,0 +1,1 @@
+{"name":"google.search","match":"^(http(s|)://)?(www.)?(google.com.*)/.+$","ico":"https://www.google.com.tw/favicon.ico","selectors":{"results":"#rso li.g"},"results":[{"title":"php - Using UUID in CakePHP, What DataType Is Recommended ...","href":"http:/

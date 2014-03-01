@@ -9,6 +9,8 @@
 
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular.min.js"></script>
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular-route.js"></script>
+	<script src="<?php echo $this -> webroot?>js/mockups.js"></script>
+	<script src="<?php echo $this -> webroot?>js/services/apiService.js"></script>
 	
 	<!-- <link href='http://fonts.googleapis.com/css?family=Ubuntu Condensed' rel='stylesheet' type='text/css'> -->
 	<link href='http://fonts.googleapis.com/css?family=Droid Sans' rel='stylesheet' type='text/css'>
@@ -27,7 +29,7 @@
 	  var _con = console;
 	  console = { log : function(){} }
 	</script>
-	<link rel="stylesheet/less" type="text/css" href="<?php echo $this -> webroot?>css/main.less?view=<?php echo "desktop-view"?>" />
+	<link rel="stylesheet/less" type="text/css" href="<?php echo $this -> webroot?>css/mockups.less?view=<?php echo "desktop-view"?>" />
 	<script src="//cdnjs.cloudflare.com/ajax/libs/less.js/1.6.2/less.min.js" type="text/javascript"></script>
 	<script>
 		console = _con;
@@ -35,16 +37,6 @@
 		var root = '<?php echo $this -> webroot?>';
 	</script>
 	
-	<script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
-	<script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
-	<script src="<?php echo $this -> webroot?>js/closure-library/closure/goog/base.js" type="text/javascript" charset="utf-8"></script>
-	<script src="<?php echo $this -> webroot?>js/plugins.js" type="text/javascript" charset="utf-8"></script>
-	<script src="<?php echo $this -> webroot?>js/controllers/mockupsCtrl.js" type="text/javascript" charset="utf-8"></script>
-	<script src="<?php echo $this -> webroot?>js/services/keyboardManager.js" type="text/javascript" charset="utf-8"></script>
-	<script src="<?php echo $this -> webroot?>js/services/gridService.js" type="text/javascript" charset="utf-8"></script>
-	<script src="<?php echo $this -> webroot?>js/services/gridRects.js" type="text/javascript" charset="utf-8"></script>
-	<script src="<?php echo $this -> webroot?>js/directives/link-folder.js" type="text/javascript" charset="utf-8"></script>
-	<script src="<?php echo $this -> webroot?>js/services/apiService.js" type="text/javascript" charset="utf-8"></script>
 </head>
 <body>
 	<div id="mockup-wrap" ng-controller="mockupsCtrl">

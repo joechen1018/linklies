@@ -94,8 +94,11 @@ var app = angular.module("lk", ["ngRoute"])
 			        	});
 		        	}else{
 		        		alert("You need to be a Google+ user to continue");
+		        		location.href = "https://plus.google.com/";
+		        		/*
 		        		$scope.state = "sign";
 						$scope.$apply();
+						*/
 		        	}
 
 		         });

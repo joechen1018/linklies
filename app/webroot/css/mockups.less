@@ -1,0 +1,39 @@
+@import "macaron";
+.search{
+	background: white;
+	width : 100%;
+	font-family: "Droid Sans";
+	list-style-type: none;
+	padding:0;
+	li{
+		width : 330px;
+		padding-top : 10px;
+		padding-bottom : 10px;
+		border-bottom : 1px solid lighten(@dark, 70%);
+		margin:0;
+		padding-left : 10px;
+		padding-right : 10px;
+		a{
+			font-size : 14px;
+			line-height: 18px;
+			color : @dark;
+			text-decoration: none;
+			padding-bottom : 7px;
+			padding-top : 7px;
+		}
+		a:visited{
+			color : @red;
+		}
+		span{
+			padding-left : 10px;
+			font-size : 12px;
+			color : lighten(@dark, 45%);
+		}
+		&:hover{
+			background: @blue;
+			a{
+				color : white;
+			}
+		};
+	}
+}
