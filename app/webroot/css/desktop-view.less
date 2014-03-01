@@ -155,7 +155,11 @@
 	  }
 	}
 }
-
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+    a.title {
+        padding-top: 2px;
+    }
+}
 .link{
 	@h :30px;
 	@w : 310px;
@@ -196,7 +200,7 @@
         }
         img.loader{
           position:absolute;
-          display: block;
+          display: none;
           left : 7px;
           top : ~"calc(50% - 3px)";
         }
@@ -260,7 +264,7 @@
 	              height:14px;
 	              position: relative;
 	              left : ~"calc(50% - 7px)";
-	              top : ~"calc(50% - 7px)";
+	              top : ~"calc(50% - 8px)";
 	              z-index: 1;
 	            }
 	        }

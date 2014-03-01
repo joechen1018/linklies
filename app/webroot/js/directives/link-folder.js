@@ -159,16 +159,18 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 							scope.data = newData;
 							_c.log(scope.data);
 						});
+						
+						/*
 						ctrlScope.$apply(function(){
 							ctrlScope.links.push(scope.data);
 						});
+						*/
 
-						_c.log(newData);
 						linkService.save(newData).then(function(rs){
 							console.log("saved");
 							console.log(rs);
 							scope.data.id = rs.data.Link.id;
-							//scope.$apply();
+							scope.$apply();
 						});
 					}).fail(function(){
 						alert("failed");
@@ -324,16 +326,16 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 
 			$(ele).find("img.thumb").bind('load', function() {
                 $(this).show();
-                scope.$apply(function(){
+                $timeout(function(){
                 	scope.hasImageArea = true;
-                });
+                }, 1);
             });
 
 			scope.iconLoaded = false;
             $(ele).find(".icon img").bind("load", function(){
-            	scope.$apply(function(){
+            	$timeout(function(){
             		scope.iconLoaded = true;
-            	});
+            	}, 1);
             });
 		}
 	}

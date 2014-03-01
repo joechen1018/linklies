@@ -54,14 +54,6 @@ class ApiController extends AppController{
 		$this -> set("_serialize", array("data"));
 	}
 
-	public function fetchUrl1(){
-		$url = "http://www.youtube.com/watch?v=S8bDpzpDVu4&list=RDwl6cGCJCHCU";
-
-		$header = get_headers($url);
-		$this -> set("data", $header);
-		$this -> set("_serialize", array("data"));
-	}
-
 	public function save($model){
 		$data = $this -> data;
 		$model = ucwords($model);

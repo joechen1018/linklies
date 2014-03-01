@@ -126,6 +126,10 @@ app.service("apiService", function($http, contentParser){
 			ico : "http://s.ytimg.com/yts/img/favicon_32-vflWoMFGx.png",
 			embedUrl : "http://www.youtube.com/embed/{{VIDEO_ID}}?autoplay=1"
 		},
+		"vimeo" : {
+			match : ".+(vimeo\.com)\/.+",
+			ico : "http://a.vimeocdn.com/images_v6/favicon_32.ico",
+		},
 		"vimeo.watch" : {
 			match : "^(http(s|)\:\/\/)?(www\.)?(vimeo\.com\/[0-9]+)",
 			ico : "http://a.vimeocdn.com/images_v6/favicon_32.ico",
@@ -317,6 +321,10 @@ app.service("apiService", function($http, contentParser){
 				rs.view = "video";
 				rs.meta = meta;
 				rs.meta1 = meta;
+				d.resolve(rs);
+			break;
+			case 'vimeo':
+				rs.icon = type.ico;
 				d.resolve(rs);
 			break;
 			case 'youku':
