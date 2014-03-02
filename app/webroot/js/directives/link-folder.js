@@ -180,10 +180,8 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 				}
 			}
 
-			scope.$watch("data", function(newVal, oldVal){
-				//newVal.type = JSON.parse(newVal.type.toString());
-				//scope.data = newVal;
-			});
+			/*scope.$watch("data", function(newVal, oldVal){
+			});*/
 
 			scope.removeResult = function($index){
 				var type = scope.data.type;
@@ -191,6 +189,12 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 					//_c.log(type.results);
 					type.results.splice($index, 1);
 					scope.data.type = type;
+
+					//** save the data
+					linkService.save(scope.data).then(function(rs){
+						console.log("saved");
+						// console.log(rs);
+					});
 				}else{
 					_c.warn("type result not found")
 				}
@@ -468,13 +472,19 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 							_c.log(dragGrid);
 							*/
 							ref.grid = dragGrid;
+							if($.type(ref.type) === "string"){
+								ref.type = $.parseJSON(ref.type);
+							}
+							_c.log(ref.type);
 							scope.$apply();
+							service.save(ref);
 
-							clearTimeout(timeout);
+							/*clearTimeout(timeout);
 							timeout = setTimeout(function(){
-								service.save(ref).then(function(res){
+								.then(function(res){
+
 								});
-							}, 100);
+							}, 100);*/
 
 						}else{
 							$ele.animate({

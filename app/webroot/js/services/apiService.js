@@ -37,21 +37,36 @@ app.service("apiService", function($http, contentParser){
 				});
 				return _d.promise();
 			},
+			saveTest : function(link){
+				var _d = $.Deferred();
+				var obj = utils.clone(link);
+
+				//** prepare data for saving
+				obj.type = JSON.stringify(link.type);
+				obj.grid = link.grid.join(",");
+				obj.meta = JSON.stringify(link.meta);
+				obj.allowIframe = link.allowIframe ? 1 : 0;
+
+				_d.resolve();
+				return _d.promise();
+			},
 			save : function(link){
-				var link = link;
-				link.grid = link.grid.join(",");
-				link.meta = JSON.stringify(link.meta);
-				link.type = JSON.stringify(link.type);
-				link.allowIframe = link.allowIframe ? 1 : 0;
+				var obj = utils.clone(link);
+
+				//** prepare data for saving
+				obj.type = JSON.stringify(link.type);
+				obj.grid = link.grid.join(",");
+				obj.meta = JSON.stringify(link.meta);
+				obj.allowIframe = link.allowIframe ? 1 : 0;
 				// _c.log(link);
 				var _d = $.Deferred();
 				$.ajax({
 					url : "api/save/link",
 					method : "post",
-					data : link,
+					data : obj,
 					success : function(res){
-						res.data.Link.grid = res.data.Link.grid.split(",");
-						res.data.Link.type = $.parseJSON(res.data.Link.type);
+						// res.data.Link.grid = res.data.Link.grid.split(",");
+						// res.data.Link.type = $.parseJSON(res.data.Link.type);
 						_d.resolve(res);
 					}
 				});
