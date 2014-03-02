@@ -84,7 +84,7 @@
 				}"></li>
 			</ul>
 			
-			<div lk-folder data="folder" lk-drag drag-preview="dragPreview.folder" ng-repeat="folder in folders"></div>
+			<div lk-folder data="folder" lk-drag drag-preview="dragPreview.folder" ng-repeat="folder in folders" ></div>
 			<div lk-link data="link" lk-drag drag-preview="dragPreview.link" ng-repeat="link in links"  ng-click="onLinkClick($event)"></div>
 
 			<div id="folder-drop-preview" ng-style="{

@@ -2,7 +2,13 @@
 class User extends AppModel{
 
 	public $hasMany = array(
-		"Link" => array(),
+		"Link" => array(
+			"fields" => array("id", "uuid", "user_id", "folder_id", "username_id", "grid", 
+							  "ico", "url", "title", "desc", "thumb", "view", "meta", "type", 
+							  "hash", "timestamp", "allowIframe"),
+			"limit" => 50,
+			"order" => "id desc"
+		),
 		"Folder" => array()
 	);
 	public function createByMeObj($me){

@@ -89,7 +89,7 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 	apiService.getUser(uid).then(function(rs){
 		
 		var data = rs.data;
-		// _c.log(data);
+		 _c.log(data);
 		var user = data.User;
 		var links = data.Link;
 		var folders = data.Folder;
@@ -104,6 +104,9 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 		    }
 		    return a;
 		}
+
+		//** global variable to hold total number of links
+		expectCount = links.length;
 
 		$scope.user = user;
 		$scope.user_id = user.id;
@@ -135,6 +138,8 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 
 		$scope.links = links;
 		$scope.folders = folders;
+		$scope.show = true;
+		
 		gridRects.links = links;
 		gridRects.folders = folders;
 
@@ -158,7 +163,7 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 			show : false
 		}
 	};
-	$scope.show = true;
+	$scope.show = false;
 	var buffer = (function(){
 		return new (function(){
 			var limit = 800;
@@ -334,37 +339,24 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 	});
 
 	$rootScope.$on("openPage", function(e, url){
-		
-		var $iframe = $("#browser iframe");
-		var $body = $("body");
+		var $iframe = $("#browser iframe")
+			,$body = $("body");
+
 		$iframe.attr("src", url);
 		$body.css("overflow", "hidden");
+
 		$scope.showBrowser = true;
 		$timeout(function(){
-			$scope.showWrap = true;
+			$scope.$apply(function(){
+				$scope.showWrap = true;
+			});
 		}, 500);
 
 		$iframe.one("load", function(){
-			// if(this.innerHTML){
-			// 	console.log("ok");
-			// }else{
-			// 	console.log("failed");
-			// }
 			$iframe.show();
 			$scope.$apply(function(){
 				
 			});
-
-			// setInterval(function(){
-			// 	_c.log($iframe.scrollTop());
-			// }, 1000);
 		});
-		$iframe.error(function(){
-			console.log("error");
-			$scope.$apply(function(){
-				$scope.showBrowser = false;
-			});
-		})
-		// console.log(url);
 	});
 });

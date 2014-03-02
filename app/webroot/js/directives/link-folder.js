@@ -1,9 +1,8 @@
-app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiService){
+app.directive("lkFolder", function(gridSystem){
 	return {
 		restrict : "EA",
 		templateUrl : "templates/folder.html",
 		controller : function($scope){
-			$scope.grid = gridService;
 			$scope.grids = gridSystem;
 		},
 		replace : true,
@@ -12,7 +11,6 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 		},
 		link : function(scope, ele, attrs, ctrl){
 
-			var gs = gridService;
 			var grids = gridSystem;
 			scope.getStyle = function(){
 				if(scope.data && scope.data.grid){
@@ -35,7 +33,7 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 		}
 	}
 })
-.directive("lkLink", function(gridService, gridSystem, gridRects, apiService, $rootScope, apiParser, $timeout, uuid){
+.directive("lkLink", function(gridSystem, apiService, $rootScope, apiParser, $timeout, uuid){
 	return {
 		restrict : "EA",
 		templateUrl : "templates/link.html",
@@ -153,8 +151,13 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 				}
 			}
 
-			/*scope.$watch("data", function(newVal, oldVal){
-			});*/
+			/*
+			scope.$watch("data.ico", function(newVal, oldVal){
+				if(newVal !== oldVal){
+					_c.log(newVal, oldVal);
+				}
+			});
+			*/
 
 			scope.removeResult = function($index){
 				var type = scope.data.type;
@@ -177,7 +180,6 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 				//$(_events).trigger("removeLink", [scope.data.id || scope.data.uuid])
 			}
 			scope.openPage = function(){
-				//console.log(scope.data);
 				$rootScope.$broadcast("openPage", scope.data.url);
 			}
 			scope.iconHover = false;
@@ -188,18 +190,13 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 				$(ele).unbind();
 
 				var type = scope.data.type;
-				if($.type(type) === "string"){
-					type = $.parseJSON(type);
-					scope.data.type = type;
-				}
-				
 				//** hide displayed image
 				var img = $detailWrap.find(".img");
 				img.hide();
 
 				//** embed iframe player
 				var src = utils.replace(type.embedUrl, {
-					"VIDEO_ID" : scope.data.videoId
+					"VIDEO_ID" : type.videoId
 				});
 
 				$player.attr("src", src);
@@ -287,15 +284,40 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
             });
 
 			scope.iconLoaded = false;
-            $(ele).find(".icon img").bind("load", function(){
+
+			/*
+			taskQueue.push(function(){
+				$(ele).find(".icon img").attr("src", data.ico);
+			});
+			taskQueue.push(function(){
+				$(ele).find(".img img.thumb").attr("src", data.ico);
+			});*/
+			
+            $(ele).find(".icon img")
+            .bind("load", function(){
+            	// $(loader.events).trigger("success", [data.id]);
             	$timeout(function(){
             		scope.iconLoaded = true;
             	}, 1);
+            })
+            .bind("error", function(){
+            	// $(loader.events).trigger("error", [data.id]);
             });
+
+
+           /* 
+           $(loader.events).bind("reachedExpectation", function(){
+            	$(ele).find(".img img.thumb").attr("src", data.thumb);
+            });
+           $(ele).find(".icon img, .img img.thumb").bind("load", function(){
+            	loadCount++;
+            	_c.log("loaded : " + loadCount);
+            })
+			*/
 		}
 	}
 })
-.directive("lkDrag", function(gridService, gridSystem, gridRects, apiService, $timeout){
+.directive("lkDrag", function(gridSystem, gridRects, apiService, $timeout){
 	return {
 		restrict : "EA",
 		controller : function($scope){
@@ -318,9 +340,9 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 				var preview = type === "link" ? ctrlScope.dragPreview.link : ctrlScope.dragPreview.folder;
 				var ref = type === "link" ? scope.link : scope.folder;
 				//console.log(ref.grid);
-				var gs = gridService;
+				var gs = gridSystem;
 				var originRect, originGrid, dragRect, selectedGrid, $ele;
-				var sideWidth = gs.sideWidth;
+				var sideWidth = gs.defaults.sideWidth;
 				var zIndex = 0;
 				var timeout;
 				var isAvailable = false;

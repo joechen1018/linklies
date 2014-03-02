@@ -326,19 +326,23 @@ app.service("apiService", function($http, apiParser){
 			});
 			linkArr = linkArr.sort(sortByConfidence);
 
-
-			href = linkArr[0].attr("href");
+			if(linkArr[0]){
+				href = linkArr[0].attr("href");
+			}
 
 			//** is absolute url
 			if(testAbs(href)){
 				rs.ico = href;
 			}else{
 				//* is relative url
+				//* is undefined
 				//* example : img/favicon.ico
-				if(href.substr(0,1) === "/")
-					rs.ico = "http://" + host + href; //* relative to base
-				else
-					guess(href);
+				if(href){
+					if(href.substr(0,1) === "/")
+						rs.ico = "http://" + host + href; //* relative to base
+				}else{
+					rs.ico = guess(href);
+				}
 			}
 		}
 
@@ -398,15 +402,15 @@ app.service("apiService", function($http, apiParser){
 					d = $.Deferred(),
 					newScript = document.createElement('script');
 					
-				_.log(url);
+				// _c.log(url);
 				$.get(url, function(res){
-					_c.log(res);
+					// _c.log(res);
 				});
 				/*self.requestTranslate(params).then(function(translated){
 					d.resolve(rs);
 				});*/
 				// var source = $holder.find("textarea#source").eq(0).val();
-				// var result = $holder.find("span#result_box").eq(0).html();
+				// var result = $hcolder.find("span#result_box").eq(0).html();
 				// rs.title = source + " : " + result;
 			break;
 			case 'google.docs.spreadsheet' : 
