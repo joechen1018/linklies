@@ -1,4 +1,4 @@
-app.service("apiService", function($http, contentParser){
+app.service("apiService", function($http, apiParser){
 	return {
 		linkService : {
 			get : function(id){
@@ -24,9 +24,8 @@ app.service("apiService", function($http, contentParser){
 					method : "post",
 					data : {"url" : url},
 					success : function(res){
-						//console.log(res);
-						contentParser.parse(res, url).then(function(obj){
-							//console.log(obj);
+						//** return parsed html - *notice this is just a part of the Link object
+						apiParser.parse(res, url).then(function(obj){
 							_d.resolve(obj);
 						});
 					},
@@ -37,37 +36,16 @@ app.service("apiService", function($http, contentParser){
 				});
 				return _d.promise();
 			},
-			saveTest : function(link){
-				var _d = $.Deferred();
-				var obj = utils.clone(link);
-
-				//** prepare data for saving
-				obj.type = JSON.stringify(link.type);
-				obj.grid = link.grid.join(",");
-				obj.meta = JSON.stringify(link.meta);
-				obj.allowIframe = link.allowIframe ? 1 : 0;
-
-				_d.resolve();
-				return _d.promise();
-			},
 			save : function(link){
-				var obj = utils.clone(link);
-
-				//** prepare data for saving
-				obj.type = JSON.stringify(link.type);
-				obj.grid = link.grid.join(",");
-				obj.meta = JSON.stringify(link.meta);
-				obj.allowIframe = link.allowIframe ? 1 : 0;
-				// _c.log(link);
+				var obj = apiParser.linkToDb(link);
 				var _d = $.Deferred();
 				$.ajax({
 					url : "api/save/link",
 					method : "post",
 					data : obj,
 					success : function(res){
-						// res.data.Link.grid = res.data.Link.grid.split(",");
-						// res.data.Link.type = $.parseJSON(res.data.Link.type);
-						_d.resolve(res);
+						var link = apiParser.linkFromDb(res.data.Link);
+						_d.resolve(link);
 					}
 				});
 				return _d.promise();
@@ -131,9 +109,336 @@ app.service("apiService", function($http, contentParser){
 	}
 })
 
-.service("contentParser", function(){
+.service("apiParser", function(urlTypes){
 	
-	var contentTypes = {
+	var self = this;
+	this.parseGoogleResult = function($list){
+		var rs = [];
+		$list.each(function(i, e){
+			rs.push({
+				title : $(e).find("h3.r>a:first-child").text(),
+				href : $(e).find("h3.r>a:first-child").attr("href"),
+				date : $(e).find("span.st>span.f").text().split("-")[0]
+			});
+		});
+		return rs;
+	}
+
+	this.linkToDb = function(link){
+		//** deep clone the object so it won't effect working view
+		var obj = utils.clone(link);
+
+		//** prepare data for saving
+		obj.type = JSON.stringify(link.type);
+		obj.grid = link.grid.join(",");
+		obj.meta = JSON.stringify(link.meta);
+		obj.allowIframe = link.allowIframe ? 1 : 0;
+
+		return obj;
+	}
+
+	this.linkFromDb = function(link){
+
+		var saveParse = function(str){
+			try{
+				return JSON.parse(str);
+			}catch(e){
+				_c.warn("JSON parse error")
+			}
+			return {};
+		}
+		//** string to json
+		if(typeof link.type === "string" && link.type.length > 2){
+			link.type = saveParse(link.type);
+		}
+
+		//** string to array
+		if(typeof link.grid === "string"){
+			link.grid = link.grid.split(",");
+		}
+		if(typeof link.grid === "array" && link.grid.length === 2){
+			link.grid[0] = parseInt(link.grid[0], 10);
+			link.grid[1] = parseInt(link.grid[1], 10);
+		}
+
+		//** string to json
+		if(typeof link.meta === "string" && link.meta.length > 2){
+			link.meta = saveParse(link.meta);
+		}
+		//** string to boolean
+		if(typeof link.allowIframe === "string"){
+			link.allowIframe = parseInt(link.allowIframe) === 0 ? false : true;
+		}
+
+		//** initial state
+		link.state = {
+			name : "ready"
+		}
+		//** initial view variables
+		link.dragging = false;
+		return link;
+	}
+
+	/*** returns
+	type - object
+	view - string
+	url - string
+	allowIframe - bool
+	html_source - string
+	meta - object
+	title - string
+	thumb - string
+	ico - string
+	*/ 
+	this.parse = function(content, url){
+		var $html = $.parseHTML(content),
+			pl = $.url(url),
+			rs = {},
+			d = $.Deferred(),
+			pattern,
+			$holder = $("#dom-holder");
+
+		var contains = function(subject, needles, strict){
+			strict = strict || true;
+			if($.type(needles) === "string")
+				needles = [needles];
+
+			if(strict){
+				for(var i = 0; i<needles.length; i++)
+					if(subject.indexOf(needles[i]) === -1) return false;
+				return true;
+			}else{
+				for(var i = 0; i<needles.length; i++)
+					if(subject.indexOf(needles[i]) !== -1) return true;
+				return false;
+			}
+		}
+
+		var sortByImageSize = function($img1, $img2){
+			return ($img1.width() * $img1.height()) - $(img2.width() * $img2.height());
+		}
+		//** init rs
+		rs.type = {};
+		rs.type.name = "default";
+		rs.html_source = content;
+		rs.view = "default";
+		rs.url = url;
+
+		//** get iframe policy
+		rs.allowIframe = !contains(content, "X-Frame-Options");
+
+		//** strip css and script tags
+		for(var i = $html.length - 1; i>-1; i--){
+			if($html[i].nodeName.toLowerCase() == "link[rel='stylesheet']" || $html[i].nodeName.toLowerCase() == "script")
+				$html.splice(i, 1);
+		}
+
+		//** append to body
+		$holder.html("").append($html);
+
+		//** traverse pre-defined regex to determine the type of the url
+		for(i in urlTypes){
+			pattern = new RegExp(urlTypes[i].match);
+			if(pattern.test(url)){
+				for(var j in urlTypes[i]){
+					rs.type[j] = urlTypes[i][j];
+				}
+				rs.type.name = i;
+			}
+		}
+
+
+		//** preserve meta tags
+		rs.meta = {};
+		$holder.find("meta[property], meta[name]").each(function(i, e){
+			var name = $(this).attr("property") || $(this).attr("name");
+			rs.meta[name] = $(e).attr("content");
+		});
+
+		//** get title
+		rs.title = rs.meta["og:title"] || $holder.find("title").eq(0).html();
+		//** get rid of html special characters
+		rs.title = $("<div/>").html(rs.title).text();
+		rs.thumb = rs.meta["og:image"];
+
+		//** find ico
+		//* use pre-defined ico url
+		if(rs.type.ico){
+			rs.ico = rs.type.ico;
+		}else{
+
+			//* look for ico from source
+			//* get all link tag
+			var $links = $holder.find("link[rel*='ico'][href]");
+			var href,
+				host = pl.attr("host");
+				linkArr = [];
+			var testLink=function(e){var t=e.attr("rel");if(t.split("-").length>1){return 0}if(t.indexOf("shortcut")!==-1&&t.indexOf("icon")!==-1){return 3}if(t.indexOf("shortcut")!==-1&&t.indexOf("ico")!==-1){return 2}if(t.indexOf("ico")!==-1||t.indexOf("icon")!==-1){return 1}}
+			var sortByConfidence = function($a, $b){
+				var score = function(rel){
+					if(contains(rel, ["shortcut", "icon"])) return 3;
+					if(contains(rel, ["shortcut", "ico"], false)) return 2;
+					if(contains(rel, ["ico", "icon"], false)) return 1;
+					if(contains(rel, ["-"])) return 0;
+				}
+				$a.score  = score($a.attr("rel"));
+				$b.score  = score($b.attr("rel"));
+				return $a.score - $b.score;
+			}
+			//** return true when e is absolute url
+			var testAbs=function(e){if(e===undefined)return false;if(/^https?:\/\//i.test(e)||e.substr(0,2)==="//"){return true}return false}
+
+			//** make a guess with given href
+			var guess = function(href){
+				var dir = pl.attr("directory");
+				if(href === undefined)
+					return  "http://" + host + "/favicon.ico";
+				else
+					return "http://" + host + dir + href;
+			}
+
+			$links.each(function(i, e){
+				linkArr.push($(e));
+			});
+			linkArr = linkArr.sort(sortByConfidence);
+
+
+			href = linkArr[0].attr("href");
+
+			//** is absolute url
+			if(testAbs(href)){
+				rs.ico = href;
+			}else{
+				//* is relative url
+				//* example : img/favicon.ico
+				if(href.substr(0,1) === "/")
+					rs.ico = "http://" + host + href; //* relative to base
+				else
+					guess(href);
+			}
+		}
+
+		//** get customized data from each type
+		var type = rs.type;
+		var arr = type.name.split(".");
+		switch(type.name){
+
+			//* video view
+			case 'youtube.watch' :
+			case 'vimeo.watch' :
+				if(arr[0] === "youtube"){
+					rs.videoId = url.split("?v=")[1].split("&")[0];
+				}else{
+					rs.videoId = url.split("/")[url.split("/").length - 1];
+				}
+				// _c.log(rs.videoId);
+				rs.type.videoId = rs.videoId;
+				rs.view = "video";
+				rs.meta1 = rs.meta;
+				d.resolve(rs);
+			break;
+			case 'vimeo':
+				rs.icon = type.ico;
+				d.resolve(rs);
+			break;
+			case 'youku':
+				rs.icon = type.ico;
+				d.resolve(rs);
+			break;
+			case 'google.search' :
+				var query = rs.type.selectors.results;
+				var list = $(query);
+				list = self.parseGoogleResult(list);
+				rs.type.results = list.splice(0, 5);
+				rs.view = "search";
+				rs.meta1 = rs.meta;
+				d.resolve(rs);
+			break;
+			case 'google.translate':
+				// var source = $holder.find("textarea#source").eq(0).val();
+				// var result = $holder.find("span#result_box").eq(0).html();
+				// rs.title = source + " : " + result;
+				d.resolve(rs);
+			break;
+			case 'google.docs.spreadsheet' : 
+				rs.gdocKey = rs.purl.param("key");
+				var request = gapi.client.drive.files.get({
+				    'fileId': rs.gdocKey
+				});
+				request.execute(function(resp) {
+					//_c.log(resp);
+					rs.doc = {};
+					rs.doc.spreadsheet = resp;
+					rs.title = resp.title;
+					rs.thumb = resp.thumbnailLink;
+					//rs.view = "doc";
+
+					d.resolve(rs);
+				    // console.log('Title: ' + resp.title);
+				    // console.log('Description: ' + resp.description);
+				    // console.log('MIME type: ' + resp.mimeType);
+				});
+			break;
+			case 'google.docs.document' : 
+				rs.gdocKey = rs.url.match(/.+d\/([a-zA-z0-9\-_]*)(\/|)(.+|)/)[1];
+				var request = gapi.client.drive.files.get({
+				    'fileId': rs.gdocKey
+				});
+				request.execute(function(resp) {
+					// _c.log(resp);
+					rs.doc = {};
+					rs.doc.document = resp;
+					rs.title = resp.title;
+					rs.thumb = resp.thumbnailLink;
+					//rs.view = "doc";
+					// _c.log(rs);
+					d.resolve(rs);
+				    // console.log('Title: ' + resp.title);
+				    // console.log('Description: ' + resp.description);
+				    // console.log('MIME type: ' + resp.mimeType);
+				});
+			break;
+			case "google.docs.presentations" :
+				rs.gdocKey = findKey.d();
+				// console.log(rs.gdocKey);
+				var request = gapi.client.drive.files.get({
+				    'fileId': rs.gdocKey
+				});
+				request.execute(function(resp) {
+					_c.log(resp);
+					rs.doc = {};
+					rs.doc.presentation = resp;
+					rs.title = resp.title;
+					rs.thumb = resp.thumbnailLink;
+					//rs.view = "doc";
+					
+					d.resolve(rs);
+				});
+			break;
+			default : 
+				// _c.log(rs);
+				d.resolve(rs);
+			break;
+		}
+		//** dom query completed, remove dom
+		$holder.html("");
+
+		return d.promise();
+
+	}
+
+	this.flatten = function(arr, model){
+		var rs = [], item;
+		for(var i = 0; i<arr.length; i++){
+			item = arr[i][model];
+			rs.push(item);
+		}
+		return rs;
+	}
+})
+
+.service("urlTypes", function(){
+	return {
 		"youtube" : {
 			match : "^(http(s|)\:\/\/)?(www\.)?(youtube\.com)\/.+$",
 			ico : "http://s.ytimg.com/yts/img/favicon_32-vflWoMFGx.png"
@@ -200,262 +505,7 @@ app.service("apiService", function($http, contentParser){
 			ico : "http://v.youku.com/favicon.ico"
 		}
 	};
-	var self = this;
-	this.parseGoogleResult = function($list){
-		var rs = [];
-		$list.each(function(i, e){
-			rs.push({
-				title : $(e).find("h3.r>a:first-child").text(),
-				href : $(e).find("h3.r>a:first-child").attr("href"),
-				date : $(e).find("span.st>span.f").text().split("-")[0]
-			});
-		});
-		return rs;
-	}
-	this.parse = function(content, url){
-		var rs = {};
-		var d = $.Deferred();
-		var pl = $.url(url);
-		rs.type = {};
-		rs.type.name = "default";
-		rs.types = [];
-		rs.html_source = content;
-		rs.view = "default";
-
-		//** detect iframe policy
-		rs.allowIframe = (function(str){
-			return str.indexOf("X-Frame-Options") === -1 ? true : false;
-		})(content);
-
-		//** append dom for manipulation
-		var holder = $("#dom-holder");
-		var $html = $.parseHTML(content);
-		for(var i = $html.length - 1; i>-1; i--){
-			//_c.log($html[i].nodeName);
-			if($html[i].nodeName.toLowerCase() == "link" || $html[i].nodeName.toLowerCase() == "script"){
-				$html.splice(i, 1);
-			}
-		}
-		//_c.log($html);
-		holder.html("").append($html);
-		var type;
-		var pattern;
-		for(var i in contentTypes){
-			pattern = new RegExp(contentTypes[i].match);
-			if(pattern.test(url)){
-				for(var j in contentTypes[i]){
-					rs.type[j] = contentTypes[i][j];
-				}
-				rs.type.name = i;
-			}
-		}
-
-
-		//** find meta
-		rs.meta = {};
-		var meta = {};
-		holder.find("meta[property], meta[name]").each(function(i, e){
-			var name = $(this).attr("property") || $(this).attr("name");
-			rs.meta[name] = $(e).attr("content");
-			meta[name] = $(e).attr("content");
-		});
-		/*
-		_c.log(rs.meta);
-		_c.log(rs);
-		_c.log(rs.hasOwnProperty("meta"));
-		*/
-		/*var pl = purl(url);
-		rs.purl = pl;*/
-		rs.url = url;
-
-		//** find title
-		rs.title = holder.find("title").eq(0).html();
-
-		//** find ico
-		if(rs.type.ico){
-			rs.ico = rs.type.ico;
-		}else{
-
-			//** get all link tag
-			var links = holder.find("link[rel*='ico'][href]");
-			var href;
-			var testLink=function(e){var t=e.attr("rel");if(t.split("-").length>1){return 0}if(t.indexOf("shortcut")!==-1&&t.indexOf("icon")!==-1){return 3}if(t.indexOf("shortcut")!==-1&&t.indexOf("ico")!==-1){return 2}if(t.indexOf("ico")!==-1||t.indexOf("icon")!==-1){return 1}}
-
-			/**
-			 * give each link rel a score
-			 0 - rel contains '-' 
-			 1 - rel contains 'ico' or 'icon'
-			 2 - rel contains 'shortcut' or 'ico'
-			 3 - rel contains 'shortcut' and 'icon'
-			**/
-			var scores = [];
-			links.each(function(i, e){
-				scores.push({
-					score : testLink($(e)),
-					href : $(e).attr("href")
-				});
-			});
-
-			//** get the link with max score
-			var max=_.max(scores,function(e){return e.score})
-
-			//** get the index of the link with max score
-			var maxIndex = _.indexOf(scores, max);
-			href = max.href;
-
-			//** test absolute url
-			var testA=function(e){if(e===undefined)return false;if(/^https?:\/\//i.test(e)||e.substr(0,2)==="//"){return true}return false}
-			
-
-			if(testA(href)){
-			//if(true){
-				rs.ico = href;
-			}else{
-				// relative url
-				// example img/favicon.ico
-				var host = pl.attr("host");
-				var makeGuess = function(href){
-					//relative to current
-					var dir = pl.attr("directory");
-					var guess;
-					if(href === undefined){
-						guess = "http://" + host + "/favicon.ico";
-					}else{
-						guess = "http://" + host + dir + href;
-					}
-					rs.ico = guess;
-					rs.guesses = ["http://" + host + "/favicon.ico"];
-				}
-				if(href === undefined){
-					makeGuess(undefined);
-				}
-				else if(href.substr(0,1) == "/"){
-					//relative to base
-					rs.ico = "http://" + host + href;
-				}else{
-					makeGuess(href);
-				}
-			}
-		}
-		//console.log(rs.ico);
-		var type = rs.type;
-		var arr = type.name.split(".");
-		switch(type.name){
-			case 'youtube.watch' :
-			case 'vimeo.watch' :
-				if(arr[0] === "youtube"){
-					rs.videoId = url.split("?v=")[1].split("&")[0];
-				}else{
-					rs.videoId = url.split("/")[url.split("/").length - 1];
-				}
-				// _c.log(rs.videoId);
-				rs.type.videoId = rs.videoId;
-				rs.view = "video";
-				rs.meta = meta;
-				rs.meta1 = meta;
-				d.resolve(rs);
-			break;
-			case 'vimeo':
-				rs.icon = type.ico;
-				d.resolve(rs);
-			break;
-			case 'youku':
-				rs.icon = type.ico;
-				d.resolve(rs);
-			break;
-			case 'google.search' :
-				var query = rs.type.selectors.results;
-				var list = $(query);
-				list = self.parseGoogleResult(list);
-				rs.type.results = list;
-				rs.view = "search";
-				rs.meta = meta;
-				rs.meta1 = meta;
-				d.resolve(rs);
-			break;
-			case 'google.translate':
-				// var source = holder.find("textarea#source").eq(0).val();
-				// var result = holder.find("span#result_box").eq(0).html();
-				// rs.title = source + " : " + result;
-				d.resolve(rs);
-			break;
-			case 'google.docs.spreadsheet' : 
-				rs.gdocKey = rs.purl.param("key");
-				var request = gapi.client.drive.files.get({
-				    'fileId': rs.gdocKey
-				});
-				request.execute(function(resp) {
-					//_c.log(resp);
-					rs.doc = {};
-					rs.doc.spreadsheet = resp;
-					rs.title = resp.title;
-					rs.thumb = resp.thumbnailLink;
-					//rs.view = "doc";
-
-					d.resolve(rs);
-				    // console.log('Title: ' + resp.title);
-				    // console.log('Description: ' + resp.description);
-				    // console.log('MIME type: ' + resp.mimeType);
-				});
-			break;
-			case 'google.docs.document' : 
-				rs.gdocKey = findKey.d();
-				var request = gapi.client.drive.files.get({
-				    'fileId': rs.gdocKey
-				});
-				request.execute(function(resp) {
-					// _c.log(resp);
-					rs.doc = {};
-					rs.doc.document = resp;
-					rs.title = resp.title;
-					rs.thumb = resp.thumbnailLink;
-					//rs.view = "doc";
-					// _c.log(rs);
-					d.resolve(rs);
-				    // console.log('Title: ' + resp.title);
-				    // console.log('Description: ' + resp.description);
-				    // console.log('MIME type: ' + resp.mimeType);
-				});
-			break;
-			case "google.docs.presentations" :
-				rs.gdocKey = findKey.d();
-				// console.log(rs.gdocKey);
-				var request = gapi.client.drive.files.get({
-				    'fileId': rs.gdocKey
-				});
-				request.execute(function(resp) {
-					_c.log(resp);
-					rs.doc = {};
-					rs.doc.presentation = resp;
-					rs.title = resp.title;
-					rs.thumb = resp.thumbnailLink;
-					//rs.view = "doc";
-					
-					d.resolve(rs);
-				});
-			break;
-			default : 
-				// _c.log(rs);
-				d.resolve(rs);
-			break;
-		}
-		//** dom query completed, remove dom
-		holder.html("");
-		return d.promise();
-
-	}
-
-	this.flatten = function(arr, model){
-		var rs = [], item;
-		for(var i = 0; i<arr.length; i++){
-			item = arr[i][model];
-			rs.push(item);
-		}
-		return rs;
-	}
 })
-
-
 .service("uuid", function(){
 	return {
 		create : function(){

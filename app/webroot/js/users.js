@@ -11,7 +11,7 @@ var app = angular.module("lk", ["ngRoute"])
 	    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
 	    po.src = 'https://apis.google.com/js/client.js?onload=onGApiLoaded';
 	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-	  })();
+	})();
 })
 .config(function($routeProvider){
 	// $routeProvider
@@ -26,21 +26,23 @@ var app = angular.module("lk", ["ngRoute"])
 .controller("userCtrl", function($scope){
 	
 	var init = function(){
+		console.log("init");
 		initColorShifting();
 	}
 	//color shifting
 	var colorShift;
-
 	var initColorShifting = function(){
+		console.log("init color shift");
 		var blue = "#4b9884", green = "#aacc8e", dark = "#454438", orange = "#fe9d04";
 		var duration = 1200, colors = [blue, orange, green, dark];
 		var i = 0;
 		colorShift = setInterval(function(){
-			$("#checking-button").animate({
-				backgroundColor : colors[i%colors.length]
-			}, duration);
+			console.log("color shift");
+			// $("#checking-button").animate({
+			// 	backgroundColor : colors[i%colors.length]
+			// }, duration);
 			i++;
-		}, duration);
+		}, 200);
 	}
 
 	//oauth
@@ -50,11 +52,12 @@ var app = angular.module("lk", ["ngRoute"])
 	var secret = "zo03y8aW30ZAJnJLKYSH4b4v";
 	var userId;
 	var checkAuth = function() {
-		gapi.auth.authorize({client_id: clientId, scope: scopes, immediate: true}, authorize);
+		console.log("check auth");
+		gapi.auth.authorize({client_id: clientId, scope: scopes, immediate: false}, authorize);
 	}
 
 	var authorize = function(rs){
-		console.log(rs);
+		console.log("authorize");
 		if (rs && !rs.error && rs["access_token"]) {
 			//authorized
 
@@ -141,9 +144,9 @@ var app = angular.module("lk", ["ngRoute"])
 
 	$scope.state = "checking";	
 	$scope.onGApiLoaded = function(){
-		//console.log("loaded");
+		console.log("api loaded");
 		gapi.client.setApiKey(clientId);
-		window.setTimeout(checkAuth,1);
+		window.setTimeout(checkAuth, 1);
 	}
 	window["onGApiLoaded"] = $scope.onGApiLoaded;
 

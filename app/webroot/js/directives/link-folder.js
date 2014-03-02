@@ -35,18 +35,12 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 		}
 	}
 })
-.directive("lkLink", function(gridService, gridSystem, gridRects, apiService, $rootScope, contentParser, $timeout, uuid){
+.directive("lkLink", function(gridService, gridSystem, gridRects, apiService, $rootScope, apiParser, $timeout, uuid){
 	return {
 		restrict : "EA",
 		templateUrl : "templates/link.html",
 		controller : function($scope){
 
-			$scope.grids = gridSystem;
-			$scope.state = $scope.data.state || { name : "paste-url" };
-			$scope.checkState = function(state){
-				if(state === $scope.state.name) return true;
-				return false;
-			}
 		},
 		scope : {
 			data : "="
@@ -66,7 +60,12 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 				$player = $playerHolder.find("iframe").eq(0);
 			}, 500);
 
-
+			scope.grids = gridSystem;
+			scope.checkState = function(state){
+				if(!scope.data) return false;
+				if(state === scope.data.state.name) return true;
+				return false;
+			}
 			scope.showOpt = false;
 			scope.linkStyle = function(){
 				if(scope.data.grid){
@@ -84,16 +83,21 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 			}
 
 			scope.onPasted = function(url){
-				//scope.data.state = "ready";
 				if(app.utils.isUrl(url)){
+
 					scope.data.url = url;
-					scope.state.name = "loading";
-					var colorShift;
-					var initColorShifting = function(){
-						var blue = "#4b9884", green = "#aacc8e", yellow = "#faec0a", orange = "#fe9d04";
-						var duration = 200, colors = [blue, orange, green, yellow];
-						var i = 0;
-						colorShift = setInterval(function(){
+					scope.data.state = {
+						name : "loading"
+					};
+
+					var colorShiftIntv,
+					initColorShifting = function(){
+							blue = "#4b9884", green = "#aacc8e", yellow = "#faec0a", orange = "#fe9d04",
+							duration = 200, 
+							colors = [blue, orange, green, yellow],
+							i = 0;
+
+						colorShiftIntv = setInterval(function(){
 							$(".state-loading .no-icon").animate({
 								backgroundColor : colors[i%colors.length]
 							}, duration);
@@ -107,55 +111,25 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 						console.log(scope.data);
 						*/
 						//** use new data but keep a copy of the old
-						var oldData = scope.data;
-						var newData = data;
-						scope.state = data.state;
+						var odata = scope.data;
 
 						//** attribute that we will use from old
 						var list = ["id", "dragging", "grid", "thumb", "url", "user_id", "username_id", "uuid"];
-						for(var i in oldData){
+						for(var i in odata){
 							for(var j = 0; j<list.length; j++){
 								if(i == list[j]){
-									newData[i] = oldData[list[j]];
+									data[i] = odata[list[j]];
 								}
 							}
 						}
-						var _try=function(e){var t;try{t=JSON.parse(e)}catch(n){return{}}return t}
-						newData.meta = data.meta1;
-						newData.title = data.title || data.meta1["og:title"];
-						newData.title = $("<div/>").html(data.title).text();
-						newData.thumb = data.thumb;
-						if(data.thumb === "" || data.thumb === undefined){
-							if(newData.meta){
-								newData.thumb = newData.meta["og:image"];
-							}
-						}
-						// _c.log(scope.data.grid);
-						if($.type(newData.grid) === "string"){
-							newData.grid = newData.grid.split(",");
-						}
-						newData.grid[0] = parseInt(newData.grid[0], 10);
-						newData.grid[1] = parseInt(newData.grid[1], 10);
 
-						if($.type(newData.type) === "string"){
-						//if(true){	
-						//if(false){		
-							try{
-								newData.type = $.parseJSON(newData.type);
-							}catch(e){}
-						}
-						scope.state = {
-							name : "ready"
-						}
-						newData.state = {
-							name : "ready"
-						};
+						data = apiParser.linkFromDb(data);
 
 						//_c.log($.type(scope.data.type));
-						clearInterval(colorShift);
+						clearInterval(colorShiftIntv);
 
-						scope.data = newData;
-						// scope.results = newData.type.results;
+						scope.data = data;
+						// scope.results = data.type.results;
 						scope.$apply();
 						// _c.log(scope.results);
 
@@ -165,10 +139,9 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 						});
 						*/
 
-						linkService.save(newData).then(function(rs){
+						linkService.save(data).then(function(rs){
 							// console.log("saved");
-							// console.log(rs);
-							scope.data.id = rs.data.Link.id;
+							scope.data.id = rs.id;
 							scope.$apply();
 							$rootScope.$broadcast("linkCreationComplete", scope.data);
 						});
@@ -214,50 +187,30 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 				//** prevent detail hidden when mouse out
 				$(ele).unbind();
 
-
-				/*	
-				using embeded player instead of chromeless player
-					var pid = "player-" + uuid.create();
-					$playerHolder.append("<div id='" + pid + "'></div>");
-				*/
 				var type = scope.data.type;
 				if($.type(type) === "string"){
 					type = $.parseJSON(type);
 					scope.data.type = type;
 				}
-				/*
-				_c.log(scope.data);
-				_c.log(type);
-				_c.log($.type(type));
-				_c.log(type.name);
-				_c.log(type.embedUrl);
-				_c.log(scope.data.videoId);
-				*/
-				if(type.name === "youtube.watch"){
-					
-				}else if(type.name === "vimeo.watch"){
-
-				}
 				
-				//hide displayed image
+				//** hide displayed image
 				var img = $detailWrap.find(".img");
 				img.hide();
 
-				//give iframe a src and show it
+				//** embed iframe player
 				var src = utils.replace(type.embedUrl, {
 					"VIDEO_ID" : scope.data.videoId
 				});
 
 				$player.attr("src", src);
 				$player.show();
-				//_c.log($player);
 
-				//set player size to match the image size
+				//** player size equal to the image size
 				$playerHolder.css('top', img.position().top)
 						   .css('width', img.width())
 						   .css('height', img.height());
 
-				//allow drag around		  
+				//** allow drag around		  
 				$detailWrap.draggable({
 					containment : "#board",
 					scroll: false,
@@ -265,31 +218,8 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 				});
 
 
-				// $detailWrap.addClass("shadow-strong");
 				$detailWrap.find(".texts").css("cursor","move");
 				scope.isPlayingVideo = true;   
-			/*			   
-				var player = new nn.Player(pid);
-
-				player.controls = 1;
-				// console.log(player);
-				player.ready().then(function(){
-					// console.log("ready");
-					player.loadVideoById(vid);
-					$(player).one("playing", function(){
-						$detailWrap.draggable({
-							containment : "#board",
-							scroll: false,
-							delay : 10,
-						});
-						// $detailWrap.addClass("shadow-strong");
-						$detailWrap.find(".texts").css("cursor","move");
-						scope.$apply(function(){
-							scope.isPlayingVideo = true;
-						});
-					});
-				});
-			*/
 			}
 			scope.stopVideo = function(){
 				$playerHolder.removeAttr("style");
@@ -475,7 +405,6 @@ app.directive("lkFolder", function(gridService, gridSystem, gridRects, apiServic
 							if($.type(ref.type) === "string"){
 								ref.type = $.parseJSON(ref.type);
 							}
-							_c.log(ref.type);
 							scope.$apply();
 							service.save(ref);
 
