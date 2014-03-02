@@ -177,12 +177,6 @@
 	z-index:2;
 	cursor:pointer;
 
-	&.state-ready{
-		.state-ready{
-		  display: block;
-		}
-	}
-
 	.state-paste-url, .state-loading{
         position:relative;
         p.url{
@@ -246,7 +240,7 @@
             }
         }
     }
-
+    
     .state-ready{
         .link-body{
 
@@ -368,6 +362,12 @@
 	        }
       }
 	
+	&.google-search .state-ready{
+        .link-body{
+        	
+        }
+	}
+
 	.link-details{
 	    @size : 10px;
 	    @w1 : 330px;

@@ -1,4 +1,9 @@
 var glob = {};
+glob.clientId = "205449938055-06501obglsfmcellrtc67opqs6ogbs19.apps.googleusercontent.com";
+glob.apiKey = "AIzaSyAMc2ySuLe0TmVRTQ0SxfYDijYvOd5BRTM";
+var onTranslated = function(data){
+	_c.log(data);
+}
 var _events = {};
 /*var $AnchorScrollProvider = function() {
   this.$get = ['$window', '$location', '$rootScope', function($window, $location, $rootScope) {

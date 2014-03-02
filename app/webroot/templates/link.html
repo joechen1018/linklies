@@ -1,4 +1,4 @@
-<div id="{{data.id}}" class="link {{data.state}}" data-grid="{{data.grid}}" ng-style="linkStyle()">
+<div id="{{data.id}}" class="link {{data.state.name}} {{data.type.name.split('.').join('-')}}" data-grid="{{data.grid}}" ng-style="linkStyle()">
 	<div class="state-paste-url"  ng-show="checkState('paste-url')" ng-style="{
 		height : grids.gridHeight
 	}">

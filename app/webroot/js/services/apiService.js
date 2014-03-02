@@ -179,6 +179,28 @@ app.service("apiService", function($http, apiParser){
 		return link;
 	}
 
+	this.requestTranslate = function(params){
+		var api = 'https://www.googleapis.com/language/translate/v2?key={{clientId}}&source={{source}}&target={{target}}&callback={{callback}}&q={{q}}',
+			url = utils.replace(api, {
+				clientId : glob.apiKey,
+				source : params.source,
+				target : params.target,
+				q : escape(params.q),
+				callback : "onTranslated"
+			}),
+			d = $.Deferred(),
+			newScript = document.createElement('script');
+
+		$.get(url, function(res){
+			_c.log(res);
+		});
+		// newScript.type = 'text/javascript';
+		// newScript.src = url;
+		// document.getElementsByTagName('head')[0].appendChild(newScript);
+
+		return d.promise();
+	}
+
 	/*** returns
 	type - object
 	view - string
@@ -217,6 +239,8 @@ app.service("apiService", function($http, apiParser){
 		var sortByImageSize = function($img1, $img2){
 			return ($img1.width() * $img1.height()) - $(img2.width() * $img2.height());
 		}
+		var clientId = "205449938055-06501obglsfmcellrtc67opqs6ogbs19.apps.googleusercontent.com";
+
 		//** init rs
 		rs.type = {};
 		rs.type.name = "default";
@@ -351,14 +375,39 @@ app.service("apiService", function($http, apiParser){
 				list = self.parseGoogleResult(list);
 				rs.type.results = list.splice(0, 5);
 				rs.view = "search";
+				rs.title = rs.title.split(" - Goo")[0];
 				rs.meta1 = rs.meta;
+				rs.type.verb = "googled";
 				d.resolve(rs);
 			break;
 			case 'google.translate':
+				var inputs = pl.attr("fragment").split("/");
+				var params = {
+					"source" : inputs[0],
+					"target" : inputs[1],
+					"q" : inputs[2]
+				}
+				var api = 'https://www.googleapis.com/language/translate/v2?key={{clientId}}&source={{source}}&target={{target}}&callback={{callback}}&q={{q}}',
+					url = utils.replace(api, {
+						clientId : glob.apiKey,
+						source : params.source,
+						target : params.target,
+						q : escape(params.q),
+						callback : "onTranslated"
+					}),
+					d = $.Deferred(),
+					newScript = document.createElement('script');
+					
+				_.log(url);
+				$.get(url, function(res){
+					_c.log(res);
+				});
+				/*self.requestTranslate(params).then(function(translated){
+					d.resolve(rs);
+				});*/
 				// var source = $holder.find("textarea#source").eq(0).val();
 				// var result = $holder.find("span#result_box").eq(0).html();
 				// rs.title = source + " : " + result;
-				d.resolve(rs);
 			break;
 			case 'google.docs.spreadsheet' : 
 				rs.gdocKey = rs.purl.param("key");
@@ -399,19 +448,18 @@ app.service("apiService", function($http, apiParser){
 				});
 			break;
 			case "google.docs.presentations" :
-				rs.gdocKey = findKey.d();
+				rs.gdocKey = rs.url.match(/.+d\/([a-zA-z0-9\-_]*)(\/|)(.+|)/)[1];
 				// console.log(rs.gdocKey);
 				var request = gapi.client.drive.files.get({
 				    'fileId': rs.gdocKey
 				});
 				request.execute(function(resp) {
-					_c.log(resp);
+					//_c.log(resp);
 					rs.doc = {};
 					rs.doc.presentation = resp;
 					rs.title = resp.title;
 					rs.thumb = resp.thumbnailLink;
 					//rs.view = "doc";
-					
 					d.resolve(rs);
 				});
 			break;
