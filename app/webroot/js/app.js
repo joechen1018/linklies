@@ -1,6 +1,6 @@
 var glob = {};
 glob.clientId = "205449938055-06501obglsfmcellrtc67opqs6ogbs19.apps.googleusercontent.com";
-glob.apiKey = "AIzaSyAMc2ySuLe0TmVRTQ0SxfYDijYvOd5BRTM";
+glob.apiKey = "AIzaSyDgQMpZLRja-7wtmvfkMky_8ylI6OznE2c";
 var onTranslated = function(data){
 	_c.log(data);
 }
@@ -44,6 +44,17 @@ var app = angular.module("lk", ["ngRoute"], function($httpProvider){
             window.scrollTo(x, y);
          },true);
       };    
+})
+.directive('ngRightClick', function($parse) {
+    return function(scope, element, attrs) {
+        var fn = $parse(attrs.ngRightClick);
+        element.bind('contextmenu', function(event) {
+            scope.$apply(function() {
+                event.preventDefault();
+                fn(scope, {$event:event});
+            });
+        });
+    };
 })
 .controller("appCtrl", function($scope){
 	var checkAuth = function() {

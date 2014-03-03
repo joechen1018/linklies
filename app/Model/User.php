@@ -6,7 +6,7 @@ class User extends AppModel{
 			"fields" => array("id", "uuid", "user_id", "folder_id", "username_id", "grid", 
 							  "ico", "url", "title", "desc", "thumb", "view", "meta", "type", 
 							  "hash", "timestamp", "allowIframe"),
-			"limit" => 50,
+			"limit" => 99,
 			"order" => "id desc"
 		),
 		"Folder" => array()

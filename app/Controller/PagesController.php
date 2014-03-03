@@ -57,6 +57,7 @@ class PagesController extends AppController {
 		}
 	}
 	public function display() {
+
 		$user_id = $this -> params["user_id"];
 		if(!$this -> Auth -> loggedIn() || !$user_id){
 			$this -> redirect("/users/login");

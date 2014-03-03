@@ -286,6 +286,13 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 		$scope.links.push(newLink);
 	}
 
+	$scope.onRightClick = function($event){
+		var x = $event.pageX - gridSystem.defaults.sideWidth;
+		var y = $event.pageY - gridSystem.defaults.topHeight;
+		var g = gridRects.link.findNearGridByPoint(x, y);
+		// _c.log($event.currentTarget);
+		// _c.log("click on " + g);
+	}
 
 	$scope.onLinkClick = function($event){
 		// $event.stopPropagation();

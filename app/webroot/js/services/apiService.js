@@ -218,7 +218,8 @@ app.service("apiService", function($http, apiParser){
 			rs = {},
 			d = $.Deferred(),
 			pattern,
-			$holder = $("#dom-holder");
+			$holder = $("#dom-holder"),
+			$holder = $("<div/>");
 
 		var contains = function(subject, needles, strict){
 			strict = strict || true;
@@ -258,7 +259,7 @@ app.service("apiService", function($http, apiParser){
 		}
 
 		//** append to body
-		$holder.html("").append($html);
+		$holder.append($html);
 
 		//** traverse pre-defined regex to determine the type of the url
 		for(i in urlTypes){
@@ -281,7 +282,7 @@ app.service("apiService", function($http, apiParser){
 
 		//** get title
 		rs.title = rs.meta["og:title"] || $holder.find("title").eq(0).html();
-		//** get rid of html special characters
+		//* get rid of html special characters
 		rs.title = $("<div/>").html(rs.title).text();
 		rs.thumb = rs.meta["og:image"];
 
@@ -385,13 +386,16 @@ app.service("apiService", function($http, apiParser){
 				d.resolve(rs);
 			break;
 			case 'google.translate':
-				var inputs = pl.attr("fragment").split("/");
-				var params = {
-					"source" : inputs[0],
-					"target" : inputs[1],
-					"q" : inputs[2]
-				}
-				var api = 'https://www.googleapis.com/language/translate/v2?key={{clientId}}&source={{source}}&target={{target}}&callback={{callback}}&q={{q}}',
+
+				d.resolve(rs);
+				/*
+				var inputs = pl.attr("fragment").split("/"),
+					params = {
+						"source" : inputs[0],
+						"target" : inputs[1],
+						"q" : inputs[2]
+					},
+					api = 'https://www.googleapis.com/language/translate/v2?key={{clientId}}&source={{source}}&target={{target}}&callback={{callback}}&q={{q}}',
 					url = utils.replace(api, {
 						clientId : glob.apiKey,
 						source : params.source,
@@ -401,14 +405,17 @@ app.service("apiService", function($http, apiParser){
 					}),
 					d = $.Deferred(),
 					newScript = document.createElement('script');
-					
-				// _c.log(url);
-				$.get(url, function(res){
-					// _c.log(res);
-				});
-				/*self.requestTranslate(params).then(function(translated){
+
+				//_c.log(url);
+				newScript.src = url;
+				document.getElementsByTagName('head')[0].appendChild(newScript);
+				*/
+
+				/*
+				self.requestTranslate(params).then(function(translated){
 					d.resolve(rs);
-				});*/
+				});
+				*/
 				// var source = $holder.find("textarea#source").eq(0).val();
 				// var result = $hcolder.find("span#result_box").eq(0).html();
 				// rs.title = source + " : " + result;

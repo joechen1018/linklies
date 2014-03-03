@@ -26,21 +26,18 @@ var app = angular.module("lk", ["ngRoute"])
 .controller("userCtrl", function($scope){
 	
 	var init = function(){
-		console.log("init");
 		initColorShifting();
 	}
 	//color shifting
 	var colorShift;
 	var initColorShifting = function(){
-		console.log("init color shift");
 		var blue = "#4b9884", green = "#aacc8e", dark = "#454438", orange = "#fe9d04";
 		var duration = 1200, colors = [blue, orange, green, dark];
 		var i = 0;
 		colorShift = setInterval(function(){
-			console.log("color shift");
-			// $("#checking-button").animate({
-			// 	backgroundColor : colors[i%colors.length]
-			// }, duration);
+			$("#checking-button").animate({
+				backgroundColor : colors[i%colors.length]
+			}, duration);
 			i++;
 		}, 200);
 	}
@@ -52,12 +49,10 @@ var app = angular.module("lk", ["ngRoute"])
 	var secret = "zo03y8aW30ZAJnJLKYSH4b4v";
 	var userId;
 	var checkAuth = function() {
-		console.log("check auth");
 		gapi.auth.authorize({client_id: clientId, scope: scopes, immediate: false}, authorize);
 	}
 
 	var authorize = function(rs){
-		console.log("authorize");
 		if (rs && !rs.error && rs["access_token"]) {
 			//authorized
 
@@ -144,7 +139,6 @@ var app = angular.module("lk", ["ngRoute"])
 
 	$scope.state = "checking";	
 	$scope.onGApiLoaded = function(){
-		console.log("api loaded");
 		gapi.client.setApiKey(clientId);
 		window.setTimeout(checkAuth, 1);
 	}

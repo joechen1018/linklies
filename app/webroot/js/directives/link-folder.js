@@ -75,7 +75,7 @@ app.directive("lkFolder", function(gridSystem){
 						top : grids.getTop(scope.data.grid[1]),
 						height : grids.linkSize.height,
 						width : grids.linkSize.width,
-						zIndex : scope.showOpt ? 100 : 1
+						zIndex : scope.showOpt ? 100 : 10
 					}
 				}
 			}
@@ -407,7 +407,7 @@ app.directive("lkFolder", function(gridSystem){
 							//do drop folder
 						}
 						$folders.removeClass("selected");
-						$ele.css("z-index", zIndex);
+						$ele.css("z-index", 10);
 
 						dragRect = rects.getDomRect($ele);
 						dragGrid = allRects.findDragRectGrid(

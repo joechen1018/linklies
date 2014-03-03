@@ -18,25 +18,6 @@
 
 <div id="desktop-view" ng-controller="desktopCtrl" ng-style="getDesktopStyle()">
 		
-	<div id="dom-holder"></div>	
-	<!-- Antique Photo Theme -->
-	<!-- <ul id="color-theme">
-		<li style="background:#518C7C">
-			
-		</li>
-		<li style="background:#C6D9B4"></li>
-		<li style="background:#EDF2C4"></li>
-		<li style="background:#A6986D"></li>
-	</ul> -->
-	<!-- grid lines -->
-
-	<!-- <h1 class="links-left">98 <span>left</span></h1> -->
-
-	<!-- <div id="topbar">
-		<div class="funcs">
-			<?php //include("img/icons-2/general/SVG/add25.svg") ?>	
-		</div>
-	</div> -->
 	<div id="msg-box">
 		<div class="arrow-up"></div>
 		<p class="msg-body">Hello Linklies!</p>
@@ -70,7 +51,7 @@
 		height : grids.height,
 		left : grids.defaults.sideWidth,
 		top : grids.defaults.topHeight
-	}" ng-dblclick="onBoardClick($event)">
+	}" ng-dblclick="onBoardClick($event)" ng-right-click="onRightClick($event)">
 
 			<ul id="gridLines" ng-class="grids.show ? 'showGrid' : 'hideGrid'">
 				<li class="hline gline" ng-repeat="item in grids.rows" ng-style="{
@@ -84,8 +65,8 @@
 				}"></li>
 			</ul>
 			
-			<div lk-folder data="folder" lk-drag drag-preview="dragPreview.folder" ng-repeat="folder in folders" ></div>
-			<div lk-link data="link" lk-drag drag-preview="dragPreview.link" ng-repeat="link in links"  ng-click="onLinkClick($event)"></div>
+			<div lk-folder data="folder" ng-right-click="onRightClick($event)" lk-drag drag-preview="dragPreview.folder" ng-repeat="folder in folders" ></div>
+			<div lk-link data="link" ng-right-click="onRightClick($event)" lk-drag drag-preview="dragPreview.link" ng-repeat="link in links" bindonce  ng-click="onLinkClick($event)"></div>
 
 			<div id="folder-drop-preview" ng-style="{
 				width : grids.gridWidth,
@@ -104,6 +85,8 @@
 			}"></div>
 					
 	</div>
+	<!-- end #baord -->
+
 	<div id="browser" ng-show="showBrowser">
 		<div class="iframe-wrap" ng-show="showBrowser && showWrap">
 			<iframe src="" frameborder="0" ng-style="{
@@ -121,7 +104,26 @@
 			</div> -->
 		</div>
 	</div>
+	<!-- end #browser -->
+
+	<div id="menu-board" class="menu">
+		<ul>
+			<li>
+				<a href="">Create...</a>
+				<ul>
+					<li><a href="">Folder</a></li>
+					<li><a href="">Video Folder</a></li>
+					<li><a href="">Link</a></li>
+				</ul>
+			</li>
+			<li><a href="">Upload</a></li>
+		</ul>
+	</div>
+	<div id="menu-link" class="menu">
+		
+	</div>
 
 	<div id="bg-dot"></div>
+	<!-- end #bg-dot -->
 </div>
 
