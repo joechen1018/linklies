@@ -208,9 +208,10 @@ var initColorShifting = function($target){
 }
 $(document).ready(function(){
     initColorShifting($("#bg-loading .bar"));
+    $("body").css("overflow-y", "hidden");
 });
 
-
+//** show an image before all icons loaded
 loader.events = {};
 loader.count = 0;
 $(loader.events)
@@ -223,11 +224,13 @@ $(loader.events)
     if(loader.count === expectCount) $(loader.events).trigger("reachedExpectation");
 })
 .bind("reachedExpectation", function(){
-    $("#bg-loading").hide();
+    $("#bg-loading").delay(1000).hide();
+    $("body").delay(1000).css("overflow-y", "auto");
 });
 
 setTimeout(function(){
     $("#bg-loading").hide();
+    $("body").css("overflow-y", "auto");
 }, 5000);
 
 app.utils = app.utils || {};

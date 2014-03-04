@@ -373,6 +373,17 @@ app.service("apiService", function($http, apiParser){
 				rs.icon = type.ico;
 				d.resolve(rs);
 			break;
+			case 'stackoverflow':
+				var sel = rs.type.selectors;
+				rs.type.qid = $holder.find("#question").attr("data-questionid");
+				rs.type.q = $holder.find(sel.q).html();
+				rs.type.qblock = "<pre class='theme-super'>" + $holder.find(sel.qblock).html() + "</pre>";
+				rs.type.ablock = "<pre class='theme-super'>" + $holder.find(sel.ablock).html() + "</pre>";
+				_c.log(rs.type);
+				rs.view = "qa";
+				d.resolve(rs);	
+
+			break;
 			case 'google.search' :
 				var query = rs.type.selectors.results,
 					list = $holder.find(query);
@@ -421,7 +432,7 @@ app.service("apiService", function($http, apiParser){
 				// rs.title = source + " : " + result;
 			break;
 			case 'google.docs.spreadsheet' : 
-				rs.gdocKey = rs.purl.param("key");
+				rs.gdocKey = rs.url.match(/^http(s|):\/\/.*docs.google.com\/spreadsheet\/.*key=(.*)\&/)[2];
 				var request = gapi.client.drive.files.get({
 				    'fileId': rs.gdocKey
 				});
@@ -515,6 +526,15 @@ app.service("apiService", function($http, apiParser){
 			match : "^(http(s|)\:\/\/)?(www\.)?(vimeo\.com\/[0-9]+)",
 			ico : "http://a.vimeocdn.com/images_v6/favicon_32.ico",
 			embedUrl : "//player.vimeo.com/video/{{VIDEO_ID}}?autoplay=1"
+		},
+		"stackoverflow" : {
+			match : "^(http(s|)\:\/\/)?(www\.)?(stackoverflow\.com.*)\/.+$",
+			ico : "http://cdn.sstatic.net/stackoverflow/img/favicon.ico",
+			selectors : {
+				q : "#question-header h1 a",
+				qblock : "#question .post-text",
+				ablock : ".answer.accepted-answer .post-text"
+			}
 		},
 		"google" : {
 			match : "^(http(s|)\:\/\/)?(www\.)?(google\.com.*)\/.+$",

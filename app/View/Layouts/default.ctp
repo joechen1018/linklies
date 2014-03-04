@@ -35,11 +35,9 @@
 		var root = '<?php echo $this -> webroot?>';
 	</script>
 	
-	<script src="//ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
 	<script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
 	<script src="<?php echo $this -> webroot?>js/app.js" type="text/javascript" charset="utf-8"></script>
-	<script src="<?php echo $this -> webroot?>js/nn.lk/nn.Player.js" type="text/javascript" charset="utf-8"></script>
 	<script src="<?php echo $this -> webroot?>js/plugins.js" type="text/javascript" charset="utf-8"></script>
 	<script src="<?php echo $this -> webroot?>js/closure-library/closure/goog/base.js" type="text/javascript" charset="utf-8"></script>
 	<script src="<?php echo $this -> webroot?>js/controllers/desktopCtrl.js" type="text/javascript" charset="utf-8"></script>
