@@ -308,9 +308,10 @@ app.directive("lkFolder", function(gridSystem){
 				$(ele).find(".img img.thumb").attr("src", data.ico);
 			});*/
 			
+			var bl = false;
             $(ele).find(".icon img")
             .bind("load", function(){
-
+            	bl = true;
             	$(loader.events).trigger("success", [data.id]);
             	$timeout(function(){
             		scope.iconLoaded = true;
@@ -324,6 +325,10 @@ app.directive("lkFolder", function(gridSystem){
             	$(loader.events).trigger("error", [data.id]);
             });
 
+            setTimeout(function(){
+            	if(!bl)
+            		$(loader.events).trigger("error", [data.id]);
+            }, 2000 +  (Math.random() * 1000));
 
            /* 
            $(loader.events).bind("reachedExpectation", function(){

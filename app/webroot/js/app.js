@@ -209,6 +209,16 @@ var initColorShifting = function($target){
 $(document).ready(function(){
     initColorShifting($("#bg-loading .bar"));
     $("body").css("overflow-y", "hidden");
+
+    $("#bg-loading").delay(1000).hide();
+    $("body").delay(1000).css("overflow-y", "auto");
+    /*_c.log("ready");
+    setTimeout(function(){
+        _c.log("timeout");
+        $("#bg-loading").hide();
+        _c.log($("#bg-loading"));
+        $("body").css("overflow-y", "auto");
+    }, 3000);*/
 });
 
 //** show an image before all icons loaded
@@ -227,11 +237,6 @@ $(loader.events)
     $("#bg-loading").delay(1000).hide();
     $("body").delay(1000).css("overflow-y", "auto");
 });
-
-setTimeout(function(){
-    $("#bg-loading").hide();
-    $("body").css("overflow-y", "auto");
-}, 5000);
 
 app.utils = app.utils || {};
 app.utils.isUrl = function(s){
