@@ -1,0 +1,4 @@
+<div id="link-{{data.uuid}}" class="link {{data.state.name}} {{data.type.name.split('.').join('-')}}" data-grid="{{data.grid}}" ng-style="linkStyle()">
+	<div ng-include="stateTemplate"></div>
+	<div ng-include="detailTemplate"></div>
+</div>

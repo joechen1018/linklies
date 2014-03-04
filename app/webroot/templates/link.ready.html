@@ -1,0 +1,38 @@
+<div class="state-ready" ng-show="checkState('ready')" ng-style="{
+		height : grids.gridHeight
+	}">
+		<div class="link-body" ng-style="{
+		height : grids.gridHeight
+	}">
+			<div class="icon">
+				<img class="ico" bo-src="data.ico" alt="">
+			</div>
+
+			<div class="no-icon" style="display:none" ng-style="{
+				top : (grids.gridHeight - 12) / 2
+			}"></div>
+			
+			<div class="icon-video" ng-show="data.view === 'video'">
+				<!-- <span data-icon="l" ng-hide></span> -->
+			</div>
+
+			<div class="icon-doc" ng-show="data.view === 'doc'">
+				<span data-icon="R"></span>
+			</div>
+
+			<a class="title" target="_blank" ng-style="{
+				width : data.view === 'default' ? grids.linkSize.width - 35 : grids.linkSize.width - 45,
+				lineHeight : grids.gridHeight + 'px'
+			}">{{data.title}}</a>
+
+			<div class="opt" ng-show="showOpt">
+				<a data-icon="q" ng-click="removeLink()"></a>
+				<!-- <a data-icon="c" href="{{data.url}}" target="_blank"></a>
+				<a data-icon="w"></a> -->
+				<div class="bg"></div>
+			</div>
+		</div>
+		
+		<div ng-include="link.detailUrl"></div>
+
+	</div>
