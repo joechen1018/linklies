@@ -15,7 +15,9 @@
 	<div class="bg"></div>
 </div>
 
-
+<div id="bg-loading">
+	<div class="bar"></div>
+</div>
 <div id="desktop-view" ng-controller="desktopCtrl" ng-style="getDesktopStyle()">
 		
 	<div id="msg-box">
@@ -46,14 +48,16 @@
 		</div>
 	</div>
 
+	<div id="drag-containment"></div>
+
 	<div id="board" ng-style="{
 		width : grids.width,
 		height : grids.height,
 		left : grids.defaults.sideWidth,
 		top : grids.defaults.topHeight
-	}" ng-dblclick="onBoardClick($event)" ng-right-click="onRightClick($event)">
+	}" ng-dblclick="onBoardClick($event)">
 
-			<ul id="gridLines" ng-class="grids.show ? 'showGrid' : 'hideGrid'">
+			<!-- <ul id="gridLines" ng-class="grids.show ? 'showGrid' : 'hideGrid'">
 				<li class="hline gline" ng-repeat="item in grids.rows" ng-style="{
 					top : $index * grids.gridFullHeight,
 					height : grids.gridHeight
@@ -63,10 +67,10 @@
 					width : grids.gridWidth,
 					height : grids.height
 				}"></li>
-			</ul>
+			</ul> -->
 			
-			<div lk-folder data="folder" ng-right-click="onRightClick($event)" lk-drag drag-preview="dragPreview.folder" ng-repeat="folder in folders" ></div>
-			<div lk-link data="link" ng-right-click="onRightClick($event)" lk-drag drag-preview="dragPreview.link" ng-repeat="link in links" bindonce  ng-click="onLinkClick($event)"></div>
+			<div lk-folder data="folder" bindonce lk-drag drag-preview="dragPreview.folder" ng-repeat="folder in folders" ></div>
+			<div lk-link data="link" bindonce lk-drag drag-preview="dragPreview.link" ng-repeat="link in links" bindonce  ng-click="onLinkClick($event)"></div>
 
 			<div id="folder-drop-preview" ng-style="{
 				width : grids.gridWidth,
@@ -122,7 +126,7 @@
 	<div id="menu-link" class="menu">
 		
 	</div>
-
+	
 	<div id="bg-dot"></div>
 	<!-- end #bg-dot -->
 </div>

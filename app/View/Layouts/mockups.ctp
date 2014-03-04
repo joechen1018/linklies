@@ -10,6 +10,7 @@
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular.min.js"></script>
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular-route.js"></script>
 	<script src="<?php echo $this -> webroot?>js/mockups.js"></script>
+	<script src="<?php echo $this -> webroot?>js/plugins.js"></script>
 	<script src="<?php echo $this -> webroot?>js/services/apiService.js"></script>
 	
 	<!-- <link href='http://fonts.googleapis.com/css?family=Ubuntu Condensed' rel='stylesheet' type='text/css'> -->

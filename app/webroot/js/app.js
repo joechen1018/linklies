@@ -12,7 +12,7 @@ var _events = {};
     return scroll;
   }];
 }*/
-var app = angular.module("lk", ["ngRoute"], function($httpProvider){
+var app = angular.module("lk", ["ngRoute", "pasvaz.bindonce"], function($httpProvider){
 
 })
 .value('$anchorScroll', angular.noop)
@@ -192,19 +192,43 @@ var taskQueue = new _q();
 var loader = {},
 	expectCount = $(".icon img").length;
 
-loader.events = {};
-loader.count = 0
+var colorShift;
+var initColorShifting = function($target){
+    var blue = "#4b9884", green = "#aacc8e", dark = "#454438", orange = "#fe9d04",
+        duration = 1200, 
+        colors = [orange, blue, green, orange],
+        i = 0;
 
+    colorShift = setInterval(function(){
+        $target.animate({
+            backgroundColor : colors[i%colors.length]
+        }, duration);
+        i++;
+    }, 400);
+}
+$(document).ready(function(){
+    initColorShifting($("#bg-loading .bar"));
+});
+
+
+loader.events = {};
+loader.count = 0;
 $(loader.events)
 .bind("success", function(){
 	loader.count++;
-	// _c.log(loader.count);
 	if(loader.count === expectCount) $(loader.events).trigger("reachedExpectation");
 })
 .bind("error", function(){
 	loader.count++;
-	// _c.log("error:" + loader.count);
+    if(loader.count === expectCount) $(loader.events).trigger("reachedExpectation");
+})
+.bind("reachedExpectation", function(){
+    $("#bg-loading").hide();
 });
+
+setTimeout(function(){
+    $("#bg-loading").hide();
+}, 5000);
 
 app.utils = app.utils || {};
 app.utils.isUrl = function(s){

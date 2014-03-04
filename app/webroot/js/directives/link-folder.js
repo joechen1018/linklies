@@ -295,13 +295,18 @@ app.directive("lkFolder", function(gridSystem){
 			
             $(ele).find(".icon img")
             .bind("load", function(){
-            	// $(loader.events).trigger("success", [data.id]);
+
+            	$(loader.events).trigger("success", [data.id]);
             	$timeout(function(){
             		scope.iconLoaded = true;
+            		scope.$apply();
             	}, 1);
             })
             .bind("error", function(){
-            	// $(loader.events).trigger("error", [data.id]);
+            	$(ele).find(".no-icon").show();
+            	$(ele).find(".icon").hide();
+
+            	$(loader.events).trigger("error", [data.id]);
             });
 
 
@@ -353,7 +358,7 @@ app.directive("lkFolder", function(gridSystem){
 				});
 
 				$(ele).draggable({
-					containment : "#board",
+					containment : "#drag-containment",
 					scroll: false,
 					delay : 100,
 					start : function(e, ui){

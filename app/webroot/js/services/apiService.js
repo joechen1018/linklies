@@ -363,7 +363,6 @@ app.service("apiService", function($http, apiParser){
 				// _c.log(rs.videoId);
 				rs.type.videoId = rs.videoId;
 				rs.view = "video";
-				rs.meta1 = rs.meta;
 				d.resolve(rs);
 			break;
 			case 'vimeo':
@@ -375,14 +374,15 @@ app.service("apiService", function($http, apiParser){
 				d.resolve(rs);
 			break;
 			case 'google.search' :
-				var query = rs.type.selectors.results;
-				var list = $(query);
+				var query = rs.type.selectors.results,
+					list = $holder.find(query);
+
 				list = self.parseGoogleResult(list);
-				rs.type.results = list.splice(0, 5);
-				rs.view = "search";
 				rs.title = rs.title.split(" - Goo")[0];
-				rs.meta1 = rs.meta;
+				rs.type.results = list.splice(0, 7);
 				rs.type.verb = "googled";
+				rs.type.q = rs.title;
+				rs.view = "search";
 				d.resolve(rs);
 			break;
 			case 'google.translate':

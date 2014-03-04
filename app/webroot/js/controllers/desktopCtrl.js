@@ -285,7 +285,7 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 		clearLinks();
 		$scope.links.push(newLink);
 	}
-
+	$scope.noIcon = false;
 	$scope.onRightClick = function($event){
 		var x = $event.pageX - gridSystem.defaults.sideWidth;
 		var y = $event.pageY - gridSystem.defaults.topHeight;

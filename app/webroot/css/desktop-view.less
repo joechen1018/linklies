@@ -173,7 +173,8 @@
 	-webkit-border-radius: 3px 3px 0 0;
 	border-radius: 3px;
 	.shadow-light;
-	background: lighten(@bg-color, 3%);
+	//background: lighten(@bg-color, 3%);
+	background: white;
 	z-index:10;
 	cursor:pointer;
 
@@ -614,6 +615,14 @@
 	}	
 }
 
+#drag-containment{
+	width : ~"calc(100% - 100px)";
+	height : 100%;
+	left : 50px;
+	position: fixed;
+	z-index: -10;
+}
+
 .folder{
     @size : 4*@gridHeight + 3*@gridVPadding;
     position:absolute;
@@ -822,4 +831,18 @@
 
 .menu{
 	display: none;
+}
+
+#bg-loading{
+	width : 100%;
+	height : 100%;
+	position: fixed;
+	background: url(../img/country-road.jpg) center center no-repeat;
+	z-index: 1000;
+	.bar{
+		width : 100%;
+		height : 3px;
+		background: @green;
+		display: none;
+	}
 }
