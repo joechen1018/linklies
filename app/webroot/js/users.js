@@ -49,7 +49,9 @@ var app = angular.module("lk", ["ngRoute"])
 	var secret = "zo03y8aW30ZAJnJLKYSH4b4v";
 	var userId;
 	var checkAuth = function() {
+		$scope.state = "checking";
 		gapi.auth.authorize({client_id: clientId, scope: scopes, immediate: false}, authorize);
+		$scope.$apply();
 	}
 
 	var authorize = function(rs){
@@ -137,13 +139,12 @@ var app = angular.module("lk", ["ngRoute"])
 	    });
 	}
 
-	$scope.state = "checking";	
 	$scope.onGApiLoaded = function(){
 		gapi.client.setApiKey(clientId);
 		window.setTimeout(checkAuth, 1);
 	}
 	window["onGApiLoaded"] = $scope.onGApiLoaded;
-
+	$scope.state = "checking";
 	$scope.isState = function(state){
 		return state === $scope.state;
 	}
