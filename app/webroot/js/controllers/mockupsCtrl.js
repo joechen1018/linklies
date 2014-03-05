@@ -2,9 +2,9 @@ var app = angular.module("mk", ['ngRoute'], function($httpProvider){
 
 });
 app.controller("mockupsCtrl", function($scope){
-	/*var service = apiService.linkService;
+	var service = apiService.linkService;
 	var _try = function(data){var a;try{a = JSON.parse(data);}catch(e){return {};}return a;}
-	service.get(542).then(function(link){
+	service.get(626).then(function(link){
 		_c.log(data);
 		link.state = {
 			name : "ready"
@@ -15,5 +15,5 @@ app.controller("mockupsCtrl", function($scope){
 		$scope.$apply(function(){
 			$scope.links = [link];
 		});
-	});*/
+	});
 });

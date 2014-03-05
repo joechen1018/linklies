@@ -36,7 +36,7 @@ app.directive("lkFolder", function(gridSystem){
 .directive("lkLink", function(gridSystem, apiService, $rootScope, apiParser, $timeout, uuid){
 	return {
 		restrict : "EA",
-		templateUrl : "templates/link.html",
+		templateUrl : "templates/link.1.html",
 		controller : function($scope){
 
 		},
@@ -59,6 +59,8 @@ app.directive("lkFolder", function(gridSystem){
 			}, 500);
 
 			scope.grids = gridSystem;
+			scope.stateTemplate = 'templates/link.' + (data.state.name || "ready") + '.html';
+			//scope.detailTemplate = 'templates/link.detail.html';
 			scope.checkState = function(state){
 				if(!scope.data) return false;
 				if(state === scope.data.state.name) return true;
@@ -248,6 +250,11 @@ app.directive("lkFolder", function(gridSystem){
 						scope.showOpt = true;
 					});
 
+					scope.$apply(function(){
+						if(scope.detailTemplate != 'templates/link.detail.html')
+							scope.detailTemplate = 'templates/link.detail.html';
+					});
+
 					timer = $timeout(function(){
 						scope.$apply(function(){
 							scope.showDetail = true;
@@ -276,11 +283,19 @@ app.directive("lkFolder", function(gridSystem){
 
 			enableHover();
 
-			$(ele).find("img.thumb").bind('load', function() {
-                $(this).show();
-                $timeout(function(){
-                	scope.hasImageArea = true;
-                }, 1);
+			/*setTimeout(function(){
+				_c.log($("#" + data.uuid + " img.thumb").length);
+				$(document).on("load", "#" + data.uuid + " img.thumb", function(){
+					_c.log("load");
+					$(this).show();
+	                $timeout(function(){
+	                	scope.hasImageArea = true;
+	                }, 1);
+				});
+			}, 1);*/
+			
+			$(ele).find("img.thumb").on('load', function() {
+                
             });
 
 			scope.iconLoaded = false;
@@ -293,9 +308,10 @@ app.directive("lkFolder", function(gridSystem){
 				$(ele).find(".img img.thumb").attr("src", data.ico);
 			});*/
 			
+			var bl = false;
             $(ele).find(".icon img")
             .bind("load", function(){
-
+            	bl = true;
             	$(loader.events).trigger("success", [data.id]);
             	$timeout(function(){
             		scope.iconLoaded = true;
@@ -309,6 +325,10 @@ app.directive("lkFolder", function(gridSystem){
             	$(loader.events).trigger("error", [data.id]);
             });
 
+            setTimeout(function(){
+            	if(!bl)
+            		$(loader.events).trigger("error", [data.id]);
+            }, 2000 +  (Math.random() * 1000));
 
            /* 
            $(loader.events).bind("reachedExpectation", function(){

@@ -10,25 +10,29 @@
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular.min.js"></script>
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular-route.js"></script>
 	<script src="<?php echo $this -> webroot?>js/mockups.js"></script>
-	<script src="<?php echo $this -> webroot?>js/plugins.js"></script>
-	<script src="<?php echo $this -> webroot?>js/services/apiService.js"></script>
+	<script src="<?php echo $this -> webroot?>js/plugins.js" type="text/javascript" charset="utf-8"></script>
+	<script src="<?php echo $this -> webroot?>js/services/apiService.js" type="text/javascript" charset="utf-8"></script>
 	
 	<!-- <link href='http://fonts.googleapis.com/css?family=Ubuntu Condensed' rel='stylesheet' type='text/css'> -->
 	<link href='http://fonts.googleapis.com/css?family=Droid Sans' rel='stylesheet' type='text/css'>
 
 	<script>
-	  less = {
-	    // env: "development",
-	    // async: false,
-	    // fileAsync: false,
-	    // poll: 1000,
-	    // functions: {},
-	    // dumpLineNumbers: "comments",
-	    // relativeUrls: false,
-	    // rootpath: ":/a.com/"
-	  };
-	  var _con = console;
-	  console = { log : function(){} }
+
+		//** less can have variables, but we're not using it
+		/*less = {
+			env: "development",
+			async: false,
+			fileAsync: false,
+			poll: 1000,
+			functions: {},
+			dumpLineNumbers: "comments",
+			relativeUrls: false,
+			rootpath: ":/a.com/"
+		};*/
+
+		//** get rid of annoying less console output
+		var _con = console;
+		console = { log : function(){} }
 	</script>
 	<link rel="stylesheet/less" type="text/css" href="<?php echo $this -> webroot?>css/mockups.less?view=<?php echo "desktop-view"?>" />
 	<script src="//cdnjs.cloudflare.com/ajax/libs/less.js/1.6.2/less.min.js" type="text/javascript"></script>
