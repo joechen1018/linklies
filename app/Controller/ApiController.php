@@ -106,7 +106,7 @@ class ApiController extends AppController{
 	    $ch = curl_init();
 	    curl_setopt_array($ch, ($options + $defaults));
 	    if( ! $result = curl_exec($ch)){
-	        trigger_error(curl_error($ch));
+	        //trigger_error(curl_error($ch));
 	    }
 	    curl_close($ch);
 	    return $result;
