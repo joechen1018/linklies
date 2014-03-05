@@ -48,4 +48,12 @@ blockquote, q {
 quotes: "" "";
 }
 
-
+/*chrome fix*/
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+    a.title {
+        padding-top: 2px;
+    }
+    p.url {
+        padding-top: 1px;
+    }
+}

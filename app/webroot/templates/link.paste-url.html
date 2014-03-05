@@ -1,15 +1,13 @@
-<div class="state-paste-url"  ng-show="checkState('paste-url')" ng-style="{
+<div class="state-paste-url"  ng-style="{
 	height : grids.gridHeight
 }">
-	<span data-icon="g" ng-style="{
-		display:block,
-		top : grids.linkSize.height / 2 - 8
+	<div class="no-icon" ng-style="{
+		top : (grids.gridHeight - 12) / 2
 	}">
-		<input placeholder="Paste url here" ng-style="{
-			width : grids.linkSize.width - 45,
-			height : grids.linkSize.height - 10,
-			top : 0
-		}" xng-focus="data.state.focus" value="" ng-paste="onPasted($event.originalEvent.clipboardData.getData('text/plain'))" />
-	</span>
+	</div>
 	
+	<input placeholder="Paste url here" ng-style="{
+			width : grids.linkSize.width - 45,
+			height : grids.linkSize.height - 10
+		}" xng-focus="data.state.focus" value="" ng-paste="onPasted($event.originalEvent.clipboardData.getData('text/plain'))" />
 </div>

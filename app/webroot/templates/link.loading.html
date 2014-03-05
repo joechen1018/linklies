@@ -1,21 +1,9 @@
-<div class="state-loading" ng-show="checkState('loading')">
-	<img class="loader" src="img/loader-1.gif" ng-style="{
-		top : grids.linkSize.height / 2 - 3,
-		height : grids.linkSize.height - 14 ,
-		display : none
-	}" alt="">
+<div class="state-loading">
 	<div class="no-icon" ng-show="!iconLoaded" ng-style="{
 			top : (grids.gridHeight - 12) / 2
 		}"></div>
-	<span ng-style="{
-		display:block,
-		top : grids.linkSize.height / 2 - 10,
-		height : grids.linkSize.height - 10
-	}">
-		<p class="url" ng-style="{
-			width : grids.linkSize.width - 35,
-			lineHeight : grids.gridHeight + 'px'
+
+	<p class="url" ng-style="{
+			width : grids.linkSize.width - 40
 		}">{{data.url}}</p>	
-	</span>
-	<!-- </span> -->
-</div>
+ </div>

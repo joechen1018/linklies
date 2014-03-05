@@ -46,38 +46,60 @@ app.directive("lkFolder", function(gridSystem){
 		replace : true,
 		link : function(scope, ele, attrs){
 			// _c.log(scope.data);
-			var grids = gridSystem;
-			var data = scope.data;
-			var linkService = apiService.linkService;
-			var $playerHolder, $detailWrap, $player;
-			var ctrlScope = scope.$parent;
+			var grids = gridSystem,
+				data = scope.data,
+				linkService = apiService.linkService,
+				ctrlScope = scope.$parent,
+				$playerHolder, 
+				$detailWrap,
+				$imgArea,
+				$ele = $(ele),
+				$player;
 
+			//** get $dom when render completed
 			$timeout(function(){
-				$playerHolder = $(ele).find(".player-holder").eq(0);
-				$detailWrap = $(ele).find(".link-details").eq(0);
+				$playerHolder = $ele.find(".player-holder").eq(0);
+				$detailWrap = $ele.find(".link-details").eq(0);
 				$player = $playerHolder.find("iframe").eq(0);
+				$imgArea = $ele.find(".imgArea").eq(0);
+
+				//** hide img area if no thumb
+				if(data.thumb === "") $imgArea.hide();
+
 			}, 500);
 
+
+			scope.templates = {};
+			scope.templates.state = 'templates/link.' + (data.state.name || "ready") + '.html';
+			scope.templates.detail = 'templates/link.detail.html';
 			scope.grids = gridSystem;
-			scope.stateTemplate = 'templates/link.' + (data.state.name || "ready") + '.html';
-			//scope.detailTemplate = 'templates/link.detail.html';
-			scope.checkState = function(state){
-				if(!scope.data) return false;
-				if(state === scope.data.state.name) return true;
-				return false;
-			}
 			scope.showOpt = false;
+			scope.iconHover = false;
+			scope.isPlayingVideo = false;
+			scope.hasImageArea = false;
+			scope.showDetail = false;
+
+			if((function(){
+				if(typeof data.type !== "object") return false
+				return data.type.view === "search";
+			})())
+				scope.templates.type = 'templates/link.type.search.html';
+			else
+				scope.templates.type = 'templates/link.type.default.html';
+
+			//** watch state to include state view
+			scope.$watch("data.state", function(newVal, oldVal){
+				scope.templates.state = 'templates/link.' + (data.state.name || "ready") + '.html';
+			});
+
 			scope.linkStyle = function(){
+				if(data.dragging) return;
 				if(scope.data.grid){
-					if(scope.data.grid.length !== 2){
-						scope.data.grid = scope.data.grid.split(",");
-					}
 					return {
 						left : grids.getLeft(scope.data.grid[0]),
 						top : grids.getTop(scope.data.grid[1]),
 						height : grids.linkSize.height,
-						width : grids.linkSize.width,
-						zIndex : scope.showOpt ? 100 : 10
+						width : grids.linkSize.width
 					}
 				}
 			}
@@ -86,30 +108,27 @@ app.directive("lkFolder", function(gridSystem){
 				if(app.utils.isUrl(url)){
 
 					scope.data.url = url;
-					scope.data.state = {
-						name : "loading"
-					};
-
-					var colorShiftIntv,
-					initColorShifting = function(){
+					scope.data.state = { name : "loading" };
+					var colorShiftIntv;
+					var initColorShifting = function($target){
 							blue = "#4b9884", green = "#aacc8e", yellow = "#faec0a", orange = "#fe9d04",
-							duration = 200, 
+							duration = 400, 
 							colors = [blue, orange, green, yellow],
 							i = 0;
 
 						colorShiftIntv = setInterval(function(){
-							$(".state-loading .no-icon").animate({
+							$target.animate({
 								backgroundColor : colors[i%colors.length]
 							}, duration);
 							i++;
 						}, duration);
 					}
-					initColorShifting();
+					setTimeout(function(){
+						initColorShifting($(ele).find(".no-icon"));
+					}, 10);
+					
 					linkService.create(url).then(function(data){
-						/*
-						console.log(data);
-						console.log(scope.data);
-						*/
+
 						//** use new data but keep a copy of the old
 						var odata = scope.data;
 
@@ -123,43 +142,40 @@ app.directive("lkFolder", function(gridSystem){
 							}
 						}
 
+						//** parse from string to object etc
 						data = apiParser.linkFromDb(data);
 
-						//_c.log($.type(scope.data.type));
+						//** stop color animation
 						clearInterval(colorShiftIntv);
 
-						scope.data = data;
-						// scope.results = data.type.results;
-						scope.$apply();
-						// _c.log(scope.results);
-
-						/*
-						ctrlScope.$apply(function(){
-							ctrlScope.links.push(scope.data);
+						//** update view	
+						scope.$apply(function(){
+							scope.data = data;	
+							//** hide img area if no thumb
+							if(!data.thumb){
+								$imgArea.hide();
+							}else{
+								scope.hasImageArea = true;
+							}
 						});
-						*/
 
 						linkService.save(data).then(function(rs){
-							// console.log("saved");
-							scope.data.id = rs.id;
-							scope.$apply();
+							//** pass the id to data
+							scope.$apply(function(){
+								scope.data.id = rs.id;
+							});
+							//** notify controller level
 							$rootScope.$broadcast("linkCreationComplete", scope.data);
 						});
-					}).fail(function(){
-						alert("failed");
+					})
+					.fail(function(){
+						//** notify controller level
+						$rootScope.$broadcast("linkCreationFailed", scope.data);
 					});
 				}else{
 					
 				}
 			}
-
-			/*
-			scope.$watch("data.ico", function(newVal, oldVal){
-				if(newVal !== oldVal){
-					_c.log(newVal, oldVal);
-				}
-			});
-			*/
 
 			scope.removeResult = function($index){
 				var type = scope.data.type;
@@ -177,15 +193,16 @@ app.directive("lkFolder", function(gridSystem){
 					_c.warn("type result not found")
 				}
 			}
+
 			scope.removeLink = function(){
 				$rootScope.$broadcast("removeLink", scope.data.uuid || scope.data.id);
 				//$(_events).trigger("removeLink", [scope.data.id || scope.data.uuid])
 			}
+
 			scope.openPage = function(){
 				$rootScope.$broadcast("openPage", scope.data.url);
 			}
-			scope.iconHover = false;
-			scope.isPlayingVideo = false;
+
 			scope.playVideo = function(){
 
 				//** prevent detail hidden when mouse out
@@ -220,6 +237,7 @@ app.directive("lkFolder", function(gridSystem){
 				$detailWrap.find(".texts").css("cursor","move");
 				scope.isPlayingVideo = true;   
 			}
+
 			scope.stopVideo = function(){
 				$playerHolder.removeAttr("style");
 				$player.attr("src", "").hide();
@@ -235,9 +253,7 @@ app.directive("lkFolder", function(gridSystem){
 					scope.showDetail = false;
 				}, 1);
 			}
-			scope.hasImageArea = false;
-			scope.showDetail = false;
-			// console.log(data);
+			
 			var timer, timer1, timer3;
 			var enableHover = function(){
 				$(ele).unbind();
@@ -251,8 +267,8 @@ app.directive("lkFolder", function(gridSystem){
 					});
 
 					scope.$apply(function(){
-						if(scope.detailTemplate != 'templates/link.detail.html')
-							scope.detailTemplate = 'templates/link.detail.html';
+						if(scope.templates.detail != 'templates/link.detail.html')
+							scope.templates.detail = 'templates/link.detail.html';
 					});
 
 					timer = $timeout(function(){
@@ -261,7 +277,7 @@ app.directive("lkFolder", function(gridSystem){
 						});
 					}, 600);
 
-					$rootScope.$broadcast("linkHover", scope.data);
+					//$rootScope.$broadcast("linkHover", scope.data);
 				});
 				$(ele).on("mouseleave", function(){
 					timer1 = $timeout(function(){
@@ -282,32 +298,9 @@ app.directive("lkFolder", function(gridSystem){
 			}
 
 			enableHover();
-
-			/*setTimeout(function(){
-				_c.log($("#" + data.uuid + " img.thumb").length);
-				$(document).on("load", "#" + data.uuid + " img.thumb", function(){
-					_c.log("load");
-					$(this).show();
-	                $timeout(function(){
-	                	scope.hasImageArea = true;
-	                }, 1);
-				});
-			}, 1);*/
-			
-			$(ele).find("img.thumb").on('load', function() {
-                
-            });
-
 			scope.iconLoaded = false;
-
-			/*
-			taskQueue.push(function(){
-				$(ele).find(".icon img").attr("src", data.ico);
-			});
-			taskQueue.push(function(){
-				$(ele).find(".img img.thumb").attr("src", data.ico);
-			});*/
 			
+			//** try load the ico, notify app.js when request succeeded or failed
 			var bl = false;
             $(ele).find(".icon img")
             .bind("load", function(){
@@ -325,20 +318,11 @@ app.directive("lkFolder", function(gridSystem){
             	$(loader.events).trigger("error", [data.id]);
             });
 
+            //** maxinum load time 2~3 sec, report error when exceeded
             setTimeout(function(){
             	if(!bl)
             		$(loader.events).trigger("error", [data.id]);
             }, 2000 +  (Math.random() * 1000));
-
-           /* 
-           $(loader.events).bind("reachedExpectation", function(){
-            	$(ele).find(".img img.thumb").attr("src", data.thumb);
-            });
-           $(ele).find(".icon img, .img img.thumb").bind("load", function(){
-            	loadCount++;
-            	_c.log("loaded : " + loadCount);
-            })
-			*/
 		}
 	}
 })
@@ -387,7 +371,10 @@ app.directive("lkFolder", function(gridSystem){
 						dragGrid = undefined;
 						originGrid = data.grid;
 						zIndex = $ele.css("z-index");
+
+						_c.log($ele.css("z-index"));
 						$ele.css("z-index", 100);
+						_c.log($ele.css("z-index"));
 
 						scope.$apply(function(){
 							ref.dragging = true;

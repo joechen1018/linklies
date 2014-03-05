@@ -267,7 +267,7 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 		}
 	}
 
-	$scope.onBoardClick = function($event){
+	$scope.onBoardDbClick = function($event){
 		var x = $event.pageX - gridSystem.defaults.sideWidth;
 		var y = $event.pageY - gridSystem.defaults.topHeight;
 		var g = gridRects.link.findNearGridByPoint(x, y);
@@ -281,9 +281,11 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 				focus : true
 			}
 		}
-		// _c.log(newLink);
 		clearLinks();
 		$scope.links.push(newLink);
+	}
+	$scope.onBoardClick = function($event){
+		clearLinks();
 	}
 	$scope.noIcon = false;
 	$scope.onRightClick = function($event){
@@ -305,18 +307,6 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 		$("body").css("overflow", "");
 	}
 
-	/*
-	$(_events).bind("removeLink", function(e, id){
-		for(var i = 0; i<$scope.links.length; i++){
-			if($scope.links[i].uuid == id || $scope.links[i].id == id){
-				$scope.links.splice(i, 1);
-				apiService.linkService.remove(id);
-				//.then(function(res){});
-				return;
-			}
-		}
-	});
-	*/
 	var currentHoverLink;
 	$rootScope.$on("linkCreationComplete", function(e, link){
 		for(var i = 0; i<$scope.links.length; i++){
@@ -327,6 +317,15 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 				// _c.log(link.type);
 				$scope.$apply(function(){
 					$scope.links[i] = link;	
+				});
+			}
+		}
+	});
+	$rootScope.$on("linkCreationFailed", function(e, link){
+		for(var i = 0; i<$scope.links.length; i++){
+			if($scope.links[i].uuid === link.uuid){
+				$scope.$apply(function(){
+					$scope.links.splice(i, 1);
 				});
 			}
 		}
@@ -344,7 +343,6 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 			}
 		}
 	});
-
 	$rootScope.$on("openPage", function(e, url){
 		var $iframe = $("#browser iframe")
 			,$body = $("body");

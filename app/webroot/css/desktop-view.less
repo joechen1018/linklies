@@ -155,11 +155,7 @@
 	  }
 	}
 }
-@media screen and (-webkit-min-device-pixel-ratio:0) {
-    a.title {
-        padding-top: 2px;
-    }
-}
+
 .link{
 	@h :30px;
 	@w : 310px;
@@ -181,15 +177,14 @@
 	.state-paste-url, .state-loading{
         position:relative;
         p.url{
-          top : ~"calc(50% - 10px)";
-          position: absolute;
-          left : 24px;
+          
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
           font-size:14px;
-	      line-height:@h;
-	      height: @h;
+	      line-height:25px;
+	      height: 25px;
+	      padding-left : 33px;
           //top : ~"calc(50% - 5px)";
           color : #999999;
         }
@@ -203,7 +198,7 @@
         	width:12px;
 			height:12px;
 			position: absolute;
-			left : 5px;
+			left : 7px;
 			z-index: 1;
 			background: lighten(@blue, 40%);
         }
@@ -214,31 +209,33 @@
             display: block;
             position:absolute;
             color : darken(@blue, 10%);
-            input{
-              border:0;
-              background: darken(@bg-color, 3%);
-              top : ~"calc(50% - 10px)";
-              position: absolute;
-              left : 20px;
-              .border-radius(3px);
-              height : 20px;
-              padding-left:10px;
-              ::-webkit-input-placeholder {
-                 color : lighten(@dark, 20%);
-              }
+        }
 
-              :-moz-placeholder { /* Firefox 18- */
-                 color : lighten(@dark, 20%);
-              }
+        input{
+          border:0;
+          background: darken(@bg-color, 3%);
+          top : 5px;
+          position: absolute;
+          left : 20px;
+          .border-radius(3px);
+          height : 20px;
+          padding-left:10px;
 
-              ::-moz-placeholder {  /* Firefox 19+ */
-                 color : lighten(@dark, 20%);
-              }
+          ::-webkit-input-placeholder {
+             color : lighten(@dark, 20%);
+          }
 
-              :-ms-input-placeholder {  
-                 color : lighten(@dark, 20%);
-              }
-            }
+          :-moz-placeholder { /* Firefox 18- */
+             color : lighten(@dark, 20%);
+          }
+
+          ::-moz-placeholder {  /* Firefox 19+ */
+             color : lighten(@dark, 20%);
+          }
+
+          :-ms-input-placeholder {  
+             color : lighten(@dark, 20%);
+          }
         }
     }
     
@@ -315,7 +312,7 @@
 	            position:absolute;
 	            left:33px;
 	            top:0;
-	            width:@w - 100px;
+	            width:@w - 35px;
 	            white-space: nowrap;
 	            overflow: hidden;
 	            text-overflow: ellipsis;
@@ -377,6 +374,7 @@
 	    top: @h;
 	    left : (@w - @w1) / 2;
 	    width:@w1;
+	    z-index: 11;
 	    //height:@h1;
 	    .funcs{
 			position:absolute;
@@ -397,9 +395,10 @@
 
 		@size1 : calc((@w1 - 330px)/2);
 	    .detail-wrap{
-			background: black;
 			position: relative;
 			top:10px;
+			padding:0;
+			margin:0;
 			.shadow-light;
 			
 			.close-btn{
@@ -476,9 +475,6 @@
 				position: relative;
 				img.thumb{
 				  width:@w1;
-				  margin:0;
-				  padding:0;
-				  display: none;
 				  cursor:default;
 				  &.icon-hover{
 					.alpha(0.7);

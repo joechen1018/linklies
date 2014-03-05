@@ -55,7 +55,7 @@
 		height : grids.height,
 		left : grids.defaults.sideWidth,
 		top : grids.defaults.topHeight
-	}" ng-dblclick="onBoardClick($event)">
+	}" ng-dblclick="onBoardDbClick($event)" ng-click="onBoardClick($event)">
 
 			<!-- <ul id="gridLines" ng-class="grids.show ? 'showGrid' : 'hideGrid'">
 				<li class="hline gline" ng-repeat="item in grids.rows" ng-style="{
