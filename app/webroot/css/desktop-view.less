@@ -5,6 +5,10 @@
 @gridPadding : 10px;
 @folderHeight : 4*@gridHeight + 3*@gridPadding;
 
+body, html{
+	
+}
+
 #board{
     //background: darken(@bg-color, 15%);
     position: relative;
@@ -21,10 +25,9 @@
   width:100%;
   min-height: 100%;
   position:absolute;
-  //background: url(../img/bg-blur-1.jpg);  
   overflow:hidden;
+  overflow-y: auto;
   z-index: 1;
-  //background: lighten(@red, 5%);
   background: @bg-color;
 
 	@sideWidth : 90px;
@@ -169,7 +172,6 @@
 	-webkit-border-radius: 3px 3px 0 0;
 	border-radius: 3px;
 	.shadow-light;
-	//background: lighten(@bg-color, 3%);
 	background: white;
 	z-index:10;
 	cursor:pointer;
@@ -366,6 +368,10 @@
         }
 	}
 
+	&:hover{
+		z-index: 100;
+	};
+
 	.link-details{
 	    @size : 10px;
 	    @w1 : 330px;
@@ -374,7 +380,7 @@
 	    top: @h;
 	    left : (@w - @w1) / 2;
 	    width:@w1;
-	    z-index: 11;
+	    background: white;
 	    //height:@h1;
 	    .funcs{
 			position:absolute;
