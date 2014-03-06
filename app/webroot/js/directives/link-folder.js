@@ -101,7 +101,6 @@ app.directive("lkFolder", function(gridSystem){
 			scope.onPasted = function(url){
 				if(app.utils.isUrl(url)){
 
-
 					scope.data.url = url;
 					scope.data.state = { name : "loading" };
 
@@ -261,7 +260,6 @@ app.directive("lkFolder", function(gridSystem){
 				$ele.unbind("mouseenter");
 				$ele.unbind("mouseleave");
 
-				_c.log($ele);
 				//**　
 				$ele.on("mouseenter", function(){
 

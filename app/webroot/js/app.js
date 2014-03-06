@@ -56,6 +56,39 @@ var app = angular.module("lk", ["ngRoute", "pasvaz.bindonce"], function($httpPro
         });
     };
 })
+.directive('retrySrc', function (apiService) {
+  var fallbackSrc = {
+    link: function postLink(scope, ele, attrs) {
+      ele.bind('error', function() {
+        if(attrs.retrySrc === "api"){
+            var data = scope.data;
+            var getKey = function(name){
+                if(!name) return false;
+                if(name.indexOf('spreadsheet') !== -1) return data.url.match(/^http(s|):\/\/.*docs.google.com\/spreadsheet\/.*key=(.*)\&/)[2];
+                if(name.indexOf('document') !== -1) return data.url.match(/.+d\/([a-zA-z0-9\-_]*)(\/|)(.+|)/)[1];
+                if(name.indexOf('presentations') !== -1) return data.url.match(/.+d\/([a-zA-z0-9\-_]*)(\/|)(.+|)/)[1];
+            }
+            if(typeof data.type === "object"){
+                var key = getKey(data.type.name);
+                if(key !== false){
+                    var request = gapi.client.drive.files.get({
+                        'fileId': key
+                    });
+                    request.execute(function(res) {
+                        $(ele).attr("src", res.thumbnailLink);
+                        data.thumb = res.thumbnailLink;
+                        apiService.linkService.save(data);
+                    });
+                }
+            }
+        }else{
+            angular.element(this).attr("src", attrs.retrySrc);
+        }
+      });
+    }
+   }
+   return fallbackSrc;
+})
 .controller("appCtrl", function($scope){
 	var checkAuth = function() {
 		gapi.auth.authorize({client_id: clientId, scope: scopes, immediate: true}, authorize);

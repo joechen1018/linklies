@@ -432,9 +432,9 @@ app.service("apiService", function($http, apiParser){
 				// rs.title = source + " : " + result;
 			break;
 			case 'google.docs.spreadsheet' : 
-				rs.gdocKey = rs.url.match(/^http(s|):\/\/.*docs.google.com\/spreadsheet\/.*key=(.*)\&/)[2];
+				rs.key = rs.url.match(/^http(s|):\/\/.*docs.google.com\/spreadsheet\/.*key=(.*)\&/)[2];
 				var request = gapi.client.drive.files.get({
-				    'fileId': rs.gdocKey
+				    'fileId': rs.key
 				});
 				request.execute(function(resp) {
 					//_c.log(resp);
@@ -451,12 +451,12 @@ app.service("apiService", function($http, apiParser){
 				});
 			break;
 			case 'google.docs.document' : 
-				rs.gdocKey = rs.url.match(/.+d\/([a-zA-z0-9\-_]*)(\/|)(.+|)/)[1];
+				rs.key = rs.url.match(/.+d\/([a-zA-z0-9\-_]*)(\/|)(.+|)/)[1];
 				var request = gapi.client.drive.files.get({
-				    'fileId': rs.gdocKey
+				    'fileId': rs.key
 				});
 				request.execute(function(resp) {
-					_c.log(resp);
+					//_c.log(resp);
 					rs.doc = {};
 					rs.doc.document = resp;
 					rs.title = resp.title;
@@ -470,10 +470,10 @@ app.service("apiService", function($http, apiParser){
 				});
 			break;
 			case "google.docs.presentations" :
-				rs.gdocKey = rs.url.match(/.+d\/([a-zA-z0-9\-_]*)(\/|)(.+|)/)[1];
-				// console.log(rs.gdocKey);
+				rs.key = rs.url.match(/.+d\/([a-zA-z0-9\-_]*)(\/|)(.+|)/)[1];
+				// console.log(rs.key);
 				var request = gapi.client.drive.files.get({
-				    'fileId': rs.gdocKey
+				    'fileId': rs.key
 				});
 				request.execute(function(resp) {
 					//_c.log(resp);
