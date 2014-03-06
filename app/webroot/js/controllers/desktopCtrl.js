@@ -68,6 +68,8 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 		}
 
 		$timeout(function(){
+			$("body").css("overflow", "auto");
+			$("#bg-loading").delay(10).hide();
 			gridSystem.update();
 		}, 10);
 	}
@@ -314,7 +316,6 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 				if($.type(link.type) === "string"){
 					link.type = JSON.parse(link.type);
 				}
-				// _c.log(link.type);
 				$scope.$apply(function(){
 					$scope.links[i] = link;	
 				});

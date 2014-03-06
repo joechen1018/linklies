@@ -182,8 +182,9 @@ app.service("gridRects", function(gridSystem){
 			for(var i = 0; i<links.length; i++){
 				if(arrayEquals(links[i].grid, grid)){
 					return false;
-				}else if(self.link.gridToRect(links[i].grid).intersects(rect2))
+				}else if(self.link.gridToRect(links[i].grid).intersects(rect2)){
 					return false;
+				}
 			}
 			return true;
 		},

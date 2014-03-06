@@ -245,22 +245,6 @@ var colorShiftIntv,
 
 $(document).ready(function(){
     
-    $("#bg-loading").delay(1000).hide();
-
-    /*
-    initColorShifting($("#bg-loading .bar"));
-    $("body").css("overflow-y", "hidden");
-
-    $("body").css("overflow-y", "hidden");
-    $("body").delay(1000).css("overflow-y", "auto");
-    /*
-    _c.log("ready");
-    setTimeout(function(){
-        _c.log("timeout");
-        $("#bg-loading").hide();
-        _c.log($("#bg-loading"));
-        $("body").css("overflow-y", "auto");
-    }, 3000);*/
 });
 
 //** show an image before all icons loaded
@@ -276,8 +260,8 @@ $(loader.events)
     if(loader.count === expectCount) $(loader.events).trigger("reachedExpectation");
 })
 .bind("reachedExpectation", function(){
-    $("#bg-loading").delay(1000).hide();
-    $("body").delay(1000).css("overflow-y", "auto");
+    //$("#bg-loading").delay(1000).hide();
+    //$("body").delay(1000).css("overflow-y", "auto");
 });
 
 app.utils = app.utils || {};
