@@ -208,11 +208,14 @@ var initColorShifting = function($target){
 }
 $(document).ready(function(){
     initColorShifting($("#bg-loading .bar"));
+    $("#bg-loading").delay(1000).hide();
     $("body").css("overflow-y", "hidden");
 
-    $("#bg-loading").delay(1000).hide();
+    /*
+    $("body").css("overflow-y", "hidden");
     $("body").delay(1000).css("overflow-y", "auto");
-    /*_c.log("ready");
+    /*
+    _c.log("ready");
     setTimeout(function(){
         _c.log("timeout");
         $("#bg-loading").hide();

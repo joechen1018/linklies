@@ -93,7 +93,6 @@ app.directive("lkFolder", function(gridSystem){
 			});
 
 			scope.linkStyle = function(){
-				if(data.dragging) return;
 				if(scope.data.grid){
 					return {
 						left : grids.getLeft(scope.data.grid[0]),
@@ -339,8 +338,6 @@ app.directive("lkFolder", function(gridSystem){
 			var ctrlScope = scope.$parent;
 			$timeout(function(){
 
-				//ctrlScope = scope;
-
 				var rects = gridRects;
 				var type = attrs.data;
 				var allRects = type === "link" ? gridRects.link : gridRects.folder;
@@ -352,7 +349,6 @@ app.directive("lkFolder", function(gridSystem){
 				var gs = gridSystem;
 				var originRect, originGrid, dragRect, selectedGrid, $ele;
 				var sideWidth = gs.defaults.sideWidth;
-				var zIndex = 0;
 				var timeout;
 				var isAvailable = false;
 				var $selectedFolder, $folders = $(".folder");
@@ -364,18 +360,13 @@ app.directive("lkFolder", function(gridSystem){
 				$(ele).draggable({
 					containment : "#drag-containment",
 					scroll: false,
-					delay : 100,
+					delay : 10,
 					start : function(e, ui){
+
 						$ele = $(ele);
 						originRect = rects.getDomRect($ele);
 						dragGrid = undefined;
 						originGrid = data.grid;
-						zIndex = $ele.css("z-index");
-
-						_c.log($ele.css("z-index"));
-						$ele.css("z-index", 100);
-						_c.log($ele.css("z-index"));
-
 						scope.$apply(function(){
 							ref.dragging = true;
 						});
@@ -418,9 +409,8 @@ app.directive("lkFolder", function(gridSystem){
 						if($selectedFolder.length === 1){
 							//do drop folder
 						}
-						$folders.removeClass("selected");
-						$ele.css("z-index", 10);
 
+						$folders.removeClass("selected");
 						dragRect = rects.getDomRect($ele);
 						dragGrid = allRects.findDragRectGrid(
 							originGrid,
@@ -429,7 +419,6 @@ app.directive("lkFolder", function(gridSystem){
 
 						isAvailable = allRects.gridAvailable(dragGrid);
 						//if there is a selected grid and the selected grid is not occupied
-						//if(selectedGrid !== undefined && !gs.occupied.link(selectedGrid)){
 						if(isAvailable){
 							/*	
 							_c.log(ref);
