@@ -188,7 +188,8 @@ app.directive("lkFolder", function(gridSystem){
 				var type = scope.data.type;
 
 				//** prevent detail hidden when mouse out
-				$(ele).unbind();
+				$ele.unbind("mouseenter");
+				$ele.unbind("mouseleave");
 
 				//** hide displayed image
 				$detailWrap = $ele.find(".link-details").eq(0);
@@ -242,9 +243,11 @@ app.directive("lkFolder", function(gridSystem){
 				$playerHolder.removeAttr("style");
 				$player.attr("src", "").hide();
 				$ele.css('z-index', '');
+
 				$detailWrap.draggable("destroy");
 				$detailWrap.removeAttr("style");
 				$detailWrap.find(".texts").removeAttr("style");
+
 				$timeout(function(){
 					scope.isPlayingVideo = false;
 					scope.showDetail = false;
@@ -253,8 +256,14 @@ app.directive("lkFolder", function(gridSystem){
 			
 			var timer, timer1, timer3;
 			var enableHover = function(){
-				$(ele).unbind();
-				$(ele).on("mouseenter", function(){
+
+				//** clear before bind
+				$ele.unbind("mouseenter");
+				$ele.unbind("mouseleave");
+
+				_c.log($ele);
+				//**　
+				$ele.on("mouseenter", function(){
 
 					$timeout.cancel(timer1);
 					$timeout.cancel(timer);
@@ -262,8 +271,8 @@ app.directive("lkFolder", function(gridSystem){
 
 					scope.$apply(function(){
 						scope.showOpt = true;
-						if(scope.templates.detail != 'templates/link.detail.html')
-							scope.templates.detail = 'templates/link.detail.html';
+						if(scope.templates.detail != temps.detail)
+							scope.templates.detail = temps.detail;
 
 						//** if type is object and its view attr equals to 'search'
 						if((function(){
@@ -285,7 +294,7 @@ app.directive("lkFolder", function(gridSystem){
 
 					//$rootScope.$broadcast("linkHover", scope.data);
 				});
-				$(ele).on("mouseleave", function(){
+				$ele.on("mouseleave", function(){
 					timer1 = $timeout(function(){
 						scope.showOpt = false;
 						scope.showDetail = false;
