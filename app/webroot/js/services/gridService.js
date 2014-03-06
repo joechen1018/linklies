@@ -429,7 +429,7 @@ app.service("gridService", function($rootScope, $timeout, resize){
 		this.gridHeight = _d.gridHeight;
 		this.gridFullHeight = this.gridHeight + _d.margin;
 		this.cols = _.range(getColNum(this.width, this.gridWidth));
-		this.rows = _.range(getRowNum(this.height, _d.gridHeight + _d.margin) + 5 + this.buffer);
+		this.rows = _.range(getRowNum(this.height, _d.gridHeight + _d.margin) + 8 + this.buffer);
 		this.folderSize = {
 			width : this.gridWidth,
 			fullWidth : this.gridWidth + _d.margin,

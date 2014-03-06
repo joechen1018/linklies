@@ -166,20 +166,24 @@ app.service("gridRects", function(gridSystem){
 			if(!grid){
 				return false;
 			}
-			var links = self.links;
-			var folders = self.folders;
-			for(var i = 0; i<links.length; i++){
-				if(arrayEquals(links[i].grid, grid)){
-					//console.log(folders[i].grid, grid);
-					return false;
-				}
-			}
-			var rect1, rect2 = self.link.gridToRect(grid);
+			var links = self.links,
+				folders = self.folders,
+				rect1, 
+				rect2 = self.link.gridToRect(grid);
+
+			//** check folder intersection
 			for(i = 0; i<folders.length; i++){
 				rect1 = self.folder.gridToRect(folders[i].grid);
 				if(rect1.intersects(rect2)){
 					return false;
 				}
+			}	
+
+			for(var i = 0; i<links.length; i++){
+				if(arrayEquals(links[i].grid, grid)){
+					return false;
+				}else if(self.link.gridToRect(links[i].grid).intersects(rect2))
+					return false;
 			}
 			return true;
 		},

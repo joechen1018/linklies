@@ -50,46 +50,41 @@ app.directive("lkFolder", function(gridSystem){
 				data = scope.data,
 				linkService = apiService.linkService,
 				ctrlScope = scope.$parent,
+				temps = {
+					state : function(){
+						return 'templates/link.' + (data.state.name || "ready") + '.html';
+					},
+					detail : 'templates/link.detail.html',
+					type : {
+						'default' : 'templates/link.type.default.html',
+						'search' : 'templates/link.type.search.html'
+					}
+				},
 				$playerHolder, 
 				$detailWrap,
 				$imgArea,
+				$img,
 				$ele = $(ele),
 				$player;
 
-			//** get $dom when render completed
-			$timeout(function(){
-				$playerHolder = $ele.find(".player-holder").eq(0);
-				$detailWrap = $ele.find(".link-details").eq(0);
-				$player = $playerHolder.find("iframe").eq(0);
-				$imgArea = $ele.find(".imgArea").eq(0);
-
-				//** hide img area if no thumb
-				if(data.thumb === "") $imgArea.hide();
-
-			}, 500);
-
-
 			scope.templates = {};
 			scope.templates.state = 'templates/link.' + (data.state.name || "ready") + '.html';
-			scope.templates.detail = 'templates/link.detail.html';
+			//scope.templates.detail = 'templates/link.detail.html';
 			scope.grids = gridSystem;
 			scope.showOpt = false;
 			scope.iconHover = false;
 			scope.isPlayingVideo = false;
-			scope.hasImageArea = false;
 			scope.showDetail = false;
 
-			if((function(){
-				if(typeof data.type !== "object") return false
-				return data.type.view === "search";
-			})())
-				scope.templates.type = 'templates/link.type.search.html';
-			else
-				scope.templates.type = 'templates/link.type.default.html';
+			//** whether the link has a thumb
+			scope.hasImageArea = true;
+			if(data.thumb === ""){
+				scope.hasImageArea = false;
+			}
 
 			//** watch state to include state view
 			scope.$watch("data.state", function(newVal, oldVal){
-				scope.templates.state = 'templates/link.' + (data.state.name || "ready") + '.html';
+				scope.templates.state = temps.state();
 			});
 
 			scope.linkStyle = function(){
@@ -106,24 +101,12 @@ app.directive("lkFolder", function(gridSystem){
 			scope.onPasted = function(url){
 				if(app.utils.isUrl(url)){
 
+
 					scope.data.url = url;
 					scope.data.state = { name : "loading" };
-					var colorShiftIntv;
-					var initColorShifting = function($target){
-							blue = "#4b9884", green = "#aacc8e", yellow = "#faec0a", orange = "#fe9d04",
-							duration = 400, 
-							colors = [blue, orange, green, yellow],
-							i = 0;
 
-						colorShiftIntv = setInterval(function(){
-							$target.animate({
-								backgroundColor : colors[i%colors.length]
-							}, duration);
-							i++;
-						}, duration);
-					}
 					setTimeout(function(){
-						initColorShifting($(ele).find(".no-icon"));
+						startColorShifting($ele.find(".state-loading .no-icon"));
 					}, 10);
 					
 					linkService.create(url).then(function(data){
@@ -145,17 +128,18 @@ app.directive("lkFolder", function(gridSystem){
 						data = apiParser.linkFromDb(data);
 
 						//** stop color animation
-						clearInterval(colorShiftIntv);
+						stopColorShifting();
 
 						//** update view	
 						scope.$apply(function(){
-							scope.data = data;	
-							//** hide img area if no thumb
-							if(!data.thumb){
-								$imgArea.hide();
-							}else{
-								scope.hasImageArea = true;
-							}
+							scope.data = data;
+							scope.hasImageArea = (function(){
+								if(data.thumb === undefined) return false;
+								if(typeof data.thumb === "string")
+									if(data.thumb.length === 0)
+										return false;
+								return true;
+							})();
 						});
 
 						linkService.save(data).then(function(rs){
@@ -171,8 +155,6 @@ app.directive("lkFolder", function(gridSystem){
 						//** notify controller level
 						$rootScope.$broadcast("linkCreationFailed", scope.data);
 					});
-				}else{
-					
 				}
 			}
 
@@ -185,7 +167,6 @@ app.directive("lkFolder", function(gridSystem){
 
 					//** save the data
 					linkService.save(scope.data).then(function(rs){
-						console.log("saved");
 						// console.log(rs);
 					});
 				}else{
@@ -204,26 +185,31 @@ app.directive("lkFolder", function(gridSystem){
 
 			scope.playVideo = function(){
 
+				var type = scope.data.type;
+
 				//** prevent detail hidden when mouse out
 				$(ele).unbind();
 
-				var type = scope.data.type;
 				//** hide displayed image
-				var img = $detailWrap.find(".img");
-				img.hide();
+				$detailWrap = $ele.find(".link-details").eq(0);
+				$img = $detailWrap.find(".img");
+				$img.hide();
 
 				//** embed iframe player
 				var src = utils.replace(type.embedUrl, {
 					"VIDEO_ID" : type.videoId
 				});
 
-				$player.attr("src", src);
+
+				$player = $ele.find(".player-holder iframe").eq(0);
 				$player.show();
+				$player.attr("src", src);
 
 				//** player size equal to the image size
-				$playerHolder.css('top', img.position().top)
-						   .css('width', img.width())
-						   .css('height', img.height());
+				$playerHolder = $(".player-holder");
+				$playerHolder.css('top', $img.position().top)
+							 .css('width', $img.width())
+							 .css('height', $img.height());
 
 				//** allow drag around		  
 				$detailWrap.draggable({
@@ -232,20 +218,32 @@ app.directive("lkFolder", function(gridSystem){
 					delay : 10,
 				});
 
+				//** higher than hovered link(100)
+				$ele.css('z-index', '101')
 
+				//** let user know the pannel is draggable
 				$detailWrap.find(".texts").css("cursor","move");
+
+
 				scope.isPlayingVideo = true;   
 			}
 
 			scope.stopVideo = function(){
+
+				//** enable hover again
+				enableHover();
+
+				//** link-detail & img
+				$detailWrap = $ele.find(".link-details").eq(0);
+				$img = $detailWrap.find(".img");
+				$img.show();
+
+				//** set things back
 				$playerHolder.removeAttr("style");
 				$player.attr("src", "").hide();
-				var img = $detailWrap.find(".img");
-				img.show();
-				enableHover();
+				$ele.css('z-index', '');
 				$detailWrap.draggable("destroy");
 				$detailWrap.removeAttr("style");
-				// $detailWrap.removeClass("shadow-strong");
 				$detailWrap.find(".texts").removeAttr("style");
 				$timeout(function(){
 					scope.isPlayingVideo = false;
@@ -257,18 +255,27 @@ app.directive("lkFolder", function(gridSystem){
 			var enableHover = function(){
 				$(ele).unbind();
 				$(ele).on("mouseenter", function(){
+
 					$timeout.cancel(timer1);
 					$timeout.cancel(timer);
 					$timeout.cancel(timer3);
 
 					scope.$apply(function(){
 						scope.showOpt = true;
-					});
-
-					scope.$apply(function(){
 						if(scope.templates.detail != 'templates/link.detail.html')
 							scope.templates.detail = 'templates/link.detail.html';
-					});
+
+						//** if type is object and its view attr equals to 'search'
+						if((function(){
+							if(typeof data.type !== "object") return false
+							return data.view === "search";
+						})()){
+							scope.templates.type = temps.type.search;
+							//_c.log(scope.templates.type);
+						}
+						else
+							scope.templates.type = temps.type['default'];
+						});
 
 					timer = $timeout(function(){
 						scope.$apply(function(){
@@ -282,6 +289,7 @@ app.directive("lkFolder", function(gridSystem){
 					timer1 = $timeout(function(){
 						scope.showOpt = false;
 						scope.showDetail = false;
+						scope.templates.detail = '';
 					}, 1);
 
 					$timeout.cancel(timer3);

@@ -443,7 +443,7 @@ app.service("apiService", function($http, apiParser){
 					rs.title = resp.title;
 					rs.thumb = resp.thumbnailLink;
 					//rs.view = "doc";
-
+					_c.log(rs);	
 					d.resolve(rs);
 				    // console.log('Title: ' + resp.title);
 				    // console.log('Description: ' + resp.description);

@@ -2,7 +2,7 @@
 	<iframe style="display:none" src="" width="100%" height="100%" frameborder="0"></iframe>
 </div>
 
-<div class="img" ng-show="!isPlayingVideo">
+<div class="img" ng-show="!isPlayingVideo && hasImageArea">
 	<img class="thumb" class="{{iconHover ? 'icon-hover' : ''}}" bo-src="data.thumb">
 	<span class="thumb-icon" data-icon="l" bo-show="data.view == 'video'" ng-click="playVideo()">
 	</span>	

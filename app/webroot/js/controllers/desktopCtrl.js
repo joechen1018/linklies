@@ -59,7 +59,7 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 		});
 
 		keyboardManager.bind("shift+d", function(){
-			_c.log(currentHoverLink);
+			//_c.log(currentHoverLink);
 		});
 
 		if(glob.requireSign === true){
@@ -68,7 +68,6 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 		}
 
 		$timeout(function(){
-			_c.log("update");
 			gridSystem.update();
 		}, 10);
 	}
@@ -269,12 +268,9 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 	}
 
 	$scope.onBoardDbClick = function($event){
-		_c.log($event.pageX, $event.pageY);
 		var x = $event.pageX - gridSystem.defaults.sideWidth;
 		var y = $event.pageY - gridSystem.defaults.topHeight;
-		_c.log(x,y);
 		var g = gridRects.link.findNearGridByPoint(x, y);
-		_c.log(g);
 		var newLink = {
 			grid : g,
 			uuid : uuid.create(),

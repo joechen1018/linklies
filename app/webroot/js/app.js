@@ -192,26 +192,32 @@ var taskQueue = new _q();
 var loader = {},
 	expectCount = $(".icon img").length;
 
-var colorShift;
-var initColorShifting = function($target){
-    var blue = "#4b9884", green = "#aacc8e", dark = "#454438", orange = "#fe9d04",
-        duration = 1200, 
-        colors = [orange, blue, green, orange],
-        i = 0;
+var colorShiftIntv,
+    startColorShifting = function($target, duration){
+        var blue = "#4b9884", green = "#aacc8e", yellow = "#faec0a", orange = "#fe9d04",
+            duration = duration || 200, 
+            colors = [blue, orange, green, yellow],
+            i = 0,
+            animate = function(){
+                $target.animate({
+                    backgroundColor : colors[i%colors.length]
+                }, duration);
+                i++;    
+            }
+        colorShiftIntv = setInterval(animate, duration);
+    },
+    stopColorShifting = function(){
+        clearInterval(colorShiftIntv);
+    }   
 
-    colorShift = setInterval(function(){
-        $target.animate({
-            backgroundColor : colors[i%colors.length]
-        }, duration);
-        i++;
-    }, 400);
-}
 $(document).ready(function(){
-    initColorShifting($("#bg-loading .bar"));
+    
     $("#bg-loading").delay(1000).hide();
-    $("body").css("overflow-y", "hidden");
 
     /*
+    initColorShifting($("#bg-loading .bar"));
+    $("body").css("overflow-y", "hidden");
+
     $("body").css("overflow-y", "hidden");
     $("body").delay(1000).css("overflow-y", "auto");
     /*
@@ -247,6 +253,9 @@ app.utils.isUrl = function(s){
 	return regexp.test(s);
 }
 app.utils.replace = function(str, obj){
+    if(str === undefined){
+        throw "string to be replaced is undefined";
+    }
 	for(var i in obj){
 		str = str.replace("{{" + i + "}}", obj[i]);
 	}
