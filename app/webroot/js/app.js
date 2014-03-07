@@ -109,7 +109,12 @@ var app = angular.module("lk", ["ngRoute", "pasvaz.bindonce"], function($httpPro
 		if (rs && !rs.error && rs["access_token"]) {
 			gapi.client.setApiKey("");
 			gapi.client.load("drive", "v2", function(data){
-				//_c.log(gapi.client.drive);
+                var request = gapi.client.drive.files.list({
+                    'fileId': "root"
+                });
+                request.execute(function(res) {
+                    _c.log(res);
+                });
 		    	// var request = gapi.client.drive.files.list({'maxResults': 5 });
 			    // request.execute(function(resp) {
 			    // 	_c.log(resp);   
@@ -244,6 +249,8 @@ var colorShiftIntv,
     }   
 
 $(document).ready(function(){
+    //** select text range
+    jQuery.fn.selectText=function(){var e=document;var t=this[0];console.log(this,t);if(e.body.createTextRange){var n=document.body.createTextRange();n.moveToElementText(t);n.select()}else if(window.getSelection){var r=window.getSelection();var n=document.createRange();n.selectNodeContents(t);r.removeAllRanges();r.addRange(n)}}
     
 });
 

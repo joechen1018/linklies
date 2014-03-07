@@ -255,18 +255,6 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 			height : gridSystem.height + gridSystem.defaults.bottomHeight + gridSystem.defaults.topHeight,
 			display : $scope.show ? "block" : "none"
 		}
-		var hasScrollbar = gridService.hasScrollbar();
-		if(hasScrollbar){
-			return {
-				height : gridSystem.height + gridSystem.defaults.bottomHeight + gridSystem.defaults.topHeight + 40,
-				display : $scope.show ? "block" : "none"
-			}
-		}else{
-			return {
-				height : gridSystem.height + gridSystem.defaults.bottomHeight + gridSystem.defaults.topHeight + 40,
-				display : $scope.show ? "block" : "none"
-			}
-		}
 	}
 
 	$scope.onBoardDbClick = function($event){
@@ -289,6 +277,13 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 	$scope.onBoardClick = function($event){
 		clearLinks();
 	}
+	$scope.onLinkDbClick = function($event){
+		var $link = $($event.currentTarget),
+			$title = $link.find("a.title");
+
+		//$title.selectText();
+		$event.stopPropagation();
+	}
 	$scope.noIcon = false;
 	$scope.onRightClick = function($event){
 		var x = $event.pageX - gridSystem.defaults.sideWidth;
@@ -299,8 +294,14 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 	}
 
 	$scope.onLinkClick = function($event){
-		// $event.stopPropagation();
-		// $event.preventDefault();
+		$event.stopPropagation();
+		/*
+		var $link = $($event.currentTarget),
+			$title = $link.find("a.title");
+
+		$title.selectText();	
+		$event.stopPropagation();
+		*/
 	}
 	$scope.showBrowser = false;
 	$scope.closeBrowser = function(){

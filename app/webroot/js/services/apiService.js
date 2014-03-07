@@ -27,6 +27,9 @@ app.service("apiService", function($http, apiParser){
 						//** return parsed html - *notice this is just a part of the Link object
 						apiParser.parse(res, url).then(function(obj){
 							_d.resolve(obj);
+						})
+						.fail(function(){
+							_d.reject();
 						});
 					},
 					fail : function(err){
@@ -242,6 +245,11 @@ app.service("apiService", function($http, apiParser){
 		}
 		var clientId = "205449938055-06501obglsfmcellrtc67opqs6ogbs19.apps.googleusercontent.com";
 
+		//** timeout error
+		setTimeout(function(){
+			d.reject();
+		}, 3500);
+
 		//** init rs
 		rs.type = {};
 		rs.type.name = "default";
@@ -432,7 +440,7 @@ app.service("apiService", function($http, apiParser){
 				// rs.title = source + " : " + result;
 			break;
 			case 'google.docs.spreadsheet' : 
-				rs.key = rs.url.match(/^http(s|):\/\/.*docs.google.com\/spreadsheet\/.*key=(.*)\&/)[2];
+				rs.key = rs.url.match(/^http(s|):\/\/.*docs.google.com\/spreadsheet\/.*key=(.*)(\&|#)/)[2];
 				var request = gapi.client.drive.files.get({
 				    'fileId': rs.key
 				});
@@ -492,9 +500,9 @@ app.service("apiService", function($http, apiParser){
 		}
 		//** dom query completed, remove dom
 		$holder.html("");
+		delete $holder;
 
 		return d.promise();
-
 	}
 
 	this.flatten = function(arr, model){

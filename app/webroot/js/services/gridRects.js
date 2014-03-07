@@ -162,7 +162,7 @@ app.service("gridRects", function(gridSystem){
 			var grid;
 			return grid;
 		},
-		gridAvailable : function(grid){
+		gridAvailable : function(grid, originGrid){
 			if(!grid){
 				return false;
 			}
@@ -172,20 +172,24 @@ app.service("gridRects", function(gridSystem){
 				rect2 = self.link.gridToRect(grid);
 
 			//** check folder intersection
-			for(i = 0; i<folders.length; i++){
+			for(var i = 0; i<folders.length; i++){
 				rect1 = self.folder.gridToRect(folders[i].grid);
-				if(rect1.intersects(rect2)){
+				if(rect1.intersects(rect2))
 					return false;
-				}
 			}	
 
-			for(var i = 0; i<links.length; i++){
-				if(arrayEquals(links[i].grid, grid)){
+			for(i = 0; i<links.length; i++){
+				if(arrayEquals(links[i].grid, grid))
 					return false;
-				}else if(self.link.gridToRect(links[i].grid).intersects(rect2)){
-					return false;
+			}
+
+			for(i = 0; i<links.length; i++){
+				if(!arrayEquals(links[i].grid, originGrid)){
+					if(self.link.gridToRect(links[i].grid).intersects(rect2))
+						return false;
 				}
 			}
+
 			return true;
 		},
 		findDragOverFolder : function(dragRect){

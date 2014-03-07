@@ -151,6 +151,7 @@ app.directive("lkFolder", function(gridSystem){
 						});
 					})
 					.fail(function(){
+						_c.log("fail");
 						//** notify controller level
 						$rootScope.$broadcast("linkCreationFailed", scope.data);
 					});
@@ -353,20 +354,24 @@ app.directive("lkFolder", function(gridSystem){
 			var ctrlScope = scope.$parent;
 			$timeout(function(){
 
-				var rects = gridRects;
-				var type = attrs.data;
-				var allRects = type === "link" ? gridRects.link : gridRects.folder;
-				var data = type === "link" ? scope.link : scope.folder;
-				var service = type === "link" ? apiService.linkService : apiService.folderService;
-				var preview = type === "link" ? ctrlScope.dragPreview.link : ctrlScope.dragPreview.folder;
-				var ref = type === "link" ? scope.link : scope.folder;
-				//console.log(ref.grid);
-				var gs = gridSystem;
-				var originRect, originGrid, dragRect, selectedGrid, $ele;
-				var sideWidth = gs.defaults.sideWidth;
-				var timeout;
-				var isAvailable = false;
-				var $selectedFolder, $folders = $(".folder");
+				var _b = function(type){return type === "link"}
+				var rects = gridRects,
+					type = attrs.data,
+					allRects = _b(type) ? gridRects.link : gridRects.folder,
+					data = _b(type) ? scope.link : scope.folder,
+					service = _b(type) ? apiService.linkService : apiService.folderService,
+					preview = _b(type) ? ctrlScope.dragPreview.link : ctrlScope.dragPreview.folder,
+					ref = _b(type) ? scope.link : scope.folder,
+					gs = gridSystem,
+					originRect, 
+					originGrid, 
+					dragRect, 
+					selectedGrid, 
+					sideWidth = gs.defaults.sideWidth,
+					timeout,
+					isAvailable = false,
+					$ele = $(ele),
+					$selectedFolder, $folders = $(".folder");
 
 				scope.$apply(function(){
 					ref.dragging = false;
@@ -394,7 +399,7 @@ app.directive("lkFolder", function(gridSystem){
 							originGrid,
 							dragRect
 						);
-						isAvailable = allRects.gridAvailable(dragGrid);
+						isAvailable = allRects.gridAvailable(dragGrid, originGrid);
 						//if(selectedGrid !== undefined && !gs.occupied.link(selectedGrid)){
 						if(isAvailable){
 							preview.show = true;
@@ -402,7 +407,7 @@ app.directive("lkFolder", function(gridSystem){
 							$folders.removeClass("selected");
 						}else{
 							preview.show = false;
-							if(type === "link"){
+							if(_b(type)){
 								$selectedFolder = allRects.findDragOverFolder(dragRect);
 								$folders = $(".folder");
 
@@ -432,7 +437,7 @@ app.directive("lkFolder", function(gridSystem){
 							dragRect
 						);
 
-						isAvailable = allRects.gridAvailable(dragGrid);
+						isAvailable = allRects.gridAvailable(dragGrid, originGrid);
 						//if there is a selected grid and the selected grid is not occupied
 						if(isAvailable){
 							/*	
