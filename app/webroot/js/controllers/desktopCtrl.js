@@ -91,7 +91,7 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 	apiService.getUser(uid).then(function(rs){
 		
 		var data = rs.data;
-		 _c.log(data);
+		 //_c.log(data);
 		var user = data.User;
 		var links = data.Link;
 		var folders = data.Folder;
@@ -166,6 +166,9 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 		}
 	};
 	$scope.show = false;
+	$scope.templates = {
+		contextMenu : "templates/context-menu.html"
+	};
 	var buffer = (function(){
 		return new (function(){
 			var limit = 800;
@@ -245,8 +248,6 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 	}
 
 	$scope.$watch('resize.size', function(newSize, oldSize){
-		// console.log(newVal);
-		// console.log(oldVal);
 		gridSystem.onResize(newSize);
 	}, true);
 
@@ -275,6 +276,12 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 		$scope.links.push(newLink);
 	}
 	$scope.onBoardClick = function($event){
+		$scope.context = {
+			"show" : false,
+			"class" : "",
+			"left" : -1000,
+			"top" : -1000
+		};
 		clearLinks();
 	}
 	$scope.onLinkDbClick = function($event){
@@ -285,11 +292,32 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 		$event.stopPropagation();
 	}
 	$scope.noIcon = false;
+	$scope.context = {
+		"show" : false,
+		"class" : "",
+		"left" : 0,
+		"top" : 0
+	};
 	$scope.onRightClick = function($event){
-		var x = $event.pageX - gridSystem.defaults.sideWidth;
-		var y = $event.pageY - gridSystem.defaults.topHeight;
-		var g = gridRects.link.findNearGridByPoint(x, y);
-		// _c.log($event.currentTarget);
+		var x = $event.pageX,
+			y = $event.pageY,
+			g = gridRects.link.findNearGridByPoint(x, y),
+			$target = $($event.currentTarget),
+			name = (function(){
+				if($target.attr("id") === "board") return "board";
+				if($target.hasClass("folder")) return "folder";
+				if($target.hasClass("link")) return "link";
+				return "board";
+			})();
+
+		$scope.context = {
+			"show" : true,
+			"class" : name,
+			"left" : x,
+			"top" : y,
+			"grid" : g
+		};
+		$event.stopPropagation();
 		// _c.log("click on " + g);
 	}
 

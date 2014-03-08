@@ -14,6 +14,14 @@ class MockupsController extends AppController{
 
 	}
 
+	public function contextMenu(){
+		
+	}
+
+	public function stackoverflowView(){
+
+	}
+
 	public function searchView(){
 		
 	}

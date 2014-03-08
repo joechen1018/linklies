@@ -19,7 +19,9 @@
 	<div class="bar"></div>
 </div>
 <div id="desktop-view" ng-controller="desktopCtrl" ng-style="getDesktopStyle()">
-		
+
+	<div context-menu context-menu-data="context"></div>
+
 	<div id="msg-box">
 		<div class="arrow-up"></div>
 		<p class="msg-body">Hello Linklies!</p>
@@ -55,7 +57,7 @@
 		height : grids.height,
 		left : grids.defaults.sideWidth,
 		top : grids.defaults.topHeight
-	}" ng-dblclick="onBoardDbClick($event)" ng-click="onBoardClick($event)">
+	}" ng-dblclick="onBoardDbClick($event)" ng-click="onBoardClick($event)" ng-right-click="onRightClick($event)">
 
 			<!-- <ul id="gridLines" ng-class="grids.show ? 'showGrid' : 'hideGrid'">
 				<li class="hline gline" ng-repeat="item in grids.rows" ng-style="{
@@ -69,8 +71,8 @@
 				}"></li>
 			</ul> -->
 			
-			<div lk-folder data="folder" bindonce lk-drag drag-preview="dragPreview.folder" ng-repeat="folder in folders" ></div>
-			<div lk-link data="link" bindonce ng-dblclick="onLinkDbClick($event)" lk-drag drag-preview="dragPreview.link" ng-repeat="link in links" ng-click="onLinkClick($event)"></div>
+			<div lk-folder data="folder" ng-right-click="onRightClick($event)" bindonce lk-drag drag-preview="dragPreview.folder" ng-repeat="folder in folders" ></div>
+			<div lk-link data="link" ng-right-click="onRightClick($event)" bindonce ng-dblclick="onLinkDbClick($event)" lk-drag drag-preview="dragPreview.link" ng-repeat="link in links" ng-click="onLinkClick($event)"></div>
 
 			<div id="folder-drop-preview" ng-style="{
 				width : grids.gridWidth,
@@ -109,25 +111,5 @@
 		</div>
 	</div>
 	<!-- end #browser -->
-
-	<div id="menu-board" class="menu">
-		<ul>
-			<li>
-				<a href="">Create...</a>
-				<ul>
-					<li><a href="">Folder</a></li>
-					<li><a href="">Video Folder</a></li>
-					<li><a href="">Link</a></li>
-				</ul>
-			</li>
-			<li><a href="">Upload</a></li>
-		</ul>
-	</div>
-	<div id="menu-link" class="menu">
-		
-	</div>
-	
-	<div id="bg-dot"></div>
-	<!-- end #bg-dot -->
 </div>
 
