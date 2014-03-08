@@ -5,6 +5,11 @@ var app = angular.module("mk", [], function($httpProvider){
 
 })
 .controller("mockupsCtrl", function($scope, apiService, apiParser){
+
+	$scope.browserData = {
+		url : "http://www.inside.com.tw/2014/02/21/bars-wants-to-be-xiaomi-in-taiwan-on-flyingv"
+	}
+
 	/*var service = apiService.linkService;
 	service.get(542).then(function(link){
 		link = apiParser.linkFromDb(link);
@@ -13,7 +18,8 @@ var app = angular.module("mk", [], function($httpProvider){
 			$scope.results = link.type.results;
 		});
 	});*/
-	var service = apiService.linkService;
+
+	/*var service = apiService.linkService;
 	service.get(626).then(function(link){
 		
 		link = apiParser.linkFromDb(link);
@@ -28,7 +34,7 @@ var app = angular.module("mk", [], function($httpProvider){
 			$(".a").append(link.type.ablock);
 			$("pre").addClass("theme-super");
 		});
-	});
+	});*/
 });
 
 

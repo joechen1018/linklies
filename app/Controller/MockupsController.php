@@ -18,6 +18,10 @@ class MockupsController extends AppController{
 		
 	}
 
+	public function browser(){
+		
+	}
+
 	public function stackoverflowView(){
 
 	}

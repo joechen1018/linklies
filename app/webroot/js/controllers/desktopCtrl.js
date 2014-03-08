@@ -279,8 +279,8 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 		$scope.context = {
 			"show" : false,
 			"class" : "",
-			"left" : -1000,
-			"top" : -1000
+			"left" : '-1000px',
+			"top" : '-1000px'
 		};
 		clearLinks();
 	}
