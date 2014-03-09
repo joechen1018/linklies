@@ -78,7 +78,6 @@ body{
 	       color: white;  
 	    }
 
-
 	    input{
 	      border : 0px solid @color2;
 	      .border-radius(3px);
@@ -519,37 +518,23 @@ body{
 				list-style-type: none;
 				padding:0;
 				li{
-					padding-top : 10px;
-					padding-bottom : 10px;
+					padding-top : 8px;
+					padding-bottom : 8px;
 					border-bottom : 1px solid lighten(@dark, 70%);
 					margin:0;
 					padding-left : 10px;
 					padding-right : 10px;
 					position: relative;
 					display: block;
-					a{
-						font-size : 14px;
-						line-height: 20px;
-						color : @dark;
-						text-decoration: none;
-						padding-bottom : 7px;
-						padding-top : 7px;
-					}
-					a:visited{
-						color : @red;
-					}
-					span{
-						line-height: 20px;
-						padding-left : 10px;
-						font-size : 12px;
-						color : lighten(@dark, 45%);
-					}
 					&:hover{
 						background: @blue;
-						a{
+						a, a:visited{
 							color : white;
+							span.first-letter{
+								color : white;
+							}
 						}
-						span{
+						span.date{
 							color : lighten(@blue, 25%);
 						}
 						span.remove{
@@ -571,6 +556,33 @@ body{
 						&:hover{
 							color : lighten(@dark, 30%);
 						};
+					}
+					a:visited{
+						color : @red;
+						span.first-letter{
+							color : @red;
+						}
+					}
+					span.date{
+						line-height: 20px;
+						padding-left : 10px;
+						font-size : 12px;
+						color : lighten(@dark, 45%);
+					}
+					a, span.first-letter{
+						line-height: 20px;
+						color : @dark;
+						text-decoration: none;
+						padding-bottom : 7px;
+						padding-top : 7px;
+						letter-spacing: 0.8px;
+					}
+					a{
+						font-size : 14px;
+						span.first-letter{
+							font-size : 20px;
+							letter-spacing: -3px;
+						}
 					}
 				}
 			}
@@ -641,9 +653,9 @@ body{
     }
     span.icon{
       position:absolute;
-      font-size:50px;
-      left : ~"calc(50% - 25px)";
-      top : 30px;
+      font-size:60px;
+      left : ~"calc(50% - 30px)";
+      top : 35px;
       color : darken(@blue, 30%);
     }
     &.video{
@@ -684,16 +696,18 @@ body{
       display: block;
       position: absolute;
       font-size:13.5px;
-      text-align: left;
       line-height:15px;
       padding:0 15px 0 15px;
       bottom: 10px;
-      height : 45px;
+      height : 30px;
       overflow: hidden;
+      width : ~"calc(100% - 30px)";
       //width:150px - 10px;
       //white-space: nowrap;
-      text-overflow: ellipsis;
+      //text-overflow: ellipsis;
       font-weight: 400;
+      text-align:center;
+      vertical-align: middle;
       .name{
         color:darken(@blue, 50%); 
       }

@@ -318,7 +318,6 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 			"grid" : g
 		};
 		$event.stopPropagation();
-		// _c.log("click on " + g);
 	}
 
 	$scope.onLinkClick = function($event){

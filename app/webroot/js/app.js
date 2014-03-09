@@ -12,6 +12,38 @@ var _events = {};
     return scroll;
   }];
 }*/
+var token;
+var picker;
+var pickerCallback = function(selection){
+    _c.log(selection);
+}
+var createPicker = function createPicker() {
+    var clientId = "205449938055-06501obglsfmcellrtc67opqs6ogbs19.apps.googleusercontent.com";
+    var picker = new google.picker.PickerBuilder().
+        setAppId(clientId).
+        setOAuthToken(token).
+        // addView(google.picker.ViewId.DOCS_IMAGES).
+        // addView(google.picker.ViewId.DOCS_IMAGES_AND_VIDEOS).
+        // addView(google.picker.ViewId.DOCS_VIDEOS).
+         addView(google.picker.ViewId.DOCUMENTS).
+        // addView(google.picker.ViewId.DRAWINGS).
+        // addView(google.picker.ViewId.FOLDERS).
+        // addView(google.picker.ViewId.FORMS).
+         addView(google.picker.ViewId.IMAGE_SEARCH).
+        // addView(google.picker.ViewId.PDFS).
+        // addView(google.picker.ViewId.PHOTO_ALBUMS).
+        // addView(google.picker.ViewId.PHOTO_UPLOAD).
+        // addView(google.picker.ViewId.PHOTOS).
+        // addView(google.picker.ViewId.PRESENTATIONS).
+        // addView(google.picker.ViewId.RECENTLY_PICKED).
+        // addView(google.picker.ViewId.SPREADSHEETS).
+         addView(google.picker.ViewId.VIDEO_SEARCH).
+         addView(google.picker.ViewId.WEBCAM).
+        addView(google.picker.ViewId.YOUTUBE).
+        setCallback(pickerCallback).
+        build();
+    return picker
+}
 var app = angular.module("lk", ["ngRoute", "pasvaz.bindonce"], function($httpProvider){
 
 })
@@ -19,11 +51,19 @@ var app = angular.module("lk", ["ngRoute", "pasvaz.bindonce"], function($httpPro
 //.provider('$anchorScroll', $AnchorScrollProvider)
 .run(function($location){
 
+    //** load google api v2
 	(function() {
 	    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
 	    po.src = 'https://apis.google.com/js/client.js?onload=onGApiLoaded';
 	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-	  })();
+	})();
+
+    //** load open api  
+    (function() {
+        var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+        po.src = 'http://www.google.com/jsapi';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+    })();
 })
 .config(function($routeProvider){
 	// $routeProvider
@@ -92,6 +132,11 @@ var app = angular.module("lk", ["ngRoute", "pasvaz.bindonce"], function($httpPro
 .controller("appCtrl", function($scope){
 	var checkAuth = function() {
 		gapi.auth.authorize({client_id: clientId, scope: scopes, immediate: true}, authorize);
+        google.load("picker", "1", {
+            callback : function(){
+                _c.log("picker loaded");
+            }
+        });
 	}
 	$scope.onGApiLoaded = function(){
 		//console.log("loaded");
@@ -99,14 +144,19 @@ var app = angular.module("lk", ["ngRoute", "pasvaz.bindonce"], function($httpPro
 		window.setTimeout(checkAuth,1);
 	}
 	window["onGApiLoaded"] = $scope.onGApiLoaded;
+
+    var apiKey = glob.apiKey;
 	var clientId = "205449938055-06501obglsfmcellrtc67opqs6ogbs19.apps.googleusercontent.com";
 	var scopes = 'https://www.googleapis.com/auth/plus.me https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/userinfo.email';
-	var token;
 	var secret = "zo03y8aW30ZAJnJLKYSH4b4v";
 	var userId;
 	var authorize = function(rs){
 		//console.log(rs);
 		if (rs && !rs.error && rs["access_token"]) {
+
+            //** get token
+            token = rs["access_token"];
+
 			gapi.client.setApiKey("");
 			gapi.client.load("drive", "v2", function(data){
                 var request = gapi.client.drive.files.list({
@@ -115,11 +165,25 @@ var app = angular.module("lk", ["ngRoute", "pasvaz.bindonce"], function($httpPro
                 request.execute(function(res) {
                     _c.log(res);
                 });
+
+                /*gapi.load('picker', {'callback': function(){
+                    var picker = new google.picker.PickerBuilder().
+                      addView(google.picker.ViewId.PHOTOS).
+                      setOAuthToken(token).
+                      setDeveloperKey(apiKey).
+                      setCallback(function(){
+                      }).
+                      build();
+                  picker.setVisible(true);
+                }});*/
 		    	// var request = gapi.client.drive.files.list({'maxResults': 5 });
 			    // request.execute(function(resp) {
 			    // 	_c.log(resp);   
 			    // });    
 		    });
+
+
+
 		} else {
 			location.href = root + "users/login";
 		}

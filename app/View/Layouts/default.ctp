@@ -48,6 +48,7 @@
 	<script src="<?php echo $this -> webroot?>js/directives/link-folder.js" type="text/javascript" charset="utf-8"></script>
 	<script src="<?php echo $this -> webroot?>js/directives/context-menu.js" type="text/javascript" charset="utf-8"></script>
 	<script src="<?php echo $this -> webroot?>js/services/apiService.js" type="text/javascript" charset="utf-8"></script>
+
 </head>
 <body style="overflow: hidden;">
 	<?php echo $this -> fetch("content") ?>

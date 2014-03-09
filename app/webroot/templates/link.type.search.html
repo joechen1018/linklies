@@ -1,6 +1,10 @@
 <ul class="search" ng-show="data.view == 'search'">
 	<li bindonce ng-repeat="rs in data.type.results">
-		<a bo-href="rs.href" bo-text="rs.title" target="_blank"></a>
+		<a bo-if="rs.firstLetter == undefined" class="result-title" bo-href="rs.href" bo-text="rs.title" target="_blank"></a>
+		<a bo-if="rs.firstLetter != undefined" class="result-title" bo-href="rs.href" target="_blank">
+			<span class='first-letter'>{{rs.firstLetter | uppercase}}</span>
+			{{rs.restLetter}}
+		</a>
 		<span class="date" bo-text="rs.date"></span>
 		<span data-icon="s" class="remove" ng-click="removeResult($index)"></span>
 	</li>

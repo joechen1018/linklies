@@ -30,5 +30,8 @@ class MockupsController extends AppController{
 		
 	}
 
+	public function picker(){
+		
+	}
 
 } ?>

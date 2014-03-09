@@ -27,9 +27,75 @@ app.directive("contextMenu", function(){
 						"icon" : "c"
 					},
 					{
-						"name" : "upload",
-						"label" : "Upload",
+						"name" : "pick",
+						"label" : "Pick...",
 						"icon" : "b"
+					},
+					{
+						"name" : "images",
+						"label" : "Images...",
+						"icon" : ""
+					},
+					{
+						"name" : "images_videos",
+						"label" : "Images & Videos...",
+						"icon" : "",
+						"options" : [
+							{
+								"name" : "DOCS_IMAGES_AND_VIDEOS",
+								"label" : "Images/Videos",
+								"icon" : ""
+							},
+							{
+								"name" : "PHOTOS",
+								"label" : "Photos",
+								"icon" : ""
+							}
+						]
+					},
+					{
+						"name" : "search",
+						"label" : "Search...",
+						"icon" : "n",
+						"options" : [
+							{
+								"name" : "IMAGE_SEARCH",
+								"label" : "Image Search",
+								"icon" : ""
+							},
+							{
+								"name" : "VIDEO_SEARCH",
+								"label" : "Video Search",
+								"icon" : ""
+							}
+						]
+					},
+					{
+						"name" : "docs",
+						"label" : "Docs...",
+						"icon" : "R",
+						"options" : [
+							{
+								"name" : "SPREADSHEETS",
+								"label" : "Spreadsheet",
+								"icon" : ""
+							},
+							{
+								"name" : "DRAWINGS",
+								"label" : "Drawings",
+								"icon" : ""
+							},
+							{
+								"name" : "DOCUMENTS",
+								"label" : "Documents",
+								"icon" : ""
+							},
+							{
+								"name" : "PRESENTATIONS",
+								"label" : "Presentations",
+								"icon" : ""
+							}
+						]
 					},
 					{
 						"name" : "delete",
@@ -80,7 +146,9 @@ app.directive("contextMenu", function(){
 						"name" : "board",
 						"options" : [
 							byName("new"),
-							byName("upload")
+							byName("images_videos"),
+							byName("search"),
+							byName("docs")
 						]
 					}
 				];
@@ -100,13 +168,29 @@ app.directive("contextMenu", function(){
 					return menuSets[2]
 				})();
 
-				_c.log(scope.context);
-
 				//** display context menu
 				$ele.css("left", newVal.left)
 					.css("top", newVal.top)
 					.css("display", newVal.show ? "block" : "none");
 			});
+
+			scope.onItemClick= function(item){
+				$ele.hide();
+				switch(item.name){
+					case 'pick' : 
+						picker = createPicker([]);
+					break;
+					case 'search' : 
+
+					break;
+					case 'docs' :
+
+					break;
+				}
+			}
+			if(picker){
+				picker.setVisible(true);
+			}
 		}
 	}
 });	

@@ -66,6 +66,25 @@ app.service("apiService", function($http, apiParser){
 			}
 		},
 		folderService : {
+			get : function(id, rel){
+				var _d = $.Deferred();
+				$.ajax({
+					url : root + "api/fetchById/folder/" + id,
+					method : "get",
+					success : function(res){
+						var obj = res.data.Folder;
+						if(rel){
+							_d.resolve(res);
+							return;
+						} 
+						_d.resolve(obj);
+					},
+					fail : function(err){
+						console.log(err);
+					}
+				});
+				return _d.promise();
+			},
 			create : function(){
 
 			},
@@ -118,8 +137,13 @@ app.service("apiService", function($http, apiParser){
 	this.parseGoogleResult = function($list){
 		var rs = [];
 		$list.each(function(i, e){
+			var title = $(e).find("h3.r>a:first-child").text();
+			var first_letter = title.charAt(0);
+			var rest_letter = title.substr(1);
 			rs.push({
-				title : $(e).find("h3.r>a:first-child").text(),
+				title : title,
+				firstLetter : first_letter,
+				restLetter : rest_letter,
 				href : $(e).find("h3.r>a:first-child").attr("href"),
 				date : $(e).find("span.st>span.f").text().split("-")[0]
 			});
