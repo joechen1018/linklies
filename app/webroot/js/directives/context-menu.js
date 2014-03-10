@@ -29,29 +29,39 @@ app.directive("contextMenu", function(){
 					{
 						"name" : "pick",
 						"label" : "Pick...",
+						"icon" : "b",
+						"options" : [
+							{
+								"name" : "pick.docs",
+								"label" : "Google Doc",
+								"icon" : ""
+							},
+							{
+								"name" : "pick.videos",
+								"label" : "Videos",
+								"icon" : ""
+							},
+							{
+								"name" : "pick.images",
+								"label" : "Images",
+								"icon" : ""
+							},
+							{
+								"name" : "pick.files",
+								"label" : "Files",
+								"icon" : ""
+							}
+						]
+					},
+					{
+						"name" : "upload",
+						"label" : "Upload",
 						"icon" : "b"
 					},
 					{
 						"name" : "images",
 						"label" : "Images...",
 						"icon" : ""
-					},
-					{
-						"name" : "images_videos",
-						"label" : "Images & Videos...",
-						"icon" : "",
-						"options" : [
-							{
-								"name" : "DOCS_IMAGES_AND_VIDEOS",
-								"label" : "Images/Videos",
-								"icon" : ""
-							},
-							{
-								"name" : "PHOTOS",
-								"label" : "Photos",
-								"icon" : ""
-							}
-						]
 					},
 					{
 						"name" : "search",
@@ -66,33 +76,6 @@ app.directive("contextMenu", function(){
 							{
 								"name" : "VIDEO_SEARCH",
 								"label" : "Video Search",
-								"icon" : ""
-							}
-						]
-					},
-					{
-						"name" : "docs",
-						"label" : "Docs...",
-						"icon" : "R",
-						"options" : [
-							{
-								"name" : "SPREADSHEETS",
-								"label" : "Spreadsheet",
-								"icon" : ""
-							},
-							{
-								"name" : "DRAWINGS",
-								"label" : "Drawings",
-								"icon" : ""
-							},
-							{
-								"name" : "DOCUMENTS",
-								"label" : "Documents",
-								"icon" : ""
-							},
-							{
-								"name" : "PRESENTATIONS",
-								"label" : "Presentations",
 								"icon" : ""
 							}
 						]
@@ -118,11 +101,6 @@ app.directive("contextMenu", function(){
 								"icon" : "l"
 							},
 							{
-								"name" : "docFolder",
-								"label" : "Doc Folder",
-								"icon" : "R"
-							},
-							{
 								"name" : "link",
 								"label" : "Link",
 								"icon" : "v"
@@ -146,9 +124,9 @@ app.directive("contextMenu", function(){
 						"name" : "board",
 						"options" : [
 							byName("new"),
-							byName("images_videos"),
-							byName("search"),
-							byName("docs")
+							byName("upload"),
+							byName("pick"),
+							byName("search")
 						]
 					}
 				];
@@ -168,29 +146,56 @@ app.directive("contextMenu", function(){
 					return menuSets[2]
 				})();
 
-				//** display context menu
+				/** display context menu
 				$ele.css("left", newVal.left)
-					.css("top", newVal.top)
-					.css("display", newVal.show ? "block" : "none");
+					.css("top", newVal.top);
+
+				if(newVal.show){
+					$ele.show();
+				} 
+				else{
+					$ele.hide();
+				}
+				*/
 			});
 
-			scope.onItemClick= function(item){
+			scope.onItemClick= function($event, item){
 				$ele.hide();
-				switch(item.name){
-					case 'pick' : 
-						picker = createPicker([]);
-					break;
-					case 'search' : 
+				if(item.name === "new"){
 
-					break;
-					case 'docs' :
-
-					break;
+				}else{
+					picker = createPicker(item.name, function(selection){
+						//** callback
+						_c.log(selection);
+					});
+					picker.setVisible(true);
 				}
+				$event.stopPropagation();
 			}
-			if(picker){
-				picker.setVisible(true);
-			}
+
 		}
 	}
 });	
+
+
+/*
+
+pick - docs
+	 - images
+	 - videos
+	 - files
+
+search - images
+	   - videos
+
+upload - files
+
+webcam
+
+
+
+"name" : "docFolder",
+"label" : "Doc Folder",
+"icon" : "R"
+
+*/

@@ -24,7 +24,7 @@
 
 	<div id="msg-box">
 		<div class="arrow-up"></div>
-		<p class="msg-body">Hello Linklies!</p>
+		<p class="msg-body"></p>
 	</div>
 
 	<div id="topbar">

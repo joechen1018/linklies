@@ -17,32 +17,103 @@ var picker;
 var pickerCallback = function(selection){
     _c.log(selection);
 }
-var createPicker = function createPicker() {
+var createPicker = function createPicker(set, fn) {
     var clientId = "205449938055-06501obglsfmcellrtc67opqs6ogbs19.apps.googleusercontent.com";
-    var picker = new google.picker.PickerBuilder().
-        setAppId(clientId).
-        setOAuthToken(token).
-        // addView(google.picker.ViewId.DOCS_IMAGES).
-        // addView(google.picker.ViewId.DOCS_IMAGES_AND_VIDEOS).
-        // addView(google.picker.ViewId.DOCS_VIDEOS).
-         addView(google.picker.ViewId.DOCUMENTS).
-        // addView(google.picker.ViewId.DRAWINGS).
-        // addView(google.picker.ViewId.FOLDERS).
-        // addView(google.picker.ViewId.FORMS).
-         addView(google.picker.ViewId.IMAGE_SEARCH).
-        // addView(google.picker.ViewId.PDFS).
-        // addView(google.picker.ViewId.PHOTO_ALBUMS).
-        // addView(google.picker.ViewId.PHOTO_UPLOAD).
-        // addView(google.picker.ViewId.PHOTOS).
-        // addView(google.picker.ViewId.PRESENTATIONS).
-        // addView(google.picker.ViewId.RECENTLY_PICKED).
-        // addView(google.picker.ViewId.SPREADSHEETS).
-         addView(google.picker.ViewId.VIDEO_SEARCH).
-         addView(google.picker.ViewId.WEBCAM).
-        addView(google.picker.ViewId.YOUTUBE).
-        setCallback(pickerCallback).
-        build();
-    return picker
+    var _picker,
+        _view = google.picker.ViewId;
+    
+    switch(set){
+        case 'pick':
+            _picker = new google.picker.PickerBuilder()
+                   .setAppId(clientId)
+                   .setOAuthToken(token)
+                   .addView(_view.DOCUMENTS)
+                   .addView(_view.SPREADSHEETS)
+                   .addView(_view.FORMS)
+                   .addView(_view.PRESENTATIONS)
+                   .addView(_view.DRAWINGS)
+                   .addView(_view.DOCS_IMAGES)
+                   .addView(_view.DOCS_VIDEOS)
+                   .addView(_view.YOUTUBE)
+                   .setCallback(fn)
+                   .build();
+
+        break;
+        case 'pick.docs':
+            _picker = new google.picker.PickerBuilder()
+                   .setAppId(clientId)
+                   .setOAuthToken(token)
+                   .addView(_view.DOCUMENTS)
+                   .addView(_view.SPREADSHEETS)
+                   .addView(_view.FORMS)
+                   .addView(_view.PRESENTATIONS)
+                   .addView(_view.DRAWINGS)
+                   .setCallback(fn)
+                   .build();
+        break;
+        case 'pick.images':
+            _picker = new google.picker.PickerBuilder()
+                   .setAppId(clientId)
+                   .setOAuthToken(token)
+                   .addView(_view.DOCS_IMAGES)
+                   .setCallback(fn)
+                   .build();
+        break;
+        case 'pick.videos':
+            _picker = new google.picker.PickerBuilder()
+                   .setAppId(clientId)
+                   .setOAuthToken(token)
+                   .addView(_view.DOCS_VIDEOS)
+                   .setCallback(fn)
+                   .build();
+        break;
+        case 'pick.files' :
+            _picker = new google.picker.PickerBuilder()
+                   .setAppId(clientId)
+                   .setOAuthToken(token)
+                   .addView(_view.DOCS)
+                   .setCallback(fn)
+                   .build();
+        break;
+        case 'upload' :
+            _picker = new google.picker.PickerBuilder()
+                    .setAppId(clientId)
+                    .setOAuthToken(token)
+                    .addView(_view.PHOTO_UPLOAD)
+                    .addView(
+                        new google.picker.DocsUploadView() //** .setParent() .setTitle()
+                    )
+                    .setCallback(fn)
+                    .build();
+        break;
+        case 'search' : 
+            _picker = new google.picker.PickerBuilder()
+                    .setAppId(clientId)
+                    .setOAuthToken(token)
+                    .addView(_view.VIDEO_SEARCH)
+                    .addView(_view.IMAGE_SEARCH)
+                    .setCallback(fn)
+                    .build();
+        break;
+        default : 
+            _picker = new google.picker.PickerBuilder()
+                   .setAppId(clientId)
+                   .setOAuthToken(token)
+                   .addView(_view.DOCS)
+                   .setCallback(fn)
+                   .build();
+        break;
+    }
+
+    /*    
+    addView(google.picker.ViewId.FOLDERS)
+    addView(google.picker.ViewId.PHOTO_ALBUMS)
+    addView(google.picker.ViewId.PHOTOS)
+    addView(google.picker.ViewId.RECENTLY_PICKED)
+    addView(google.picker.ViewId.WEBCAM)
+    */
+
+    return _picker
 }
 var app = angular.module("lk", ["ngRoute", "pasvaz.bindonce"], function($httpProvider){
 
@@ -64,6 +135,13 @@ var app = angular.module("lk", ["ngRoute", "pasvaz.bindonce"], function($httpPro
         po.src = 'http://www.google.com/jsapi';
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
     })();
+
+    //** on unload
+    $(window).bind("beforeunload",function(event){
+        sessionStorage.clear();
+        localStorage.clear();
+       //return "";
+    });
 })
 .config(function($routeProvider){
 	// $routeProvider
@@ -94,6 +172,8 @@ var app = angular.module("lk", ["ngRoute", "pasvaz.bindonce"], function($httpPro
                 fn(scope, {$event:event});
             });
         });
+        /*
+        */
     };
 })
 .directive('retrySrc', function (apiService) {
@@ -103,10 +183,14 @@ var app = angular.module("lk", ["ngRoute", "pasvaz.bindonce"], function($httpPro
         if(attrs.retrySrc === "api"){
             var data = scope.data;
             var getKey = function(name){
-                if(!name) return false;
-                if(name.indexOf('spreadsheet') !== -1) return data.url.match(/^http(s|):\/\/.*docs.google.com\/spreadsheet\/.*key=(.*)\&/)[2];
-                if(name.indexOf('document') !== -1) return data.url.match(/.+d\/([a-zA-z0-9\-_]*)(\/|)(.+|)/)[1];
-                if(name.indexOf('presentations') !== -1) return data.url.match(/.+d\/([a-zA-z0-9\-_]*)(\/|)(.+|)/)[1];
+                try{
+                    if(!name) return false;
+                    if(name.indexOf('spreadsheet') !== -1) return data.url.match(/^http(s|):\/\/.*docs.google.com\/spreadsheet\/.*key=(.*)\&/)[2];
+                    if(name.indexOf('document') !== -1) return data.url.match(/.+d\/([a-zA-z0-9\-_]*)(\/|)(.+|)/)[1];
+                    if(name.indexOf('presentations') !== -1) return data.url.match(/.+d\/([a-zA-z0-9\-_]*)(\/|)(.+|)/)[1];
+                }catch(e){
+                    return false;
+                }
             }
             if(typeof data.type === "object"){
                 var key = getKey(data.type.name);

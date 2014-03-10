@@ -1,7 +1,6 @@
-var signinCallback = function(data){
-	console.log(data);
-}
-var glob = {};
+var glob = {},
+	_c = console;
+
 var app = angular.module("lk", ["ngRoute"])
 .run(function($location){
 	//console.log($.cookie("user.token"));
@@ -42,15 +41,17 @@ var app = angular.module("lk", ["ngRoute"])
 
 	//oauth
 	var clientId = "205449938055-06501obglsfmcellrtc67opqs6ogbs19.apps.googleusercontent.com";
-	var scopes = 'https://www.googleapis.com/auth/plus.me https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/photo';
+	var scopes = 'https://www.googleapis.com/auth/plus.me https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/urlshortener';
 	var token;
 	var secret = "zo03y8aW30ZAJnJLKYSH4b4v";
 	var userId;
 	var checkAuth = function() {
+
 		gapi.auth.authorize({
 			client_id: clientId, 
 			scope: scopes, 
-			immediate: true}, authorize);
+			immediate: false
+		}, authorize);
 
 		$scope.$apply(function(){
 			$scope.state = "checking";
@@ -78,13 +79,15 @@ var app = angular.module("lk", ["ngRoute"])
 			        		method : "post",
 			        		data : resp,
 			        		success : function(res){
-			        			console.log(res);
-			        			/*var user = res.data.User;
+			        			if(typeof sessionStorage !== undefined){
+			        				_c.log("saving data to sessionStorage");
+			        				sessionStorage.setItem("userData", JSON.stringify(res));
+			        			}
+			        			var user = res.data.User;
 			        			if(user && user.username_id){
 			        				location.href = root + user.username_id
-			        				console.log(root + user.username_id);
 			        				return;
-			        			}*/
+			        			}
 			        			//location.href = root + res.userId;
 			        		},
 			        		error : function(){

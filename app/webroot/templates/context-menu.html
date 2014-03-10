@@ -1,10 +1,14 @@
-<ul class="context-menu">
-	<li ng-repeat="opt in context.set.options" ng-click="onItemClick(opt)">
+<ul class="context-menu" ng-style="{
+	left : context.left,
+	top : context.top,
+	display : context.show ? 'block' : 'none'
+}">
+	<li ng-repeat="opt in context.set.options" ng-click="onItemClick($event, opt)">
 		<span class="icon" data-icon="{{opt.icon}}"></span>
 		<a href="">{{opt.label}}</a>
 		<ul ng-if="opt.options.length > 0">
 			<span class="icon icon-child" data-icon="V"></span>
-			<li ng-repeat="copt in opt.options" ng-click="onItemClick(copt)">
+			<li ng-repeat="copt in opt.options" ng-click="onItemClick($event, copt)">
 				<span class="icon" data-icon="{{copt.icon}}"></span>
 				<a href="">{{copt.label}}</a>
 			</li>

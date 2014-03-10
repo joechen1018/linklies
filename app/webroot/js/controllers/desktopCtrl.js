@@ -1,47 +1,17 @@
 'use strict';
 
 goog.require('goog.math.Rect');
-app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, gridService, keyboardManager, resize, gridSystem, gridRects, apiService, uuid){
+app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, 
+									    keyboardManager, resize, gridSystem, gridRects, apiService, uuid, apiParser){
 
 	var $allElements;
 	var timeout;
 	var rs = resize;
-	var gs = gridService;
-	var sideWidth = gs.sideWidth;
 	var init = function(){
 
 		var onSizeChange = function(){
-			gs.update();
 		}
 		var onSizeDown = function(evt, lastWidth){
-			/*var folders = $scope.folders, folder, grid, rect, dist, newGrid;
-			var cols = gs.cols;
-
-			//gs.update($scope.folders, $scope.links);
-
-			//lastWidth = $(window).width();
-			for(var i = folders.length - 1; i>-1; i--){
-
-				folder = folders[i];
-				grid = folder.grid;
-				rect = gs.gridToRect.folder(grid);
-				dist = 1 * gs.sideWidth + rect.left + rect.width;
-				//lastWidth = $(window).width();
-				if($(window).width() <= dist + 2 * gs.sideWidth){
-
-					rs.whenWidthGreater(dist, i, grid).then(function(index, grid){
-						$scope.$apply(function(){
-							$scope.folders[index].grid = grid;
-						});
-					});
-
-					newGrid = gs.findNextGrid.folder(grid, i);
-					//console.log(newGrid, i);
-					$scope.folders[i].grid = newGrid;
-				}
-			}*/
-			$scope.$apply();
-			//gs.update();
 		}
 
 		$(rs).on("sizeChange", onSizeDown);
@@ -71,7 +41,7 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 			$("body").css("overflow", "auto");
 			$("#bg-loading").delay(10).hide();
 			gridSystem.update();
-		}, 10);
+		}, 100);
 	}
 	var clearLinks = function(){
 		for(var i = $scope.links.length - 1; i>-1; i--){
@@ -81,77 +51,86 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 		}
 	}
 
-	//user identifier
-	var url = $.url();
-	var uid = url.attr("path");
-	uid = uid.split("/");
-	uid = uid[uid.length - 1];
-	glob.user = false;
+	var onUserDataFetched = function(rs){
 
-	apiService.getUser(uid).then(function(rs){
-		
-		var data = rs.data;
-		 //_c.log(data);
-		var user = data.User;
-		var links = data.Link;
-		var folders = data.Folder;
-		var _try = function(data){
-			var a;
-			try{
-		        a = $.parseJSON(data);
-		    }catch(e){
-		    	_c.warn("link type parse error");
-		    	_c.warn(data);
-		    	return {};
-		    }
-		    return a;
-		}
+		var data = rs.data,
+			user = data.User,
+			links = data.Link,
+			folders = data.Folder,
+			phase,
+			_try = function(data){
+				var a;
+				try{
+			        a = $.parseJSON(data);
+			    }catch(e){
+			    	_c.warn("link type parse error");
+			    	_c.warn(data);
+			    	return {};
+			    }
+			    return a;
+			}
 
-		//** global variable to hold total number of links
+		//** parse links to objects	
+		$(links).each(function(i, e){
+			if(typeof links[i].grid === "string"){
+				links[i] = apiParser.linkFromDb(e);
+			}
+		});	
+
+		//** global variable used in app.js
 		expectCount = links.length;
 
+		//** scope variables
 		$scope.user = user;
 		$scope.user_id = user.id;
 		$scope.username_id = user.username_id;
-
-		for(var i = 0; i<links.length; i++){
-			links[i].state = {name : "ready"};
-			links[i].grid = links[i].grid.split(",");
-			links[i].grid = [parseInt(links[i].grid[0], 10), parseInt(links[i].grid[1], 10)];
-
-			if(links[i].meta == ""){
-				links[i].meta = "{}";
-			}
-			links[i].meta = _try(links[i].meta);
-			//links[i].type = _try(links[i].type);
-			if(links[i].type == ""){
-				links[i].type = "{}";
-			}
-			links[i].type = _try(links[i].type.trim());
-			// _c.log(links[i].type);
-			if(links[i].view == "search"){
-				// _c.log(links[i].type);
-			}
-		}
-		for(i = 0; i<folders.length; i++){
-			folders[i].grid = folders[i].grid.split(",");
-			folders[i].grid = [parseInt(folders[i].grid[0], 10), parseInt(folders[i].grid[1], 10)];
-		}
-
 		$scope.links = links;
 		$scope.folders = folders;
 		$scope.show = true;
 		
+		//** init grid rects
 		gridRects.links = links;
 		gridRects.folders = folders;
 
+		//** global user
 		glob.user = user;
 
-		$scope.$apply();
-		init();
-	});
+		//** if $scope is not digesting
+		phase = $scope.$root.$$phase;
+		if(phase !== '$apply' && phase !== '$digest') {
+			$scope.$apply();
+		}
 
-	$scope.grid = gridService;
+		//** init desktop
+		//init();
+		setTimeout(init, 100);
+	}
+	//user identifier
+	var url = $.url();
+	var uid = url.attr("path");
+	var userData;
+
+	uid = uid.split("/");
+	uid = uid[uid.length - 1];
+	glob.user = false;
+
+	//** will try cache user data later
+	//if(typeof sessionStorage !== undefined){
+	if(false){	
+		userData = sessionStorage.getItem("userData");
+		if(userData !== undefined){
+			try{
+				userData = JSON.parse(userData);
+				onUserDataFetched(userData);
+			}catch(e){
+				userData = undefined;
+			}
+		}
+	}
+	if(userData === undefined){
+		apiService.getUser(uid).then(onUserDataFetched);
+	}
+
 	$scope.resize = resize;
 	$scope.grids = gridSystem;
 	$scope.showGrid = false;
@@ -165,7 +144,6 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, grid
 			show : false
 		}
 	};
-	$scope.show = false;
 	$scope.templates = {
 		contextMenu : "templates/context-menu.html"
 	};
