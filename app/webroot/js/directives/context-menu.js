@@ -28,7 +28,7 @@ app.directive("contextMenu", function(){
 					},
 					{
 						"name" : "pick",
-						"label" : "Pick...",
+						"label" : "Pick",
 						"icon" : "b",
 						"options" : [
 							{
@@ -60,25 +60,13 @@ app.directive("contextMenu", function(){
 					},
 					{
 						"name" : "images",
-						"label" : "Images...",
+						"label" : "Images",
 						"icon" : ""
 					},
 					{
 						"name" : "search",
-						"label" : "Search...",
+						"label" : "Search",
 						"icon" : "n",
-						"options" : [
-							{
-								"name" : "IMAGE_SEARCH",
-								"label" : "Image Search",
-								"icon" : ""
-							},
-							{
-								"name" : "VIDEO_SEARCH",
-								"label" : "Video Search",
-								"icon" : ""
-							}
-						]
 					},
 					{
 						"name" : "delete",

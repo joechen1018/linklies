@@ -521,6 +521,21 @@ app.service("apiService", function($http, apiParser){
 				// _c.log(rs);
 				d.resolve(rs);
 			break;
+			case 'google.docs.file' : 
+				rs.key = rs.url.match(/.+d\/([a-zA-z0-9\-_]*)(\/|)(.+|)/)[1];
+				var request = gapi.client.drive.files.get({
+				    'fileId': rs.key
+				});
+				request.execute(function(resp) {
+					rs.doc = {};
+					rs.doc.file = resp;
+					rs.title = resp.title;
+					rs.thumb = resp.thumbnailLink;
+					//rs.view = "doc";
+					// _c.log(rs);	
+					d.resolve(rs);
+				});
+			break;
 		}
 		//** dom query completed, remove dom
 		$holder.html("");
@@ -610,6 +625,10 @@ app.service("apiService", function($http, apiParser){
 		"google.docs.forms" : {
 			match : "^(http(s|)\:\/\/)?(www\.)?(docs\.google\.com/forms)\/.+$",
 			ico : "https://ssl.gstatic.com/docs/spreadsheets/forms/favicon_jfk2.png"
+		},
+		"google.docs.file" : {
+			match : "^(http(s|)\:\/\/)?(www\.)?(docs\.google\.com/file)\/.+$",
+			ico : "https://ssl.gstatic.com/docs/doclist/images/icon_11_image_favicon.ico"
 		},
 		"youku" : {
 			match : ".+(youku\.com)\/.+",

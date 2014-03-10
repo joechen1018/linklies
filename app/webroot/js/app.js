@@ -95,6 +95,22 @@ var createPicker = function createPicker(set, fn) {
                     .setCallback(fn)
                     .build();
         break;
+        case 'search.images' : 
+            _picker = new google.picker.PickerBuilder()
+                    .setAppId(clientId)
+                    .setOAuthToken(token)
+                    .addView(_view.IMAGE_SEARCH)
+                    .setCallback(fn)
+                    .build();
+        break;
+        case 'search.videos' : 
+            _picker = new google.picker.PickerBuilder()
+                    .setAppId(clientId)
+                    .setOAuthToken(token)
+                    .addView(_view.VIDEO_SEARCH)
+                    .setCallback(fn)
+                    .build();
+        break;
         default : 
             _picker = new google.picker.PickerBuilder()
                    .setAppId(clientId)
