@@ -1,0 +1,101 @@
+@gridWidth : 150px;
+@gridHeight : 30px;
+@gridVPadding : 10px;
+@gridHPadding : 10px;
+@gridPadding : 10px;
+@folderHeight : 4*@gridHeight + 3*@gridPadding;
+
+.folder{
+    @size : 4*@gridHeight + 3*@gridVPadding;
+    position:absolute;
+    width : 150px;
+    height : @size;
+    background: lighten(@blue, 10%);
+    // background: @blue url(../img/icons-3/SVG/folder12.svg) center 0px no-repeat;
+    // background-size:@size*0.7;
+    z-index:2;
+    .alpha(0.85);
+    cursor : pointer;
+    .shadow-light;
+    overflow: hidden;
+    -webkit-border-radius: 3px 3px 0 0;
+    border-radius: 3px;
+    
+    div.close{
+      display: none;
+    }
+    span.icon{
+      position:absolute;
+      font-size:60px;
+      left : ~"calc(50% - 30px)";
+      top : 35px;
+      color : darken(@blue, 30%);
+    }
+    &.video{
+      background: lighten(@orange, 10%);
+      color : darken(@orange, 40%);
+      span.icon{
+        color : darken(@orange, 40%);
+      }
+    }
+    &.googleSearch{
+      background: lighten(@yellow, 10%);
+      color : darken(@yellow, 40%);
+      span.icon{
+        color : darken(@yellow, 40%);
+      }
+    }
+    &.stackOverflow{
+      // background: @blue url(../img/icons-3/SVG/movie3.svg) center 0px no-repeat;
+      // background-size:@size*0.7;
+      background: lighten(@green, 10%);
+      .name{
+        color:darken(@green, 70%); 
+      }
+      // &:after{
+      //   position:absolute;
+      //   width:16px;
+      //   height:16px;
+      //   background: url(http://www.youtube.com/favicon.ico) left top no-repeat;
+      //   content : "";
+      //   right : 10px;
+      //   top : 10px;
+      // }
+      span.icon{
+        color : darken(@green, 50%);
+      }
+    }
+    .name{
+      display: block;
+      position: absolute;
+      font-size:13.5px;
+      line-height:15px;
+      padding:0 15px 0 15px;
+      bottom: 10px;
+      height : 30px;
+      overflow: hidden;
+      width : ~"calc(100% - 30px)";
+      //width:150px - 10px;
+      //white-space: nowrap;
+      //text-overflow: ellipsis;
+      font-weight: 400;
+      text-align:center;
+      vertical-align: middle;
+      .name{
+        color:darken(@blue, 50%); 
+      }
+    }
+    &.selected{
+      background: white;
+      .alpha(1);
+      div.close{
+        //display: block;
+        position: absolute;
+        right : 5px;
+        top : 5px;
+        font-size:20px;
+        //color : darken(@red, 15%);
+        color : black;
+      }
+    };
+}

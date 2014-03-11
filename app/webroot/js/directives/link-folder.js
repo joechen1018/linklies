@@ -99,6 +99,7 @@ app.directive("lkFolder", function(gridSystem){
 			}
 
 			scope.onPasted = function(url){
+
 				if(app.utils.isUrl(url)){
 
 					scope.data.url = url;
@@ -147,7 +148,7 @@ app.directive("lkFolder", function(gridSystem){
 								scope.data.id = rs.id;
 							});
 							//** notify controller level
-							$rootScope.$broadcast("linkCreationComplete", scope.data);
+							$rootScope.$broadcast("linkCreationComplete", data);
 						});
 					})
 					.fail(function(){
@@ -180,7 +181,7 @@ app.directive("lkFolder", function(gridSystem){
 			}
 
 			scope.openPage = function(){
-				$rootScope.$broadcast("openPage", scope.data.url);
+				$rootScope.$broadcast("openPage", scope.data);
 			}
 
 			scope.playVideo = function(){
@@ -252,6 +253,9 @@ app.directive("lkFolder", function(gridSystem){
 					scope.isPlayingVideo = false;
 					scope.showDetail = false;
 				}, 1);
+
+				//** focus me for 30 sec
+				$rootScope.$broadcast("stopVideo", scope.data);
 			}
 			
 			var timer, timer1, timer3;

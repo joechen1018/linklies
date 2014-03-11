@@ -102,7 +102,6 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http,
 		}
 
 		//** init desktop
-		//init();
 		setTimeout(init, 100);
 	}
 	//user identifier
@@ -269,6 +268,7 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http,
 		clearLinks();
 		$scope.links.push(newLink);
 	}
+
 	$scope.onBoardClick = function($event){
 		$scope.context = {
 			"show" : false,
@@ -278,6 +278,7 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http,
 		};
 		clearLinks();
 	}
+
 	$scope.onLinkDbClick = function($event){
 		var $link = $($event.currentTarget),
 			$title = $link.find("a.title");
@@ -285,6 +286,7 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http,
 		//$title.selectText();
 		$event.stopPropagation();
 	}
+
 	$scope.noIcon = false;
 	$scope.context = {
 		"show" : false,
@@ -292,6 +294,7 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http,
 		"left" : 0,
 		"top" : 0
 	};
+
 	$scope.onRightClick = function($event){
 		var x = $event.pageX,
 			y = $event.pageY,
@@ -329,21 +332,46 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http,
 		$scope.showBrowser = false;	
 		$("#browser iframe").attr("src", "");
 		$("body").css("overflow", "");
+
+		applyFocus(browsingLink, getLinkIndex(browsingLink), false);
+	}
+	var getLinkIndex = function(link){
+		var _t = function(str){try{eval(str);}catch(e){return false;}}
+		for(var i = 0; i<$scope.links.length; i++){
+			if(_t('$scope.links[i].uuid == link.uuid') || _t('$scope.links[i].id == link.id')){
+				return i;
+			}
+		}
+		return -1;
+	}
+	var currentHoverLink;
+	var applyFocus = function(targetLink, i, doApply){
+		doApply = doApply == undefined ? true : false;
+		targetLink.state.focusMe = true;
+
+		if(doApply){
+			$scope.$apply(function(){
+				$scope.links[i] = targetLink;
+			});	
+		}else{
+			$scope.links[i] = targetLink;	
+		}
+		
+		setTimeout(function(){
+			$scope.$apply(function(){
+				$scope.links[i].state.focusMe = false;
+			});
+		}, 30 * 1000);
 	}
 
-	var currentHoverLink;
 	$rootScope.$on("linkCreationComplete", function(e, link){
 		for(var i = 0; i<$scope.links.length; i++){
-			if($scope.links[i].uuid === link.uuid){
-				if($.type(link.type) === "string"){
-					link.type = JSON.parse(link.type);
-				}
-				$scope.$apply(function(){
-					$scope.links[i] = link;	
-				});
+			if($scope.links[i].uuid == link.uuid){
+				applyFocus(link, i);
 			}
 		}
 	});
+
 	$rootScope.$on("linkCreationFailed", function(e, link){
 		for(var i = 0; i<$scope.links.length; i++){
 			if($scope.links[i].uuid === link.uuid){
@@ -353,9 +381,11 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http,
 			}
 		}
 	});
+
 	$rootScope.$on("linkHover", function(e, link){
 		currentHoverLink = link;
 	});
+
 	$rootScope.$on("removeLink", function(e, id){
 		for(var i = 0; i<$scope.links.length; i++){
 			if($scope.links[i].uuid == id || $scope.links[i].id == id){
@@ -366,11 +396,15 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http,
 			}
 		}
 	});
-	$rootScope.$on("openPage", function(e, url){
-		var $iframe = $("#browser iframe")
-			,$body = $("body");
 
-		$iframe.attr("src", url);
+	var browsingLink;
+	$rootScope.$on("openPage", function(e, link){
+		var $iframe = $("#browser iframe"),
+		$body = $("body");
+
+		browsingLink = link;
+
+		$iframe.attr("src", link.url);
 		$body.css("overflow", "hidden");
 
 		$scope.showBrowser = true;
@@ -386,5 +420,9 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http,
 				
 			});
 		});
+	});
+
+	$rootScope.$on("stopVideo", function(e, link){
+		applyFocus(link, getLinkIndex(link), false);
 	});
 });
