@@ -27,6 +27,11 @@ app.directive("contextMenu", function(){
 						"icon" : "c"
 					},
 					{
+						"name" : "rename",
+						"label" : "Rename",
+						"icon" : ""
+					},
+					{
 						"name" : "pick",
 						"label" : "Pick",
 						"icon" : "b",
@@ -79,17 +84,17 @@ app.directive("contextMenu", function(){
 						"label" : "New",
 						"options" : [
 							{
-								"name" : "folder",
+								"name" : "new.folder",
 								"label" : "Folder",
 								"icon" : "a"
 							},
 							{
-								"name" : "videoFolder",
+								"name" : "new.videoFolder",
 								"label" : "Video Folder",
 								"icon" : "l"
 							},
 							{
-								"name" : "link",
+								"name" : "new.link",
 								"label" : "Link",
 								"icon" : "v"
 							}
@@ -101,6 +106,7 @@ app.directive("contextMenu", function(){
 						"name" : "folder",
 						"options" : [
 							byName("openView"),
+							byName("rename"),
 							byName("delete")
 						]
 					},

@@ -1,4 +1,10 @@
-<div id="link-{{data.uuid}}" class="link {{data.state.name}} {{data.type.name.split('.').join('-')}}" data-grid="{{data.grid}}" ng-style="linkStyle()">
+<div id="link-{{data.uuid}}" ng-class="{
+	'link' : true, 
+	'state-paste-url' : data.state.name == 'paste-url',
+	'state-loading' : data.state.name == 'loading',
+	'state-ready' : data.state.name == 'ready',
+	'focus-me' : data.state.focusMe == true
+}" data-grid="{{data.grid}}" ng-style="linkStyle()">
 	<div ng-include="templates.state"></div>
 	<div ng-include="templates.detail"></div>
 </div>
