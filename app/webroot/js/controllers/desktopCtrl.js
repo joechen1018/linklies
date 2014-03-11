@@ -236,6 +236,22 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http,
 		}
 	}
 
+	$scope.createLinkAt = function(url, grid){
+		var newLink = {
+			grid : grid,
+			uuid : uuid.create(),
+			username_id : glob.user.username_id,
+			user_id : glob.user.id,
+			url : url,
+			state : {
+				name : "paste-url",
+				focus : true
+			}
+		}
+		clearLinks();
+		$scope.links.push(newLink);
+	}
+
 	$scope.onBoardDbClick = function($event){
 		var x = $event.pageX - gridSystem.defaults.sideWidth;
 		var y = $event.pageY - gridSystem.defaults.topHeight;

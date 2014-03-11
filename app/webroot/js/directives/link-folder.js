@@ -106,7 +106,7 @@ app.directive("lkFolder", function(gridSystem){
 
 					setTimeout(function(){
 						startColorShifting($ele.find(".state-loading .no-icon"));
-					}, 10);
+					}, 100);
 					
 					linkService.create(url).then(function(data){
 

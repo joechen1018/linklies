@@ -1,4 +1,4 @@
-app.directive("contextMenu", function(){
+app.directive("contextMenu", function(uuid, apiService, apiParser, $rootScope){
 	return {
 		restrict : "EA",
 		templateUrl : "templates/context-menu.html",
@@ -29,7 +29,7 @@ app.directive("contextMenu", function(){
 					{
 						"name" : "pick",
 						"label" : "Pick",
-						"icon" : "b",
+						"icon" : "R",
 						"options" : [
 							{
 								"name" : "pick.docs",
@@ -152,9 +152,75 @@ app.directive("contextMenu", function(){
 				if(item.name === "new"){
 
 				}else{
-					picker = createPicker(item.name, function(selection){
-						//** callback
-						_c.log(selection);
+					_c.log("click");
+					picker = createPicker(item.name, function(rs){
+						_c.log(rs);
+
+						//** callback doesn't just get called on finish selecting
+						if(rs.action === "picked"){
+
+							var item = rs.docs[0],
+								title = item.name,
+								url = item.url,
+								grid = scope.context.grid,
+								linkService = apiService.linkService,
+								ctrl = scope.$parent;
+
+							var newLink = {
+								grid : grid,
+								uuid : uuid.create(),
+								username_id : glob.user.username_id,
+								user_id : glob.user.id,
+								url : url,
+								state : {
+									name : "loading",
+									focus : true
+								}
+							};
+
+							if(typeof item.thumbnails === "object"){
+								if(item.thumbnails.length === 1)
+									newLink.thumb = item.thumbnails[0].url;
+								else if(item.thumbnails.length === 2)
+									newLink.thumb = item.thumbnails[1].url;
+							}
+
+							//** color animation 
+							startColorShifting($(".link").last().find(".state-loading .no-icon"));
+
+							ctrl.links.push(newLink);
+							linkService.create(url).then(function(data){
+								_c.log(data);
+								//** use new data but keep a copy of the old
+								var odata = newLink;
+
+								//** attribute that we will use from old
+								var list = ["id", "dragging", "grid", "url", "thumb", "user_id", "username_id", "uuid"];
+								for(var i in odata){
+									for(var j = 0; j<list.length; j++){
+										if(i == list[j]){
+											data[i] = odata[list[j]];
+										}
+									}
+								}
+								//** parse from string to object etc
+								data = apiParser.linkFromDb(data);
+								//** stop color animation
+								stopColorShifting();
+
+								//** update view	
+								ctrl.$apply(function(){
+									ctrl.links[ctrl.links.length - 1] = data;
+								});
+
+								linkService.save(data).then(function(rs){
+									//_c.log(rs);
+									$rootScope.$broadcast("linkCreationComplete", data);
+								});
+							});
+
+							_c.log(item);
+						}
 					});
 					picker.setVisible(true);
 				}
