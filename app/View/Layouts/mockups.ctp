@@ -46,7 +46,9 @@
 </head>
 <body>
 	<div id="mockup-wrap" ng-controller="mockupsCtrl">
-		<button id="pick"></button>
+		<!-- @picker 
+			<button id="pick"></button> 
+		-->
 		<?php echo $this -> fetch("content") ?>	
 	</div>
 </body>

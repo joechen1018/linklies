@@ -24,79 +24,64 @@ app.directive("contextMenu", function(uuid, apiService, apiParser, $rootScope){
 					{
 						"name" : "openView",
 						"label" : "Folder View",
-						"icon" : "c"
+						"icon" : "Q"
 					},
 					{
 						"name" : "rename",
 						"label" : "Rename",
-						"icon" : ""
+						"icon" : "g"
 					},
 					{
 						"name" : "pick",
-						"label" : "Pick",
-						"icon" : "R",
-						"options" : [
-							{
-								"name" : "pick.docs",
-								"label" : "Google Doc",
-								"icon" : ""
-							},
-							{
-								"name" : "pick.videos",
-								"label" : "Videos",
-								"icon" : ""
-							},
-							{
-								"name" : "pick.images",
-								"label" : "Images",
-								"icon" : ""
-							},
-							{
-								"name" : "pick.files",
-								"label" : "Files",
-								"icon" : ""
-							}
-						]
+						"label" : "Google Drive",
+						"icon" : "P",
+						"options" : []
+					},
+					{
+						"name" : "map",
+						"label" : "Location",
+						"icon" : "w",
+						"options" : []
 					},
 					{
 						"name" : "upload",
-						"label" : "Upload",
-						"icon" : "b"
+						"label" : "Upload File",
+						"icon" : "}"
 					},
 					{
 						"name" : "images",
 						"label" : "Images",
-						"icon" : ""
+						"icon" : "~"
 					},
 					{
 						"name" : "search",
 						"label" : "Search",
-						"icon" : "n",
+						"icon" : "B",
 					},
 					{
 						"name" : "delete",
 						"label" : "Delete",
-						"icon" : "L"
+						"icon" : "0"
 					},
 					{	
 						"name" : "new",
-						"icon" : "d",
+						"icon" : "s",
 						"label" : "New",
 						"options" : [
 							{
 								"name" : "new.folder",
 								"label" : "Folder",
-								"icon" : "a"
+								"icon" : "Q"
 							},
 							{
 								"name" : "new.videoFolder",
 								"label" : "Video Folder",
-								"icon" : "l"
+								"icon" : "j"
 							},
 							{
 								"name" : "new.link",
 								"label" : "Link",
-								"icon" : "v"
+								"icon" : "H"
 							}
 						]
 					}
@@ -117,10 +102,11 @@ app.directive("contextMenu", function(uuid, apiService, apiParser, $rootScope){
 					{
 						"name" : "board",
 						"options" : [
-							byName("new"),
-							byName("upload"),
 							byName("pick"),
-							byName("search")
+							byName("upload"),
+							byName("search"),
+							byName("map"),
+							byName("new")
 						]
 					}
 				];
@@ -257,5 +243,27 @@ webcam
 "name" : "docFolder",
 "label" : "Doc Folder",
 "icon" : "R"
+
+
+{
+	"name" : "pick.docs",
+	"label" : "Google Doc",
+	"icon" : ""
+},
+{
+	"name" : "pick.videos",
+	"label" : "Videos",
+	"icon" : ""
+},
+{
+	"name" : "pick.images",
+	"label" : "Images",
+	"icon" : ""
+},
+{
+	"name" : "pick.files",
+	"label" : "Files",
+	"icon" : ""
+}
 
 */

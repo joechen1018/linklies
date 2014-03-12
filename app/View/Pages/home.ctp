@@ -103,7 +103,7 @@
 
 		<div class="btns">
 			<div class="btn">
-				<span data-icon="q" ng-click="closeBrowser()"></span>	
+				<span data-icon="I" ng-click="closeBrowser()"></span>	
 			</div>
 			<!-- <div class="btn">
 				<span data-icon="q" ng-click="closeBrowser()"></span>	

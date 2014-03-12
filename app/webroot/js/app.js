@@ -29,12 +29,13 @@ var createPicker = function createPicker(set, fn) {
                    .setOAuthToken(token)
                    .addView(_view.DOCUMENTS)
                    .addView(_view.SPREADSHEETS)
-                   .addView(_view.FORMS)
-                   .addView(_view.PRESENTATIONS)
-                   .addView(_view.DRAWINGS)
                    .addView(_view.DOCS_IMAGES)
                    .addView(_view.DOCS_VIDEOS)
                    .addView(_view.YOUTUBE)
+                   .addView(_view.PRESENTATIONS)
+                   .addView(_view.FORMS)
+                   .addView(_view.DRAWINGS)
+                   .addView(_view.DOCS)
                    .setCallback(fn)
                    .build();
 
@@ -111,6 +112,14 @@ var createPicker = function createPicker(set, fn) {
                     .setCallback(fn)
                     .build();
         break;
+        case 'map' :
+            _picker = new google.picker.PickerBuilder()
+                    .setAppId(clientId)
+                    .setOAuthToken(token)
+                    .addView(_view.MAPS)
+                    .setCallback(fn)
+                    .build();
+        break;
         default : 
             _picker = new google.picker.PickerBuilder()
                    .setAppId(clientId)
@@ -181,7 +190,6 @@ var app = angular.module("lk", ["ngRoute", "pasvaz.bindonce"], function($httpPro
 })
 .directive('ngRightClick', function($parse) {
     return function(scope, element, attrs) {
-        /*
         var fn = $parse(attrs.ngRightClick);
         element.bind('contextmenu', function(event) {
             scope.$apply(function() {
@@ -189,6 +197,7 @@ var app = angular.module("lk", ["ngRoute", "pasvaz.bindonce"], function($httpPro
                 fn(scope, {$event:event});
             });
         });
+        /*
         */
     };
 })

@@ -34,4 +34,8 @@ class MockupsController extends AppController{
 		
 	}
 
+	public function logo(){
+		
+	}
+
 } ?>

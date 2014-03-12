@@ -21,6 +21,135 @@ var app = angular.module("mk", [], function($httpProvider){
 })
 .controller("mockupsCtrl", function($scope, apiService, apiParser){
 
+	var clientId = "205449938055-06501obglsfmcellrtc67opqs6ogbs19.apps.googleusercontent.com",
+		apiKey = "AIzaSyDgQMpZLRja-7wtmvfkMky_8ylI6OznE2c",
+		//scopes = 'https://www.googleapis.com/auth/plus.me https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/photos',
+		scopes = 'https://www.googleapis.com/auth/plus.me https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/userinfo.email',
+		token = "",
+		pickerCallback = function(res){
+			_c.log(res);
+		},
+		createPicker = function createPicker() {
+	        var picker = new google.picker.PickerBuilder().
+	        	setAppId(clientId).
+                setOAuthToken(token).
+	            addView(google.picker.ViewId.DOCS_IMAGES).
+	            addView(google.picker.ViewId.DOCS_IMAGES_AND_VIDEOS).
+	            addView(google.picker.ViewId.DOCS_VIDEOS).
+	            addView(google.picker.ViewId.DOCUMENTS).
+	            addView(google.picker.ViewId.DRAWINGS).
+	            addView(google.picker.ViewId.FOLDERS).
+	            addView(google.picker.ViewId.FORMS).
+	            addView(google.picker.ViewId.IMAGE_SEARCH).
+	            addView(google.picker.ViewId.PDFS).
+	            addView(google.picker.ViewId.PHOTO_ALBUMS).
+	            addView(google.picker.ViewId.PHOTO_UPLOAD).
+	            addView(google.picker.ViewId.PHOTOS).
+	            addView(google.picker.ViewId.PRESENTATIONS).
+	            addView(google.picker.ViewId.RECENTLY_PICKED).
+	            addView(google.picker.ViewId.SPREADSHEETS).
+	            addView(google.picker.ViewId.VIDEO_SEARCH).
+	            addView(google.picker.ViewId.WEBCAM).
+	            addView(google.picker.ViewId.YOUTUBE).
+	            setCallback(pickerCallback).
+	            build();
+	        picker.setVisible(true);
+	    },
+		authorize = function(rs){
+			if (rs && !rs.error && rs["access_token"]) {
+				token = rs["access_token"];
+				google.load("picker", "1", {
+					callback : function(){
+						createPicker();
+					}
+				});
+
+				/*
+				//** load drive api example
+				gapi.client.setApiKey("");
+				gapi.client.load("drive", "v2", function(data){
+
+	                var request = gapi.client.drive.files.list({
+	                    'fileId': "root"
+	                });
+	                request.execute(function(res) {
+	                    //_c.log(res);
+	                });
+			    });*/
+
+
+
+			} else {
+				//location.href = root + "users/login";
+			}
+		},
+		checkAuth = function() {
+			gapi.auth.authorize({
+				client_id: clientId, 
+				scope: scopes, 
+				immediate: true}, authorize);
+		};
+
+	(function() {
+	    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+	    po.src = 'https://apis.google.com/js/client.js?onload=onGApiLoaded';
+	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+	  })();	
+
+	 $scope.onGApiLoaded = function(){
+		//console.log("loaded");
+		gapi.client.setApiKey(clientId);
+		window.setTimeout(checkAuth,1);
+	}
+	window["onGApiLoaded"] = $scope.onGApiLoaded; 
+	
+	//** google picker
+	
+
+
+
+	/*browser
+	$scope.browserData = {
+		url : "http://www.inside.com.tw/2014/02/21/bars-wants-to-be-xiaomi-in-taiwan-on-flyingv"
+	}*/
+
+	/*folder
+	var service = apiService.folderService;
+	service.get(1, true).then(function(data){
+		data = data.data;
+		$scope.$apply(function(){
+			$scope.folder = data.Folder;
+			$scope.type = data.FolderType;
+		});
+	});*/
+	
+	/*search view
+	var service = apiService.linkService;
+	service.get(542).then(function(link){
+		link = apiParser.linkFromDb(link);
+		_c.log(link);
+		$scope.$apply(function(){
+			$scope.results = link.type.results;
+		});
+	});*/
+
+	/*qa view
+	var service = apiService.linkService;
+	service.get(626).then(function(link){
+		
+		link = apiParser.linkFromDb(link);
+		link.state = {
+			name : "ready"
+		}
+		_c.log(link);
+		$scope.$apply(function(){
+			$scope.links = [link];
+			$scope.data = link;
+			$(".q").append(link.type.qblock);
+			$(".a").append(link.type.ablock);
+			$("pre").addClass("theme-super");
+		});
+	});*/
 });
 
 
