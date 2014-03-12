@@ -146,6 +146,7 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http,
 	$scope.templates = {
 		contextMenu : "templates/context-menu.html"
 	};
+
 	var buffer = (function(){
 		return new (function(){
 			var limit = 800;
@@ -168,6 +169,7 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http,
 			}
 		});
 	})();
+
 	buffer.onReachLimit = function(){
 		buffer.reset();
 		$scope.$apply(function(){
@@ -175,6 +177,7 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http,
 			$scope.grids.update();
 		});
 	}
+	
 	var average = [];
 	var averageDelta = 0;
 	$(window).on("mousewheel", function(event) {
@@ -296,8 +299,9 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http,
 	};
 
 	$scope.onRightClick = function($event){
-		var x = $event.pageX,
-			y = $event.pageY,
+
+		var x = $event.pageX - gridSystem.defaults.sideWidth,
+			y = $event.pageY - gridSystem.defaults.topHeight,
 			g = gridRects.link.findNearGridByPoint(x, y),
 			$target = $($event.currentTarget),
 			name = (function(){
@@ -307,13 +311,22 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http,
 				return "board";
 			})();
 
-		$scope.context = {
-			"show" : true,
-			"class" : name,
-			"left" : x,
-			"top" : y,
-			"grid" : g
-		};
+		var linkBool = gridRects.link.gridAvailable(g, [-1, -1]),
+			folderBool = gridRects.folder.gridAvailable(g, [-1, -1]);
+
+
+		console.log(x,y);
+		console.log(g);
+		if(linkBool){
+			$scope.context = {
+				"show" : true,
+				"class" : name,
+				"left" : x,
+				"top" : y,
+				"grid" : g
+			};
+		}
+		
 		$event.stopPropagation();
 	}
 

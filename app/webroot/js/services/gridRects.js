@@ -178,15 +178,19 @@ app.service("gridRects", function(gridSystem){
 					return false;
 			}	
 
+			//** check grid existence by comparing two arrays
 			for(i = 0; i<links.length; i++){
 				if(arrayEquals(links[i].grid, grid))
 					return false;
 			}
 
+			//** exclude from self grid, will this link overlape other links?
 			for(i = 0; i<links.length; i++){
+				//** exclude self, so you can move the link 1 grid left or right
 				if(!arrayEquals(links[i].grid, originGrid)){
-					if(self.link.gridToRect(links[i].grid).intersects(rect2))
+					if(self.link.gridToRect(links[i].grid).intersects(rect2)){
 						return false;
+					}
 				}
 			}
 
@@ -247,19 +251,31 @@ app.service("gridRects", function(gridSystem){
 			return nextGrid;
 		},
 		findNearGridByPoint : function(x, y){
-			var clickRect = new goog.math.Rect(x - 10, y - 10, 20, 20);
-			var links = self.link.getGrids(), rect;
-			var max = 0, inters, nearGrid;
-			for(var i = 0; i<links.length; i++){
-				rect = self.link.gridToRect(links[i]);
-				inters = clickRect.intersects(rect);	
-				//if(inters.width * inters.height > max){
-				if(inters){
-					max = inters.width * inters.height;
-					nearGrid = links[i];
+
+			//** 20x20 rect with clicked point in the center
+			var clickRect = new goog.math.Rect(x - 1, y - 1, 2, 2),
+				grids = self.link.getGrids(), 
+				rect,
+				max = 0, 
+				inters, 
+				nearGrid;
+
+			//** find grid with most intersection
+			for(var i = 0; i<grids.length; i++){
+				rect = self.link.gridToRect(grids[i]);
+				if(rect.contains(clickRect)){
+					return grids[i];
 				}
+				/*
+				inters = gRect.intersection(rect, clickRect);
+				if(inters){
+					if(max < inters.width * inters.height){
+						max = inters.width * inters.height;
+						nearGrid = grids[i];
+					}
+				}*/
 			}
-			return nearGrid;
+			return false;
 		}
 	}
 	this.folderGrids = this.folder.getGrids();
