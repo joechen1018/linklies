@@ -181,7 +181,6 @@ var app = angular.module("lk", ["ngRoute", "pasvaz.bindonce"], function($httpPro
 })
 .directive('ngRightClick', function($parse) {
     return function(scope, element, attrs) {
-        /*
         var fn = $parse(attrs.ngRightClick);
         element.bind('contextmenu', function(event) {
             scope.$apply(function() {
@@ -189,6 +188,7 @@ var app = angular.module("lk", ["ngRoute", "pasvaz.bindonce"], function($httpPro
                 fn(scope, {$event:event});
             });
         });
+        /*
         */
     };
 })
