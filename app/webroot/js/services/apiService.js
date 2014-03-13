@@ -465,10 +465,10 @@ app.service("apiService", function($http, apiParser){
 			break;
 			case 'google.docs.spreadsheet' : 
 
-				matchRs = rs.url.match(/^http.*docs.google.com\/spreadsheet\/.*key=(.*)(\&|#)/);
+				matchRs = rs.url.match(/^http.*docs.google.com\/spreadsheet\/.*key=(.*)\&|$/);
 				if(matchRs !== null){
-					if(matchRs.length > 2){
-						rs.key = matchRs[2];
+					if(matchRs.length > 1){
+						rs.key = matchRs[1];
 					}
 				}else{
 					matchRs = rs.url.match(/.*docs\.google\.com\/spreadsheets\/d\/(.*)\/|$/);
@@ -516,8 +516,9 @@ app.service("apiService", function($http, apiParser){
 				});
 			break;
 			case "google.docs.presentations" :
+
 				rs.key = rs.url.match(/.+d\/([a-zA-z0-9\-_]*)(\/|)(.+|)/)[1];
-				// console.log(rs.key);
+				console.log(rs.key);
 				var request = gapi.client.drive.files.get({
 				    'fileId': rs.key
 				});
@@ -532,19 +533,34 @@ app.service("apiService", function($http, apiParser){
 				});
 			break;
 			case 'google.docs.file' : 
-				rs.key = rs.url.match(/.+d\/([a-zA-z0-9\-_]*)(\/|)(.+|)/)[1];
-				var request = gapi.client.drive.files.get({
-				    'fileId': rs.key
-				});
-				request.execute(function(resp) {
-					rs.doc = {};
-					rs.doc.file = resp;
-					rs.title = resp.title;
-					rs.thumb = resp.thumbnailLink;
-					//rs.view = "doc";
-					// _c.log(rs);	
-					d.resolve(rs);
-				});
+
+				matchRs = rs.url.match(/.+d\/([a-zA-z0-9\-_]*)(\/|)(.+|)/);
+				if(matchRs !== null){
+					if(matchRs.length > 1){
+						rs.key = matchRs[1];
+					}
+				}else{
+					matchRs = rs.url.match(/.*\/d\/(.*)\/|$/);
+					if(matchRs !== null){
+						if(matchRs.length > 1){
+							rs.key = matchRs[1];
+						}
+					}
+				}
+				if(rs.key){
+					var request = gapi.client.drive.files.get({
+					    'fileId': rs.key
+					});
+					request.execute(function(resp) {
+						rs.doc = {};
+						rs.doc.file = resp;
+						rs.title = resp.title;
+						rs.thumb = resp.thumbnailLink;
+						//rs.view = "doc";
+						// _c.log(rs);	
+						d.resolve(rs);
+					});
+				}
 			break;
 			case 'google.maps' : 
 				rs.title = "Latitude : " + rs.title.replace("(Untitled Location)", "")

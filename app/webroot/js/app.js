@@ -203,7 +203,7 @@ var app = angular.module("lk", ["ngRoute", "pasvaz.bindonce"], function($httpPro
 })
 .directive('retrySrc', function (apiService) {
   var fallbackSrc = {
-    link: function postLink(scope, ele, attrs) {
+    link : function postLink(scope, ele, attrs) {
       ele.bind('error', function() {
         if(attrs.retrySrc === "api"){
             var data = scope.data;

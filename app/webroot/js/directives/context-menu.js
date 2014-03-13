@@ -191,14 +191,19 @@ app.directive("contextMenu", function(uuid, apiService, apiParser, $rootScope, u
 								username_id : glob.user.username_id,
 								user_id : glob.user.id,
 								url : url,
-								key : rs.id,
+								key : item.id,
 								state : {
 									name : "loading",
 									focus : true
 								}
 							};
 
-							_c.log(item);
+							//** maps returns 'Untitled Location'
+							if(item.serviceId === "maps"){
+								newLink.title = "Location : " + item.latitude + " , " + item.longitude;
+								newLink.thumb = item.thumbnails[item.thumbnails.length - 1].url;
+							}
+
 							//** get the larger thumb
 							if(typeof item.thumbnails === "object"){
 								if(item.thumbnails.length === 1)
@@ -210,6 +215,8 @@ app.directive("contextMenu", function(uuid, apiService, apiParser, $rootScope, u
 							//** color animation 
 							startColorShifting($(".link").last().find(".state-loading .no-icon"));
 
+							_c.log(item);
+							_c.log(newLink);
 							ctrl.links.push(newLink);
 							linkService.create(url).then(function(data){
 								// _c.log(data);
@@ -217,7 +224,10 @@ app.directive("contextMenu", function(uuid, apiService, apiParser, $rootScope, u
 								var odata = newLink;
 
 								//** attribute that we will use from old
-								var list = ["id", "dragging", "grid", "url", "user_id", "username_id", "uuid", "title"];
+								var list = ["dragging", "grid", "url", "user_id", "username_id", "uuid", "title", "key", "state"];
+								if(item.serviceId === "maps"){
+									list.push("thumb");
+								}
 								for(var i in odata){
 									for(var j = 0; j<list.length; j++){
 										if(i == list[j]){
@@ -238,6 +248,7 @@ app.directive("contextMenu", function(uuid, apiService, apiParser, $rootScope, u
 								_c.log(data);
 								linkService.save(data).then(function(rs){
 									_c.log(rs);
+									data.id = rs.id;
 									$rootScope.$broadcast("linkCreationComplete", data);
 								});
 							});

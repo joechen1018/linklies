@@ -263,6 +263,15 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http,
 			y = $event.pageY - gridSystem.defaults.topHeight;
 			g = gridRects.link.findNearGridByPoint(x, y);
 		}
+		if(g === false){
+			var count = 0;
+			while(g === false && count < 3){
+				x += 5;
+				y += 5;
+				g = gridRects.link.findNearGridByPoint(x, y);
+				count++;
+			}
+		}
 		var newLink = {
 			grid : g,
 			uuid : uuid.create(),
@@ -390,7 +399,9 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http,
 		
 		setTimeout(function(){
 			$scope.$apply(function(){
-				$scope.links[i].state.focusMe = false;
+				if($scope.links[i]){
+					$scope.links[i].state.focusMe = false;
+				}
 			});
 		}, 30 * 1000);
 	}
