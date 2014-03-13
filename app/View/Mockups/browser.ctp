@@ -1,1 +1,1 @@
-<div browser browser-data="browserData"></div>
+<div browser></div>

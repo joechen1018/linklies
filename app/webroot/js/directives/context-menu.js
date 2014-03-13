@@ -113,6 +113,31 @@ app.directive("contextMenu", function(uuid, apiService, apiParser, $rootScope, u
 			$ele.hide();
 			scope.$watch("context", function(newVal, oldVal){
 
+				var $menu;
+				var showFolderOptions = function(){
+					//** wait for dom finish drawing
+					setTimeout(function(){
+						$menu = $(".context-menu").eq(0);
+						$menu.find("li").not(":has(ul)").each(function(i, e){
+							var text = $(e).text().trim();
+							if(/.*folder.*/i.test(text)){
+								$(e).show();
+							}
+						});
+					}, 20);
+				}
+				var hideFolderOptions = function(){
+					//** wait for dom finish drawing
+					setTimeout(function(){
+						$menu = $(".context-menu").eq(0);
+						$menu.find("li").not(":has(ul)").each(function(i, e){
+							var text = $(e).text().trim();
+							if(/.*folder.*/i.test(text)){
+								$(e).hide();
+							}
+						});
+					},20);
+				}
 				if(newVal){
 					//** init obj has no name. link currently has no context menu
 					if(newVal["class"] == "link" || newVal["class"] == "") return;
@@ -127,17 +152,11 @@ app.directive("contextMenu", function(uuid, apiService, apiParser, $rootScope, u
 						return menuSets[2]
 					})();
 
-					/** display context menu
-					$ele.css("left", newVal.left)
-						.css("top", newVal.top);
-
-					if(newVal.show){
-						$ele.show();
-					} 
-					else{
-						$ele.hide();
+					if(newVal.folderAvailable === true){
+						showFolderOptions();
+					}else{
+						hideFolderOptions();
 					}
-					*/
 				}
 			});
 
@@ -146,7 +165,6 @@ app.directive("contextMenu", function(uuid, apiService, apiParser, $rootScope, u
 				if(item.name.indexOf("new.") !== -1){
 
 					var ctrl = scope.$parent;
-					console.log(ctrl);
 					switch(item.name){
 						case 'new.link' :
 							ctrl.onBoardDbClick(false, scope.context.grid);
@@ -156,6 +174,7 @@ app.directive("contextMenu", function(uuid, apiService, apiParser, $rootScope, u
 				}else{
 					picker = createPicker(item.name, function(rs){
 						//** callback doesn't just get called on finish selecting
+						//console.log(rs);
 						if(rs.action === "picked"){
 
 							var item = rs.docs[0],
@@ -166,31 +185,26 @@ app.directive("contextMenu", function(uuid, apiService, apiParser, $rootScope, u
 								ctrl = scope.$parent;
 
 							var newLink = {
+								title : title,
 								grid : grid,
 								uuid : uuid.create(),
 								username_id : glob.user.username_id,
 								user_id : glob.user.id,
 								url : url,
+								key : rs.id,
 								state : {
 									name : "loading",
 									focus : true
 								}
 							};
 
-							// console.log(item);
+							_c.log(item);
 							//** get the larger thumb
 							if(typeof item.thumbnails === "object"){
 								if(item.thumbnails.length === 1)
 									newLink.thumb = item.thumbnails[0].url;
 								else if(item.thumbnails.length === 2)
 									newLink.thumb = item.thumbnails[1].url;
-							}
-
-							var pattr = new RegExp(urlTypes["google.docs"].match);
-							var bool = pattr.test(item.url);
-							if(bool){
-								newLink.key = item.id;
-								newLink.ico = item.iconUrl;
 							}
 
 							//** color animation 
@@ -203,7 +217,7 @@ app.directive("contextMenu", function(uuid, apiService, apiParser, $rootScope, u
 								var odata = newLink;
 
 								//** attribute that we will use from old
-								var list = ["id", "dragging", "grid", "url", "thumb", "user_id", "username_id", "uuid"];
+								var list = ["id", "dragging", "grid", "url", "user_id", "username_id", "uuid", "title"];
 								for(var i in odata){
 									for(var j = 0; j<list.length; j++){
 										if(i == list[j]){
@@ -221,8 +235,9 @@ app.directive("contextMenu", function(uuid, apiService, apiParser, $rootScope, u
 									ctrl.links[ctrl.links.length - 1] = data;
 								});
 
+								_c.log(data);
 								linkService.save(data).then(function(rs){
-									//_c.log(rs);
+									_c.log(rs);
 									$rootScope.$broadcast("linkCreationComplete", data);
 								});
 							});

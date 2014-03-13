@@ -317,6 +317,16 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http,
 			})(),
 			context = {};
 
+		if(g === false){
+			var count = 0;
+			while(g === false && count < 3){
+				x += 5;
+				y += 5;
+				g = gridRects.link.findNearGridByPoint(x, y);
+				count++;
+			}
+		}
+
 		var linkBool = gridRects.link.gridAvailable(g, [-1, -1]),
 			folderBool = gridRects.folder.gridAvailable(g, [-1, -1]);
 

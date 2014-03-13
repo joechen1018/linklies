@@ -269,9 +269,9 @@ app.service("apiService", function($http, apiParser){
 		}
 		var clientId = "205449938055-06501obglsfmcellrtc67opqs6ogbs19.apps.googleusercontent.com";
 
-		//** timeout error
+		//** timeout
 		setTimeout(function(){
-			d.reject();
+			if(!d.state !== "resolved") d.reject();
 		}, 3500);
 
 		//** init rs
@@ -303,7 +303,6 @@ app.service("apiService", function($http, apiParser){
 				rs.type.name = i;
 			}
 		}
-
 
 		//** preserve meta tags
 		rs.meta = {};
@@ -382,6 +381,7 @@ app.service("apiService", function($http, apiParser){
 		//** get customized data from each type
 		var type = rs.type;
 		var arr = type.name.split(".");
+		var matchRs;
 		switch(type.name){
 
 			//* video view
@@ -464,23 +464,37 @@ app.service("apiService", function($http, apiParser){
 				// rs.title = source + " : " + result;
 			break;
 			case 'google.docs.spreadsheet' : 
-				rs.key = rs.url.match(/^http(s|):\/\/.*docs.google.com\/spreadsheet\/.*key=(.*)(\&|#)/)[2];
-				var request = gapi.client.drive.files.get({
-				    'fileId': rs.key
-				});
-				request.execute(function(resp) {
-					//_c.log(resp);
-					rs.doc = {};
-					rs.doc.spreadsheet = resp;
-					rs.title = resp.title;
-					rs.thumb = resp.thumbnailLink;
-					//rs.view = "doc";
-					_c.log(rs);	
+
+				matchRs = rs.url.match(/^http.*docs.google.com\/spreadsheet\/.*key=(.*)(\&|#)/);
+				if(matchRs !== null){
+					if(matchRs.length > 2){
+						rs.key = matchRs[2];
+					}
+				}else{
+					matchRs = rs.url.match(/.*docs\.google\.com\/spreadsheets\/d\/(.*)\/|$/);
+					if(matchRs !== null){
+						if(matchRs.length > 1){
+							rs.key = matchRs[1];
+						}
+					}
+				}
+
+				if(rs.key){
+					var request = gapi.client.drive.files.get({
+					    'fileId': rs.key
+					});
+					request.execute(function(resp) {
+						//_c.log(resp);
+						rs.doc = {};
+						rs.doc.spreadsheet = resp;
+						rs.title = resp.title;
+						rs.thumb = resp.thumbnailLink;
+						d.resolve(rs);
+					});
+				}else{
+					_c.warn("no docs key found");
 					d.resolve(rs);
-				    // console.log('Title: ' + resp.title);
-				    // console.log('Description: ' + resp.description);
-				    // console.log('MIME type: ' + resp.mimeType);
-				});
+				}
 			break;
 			case 'google.docs.document' : 
 				rs.key = rs.url.match(/.+d\/([a-zA-z0-9\-_]*)(\/|)(.+|)/)[1];
@@ -517,10 +531,6 @@ app.service("apiService", function($http, apiParser){
 					d.resolve(rs);
 				});
 			break;
-			default : 
-				// _c.log(rs);
-				d.resolve(rs);
-			break;
 			case 'google.docs.file' : 
 				rs.key = rs.url.match(/.+d\/([a-zA-z0-9\-_]*)(\/|)(.+|)/)[1];
 				var request = gapi.client.drive.files.get({
@@ -535,6 +545,16 @@ app.service("apiService", function($http, apiParser){
 					// _c.log(rs);	
 					d.resolve(rs);
 				});
+			break;
+			case 'google.maps' : 
+				rs.title = "Latitude : " + rs.title.replace("(Untitled Location)", "")
+												   .replace("- Google Maps", "")
+												   .replace(",", ", ");
+				d.resolve(rs);
+			break;
+			default : 
+				// _c.log(rs);
+				d.resolve(rs);
 			break;
 		}
 		//** dom query completed, remove dom
@@ -602,33 +622,33 @@ app.service("apiService", function($http, apiParser){
 			match : "^(http(s|)\:\/\/)?(www\.)?(translate\.google\.com.*)\/.+$",
 			ico : "http://translate.google.com.tw/favicon.ico"
 		},
-		"google.docs" : {
-			match : "^(http(s|)\:\/\/)?(www\.)?(docs\.google\.com)\/.+$",
-			ico : "https://ssl.gstatic.com/docs/doclist/images/infinite_arrow_favicon_4.ico"
-		},
 		"google.docs.spreadsheet" : {
-			match : "^(http(s|)\:\/\/)?(www\.)?(docs\.google\.com/spreadsheet)\/.+$",
+			match : "^http.*docs\.google\.com\/spreadsheet.*",
 			ico : "https://ssl.gstatic.com/docs/spreadsheets/favicon_jfk2.png"
 		},
 		"google.docs.document" : {
-			match : "^(http(s|)\:\/\/)?(www\.)?(docs\.google\.com/document)\/.+$",
+			match : "^http.*docs\.google\.com\/document.*",
 			ico : "https://ssl.gstatic.com/docs/documents/images/kix-favicon6.ico"
 		},
 		"google.docs.drawings" : {
-			match : "^(http(s|)\:\/\/)?(www\.)?(docs\.google\.com/drawings)\/.+$",
+			match : "^http.*docs\.google\.com\/drawings.*",
 			ico : "https://ssl.gstatic.com/docs/drawings/images/favicon5.ico"
 		},
 		"google.docs.presentations" : {
-			match : "^(http(s|)\:\/\/)?(www\.)?(docs\.google\.com/presentation)\/.+$",
+			match : "^http.*docs\.google\.com\/presentations.*",
 			ico : "https://ssl.gstatic.com/docs/presentations/images/favicon4.ico"
 		},
 		"google.docs.forms" : {
-			match : "^(http(s|)\:\/\/)?(www\.)?(docs\.google\.com/forms)\/.+$",
+			match : "^http.*docs\.google\.com\/forms.*",
 			ico : "https://ssl.gstatic.com/docs/spreadsheets/forms/favicon_jfk2.png"
 		},
 		"google.docs.file" : {
-			match : "^(http(s|)\:\/\/)?(www\.)?(docs\.google\.com/file)\/.+$",
+			match : "^http.*docs\.google\.com\/file.*",
 			ico : "https://ssl.gstatic.com/docs/doclist/images/icon_11_image_favicon.ico"
+		},
+		"google.maps" : {
+			match : "^http.*maps\.google\.com.*",
+			ico : "http://maps.gstatic.com/favicon3.ico"
 		},
 		"youku" : {
 			match : ".+(youku\.com)\/.+",

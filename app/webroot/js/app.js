@@ -80,7 +80,7 @@ var createPicker = function createPicker(set, fn) {
             _picker = new google.picker.PickerBuilder()
                     .setAppId(clientId)
                     .setOAuthToken(token)
-                    .addView(_view.PHOTO_UPLOAD)
+                    // .addView(_view.PHOTO_UPLOAD)
                     .addView(
                         new google.picker.DocsUploadView() //** .setParent() .setTitle()
                     )
@@ -207,6 +207,7 @@ var app = angular.module("lk", ["ngRoute", "pasvaz.bindonce"], function($httpPro
       ele.bind('error', function() {
         if(attrs.retrySrc === "api"){
             var data = scope.data;
+            //console.log(data);
             var getKey = function(name){
                 try{
                     if(!name) return false;
@@ -217,19 +218,24 @@ var app = angular.module("lk", ["ngRoute", "pasvaz.bindonce"], function($httpPro
                     return false;
                 }
             }
-            if(typeof data.type === "object"){
-                var key = getKey(data.type.name);
-                if(key !== false){
-                    var request = gapi.client.drive.files.get({
-                        'fileId': key
-                    });
-                    request.execute(function(res) {
-                        $(ele).attr("src", res.thumbnailLink);
-                        data.thumb = res.thumbnailLink;
-                        apiService.linkService.save(data);
-                    });
-                }
+
+            if(data.key){
+                //** use this key
+            }else{
+                //** try get the key
+                key = getKey(data.type.name);
             }
+            if(key !== false && key !== ""){
+                var request = gapi.client.drive.files.get({
+                    'fileId': key
+                });
+                request.execute(function(res) {
+                    $(ele).attr("src", res.thumbnailLink);
+                    data.thumb = res.thumbnailLink;
+                    apiService.linkService.save(data);
+                });
+            }
+
         }else{
             angular.element(this).attr("src", attrs.retrySrc);
         }
@@ -243,7 +249,7 @@ var app = angular.module("lk", ["ngRoute", "pasvaz.bindonce"], function($httpPro
 		gapi.auth.authorize({client_id: clientId, scope: scopes, immediate: true}, authorize);
         google.load("picker", "1", {
             callback : function(){
-                _c.log("picker loaded");
+               // _c.log("picker loaded");
             }
         });
 	}

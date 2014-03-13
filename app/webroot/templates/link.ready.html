@@ -1,4 +1,4 @@
-<div class="state-ready" contenteditable="true" ng-style="{
+<div class="state-ready" ng-style="{
 		height : grids.gridHeight
 	}">
 		<div class="link-body" ng-style="{
@@ -20,7 +20,7 @@
 				<span data-icon="R"></span>
 			</div>
 
-			<a class="title" target="_blank" ng-style="{
+			<a class="title" contenteditable="true" target="_blank" ng-style="{
 				width : data.view === 'default' ? grids.linkSize.width - 35 : grids.linkSize.width - 45,
 				lineHeight : grids.gridHeight + 'px'
 			}">{{data.title}}</a>

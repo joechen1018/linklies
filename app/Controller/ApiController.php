@@ -94,13 +94,14 @@ class ApiController extends AppController{
 	        CURLOPT_URL => $url,
 	        CURLOPT_HEADER => array(
 				"content-type: application/x-www-form-urlencoded; 
-				charset=UTF-8"
+				charset=UTF-8; Accept: image/gif, image/x-bitmap, image/jpeg, image/pjpeg,text/html,application/xhtml+xml"
 			),
 	        CURLOPT_RETURNTRANSFER => false,
 	        CURLOPT_TIMEOUT => 10,
 	        CURLOPT_SSL_VERIFYPEER =>  false,
 	        CURLOPT_FOLLOWLOCATION => true,
-	        CURLOPT_USERAGENT => "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22"
+	        CURLOPT_USERAGENT => "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22",
+	        CURLOPT_REFERER => "http://linklies.com"
 	    );
 	   
 	    $ch = curl_init();
