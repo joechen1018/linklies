@@ -493,7 +493,38 @@ app.utils.clone = function(obj){
 }
 
 var utils = app.utils;
+var __ = {};
+__.showPoint = function(x, y){
+    var $p = $("<div class='__point'/>");
+    $p.css("position", "absolute")
+      .css("left", x-2)
+      .css("top", y-2)
+      .css("z-index", 1000)
+      .css("background", "red")
+      .width(4)
+      .height(4);
 
-$(document).ready(function(){
-	//$('body').perfectScrollbar();
-});
+    $("#board").append($p);
+}
+
+__.clearPoints = function(){
+    $(".__point").remove();
+}
+
+__.showArea = function(rect){
+    var $p = $("<div class='__area'/>");
+    $p.css("position", "absolute")
+      .css("left", rect.left)
+      .css("top", rect.top)
+      .css("z-index", 1000)
+      .css("background", "red")
+      .width(rect.width)
+      .height(rect.height);
+
+    $("#board").append($p);
+}
+
+
+__clearArea = function(){
+    $(".__area").remove();
+}

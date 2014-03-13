@@ -1,4 +1,4 @@
-app.directive("contextMenu", function(uuid, apiService, apiParser, $rootScope){
+app.directive("contextMenu", function(uuid, apiService, apiParser, $rootScope, urlTypes){
 	return {
 		restrict : "EA",
 		templateUrl : "templates/context-menu.html",
@@ -113,41 +113,48 @@ app.directive("contextMenu", function(uuid, apiService, apiParser, $rootScope){
 			$ele.hide();
 			scope.$watch("context", function(newVal, oldVal){
 
-				//** init obj has no name. link currently has no context menu
-				if(newVal["class"] == "link" || newVal["class"] == "") return;
+				if(newVal){
+					//** init obj has no name. link currently has no context menu
+					if(newVal["class"] == "link" || newVal["class"] == "") return;
 
-				//** get set by target name
-				scope.context.set = (function(){
-					for(var i in menuSets){
-						if(menuSets[i].name === newVal["class"]){
-							return menuSets[i];
+					//** get set by target name
+					scope.context.set = (function(){
+						for(var i in menuSets){
+							if(menuSets[i].name === newVal["class"]){
+								return menuSets[i];
+							}
 						}
+						return menuSets[2]
+					})();
+
+					/** display context menu
+					$ele.css("left", newVal.left)
+						.css("top", newVal.top);
+
+					if(newVal.show){
+						$ele.show();
+					} 
+					else{
+						$ele.hide();
 					}
-					return menuSets[2]
-				})();
-
-				/** display context menu
-				$ele.css("left", newVal.left)
-					.css("top", newVal.top);
-
-				if(newVal.show){
-					$ele.show();
-				} 
-				else{
-					$ele.hide();
+					*/
 				}
-				*/
 			});
 
 			scope.onItemClick= function($event, item){
 				$ele.hide();
-				if(item.name === "new"){
+				if(item.name.indexOf("new.") !== -1){
+
+					var ctrl = scope.$parent;
+					console.log(ctrl);
+					switch(item.name){
+						case 'new.link' :
+							ctrl.onBoardDbClick(false, scope.context.grid);
+						break;
+					}
 
 				}else{
-					_c.log("click");
 					picker = createPicker(item.name, function(rs){
-						_c.log(rs);
-
 						//** callback doesn't just get called on finish selecting
 						if(rs.action === "picked"){
 
@@ -170,6 +177,8 @@ app.directive("contextMenu", function(uuid, apiService, apiParser, $rootScope){
 								}
 							};
 
+							// console.log(item);
+							//** get the larger thumb
 							if(typeof item.thumbnails === "object"){
 								if(item.thumbnails.length === 1)
 									newLink.thumb = item.thumbnails[0].url;
@@ -177,12 +186,19 @@ app.directive("contextMenu", function(uuid, apiService, apiParser, $rootScope){
 									newLink.thumb = item.thumbnails[1].url;
 							}
 
+							var pattr = new RegExp(urlTypes["google.docs"].match);
+							var bool = pattr.test(item.url);
+							if(bool){
+								newLink.key = item.id;
+								newLink.ico = item.iconUrl;
+							}
+
 							//** color animation 
 							startColorShifting($(".link").last().find(".state-loading .no-icon"));
 
 							ctrl.links.push(newLink);
 							linkService.create(url).then(function(data){
-								_c.log(data);
+								// _c.log(data);
 								//** use new data but keep a copy of the old
 								var odata = newLink;
 
@@ -210,15 +226,12 @@ app.directive("contextMenu", function(uuid, apiService, apiParser, $rootScope){
 									$rootScope.$broadcast("linkCreationComplete", data);
 								});
 							});
-
-							_c.log(item);
 						}
 					});
 					picker.setVisible(true);
 				}
 				$event.stopPropagation();
 			}
-
 		}
 	}
 });	

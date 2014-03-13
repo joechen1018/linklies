@@ -400,7 +400,7 @@ app.service("gridService", function($rootScope, $timeout, resize){
 	var defaults = {
 		gridWidth : 150,
 		gridHeight : 25,
-		margin : 15,
+		margin : 10,
 		sideWidth : 90,
 		topHeight : 90,
 		bottomHeight : 40

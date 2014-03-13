@@ -21,7 +21,7 @@ app.service("gridRects", function(gridSystem){
 			grid[0] * gridSystem.gridFullWidth,
 			grid[1] * gridSystem.gridFullHeight,
 			gridSystem.gridWidth,
-			gridSystem.folderSize.height
+			gridSystem.linkSize.height
 		);
 		return rect;
 	}
@@ -260,9 +260,9 @@ app.service("gridRects", function(gridSystem){
 				inters, 
 				nearGrid;
 
-			//** find grid with most intersection
+			//** find grid that contains clickRect
 			for(var i = 0; i<grids.length; i++){
-				rect = self.link.gridToRect(grids[i]);
+				rect = self.gridToRect(grids[i]);
 				if(rect.contains(clickRect)){
 					return grids[i];
 				}

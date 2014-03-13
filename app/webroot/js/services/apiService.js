@@ -249,7 +249,7 @@ app.service("apiService", function($http, apiParser){
 			$holder = $("<div/>");
 
 		var contains = function(subject, needles, strict){
-			strict = strict || true;
+			strict = strict === undefined ? true : false;
 			if($.type(needles) === "string")
 				needles = [needles];
 

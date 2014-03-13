@@ -254,10 +254,15 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http,
 		$scope.links.push(newLink);
 	}
 
-	$scope.onBoardDbClick = function($event){
-		var x = $event.pageX - gridSystem.defaults.sideWidth;
-		var y = $event.pageY - gridSystem.defaults.topHeight;
-		var g = gridRects.link.findNearGridByPoint(x, y);
+	$scope.onBoardDbClick = function($event, grid){
+		var x, y, g;
+		if(typeof grid === "object"){
+			g = grid;
+		}else{
+			x = $event.pageX - gridSystem.defaults.sideWidth;
+			y = $event.pageY - gridSystem.defaults.topHeight;
+			g = gridRects.link.findNearGridByPoint(x, y);
+		}
 		var newLink = {
 			grid : g,
 			uuid : uuid.create(),
@@ -309,27 +314,30 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http,
 				if($target.hasClass("folder")) return "folder";
 				if($target.hasClass("link")) return "link";
 				return "board";
-			})();
+			})(),
+			context = {};
 
 		var linkBool = gridRects.link.gridAvailable(g, [-1, -1]),
 			folderBool = gridRects.folder.gridAvailable(g, [-1, -1]);
 
-
-		console.log(x,y);
-		console.log(g);
+		//** if clicked point has space for link
 		if(linkBool){
-			$scope.context = {
+			//** context menu is relative to body, not #board. Left and top must be added
+			context = {
 				"show" : true,
 				"class" : name,
-				"left" : x,
-				"top" : y,
+				"left" : x + gridSystem.defaults.sideWidth,
+				"top" : y + gridSystem.defaults.topHeight,
 				"grid" : g
 			};
+			if(folderBool){
+				context.folderAvailable = true;
+			}
 		}
-		
+
+		$scope.context = context;
 		$event.stopPropagation();
 	}
-
 	$scope.onLinkClick = function($event){
 		$event.stopPropagation();
 		/*

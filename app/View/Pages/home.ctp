@@ -39,14 +39,14 @@
 			<input type="text" placeholder="enter keywords" ng-style="{
 				width : grids.gridFullWidth * 1.5
 			}">
-			<span data-icon="n" ></span>
+			<span data-icon="B" ></span>
 		</div>
 		<!-- <div class="home">
 			<span data-icon="r"></span>
 		</div> -->
 		<div class="funcs-1">
-			<a class="addNew" href="" data-icon="d"><span></span></a>
-			<a href="" class="options" data-icon="o"></a>
+			<!-- <a class="addNew" href="" data-icon="d"><span></span></a> -->
+			<a href="" class="options" data-icon="C"></a>
 		</div>
 	</div>
 
