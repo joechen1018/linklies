@@ -87,6 +87,14 @@ app.directive("lkFolder", function(gridSystem){
 				scope.templates.state = temps.state();
 			});
 
+			// scope.$watch("data.title", function(newVal, oldVal){
+			// 	console.log(newVal);
+			// });
+
+			$ele.find("span.title").change(function(){
+				console.log($(this).text());
+			});
+
 			scope.linkStyle = function(){
 				if(scope.data.grid){
 					return {
@@ -385,6 +393,7 @@ app.directive("lkFolder", function(gridSystem){
 					containment : "#drag-containment",
 					scroll: false,
 					delay : 10,
+					//handle : type === 'link' ? ".icon, .no-icon" : "",
 					start : function(e, ui){
 
 						$ele = $(ele);
