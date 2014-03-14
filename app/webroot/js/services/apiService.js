@@ -53,6 +53,19 @@ app.service("apiService", function($http, apiParser){
 				});
 				return _d.promise();
 			},
+			saveField : function(field, value, id){
+				var _d = $.Deferred();
+				$.ajax({
+					url : "api/saveField/link/" + id + "/" + field + "/" + value,
+					method : "post",
+					data : obj,
+					success : function(res){
+						var link = apiParser.linkFromDb(res.data.Link);
+						_d.resolve(link);
+					}
+				});
+				return _d.promise();
+			},
 			remove : function(id){
 				var _d = $.Deferred();
 				$.ajax({

@@ -265,6 +265,33 @@ app.directive("lkFolder", function(gridSystem){
 				//** focus me for 30 sec
 				$rootScope.$broadcast("stopVideo", scope.data);
 			}
+
+			var thumbUrl;
+			scope.getThumb = function(){
+				//console.log(data);
+				if(typeof data.type === "object"){
+					if(data.type.name.indexOf("google.docs") !== -1){
+						if(thumbUrl){
+							return thumbUrl;
+						}else{
+							if(data.key === undefined || data.key === ""){
+								data.key = __.getDocKey(data.url);
+							}
+							var request = gapi.client.drive.files.get({
+			                    'fileId': data.key
+			                });
+			                request.execute(function(res) {
+			                    $ele.find(".thumb").attr("src", res.thumbnailLink);
+			                    data.thumb = res.thumbnailLink;
+			                    apiService.linkService.save(data);
+			                    thumbUrl = res.thumbnailLink;
+			                });
+						}
+						return "";
+					}
+				}
+				return data.thumb;
+			}
 			
 			var timer, timer1, timer3;
 			var enableHover = function(){

@@ -531,6 +531,37 @@ __.showArea = function(rect){
 }
 
 
-__clearArea = function(){
+__.clearArea = function(){
     $(".__area").remove();
 }
+
+
+__.getDocKey = function(url){
+
+    var matchRs = url.match(/.+d\/([a-zA-z0-9\-_]*)(\/|)(.+|)/),
+        key;
+
+    matchRs = url.match(/^http.*docs.google.com\/.*\/.*key=(.*)\&|$/);
+    if(matchRs !== null){
+        if(matchRs.length > 1){
+            key = matchRs[1];
+            if(key == undefined){
+                matchRs = url.match(/.*docs\.google\.com\/.*\/d\/(.*)\/|$/);
+                if(matchRs !== null){
+                    if(matchRs.length > 1){
+                        key = matchRs[1];
+                    }
+                }       
+            }
+        }
+    }else{
+        matchRs = url.match(/.*docs\.google\.com\/.*\/d\/(.*)\/|$/);
+        if(matchRs !== null){
+            if(matchRs.length > 1){
+                key = matchRs[1];
+            }
+        }
+    }
+    return key;
+}
+
