@@ -90,13 +90,14 @@
     
     .state-ready{
         .link-body{
-
+			cursor : default;
 	        &:hover{
 	          .opt{
 	            display: block;
 	          }
 	        }
 	        .icon{
+	        	cursor : move;
 	            height:@h;
 	            width:26px;
 	            overflow: hidden;
@@ -153,11 +154,11 @@
 					top : ~"calc(50% - 7px)";
 	            }
 	        }
-	        a.title{
+	        span.title{
 	            color:#333;
 	            text-decoration:none;
 	            font-size:14px;
-	            line-height:@h;
+	            line-height:26px;
 	            position:absolute;
 	            left:33px;
 	            top:0;
@@ -165,6 +166,7 @@
 	            white-space: nowrap;
 	            overflow: hidden;
 	            text-overflow: ellipsis;
+	            //cursor: text;
 	        }
 	        .opt{
 				position:absolute;

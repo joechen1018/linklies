@@ -465,16 +465,26 @@ app.service("apiService", function($http, apiParser){
 			break;
 			case 'google.docs.spreadsheet' : 
 
-				matchRs = rs.url.match(/^http.*docs.google.com\/spreadsheet\/.*key=(.*)\&|$/);
-				if(matchRs !== null){
-					if(matchRs.length > 1){
-						rs.key = matchRs[1];
-					}
-				}else{
-					matchRs = rs.url.match(/.*docs\.google\.com\/spreadsheets\/d\/(.*)\/|$/);
+				if(!rs.key){
+					matchRs = rs.url.match(/^http.*docs.google.com\/spreadsheet\/.*key=(.*)\&|$/);
 					if(matchRs !== null){
 						if(matchRs.length > 1){
 							rs.key = matchRs[1];
+							if(rs.key == undefined){
+								matchRs = rs.url.match(/.*docs\.google\.com\/spreadsheets\/d\/(.*)\/|$/);
+								if(matchRs !== null){
+									if(matchRs.length > 1){
+										rs.key = matchRs[1];
+									}
+								}		
+							}
+						}
+					}else{
+						matchRs = rs.url.match(/.*docs\.google\.com\/spreadsheets\/d\/(.*)\/|$/);
+						if(matchRs !== null){
+							if(matchRs.length > 1){
+								rs.key = matchRs[1];
+							}
 						}
 					}
 				}
