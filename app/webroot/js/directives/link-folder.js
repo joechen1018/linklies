@@ -466,8 +466,11 @@ app.directive("lkFolder", function(gridSystem){
 						ref.dragging = false;
 						preview.show = false;
 						$selectedFolder = $(".folder.selected");
+
+						console.log($selectedFolder);
+						//** do drop link to folder
 						if($selectedFolder.length === 1){
-							//do drop folder
+							_c.log(ref);
 						}
 
 						$folders.removeClass("selected");
