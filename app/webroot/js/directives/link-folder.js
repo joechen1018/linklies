@@ -380,7 +380,7 @@ app.directive("lkFolder", function(gridSystem){
 		}
 	}
 })
-.directive("lkDrag", function(gridSystem, gridRects, apiService, $timeout){
+.directive("lkDrag", function(gridSystem, gridRects, apiService, $timeout, $rootScope){
 	return {
 		restrict : "EA",
 		controller : function($scope){
@@ -467,10 +467,28 @@ app.directive("lkFolder", function(gridSystem){
 						preview.show = false;
 						$selectedFolder = $(".folder.selected");
 
-						console.log($selectedFolder);
+						// _c.log($selectedFolder);
 						//** do drop link to folder
 						if($selectedFolder.length === 1){
-							_c.log(ref);
+							// _c.log(ref);
+							//** extend type varification later
+							var folderType = $selectedFolder.hasClass("video") ? "video" : "web";
+							var saveToFolder = function(folderId, link){
+								$rootScope.$broadcast("removeLink", link.id);
+								link.folder_id = folderId;
+								// _c.log(link);
+								$selectedFolder.addClass("saving");
+								apiService.linkService.save(link).then(function(res){
+									$selectedFolder.removeClass("saving");
+								});
+							}
+							if(folderType === "video"){
+								if(ref.type.name === "video"){
+									saveToFolder($selectedFolder.attr("id").split("-")[1], ref);
+								}
+							}else{
+								saveToFolder($selectedFolder.attr("id").split("-")[1], ref);
+							}
 						}
 
 						$folders.removeClass("selected");
