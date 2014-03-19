@@ -483,7 +483,7 @@ app.directive("lkFolder", function(gridSystem){
 								});
 							}
 							if(folderType === "video"){
-								if(ref.type.name === "video"){
+								if(ref.view === "video"){
 									saveToFolder($selectedFolder.attr("id").split("-")[1], ref);
 								}
 							}else{
