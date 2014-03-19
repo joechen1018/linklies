@@ -65,6 +65,17 @@ class ApiController extends AppController{
 		$this -> set("_serialize", array("data"));
 	}
 
+	// public function saveField($model, $id, $field, $value){
+	// 	$data = $this -> data;
+	// 	$model = ucwords($model);
+	// 	$this -> loadModel($model);
+	// 	$this -> $model -> save($value, true, array($field));
+	// 	$id = $this -> $model -> id;
+	// 	$rs = $this -> $model -> findById($id);
+	// 	$this -> set("data", $rs);
+	// 	$this -> set("_serialize", array("data"));
+	// }
+
 	public function removeById($model, $id){
 		$model = ucwords($model);
 		$this -> loadModel($model);

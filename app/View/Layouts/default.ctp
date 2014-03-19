@@ -2,7 +2,7 @@
 <html lang="en-US" ng-app="lk" ng-controller="appCtrl">
 <head>
 	<meta charset="UTF-8">
-	<title>Linkies</title>
+	<title>Linklies</title>
 	<link rel="icon" href="logo.ico" type="image/x-icon"/>
 	
 	<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>

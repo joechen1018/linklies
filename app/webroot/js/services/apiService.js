@@ -53,6 +53,19 @@ app.service("apiService", function($http, apiParser){
 				});
 				return _d.promise();
 			},
+			saveField : function(field, value, id){
+				var _d = $.Deferred();
+				$.ajax({
+					url : "api/saveField/link/" + id + "/" + field + "/" + value,
+					method : "post",
+					data : obj,
+					success : function(res){
+						var link = apiParser.linkFromDb(res.data.Link);
+						_d.resolve(link);
+					}
+				});
+				return _d.promise();
+			},
 			remove : function(id){
 				var _d = $.Deferred();
 				$.ajax({
@@ -543,7 +556,6 @@ app.service("apiService", function($http, apiParser){
 				});
 			break;
 			case 'google.docs.file' : 
-
 				matchRs = rs.url.match(/.+d\/([a-zA-z0-9\-_]*)(\/|)(.+|)/);
 				if(matchRs !== null){
 					if(matchRs.length > 1){
@@ -562,6 +574,7 @@ app.service("apiService", function($http, apiParser){
 					    'fileId': rs.key
 					});
 					request.execute(function(resp) {
+						console.log(resp);
 						rs.doc = {};
 						rs.doc.file = resp;
 						rs.title = resp.title;
