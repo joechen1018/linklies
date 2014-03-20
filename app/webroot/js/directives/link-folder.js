@@ -11,7 +11,18 @@ app.directive("lkFolder", function(gridSystem){
 		},
 		link : function(scope, ele, attrs, ctrl){
 
-			var grids = gridSystem;
+			var grids = gridSystem,
+				$ele = $(ele);
+
+			$ele.hover(function(){
+				scope.hoverUrl = "templates/folder.links.html";
+				scope.$apply();
+			}, function(){
+				scope.hoverUrl = "";
+				scope.$apply();
+			});	
+
+			scope.links = scope.data.Link;
 			scope.getStyle = function(){
 				if(scope.data && scope.data.grid){
 					if(scope.data.grid.length !== 2){
