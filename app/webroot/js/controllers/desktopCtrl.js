@@ -467,4 +467,25 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http,
 	$rootScope.$on("stopVideo", function(e, link){
 		applyFocus(link, getLinkIndex(link), false);
 	});
+
+	$rootScope.$on("folderHover", function(e, $folder){
+		$scope.showLinkList = true;
+
+		var $list = $("#link-list"),
+			left = $folder.offset().left;
+
+		if(left > $(window).width() / 2){
+			//show link list on the left of the folder
+			console.log(1);
+			$list.css("left", left - 10);
+		}else{
+			console.log(2);
+			//show link list on the right of the folder
+			$list.css("left", left + $folder.width() + 10);
+		}
+	});
+
+	$rootScope.$on("folderOut", function(e){
+		$scope.showLinkList = false;
+	});
 });

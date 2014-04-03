@@ -92,6 +92,11 @@
 	</div>
 	<!-- end #baord -->
 
+	<div id="link-list" ng-show="showLinkList">
+		<div class="arrow arrow-left"></div>
+		test
+	</div>
+
 	<div id="browser" ng-show="showBrowser">
 		<div class="iframe-wrap" ng-show="showBrowser && showWrap">
 			<iframe src="" frameborder="0" ng-style="{

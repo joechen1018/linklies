@@ -1,4 +1,4 @@
-app.directive("lkFolder", function(gridSystem){
+app.directive("lkFolder", function(gridSystem, $rootScope){
 	return {
 		restrict : "EA",
 		templateUrl : "templates/folder.html",
@@ -15,11 +15,9 @@ app.directive("lkFolder", function(gridSystem){
 				$ele = $(ele);
 
 			$ele.hover(function(){
-				scope.hoverUrl = "templates/folder.links.html";
-				scope.$apply();
+				$rootScope.$broadcast("folderHover", $ele);
 			}, function(){
-				scope.hoverUrl = "";
-				scope.$apply();
+				$rootScope.$broadcast("folderOut");
 			});	
 
 			scope.links = scope.data.Link;
