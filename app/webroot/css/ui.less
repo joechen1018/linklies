@@ -43,6 +43,36 @@
     top:-@size+1px;
     left : calc((@w - @size)/2);
   }
+
+  div.arrow-left{
+    width: 0; 
+    height: 0; 
+    border-top: @size solid transparent;
+    border-bottom: @size solid transparent;
+    
+    border-right: @size solid white;
+    position: absolute;
+    top:100px;
+    left : -10px;
+  }
+
+  .arrow-down {
+    width: 0; 
+    height: 0; 
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    
+    border-top: 20px solid #f00;
+  }
+
+  .arrow-right {
+    width: 0; 
+    height: 0; 
+    border-top: 60px solid transparent;
+    border-bottom: 60px solid transparent;
+    
+    border-left: 60px solid green;
+  }
 }
 
 #overlay-layer{
