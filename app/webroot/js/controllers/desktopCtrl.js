@@ -469,23 +469,33 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http,
 	});
 
 	$rootScope.$on("folderHover", function(e, $folder){
-		$scope.showLinkList = true;
 
 		var $list = $("#link-list"),
-			left = $folder.offset().left;
+			left = $folder.offset().left,
+			fid = $folder.attr("id").split("-")[1];
+
+		$scope.showLinkList = true;
+		$scope.folderUrl = root + 'folder/' + fid;
 
 		if(left > $(window).width() / 2){
 			//show link list on the left of the folder
-			console.log(1);
 			$list.css("left", left - 10);
 		}else{
-			console.log(2);
 			//show link list on the right of the folder
 			$list.css("left", left + $folder.width() + 10);
 		}
+
+		apiService.folderService.getLinks(fid).then(function(arr){
+			if(arr.length > 0){
+				$scope.$apply(function(){
+					$scope.linkList = arr;
+				});
+			}
+		});
 	});
 
 	$rootScope.$on("folderOut", function(e){
 		$scope.showLinkList = false;
+		$scope.linkList = [];
 	});
 });

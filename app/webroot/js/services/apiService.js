@@ -98,6 +98,20 @@ app.service("apiService", function($http, apiParser){
 				});
 				return _d.promise();
 			},
+			getLinks : function(folder_id){
+				var _d = $.Deferred();
+				$.ajax({
+					url : root + "api/folderLinks/" + folder_id,
+					method : "get",
+					success : function(res){
+						_d.resolve(res.data);
+					},
+					fail : function(err){
+						console.log(err);
+					}
+				});
+				return _d.promise();
+			},
 			create : function(){
 
 			},

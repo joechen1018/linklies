@@ -14,6 +14,10 @@ class MockupsController extends AppController{
 
 	}
 
+	public function folderLinks() {
+		
+	}	
+
 	public function contextMenu(){
 		
 	}

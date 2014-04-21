@@ -94,7 +94,13 @@
 
 	<div id="link-list" ng-show="showLinkList">
 		<div class="arrow arrow-left"></div>
-		test
+		<p><a href="{{folderUrl}}">Open in new tab</a></p>
+		<ul>
+			<li ng-repeat="link in linkList">
+				<img src="{{link.ico}}" alt="">
+				<a href="{{link.url}}" target="_blank">{{link.title}}</a>
+			</li>
+		</ul>
 	</div>
 
 	<div id="browser" ng-show="showBrowser">

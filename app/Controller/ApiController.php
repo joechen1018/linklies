@@ -65,6 +65,15 @@ class ApiController extends AppController{
 		$this -> set("_serialize", array("data"));
 	}
 
+	public function folderLinks($folder_id){
+
+		$this -> loadModel("Folder");
+		$data = $this -> Folder -> findById($folder_id);
+		$links = $data["Link"];
+		$this -> set("data", $links);
+		$this -> set("_serialize", array("data"));
+	}
+
 	// public function saveField($model, $id, $field, $value){
 	// 	$data = $this -> data;
 	// 	$model = ucwords($model);
