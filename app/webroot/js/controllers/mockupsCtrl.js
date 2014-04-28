@@ -20,6 +20,14 @@ app.controller("mockupsCtrl", function($scope, apiService){
 			$scope.linkList = arr;
 		});
 	});
+
+	var hashids = new Hashids("lOju1I654975iPHqpoMmnT"),
+    hash = hashids.encrypt(35, 2, 3, 4),
+    numbers = hashids.decrypt(hash);
+	
+	console.log(hash);
+	console.log(numbers);
+
 	/*
 	service.get(626).then(function(link){
 		_c.log(data);
