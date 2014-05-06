@@ -15,8 +15,8 @@ class FoldersController extends AppController{
 
 	public function beforeFilter(){
 		$this -> Auth -> allow();
-		$this -> layout = "mockups";
 	}
 	public function index(){
 	}
+
 } ?>

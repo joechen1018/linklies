@@ -29,6 +29,12 @@ class UsersController extends AppController{
 		// debug($user_id);
 	}
 
+	public function folder(){
+		$this -> layout = "folders";
+		$folder_id = $this -> request -> params['folder_id'];
+		debug($folder_id);
+	}
+
 	public function login(){
 
 		//if 'me' object is posted
