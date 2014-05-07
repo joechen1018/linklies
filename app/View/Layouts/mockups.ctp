@@ -36,6 +36,7 @@
 		var _con = console;
 		console = { log : function(){} }
 	</script>
+	<link rel="stylesheet/less" type="text/css" href="<?php echo $this -> webroot?>css/main.less?" />
 	<link rel="stylesheet/less" type="text/css" href="<?php echo $this -> webroot?>css/mockups.less?view=<?php echo "desktop-view"?>" />
 	<script src="//cdnjs.cloudflare.com/ajax/libs/less.js/1.6.2/less.min.js" type="text/javascript"></script>
 	<script>
