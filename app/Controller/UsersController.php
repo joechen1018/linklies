@@ -31,8 +31,10 @@ class UsersController extends AppController{
 
 	public function folder(){
 		$this -> layout = "folders";
-		$folder_id = $this -> request -> params['folder_id'];
-		debug($folder_id);
+		// $hash = $this -> request -> params['folder_hash'];
+		// $this -> loadModel("Folder");
+		// $data = $this -> Folder -> findByHash($hash);
+		// $this -> set("data", $data);
 	}
 
 	public function login(){
