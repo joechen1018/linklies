@@ -32,10 +32,10 @@
 		'action' => 'desktop'),
 		array('user_id' => "[a-z]+\.[a-z]+\.[0-9]+"));
 
-	Router::connect('/folders/:folder_id', 
+	Router::connect('/folders/:folder_hash', 
 		array('controller' => 'users', 
 		'action' => 'folder'),
-		array('folder_id' => "[0-9a-zA-Z]+"));
+		array('folder_hash' => "[0-9a-zA-Z]+"));
 /**
  * ...and connect the rest of 'Pages' controller's urls.
  */
