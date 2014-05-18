@@ -1,0 +1,148 @@
+#link-list{
+	position: fixed;
+	z-index: 600;
+	width : 410px;
+	height : 100%;
+	left : 0;
+	top : 0px;
+	@h : 38px;
+	div.holder{
+		position:absolute;
+		left : 10px;
+		top : 0;
+		width : 400px;
+		height : 100%;
+		background: white;
+		.shadow-light;
+		>p{
+			//background: lighten(@dark, 10%);
+			text-align: right;
+			height : @h;
+			border-bottom : 1px solid lighten(@dark, 70%);
+			cursor : pointer;
+			a{
+				width : 100%;
+				font-size : 14px;
+				color : lighten(@dark, 40%);
+				line-height: @h;
+				padding-right : 30px;
+			}
+			a:before{
+				position: absolute;
+				right : 7px;
+				top : 13px;
+				color : lighten(@dark, 40%);
+			};
+			&:hover{
+				background: lighten(@dark, 80%);
+				a, a:before{
+					color : @dark;
+				}
+			};
+		}
+		>ul{
+			margin-top : 20px;
+			display: block;
+			width : 100%;
+			>li{
+				position: relative;
+				margin : 0px;
+				height : 25px;
+				padding-left : 7px;
+				border-left : 3px solid white;
+				img{
+					height : 15px;
+					width : 15px;
+					position: relative;
+					top : 5px;
+					left : 5px;
+				}
+				>a{
+					width : 80%;
+					white-space: nowrap;
+			        overflow: hidden;
+			        text-overflow: ellipsis;
+					display: block;
+					line-height: 25px;
+					height: 25px;
+					position: absolute;
+					left : 35px;
+					top : 0;
+					font-size: 14px;
+					color : lighten(@dark, 5%);
+				}
+				>div{
+					cursor: pointer;
+					position: absolute;
+					right : 10px;
+					top : 7px;
+					width : 10px;
+					height : 10px;
+					color : lighten(@dark, 50%);
+					margin:0;
+					padding: 0;
+					background: white;
+					ul{
+						@h : 30px;
+						display: none;
+						position: absolute;
+						width : 90px;
+						left : 0px;
+						top : 9px;
+						.shadow-light;
+						z-index: 200;
+						li{
+							height : @h;
+							margin:0;
+							font-size : 14px;
+							background: white;
+							border-left : 3px solid white;
+							a{
+								width : 100%;
+								height : @h;
+								line-height: @h;
+								margin:0;
+								color : lighten(@dark, 10%);
+							}
+							&:before{
+								padding:0;
+								margin:0;
+								padding-left : 5px;
+								position:relative;
+								top : 4px;
+							};
+							&:hover{
+								border-left : 3px solid @green;
+								background: lighten(@dark, 80%);
+							};
+						}
+					}
+					&:hover{
+						color : lighten(@dark, 5%);
+						>ul{
+							display: block;
+						}
+					};
+				}
+				>i{
+					width : 10px;
+					height : 10px;
+					position: absolute;
+					right : 30px;
+					top : 7px;
+					color : lighten(@dark, 5%);
+					display: none;
+				}
+				&:hover{
+					background: lighten(@dark, 80%);
+					border-bottom : 1px solid lighten(@dark, 70%);
+					border-top : 1px solid lighten(@dark, 70%);
+					border-left : 3px solid @green;
+					>i{
+						display: block;
+					}
+				};
+			}
+		}
+	}
+}

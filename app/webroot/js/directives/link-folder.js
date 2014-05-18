@@ -12,13 +12,35 @@ app.directive("lkFolder", function(gridSystem, $rootScope){
 		link : function(scope, ele, attrs, ctrl){
 
 			var grids = gridSystem,
-				$ele = $(ele);
+				$ele = $(ele),
+				$linkList = $("#link-list"),
+				mousetimer,
+				gRect = goog.math.Rect;;
 
-			$ele.hover(function(){
-				$rootScope.$broadcast("folderHover", $ele);
-			}, function(){
-				$rootScope.$broadcast("folderOut");
-			});	
+			$ele.bind("mouseenter", function(){
+				clearTimeout(mousetimer);
+				// scope.$apply(function(){
+				// 	scope.data.folderLinks = "templates/folder-links.html";
+				// });
+				if(scope.links.length > 0){
+					$rootScope.$broadcast("folderHover", $ele);
+					$linkList.bind("mouseleave", function(){
+						$rootScope.$broadcast("folderOut");
+						$linkList.unbind();
+					})
+				}
+			});
+			$ele.bind("mouseleave", function(e){
+				// var mouseRect = new goog.math.Rect(e.pageX-5, e.pageY-5, e.pageX+5, e.pageY+5);
+				// var linksRect = new goog.math.Rect($linkList.offset().left, 0, $linkList.width(), $linkList.height());
+				// var bool = linksRect.intersects(mouseRect);
+				if(true){
+					mousetimer = setTimeout(function(){
+						$linkList.unbind();
+						$rootScope.$broadcast("folderOut");
+					}, 500);
+				}
+			});
 
 			scope.links = scope.data.Link;
 			scope.getStyle = function(){

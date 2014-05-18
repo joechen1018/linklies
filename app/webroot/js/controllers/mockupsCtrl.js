@@ -9,7 +9,9 @@ app.controller("mockupsCtrl", function($scope, apiService){
 		url : "http://www.catswhocode.com/blog/10-awesome-things-to-do-with-curl"
 	}
 
+	$("body").css("background", "grey");
 
+	$scope.linkList = {};
 	$.get(root + "api/fetchAll/link/joe.chen.1", function(res){
 		var arr = res.data;
 		for(var i = 0; i<arr.length; i++){
@@ -17,7 +19,8 @@ app.controller("mockupsCtrl", function($scope, apiService){
 		}
 		console.log(arr);
 		$scope.$apply(function(){
-			$scope.linkList = arr;
+			$scope.linkList.show = true;
+			$scope.linkList.content = arr;
 		});
 	});
 

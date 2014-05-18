@@ -91,7 +91,8 @@
 					
 	</div>
 	<!-- end #baord -->
-
+	
+	<!--
 	<div id="link-list" ng-show="showLinkList">
 		<div class="arrow arrow-left"></div>
 		<p><a href="{{folderUrl}}">Open in new tab</a></p>
@@ -102,6 +103,9 @@
 			</li>
 		</ul>
 	</div>
+	-->
+
+	<?php echo $this -> element("folder_links") ?>
 
 	<div id="browser" ng-show="showBrowser">
 		<div class="iframe-wrap" ng-show="showBrowser && showWrap">
