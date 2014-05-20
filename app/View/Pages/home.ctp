@@ -104,7 +104,7 @@
 		</ul>
 	</div>
 	-->
-
+	
 	<?php echo $this -> element("folder_links") ?>
 
 	<div id="browser" ng-show="showBrowser">

@@ -7,7 +7,7 @@
 				<img src="{{link.ico}}" alt="">
 				<a href="{{link.url}}" target="_blank">{{link.title}}</a>
 				<i data-icon="x"></i>
-				<div data-icon="9">
+				<div data-icon="v">
 					<ul>
 						<li data-icon="I">
 							<a href="">delete</a>
