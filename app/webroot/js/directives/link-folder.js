@@ -37,7 +37,6 @@ app.directive("lkFolder", function(gridSystem, $rootScope){
 				// var mouseRect = new goog.math.Rect(e.pageX-5, e.pageY-5, e.pageX+5, e.pageY+5);
 				// var linksRect = new goog.math.Rect($linkList.offset().left, 0, $linkList.width(), $linkList.height());
 				// var bool = linksRect.intersects(mouseRect);
-				console.log("mouse leave");
 				if(true){
 					mousetimer = setTimeout(function(){
 						$linkList.unbind();
