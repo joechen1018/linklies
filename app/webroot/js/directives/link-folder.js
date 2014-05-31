@@ -1,4 +1,4 @@
-app.directive("lkFolder", function(gridSystem, $rootScope){
+app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 	return {
 		restrict : "EA",
 		templateUrl : "templates/folder.html",
@@ -13,39 +13,56 @@ app.directive("lkFolder", function(gridSystem, $rootScope){
 
 			var grids = gridSystem,
 				$ele = $(ele),
-				$linkList = $("#link-list"),
 				mousetimer,
-				gRect = goog.math.Rect;;
+				gRect = goog.math.Rect,
+				$folder = $(ele);
 
 			$ele.bind("mouseenter", function(){
-				clearTimeout(mousetimer);
-				// scope.$apply(function(){
-				// 	scope.data.folderLinks = "templates/folder-links.html";
-				// });
-				if(scope.links.length > 0){
-					$rootScope.$broadcast("folderHover", $ele);
-					$linkList.bind("mouseleave", function(){
-						$rootScope.$broadcast("folderOut");
-						$linkList.unbind();
-					});
-					$linkList.bind("mousemove", function(){
-						clearTimeout(mousetimer);
-					});
+				var $folder = $(ele),
+					$list = $folder.find(".link-list").eq(0),
+					left = $folder.offset().left,
+					fid = $folder.attr("id").split("-")[1];
+
+				$folder.css("z-index", 1000);
+
+				scope.linkList.show = true;
+				0   
+				if(left > $(window).width() / 2){
+					//show link list on the left of the folder
+					$list.css("left", left);
+				}else{
+					//show link list on the right of the folder
+					$list.css("left", left + $folder.width() );
 				}
+
+				apiService.folderService.getLinks(fid).then(function(arr){
+					if(arr.length > 0){
+						scope.$apply(function(){
+							scope.linkList.content = arr;
+						});
+					}
+				});
 			});
+
 			$ele.bind("mouseleave", function(e){
 				// var mouseRect = new goog.math.Rect(e.pageX-5, e.pageY-5, e.pageX+5, e.pageY+5);
 				// var linksRect = new goog.math.Rect($linkList.offset().left, 0, $linkList.width(), $linkList.height());
 				// var bool = linksRect.intersects(mouseRect);
 				if(true){
-					mousetimer = setTimeout(function(){
-						$linkList.unbind();
-						$rootScope.$broadcast("folderOut");
-					}, 500);
+					scope.$apply(function(){
+						scope.linkList.show = false;
+						$folder.css("z-index", 2);
+					});
 				}
 			});
 
-			scope.links = scope.data.Link;
+			//** LinkList
+			scope.linkList = {};
+			scope.linkList.url = root + "templates/folder.links.html";
+			scope.linkList.show = false;
+			//****
+
+			// scope.links = scope.data.Link;
 			scope.getStyle = function(){
 				if(scope.data && scope.data.grid){
 					if(scope.data.grid.length !== 2){
