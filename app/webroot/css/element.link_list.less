@@ -13,7 +13,34 @@
 		width : 400px;
 		height : 100%;
 		background: white;
+		opacity: 1;
 		.shadow-light;
+
+		.arrow{
+			position: absolute;
+			top : 10px;
+		}
+
+		.arrow-right {
+			width: 0; 
+			height: 0; 
+			border-top: 10px solid transparent;
+			border-bottom: 10px solid transparent;
+			
+			border-left: 10px solid white;
+			right : -10px;
+		}
+
+		.arrow-left {
+			width: 0; 
+			height: 0; 
+			border-top: 10px solid transparent;
+			border-bottom: 10px solid transparent; 
+			
+			border-right:10px solid white; 
+			left : -10px;
+		}
+
 		>p{
 			//background: lighten(@dark, 10%);
 			text-align: right;
@@ -49,7 +76,7 @@
 				margin : 0px;
 				height : 25px;
 				padding-left : 7px;
-				border-left : 3px solid white;
+				//border-left : 3px solid white;
 				img{
 					height : 15px;
 					width : 15px;
@@ -96,7 +123,7 @@
 							margin:0;
 							font-size : 14px;
 							background: white;
-							border-left : 3px solid white;
+							//border-left : 3px solid white;
 							a{
 								width : 100%;
 								height : @h;
@@ -112,7 +139,7 @@
 								top : 4px;
 							};
 							&:hover{
-								border-left : 3px solid @green;
+								//border-left : 3px solid @green;
 								background: lighten(@dark, 80%);
 							};
 						}
@@ -137,7 +164,7 @@
 					background: lighten(@dark, 80%);
 					border-bottom : 1px solid lighten(@dark, 70%);
 					border-top : 1px solid lighten(@dark, 70%);
-					border-left : 3px solid @green;
+					//border-left : 3px solid @green;
 					>i{
 						display: block;
 					}

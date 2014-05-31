@@ -17,49 +17,81 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 				gRect = goog.math.Rect,
 				$folder = $(ele);
 
-			$ele.bind("mouseenter", function(){
-				var $folder = $(ele),
-					$list = $folder.find(".link-list").eq(0),
-					left = $folder.offset().left,
-					fid = $folder.attr("id").split("-")[1];
+			//excecute mouse enter/leave binding	
+			var bindMouseEvents = function(){
+				$ele.bind("mouseenter", function(){
+					var $folder = $(ele),
+						$list = $folder.find(".link-list").eq(0),
+						left = $folder.offset().left,
+						top = $folder.offset().top,
+						fid = $folder.attr("id").split("-")[1];
 
-				$folder.css("z-index", 1000);
+					$folder.css("z-index", 1000);
 
-				scope.linkList.show = true;
-				0   
-				if(left > $(window).width() / 2){
-					//show link list on the left of the folder
-					$list.css("left", left);
-				}else{
-					//show link list on the right of the folder
-					$list.css("left", left + $folder.width() );
-				}
+					scope.linkList.show = true;
 
-				apiService.folderService.getLinks(fid).then(function(arr){
-					if(arr.length > 0){
+					$(".arrow").hide();
+					$(".arrow").css("top", top + $folder.height()/2 - 10);
+
+					//folder is on right side of the screen
+					if(left > $(window).width() / 2){
+						//show link list on the left of the folder
+						$list.css("left", left - 420);
+						$(".arrow-right").show();
+
+					//folder is on left side of the screen	
+					}else{
+						//show link list on the right of the folder
+						$list.css("left", left + $folder.width() );
+						$(".arrow-left").show();
+					}
+
+					apiService.folderService.getLinks(fid).then(function(arr){
+						if(arr.length > 0){
+							scope.$apply(function(){
+								scope.linkList.content = arr;
+							});
+						}
+					});
+				});
+
+				$ele.bind("mouseleave", function(e){
+					// var mouseRect = new goog.math.Rect(e.pageX-5, e.pageY-5, e.pageX+5, e.pageY+5);
+					// var linksRect = new goog.math.Rect($linkList.offset().left, 0, $linkList.width(), $linkList.height());
+					// var bool = linksRect.intersects(mouseRect);
+					if(true){
 						scope.$apply(function(){
-							scope.linkList.content = arr;
+							scope.linkList.show = false;
+							$folder.css("z-index", 2);
 						});
 					}
 				});
+			}	
+
+			//hide linkList before dragging	
+			$ele.bind("mousedown", function(){
+
+				$ele.unbind("mouseenter");
+				$ele.unbind("mouseleave");
+
+				scope.$apply(function(){
+					scope.linkList.show = false;
+				});
 			});
 
-			$ele.bind("mouseleave", function(e){
-				// var mouseRect = new goog.math.Rect(e.pageX-5, e.pageY-5, e.pageX+5, e.pageY+5);
-				// var linksRect = new goog.math.Rect($linkList.offset().left, 0, $linkList.width(), $linkList.height());
-				// var bool = linksRect.intersects(mouseRect);
-				if(true){
-					scope.$apply(function(){
-						scope.linkList.show = false;
-						$folder.css("z-index", 2);
-					});
-				}
+			//bind mouse enter/leave events after drag
+			$ele.bind("mouseup", function(){
+				bindMouseEvents();
 			});
+
+			//bind mouse enter/leave events
+			bindMouseEvents();
 
 			//** LinkList
 			scope.linkList = {};
 			scope.linkList.url = root + "templates/folder.links.html";
 			scope.linkList.show = false;
+			scope.linkList.arrowTop = 10;
 			//****
 
 			// scope.links = scope.data.Link;
