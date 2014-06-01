@@ -292,24 +292,20 @@
 				}
 				div.more{
 					position:absolute;
-					right:5px;
-					top : 10px;
-					div{
-						width: 0; 
-						height: 0; 
-						border-top: 5px solid transparent;
-						border-bottom: 5px solid transparent;
-						border-left: 5px solid lighten(@dark, 55%);
-						position:absolute;
-						right:4px;
-						top:1px;
-					}
+					right:0px;
+					top : 8px;
 					a{
-					  padding-right:15px;
+					  padding-right:10px;
 					  z-index: 200;
 					  color : lighten(@dark, 55%);
+					  span{
+						padding-left : 2px;
+					  }
 					  &:hover{
 					  	color : white;
+					  	span{
+					  		color : white;	
+					  	}
 					  };
 					}
 				}

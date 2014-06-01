@@ -36,7 +36,7 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 					//folder is on right side of the screen
 					if(left > $(window).width() / 2){
 						//show link list on the left of the folder
-						$list.css("left", left - 420);
+						$list.css("left", left - 419);
 						$(".arrow-right").show();
 
 					//folder is on left side of the screen	
@@ -69,8 +69,8 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 			}	
 
 			//hide linkList before dragging	
-			$ele.bind("mousedown", function(){
-
+			$ele.bind("dragStart", function(){
+				console.log("start");
 				$ele.unbind("mouseenter");
 				$ele.unbind("mouseleave");
 
@@ -80,7 +80,8 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 			});
 
 			//bind mouse enter/leave events after drag
-			$ele.bind("mouseup", function(){
+			$ele.bind("dragStop", function(){
+				console.log("stop");
 				bindMouseEvents();
 			});
 
@@ -507,6 +508,7 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 					start : function(e, ui){
 
 						$ele = $(ele);
+						$ele.trigger("dragStart");
 						originRect = rects.getDomRect($ele);
 						dragGrid = undefined;
 						originGrid = data.grid;
@@ -544,6 +546,7 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 					},
 					stop : function(e, ui){
 
+						$ele.trigger("dragStop");
 						$(ele).trigger("mouseout");
 						ref = type === "link" ? scope.link : scope.folder;
 						ref.dragging = false;
