@@ -112,11 +112,26 @@ app.service("apiService", function($http, apiParser){
 				});
 				return _d.promise();
 			},
-			create : function(){
-
+			create : function(user_id, grid){
+				console.log(grid);
+				var _d = $.Deferred();
+				$.ajax({
+					url : root + "api/createFolder/" + user_id + "/" + grid[0] + ',' + grid[1],
+					method : "get",
+					success : function(res){
+						_d.resolve(res.data.Folder);
+					},
+					fail : function(err){
+						console.log(err);
+					}
+				});
+				return _d.promise();
 			},
 			save : function(folder){
-				folder.grid = folder.grid.join(",");
+				if(folder.grid){
+					folder.grid = folder.grid.join(",");
+				}
+
 				//_c.log(folder);
 				var _d = $.Deferred();
 				$.ajax({
@@ -125,7 +140,6 @@ app.service("apiService", function($http, apiParser){
 					data : folder,
 					success : function(res){
 						var data = res.data.Folder;
-						data.grid = data.grid.split(",");
 						_d.resolve(data);
 					}
 				});

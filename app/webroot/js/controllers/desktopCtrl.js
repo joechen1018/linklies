@@ -52,7 +52,6 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http,
 	}
 
 	var onUserDataFetched = function(rs){
-
 		var data = rs.data,
 			user = data.User,
 			links = data.Link,
@@ -252,6 +251,45 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http,
 		}
 		clearLinks();
 		$scope.links.push(newLink);
+	}
+
+	$scope.createFolder = function(grid){
+		var x, y, g;
+		if(typeof grid === "object"){
+			g = grid;
+		}else{
+			x = $event.pageX - gridSystem.defaults.sideWidth;
+			y = $event.pageY - gridSystem.defaults.topHeight;
+			g = gridRects.link.findNearGridByPoint(x, y);
+		}
+		if(g === false){
+			var count = 0;
+			while(g === false && count < 3){
+				x += 5;
+				y += 5;
+				g = gridRects.link.findNearGridByPoint(x, y);
+				count++;
+			}
+		}
+		var newFolder = {
+			user_id : glob.user.id,
+			grid : g
+		};
+
+		apiService.folderService.create(glob.user.id, grid).then(function(folder){
+			var hashids = new Hashids("kfiehndednppxqpcwwiex"),
+		    	hash = hashids.encrypt(1, parseInt(folder.id, 10),3);
+
+		    folder.hash = hash;
+		    delete folder.grid;
+			apiService.folderService.save(folder).then(function(folder){
+				$scope.$apply(function(){
+					folder.FolderType = {};
+					folder.FolderType.icon = "Q";
+					$scope.folders.push(folder);
+				});
+			});
+		});
 	}
 
 	$scope.onBoardDbClick = function($event, grid){

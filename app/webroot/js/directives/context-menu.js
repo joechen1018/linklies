@@ -169,6 +169,9 @@ app.directive("contextMenu", function(uuid, apiService, apiParser, $rootScope, u
 						case 'new.link' :
 							ctrl.onBoardDbClick(false, scope.context.grid);
 						break;
+						case 'new.folder' :
+							ctrl.createFolder(scope.context.grid);
+						break;
 					}
 
 				}else{
