@@ -15,6 +15,7 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 				$ele = $(ele),
 				mousetimer,
 				gRect = goog.math.Rect,
+				linkListData,
 				$folder = $(ele);
 
 			//excecute mouse enter/leave binding	
@@ -27,8 +28,6 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 						fid = $folder.attr("id").split("-")[1];
 
 					$folder.css("z-index", 1000);
-
-					scope.linkList.show = true;
 
 					$(".arrow").hide();
 					$(".arrow").css("top", top + $folder.height()/2 - 10);
@@ -45,13 +44,17 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 						$list.css("left", left + $folder.width() );
 						$(".arrow-left").show();
 					}
-
-					apiService.folderService.getLinks(fid).then(function(arr){
-						if(arr.length > 0){
+					if(linkListData === undefined){
+						apiService.folderService.getLinks(fid).then(function(arr){
 							scope.$apply(function(){
+								linkListData = arr;
 								scope.linkList.content = arr;
 							});
-						}
+						});
+					}
+
+					scope.$apply(function(){
+						scope.linkList.show = true;
 					});
 				});
 
@@ -60,9 +63,9 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 					// var linksRect = new goog.math.Rect($linkList.offset().left, 0, $linkList.width(), $linkList.height());
 					// var bool = linksRect.intersects(mouseRect);
 					if(true){
+						$folder.css("z-index", 2);
 						scope.$apply(function(){
 							scope.linkList.show = false;
-							$folder.css("z-index", 2);
 						});
 					}
 				});
@@ -85,7 +88,40 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 				bindMouseEvents();
 			});
 
-			//bind mouse enter/leave events
+			$ele.bind("dblclick", function(){
+				var $folder = $ele;
+				var $input = $ele.find("#edit-name");
+				var $name = $ele.find("p.name");
+				var tmpVal = $name.text();
+
+				$name.hide();
+				$input.show()
+					  .focus();
+
+				$input.bind("focusout", function(){
+
+					$input.unbind();
+					$input.hide();
+					$name.show();
+
+					if($input.val().length > 0){
+						//assign edited result to name
+						scope.$apply(function(){
+							scope.data.name = $input.val();
+						});
+						apiService.folderService.saveName(scope.data.id, $input.val()).then(function(res){
+							console.log(res);
+						});
+
+					}else{
+
+					}
+				});
+
+				return false;
+			});
+
+			//** bind mouse enter/leave events
 			bindMouseEvents();
 
 			//** LinkList
@@ -93,8 +129,14 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 			scope.linkList.url = root + "templates/folder.links.html";
 			scope.linkList.show = false;
 			scope.linkList.arrowTop = 10;
+			scope.linkList.folderUrl = root + "folders/" + scope.data.hash;
 			//****
 
+			scope.deleteFolder = function(){
+				if(confirm("Are you sure you wish to delete this folder? This will also delete all contained links and connot be recovered!")){
+					$rootScope.$broadcast("deleteFolder", scope.data.id);
+				}
+			}
 			// scope.links = scope.data.Link;
 			scope.getStyle = function(){
 				if(scope.data && scope.data.grid){

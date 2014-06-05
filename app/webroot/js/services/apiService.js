@@ -145,10 +145,21 @@ app.service("apiService", function($http, apiParser){
 				});
 				return _d.promise();
 			},
+			saveName : function(id, name){
+				var _d = $.Deferred();
+				$.ajax({
+					url : "api/saveFolderName/" + id + "/" + name,
+					method : "get",
+					success : function(res){
+						_d.resolve(res);
+					}
+				});
+				return _d.promise();
+			},
 			remove : function(id){
 				var _d = $.Deferred();
 				$.ajax({
-					url : "api/removeById/folder/" + id,
+					url : "api/removeFolder/" + id,
 					method : "get",
 					success : function(res){
 						_d.resolve(res);

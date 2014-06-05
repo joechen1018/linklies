@@ -287,6 +287,38 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http,
 					folder.FolderType = {};
 					folder.FolderType.icon = "Q";
 					$scope.folders.push(folder);
+
+					//* after rendered
+					setTimeout(function(){
+						var $folder = $("#folder-" +folder.id);
+						var $input = $folder.find("#edit-name");
+						var $name = $folder.find("p.name");
+
+						$name.hide();
+						$input.show()
+							  .focus();
+
+						$input.bind("focusout", function(){
+							$input.unbind();
+							$input.hide();
+							$name.show();
+
+							//** assign edited result to name
+							for(var i = 0; i<$scope.folders.length; i++){
+								if($scope.folders[i].id === folder.id){
+									$scope.$apply(function(){
+										$scope.folders[i].name = $input.val();
+
+										//** save
+										apiService.folderService.saveName(scope.data.id, $input.val()).then(function(res){
+											console.log(res);
+										});
+									});
+								}
+							}
+						});
+
+					}, 100);
 				});
 			});
 		});
@@ -444,6 +476,19 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http,
 		}, 30 * 1000);
 	}
 
+	//** delete folder
+	$rootScope.$on("deleteFolder", function(e, folder_id){
+		for(var i = 0; i<$scope.folders.length; i++){
+			if($scope.folders[i].id === folder_id){
+				$scope.folders.splice(i, 1);
+				apiService.folderService.remove(folder_id).then(function(res){
+					console.log(res);
+				});
+			}
+		}
+	});
+
+	//** on link creationo completed
 	$rootScope.$on("linkCreationComplete", function(e, link){
 		for(var i = 0; i<$scope.links.length; i++){
 			if($scope.links[i].uuid == link.uuid){
@@ -452,6 +497,7 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http,
 		}
 	});
 
+	//** on link creation fails
 	$rootScope.$on("linkCreationFailed", function(e, link){
 		for(var i = 0; i<$scope.links.length; i++){
 			if($scope.links[i].uuid === link.uuid){

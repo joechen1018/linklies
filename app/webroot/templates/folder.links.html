@@ -1,9 +1,19 @@
 <div class="link-list" ng-show="linkList.show">
 	<div class="holder">
+
+		<!-- arrows -->
 		<div class="arrow arrow-left"></div>
 		<div class="arrow arrow-right"></div>
-		<p><a data-icon="x" href="{{linkList.folderUrl}}">Folder View</a></p>
-		<ul>
+		
+		<!-- buttons -->
+		<p>
+			<a data-icon="x" href="{{linkList.folderUrl}}" target="_blank">Folder View</a>
+		</p>
+		<ul class="left-buttons">
+			<li data-icon="z" ng-click="deleteFolder()"><span>delete folder</span></li>
+		</ul>
+
+		<ul class="link-list-items">
 			<li ng-repeat="link in linkList.content">
 				<img src="{{link.ico}}" alt="">
 				<a href="{{link.url}}" target="_blank">{{link.title}}</a>

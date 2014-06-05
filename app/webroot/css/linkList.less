@@ -41,6 +41,28 @@
 			left : -10px;
 		}
 
+		.left-buttons{
+			position: absolute;
+			height : @h;
+			left : 10px;
+			top : 12px;
+			li{
+				display: block;
+				margin:0;
+				padding:0;
+				font-size : 14px;
+				float:left;
+				color : lighten(@dark, 40%);
+				span{
+					padding-left : 3px;
+					line-height: -10px;
+				}
+				&:hover{
+					color : black;	
+				};
+			}
+		}
+
 		>p{
 			//background: lighten(@dark, 10%);
 			text-align: right;
@@ -67,7 +89,7 @@
 				}
 			};
 		}
-		>ul{
+		>ul.link-list-items{
 			margin-top : 20px;
 			display: block;
 			width : 100%;

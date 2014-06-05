@@ -96,6 +96,23 @@ class ApiController extends AppController{
 	// 	$this -> set("_serialize", array("data"));
 	// }
 
+	public function saveFolderName($id, $name){
+		$this -> loadModel("Folder");
+		$data = $this -> Folder -> save(array(
+			"id" => $id,
+			"name" => $name
+		));
+		$this -> set("data", $data);
+		$this -> set("_serialize", array("data"));
+	}
+
+	public function removeFolder($id){
+		$this -> loadModel("Folder");
+		$data = $this -> Folder -> delete($id);
+		$this -> set("data", $data);
+		$this -> set("_serialize", array("data"));
+	}
+
 	public function removeById($model, $id){
 		$model = ucwords($model);
 		$this -> loadModel($model);
