@@ -18,7 +18,7 @@
 				<img src="{{link.ico}}" alt="">
 				<a href="{{link.url}}" target="_blank">{{link.title}}</a>
 				<i data-icon="x"></i>
-				<div data-icon="v">
+				<div data-icon="v"  ng-click="deleteLink(link.uuid)">
 					<ul>
 						<li data-icon="I">
 							<a href="">delete</a>

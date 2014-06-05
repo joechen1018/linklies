@@ -132,6 +132,22 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 			scope.linkList.folderUrl = root + "folders/" + scope.data.hash;
 			//****
 
+			scope.deleteLink = function(uuid){
+				var list = scope.linkList.content;
+				if(confirm("Delete link?")){
+					for(var i = 0; i<list.length; i++){
+						if(list[i].uuid === uuid){
+							console.log(uuid);
+							//do delete
+							scope.linkList.content.splice(i, 1);
+							apiService.linkService.remove(uuid).then(function(res){
+								console.log(res)
+							});
+						}
+					}
+				}
+			}
+
 			scope.deleteFolder = function(){
 				if(confirm("Are you sure you wish to delete this folder? This will also delete all contained links and connot be recovered!")){
 					$rootScope.$broadcast("deleteFolder", scope.data.id);
