@@ -32,7 +32,7 @@
 		'action' => 'desktop'),
 		array('user_id' => "[a-z]+\.[a-z]+\.[0-9]+"));
 
-	Router::connect('/folders/:folder_hash', 
+	Router::connect('/folder/:folder_hash', 
 		array('controller' => 'users', 
 		'action' => 'folder'),
 		array('folder_hash' => "[0-9a-zA-Z]+"));

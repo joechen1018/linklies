@@ -11,7 +11,7 @@
 	
 */
 
-class FoldersController extends AppController{
+class FolderController extends AppController{
 
 	public function beforeFilter(){
 		$this -> Auth -> allow();

@@ -1,6 +1,7 @@
 <?php 
 class UsersController extends AppController{
 
+	public $helpers = array('Html', 'Js');
 	public function beforeFilter(){
 		$this -> Auth -> allow("login");
 		$action = $this -> request -> params["action"];
@@ -30,11 +31,11 @@ class UsersController extends AppController{
 	}
 
 	public function folder(){
-		$this -> layout = "folders";
-		// $hash = $this -> request -> params['folder_hash'];
-		// $this -> loadModel("Folder");
-		// $data = $this -> Folder -> findByHash($hash);
-		// $this -> set("data", $data);
+		$this -> layout = "folderView";
+		$hash = $this -> request -> params['folder_hash'];
+		$this -> loadModel("Folder");
+		$data = $this -> Folder -> findByHash($hash);
+		$this -> set("data", $data);
 	}
 
 	public function login(){
