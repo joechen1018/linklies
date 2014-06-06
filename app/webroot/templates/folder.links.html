@@ -6,11 +6,21 @@
 		<div class="arrow arrow-right"></div>
 		
 		<!-- buttons -->
-		<p>
-			<a data-icon="x" href="{{linkList.folderUrl}}" target="_blank">Folder View</a>
-		</p>
-		<ul class="left-buttons">
-			<li data-icon="z" ng-click="deleteFolder()"><span>delete folder</span></li>
+		<ul class="top-buttons">
+			<li class="left" ng-click="deleteFolder()">
+				<a>
+					<span data-icon="z">
+						<span>Delete Folder</span>
+					</span>
+				</a>
+			</li>
+			<li class="right">
+				<a href="{{linkList.folderUrl}}" target="_blank">
+					<span data-icon="x">
+						<span>Folder View</span>
+					</span>
+				</a>		
+			</li>
 		</ul>
 
 		<ul class="link-list-items">

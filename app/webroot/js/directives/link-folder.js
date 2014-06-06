@@ -27,8 +27,10 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 						top = $folder.offset().top - $("body").scrollTop(),
 						fid = $folder.attr("id").split("-")[1];
 
+					//* move folder to front	
 					$folder.css("z-index", 1000);
 
+					//*** arrow position
 					$(".arrow").hide();
 					$(".arrow").css("top", top + $folder.height()/2 - 10);
 
@@ -52,6 +54,13 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 							});
 						});
 					}
+					//***
+					//*** top buttons positioning
+						$(".top-buttons li").each(function(){
+							var $span = $(this).find("a>span");
+							$span.css("padding-left", ($(this).width() - $span.width())/2 + 8);
+						});
+					//***
 
 					scope.$apply(function(){
 						scope.linkList.show = true;
@@ -434,7 +443,7 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 				}
 				return data.thumb;
 			}
-			
+
 			var timer, timer1, timer3;
 			var enableHover = function(){
 

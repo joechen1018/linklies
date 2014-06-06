@@ -102,11 +102,11 @@ app.directive("contextMenu", function(uuid, apiService, apiParser, $rootScope, u
 					{
 						"name" : "board",
 						"options" : [
+							byName("new"),
 							byName("pick"),
 							byName("upload"),
 							byName("search"),
-							byName("map"),
-							byName("new")
+							byName("map")
 						]
 					}
 				];
