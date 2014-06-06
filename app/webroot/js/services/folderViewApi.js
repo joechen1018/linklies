@@ -1,4 +1,4 @@
-app.service("apiService", function($http, apiParser){
+folderViewApp.service("folderViewApi", function($http, apiParser){
 	return {
 		linkService : {
 			get : function(id){
@@ -47,7 +47,6 @@ app.service("apiService", function($http, apiParser){
 					method : "post",
 					data : obj,
 					success : function(res){
-						console.log(res);
 						var link = apiParser.linkFromDb(res.data.Link);
 						_d.resolve(link);
 					}

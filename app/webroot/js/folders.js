@@ -12,7 +12,7 @@ var _events = {};
     return scroll;
   }];
 }*/
-var app = angular.module("lk", ["ngRoute", "pasvaz.bindonce"], function($httpProvider){
+var folderViewApp = angular.module("lk", ["ngRoute", "pasvaz.bindonce"], function($httpProvider){
 
 })
 .value('$anchorScroll', angular.noop)

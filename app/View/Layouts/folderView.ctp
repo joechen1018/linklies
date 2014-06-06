@@ -21,15 +21,14 @@
 	<script src="//cdnjs.cloudflare.com/ajax/libs/less.js/1.6.2/less.min.js" type="text/javascript"></script>
 	<?php 
 		$this -> Js -> set("data", $data); 
-		echo $this -> Js -> writeBuffer();
+		echo $this -> Js -> writeBuffer(array(
+			"onDomReady" => false
+		));
 	?>
 	<script>
 		console = _con;
 		var _c = _con;
 		var root = '<?php echo $this -> webroot?>';
-		$(document).ready(function(){
-			console.log(app);
-		});
 	</script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
 	<script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script> 
@@ -37,7 +36,7 @@
 	<script src="<?php echo $this -> webroot?>js/plugins.js" type="text/javascript" charset="utf-8"></script>
 
 	<script src="<?php echo $this -> webroot?>js/controllers/folderCtrl.js" type="text/javascript" charset="utf-8"></script>
-	<script src="<?php echo $this -> webroot?>js/services/apiService.js" type="text/javascript" charset="utf-8"></script>
+	<script src="<?php echo $this -> webroot?>js/services/folderViewApi.js" type="text/javascript" charset="utf-8"></script>
 
 </head>
 <body style="overflow: hidden;">

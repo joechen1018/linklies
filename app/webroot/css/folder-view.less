@@ -1,11 +1,111 @@
-#pages{
-	li{
+@import "reset.css";
+@import "lib";
+//@import "icons";
+@import "linklies-font-1/styles.css";
+@import "theme";
+@import "ui";
+
+#topbar{
+	@c : darken(@blue, 10%);
+	@color1 : darken(@bg-color, 35%);
+	@color2 : #666666;
+	width: 100%;
+	background: lighten(@dark, 10%);
+	position: fixed;
+	left:0;
+	height : 45px;
+	top:-42px;
+	z-index:500;
+	position: absolute;
+	.shadow-light;
+}
+#links-container{
+	position: fixed;
+	left : 0;
+	top : 0;
+	width : 100%;
+	height : 100%;
+	background: darken(@bg-color, 10%);
+	li.link{
 		display: block;
 		position: absolute;
-		left : 0;
+		background: white;
+		.shadow-light;
+		display: none;
+	
+		div.iframe-wrap{
+			width : 100%;
+			height : 100%;
+			iframe{
+				position: absolute;
+				left : 0;
+				top : 0;
+				width : 100%;
+				height : 100%;
+			}
+		}
+		div.no-iframe{
+			position: absolute;
+			display: none;
+			width : 100%;
+			left : 0;
+			top : 200px;
+			h1{
+				font-size : 26px;
+				color : lighten(@dark, 50%);
+				text-align:center;
+				a{
+					font-size: 20px;
+					color : lighten(@dark, 40%);
+					text-decoration: underline;
+					padding-left : 5px;
+				}
+			}
+		}
+		div.hover-overlay{
+			position: absolute;
+			left : 0;
+			top : 0;
+			width : 100%;
+			height : 100%;
+			z-index: 10;
+			background: none;
+		}
+	}
+	li.current, li.prev, li.next{
+		display: block;
+	}
+	li.prev, li.next{
+		.hover-overlay{
+			background: white;
+		}
+		&:hover{
+			.hover-overlay{
+				background: lighten(@green, 20%);
+				.alpha(0.7);
+			}
+		};
+	}
+	li.current{
+		left : 15%;
 		top : 0;
 		width : 70%;
 		height: 100%;
-		background: red;
+		cursor : default;
+		.hover-overlay{
+			display: none;
+		}
+	}
+	li.prev{
+		top : 5%;
+		left : -80%;
+		height : 90%;
+		width : 90%;
+	}
+	li.next{
+		top : 5%;
+		height : 90%;
+		width : 90%;
+		left : 90%;
 	}
 }
