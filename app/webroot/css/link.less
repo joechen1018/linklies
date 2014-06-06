@@ -222,15 +222,15 @@
 	    //height:@h1;
 	    .funcs{
 			position:absolute;
-			left : 10px;
-			top : 18px;
+			left : 13px;
+			top : 21px;
 			z-index: 200;
 			span{
 				display: block;
 				float:left;
 				padding-right : 9px;
 				color : lighten(@dark, 55%);
-				font-size:9px;
+				font-size:16px;
 				&:hover{
 					color : white;
 				};
@@ -262,20 +262,35 @@
 				}
 			}
 			.texts{
+				cursor:default;
 				margin-left:0px;
 				margin-bottom:@size1;
 				padding-top:5px;
 				position:relative;
-				background: lighten(@dark, 15%);
-				h1{
-					padding-top:27px;
+				background: darken(@dark, 5%);
+				h1.title{
+					margin-top:35px;
+					padding-top : 0;
 					padding-bottom:5px;
 					padding-left : 10px;
 					padding-right : 10px;
+					color : lighten(@dark, 55%);
 					font-size:14px;
-					color : lighten(@dark, 75%);
 					line-height: 18px;
 					font-weight: bold;
+					cursor: pointer;
+					a{
+						color : lighten(@dark, 55%);
+						font-size:14px;
+						line-height: 18px;
+						font-weight: bold;
+					}
+					&:hover{
+						color : white;
+						a{
+							color : white;
+						}
+					};
 					p{
 					  padding-top:5px;
 					}
@@ -299,6 +314,7 @@
 					  z-index: 200;
 					  color : lighten(@dark, 55%);
 					  span{
+					  	font-size: 18px;
 						padding-left : 2px;
 					  }
 					  &:hover{

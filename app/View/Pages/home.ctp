@@ -15,9 +15,10 @@
 	<div class="bg"></div>
 </div>
 
-<div id="bg-loading">
+<!-- <div id="bg-loading">
 	<div class="bar"></div>
-</div>
+</div> -->
+
 <div id="desktop-view" ng-controller="desktopCtrl" ng-style="getDesktopStyle()">
 
 	<div context-menu context-menu-data="context"></div>

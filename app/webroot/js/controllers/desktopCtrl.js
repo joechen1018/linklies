@@ -14,6 +14,11 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http,
 		var onSizeDown = function(evt, lastWidth){
 		}
 
+		var enablePlugins = function(){
+			//**enable tooltip
+			$(document).tooltip();
+		}
+
 		$(rs).on("sizeChange", onSizeDown);
 		//$(rs).on("sizeDown", onSizeDown);
 

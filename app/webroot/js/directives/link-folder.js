@@ -24,7 +24,7 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 					var $folder = $(ele),
 						$list = $folder.find(".link-list").eq(0),
 						left = $folder.offset().left,
-						top = $folder.offset().top,
+						top = $folder.offset().top - $("body").scrollTop(),
 						fid = $folder.attr("id").split("-")[1];
 
 					$folder.css("z-index", 1000);
@@ -35,7 +35,7 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 					//folder is on right side of the screen
 					if(left > $(window).width() / 2){
 						//show link list on the left of the folder
-						$list.css("left", left - 419);
+						$list.css("left", left - 420);
 						$(".arrow-right").show();
 
 					//folder is on left side of the screen	

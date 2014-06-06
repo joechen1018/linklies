@@ -4,8 +4,9 @@
 	<div class="spacer"></div>
 
 	<div class="funcs">
-		<span data-icon="d" ng-click="openPage()" bo-show="data.allowIframe"></span>
-		<span data-icon="k"></span>
+		<!-- <span title="browse here" data-icon="d" ng-click="openPage()" bo-show="data.allowIframe"></span> -->
+		<span title="edit" data-icon="g"></span>
+		<span title="share" data-icon="U"></span>
 		<span data-icon="H" ng-show="view === 'video'"></span>
 	</div>
 
@@ -16,9 +17,19 @@
 		</div>
 		
 		<div class="texts">
-			<h1>{{data.title}}</h1>
+
+			<h1 bo-show="!data.allowIframe" class="title">
+				<a target="_blank" bo-href="data.url">{{data.title}}</a>
+			</h1>
+
+			<h1  bo-show="data.allowIframe" ng-click="openPage()" class="title">
+				{{data.title}}
+			</h1>
+
 			<div class="more">
-				<a bo-href="data.url" target="_blank"> <span data-icon="x"></span></a>	
+				<a bo-href="data.url" target="_blank"> 
+					<span title="go to URL" data-icon="x"></span>
+				</a>	
 			</div>
 		</div>
 
