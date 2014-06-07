@@ -19,7 +19,9 @@ class ApiController extends AppController{
 	public function user($username_id){
 		$this -> loadModel("User");
 		$user = $this -> User -> find("first", array(
-			"conditions" => array("username_id" => $username_id),
+			"conditions" => array(
+				"username_id" => $username_id
+			),
 			'recursive' => 2
 		));
 		$this -> set("data", $user);
@@ -85,16 +87,26 @@ class ApiController extends AppController{
 		$this -> set("data", $data);
 		$this -> set("_serialize", array("data"));
 	}
-	// public function saveField($model, $id, $field, $value){
-	// 	$data = $this -> data;
-	// 	$model = ucwords($model);
-	// 	$this -> loadModel($model);
-	// 	$this -> $model -> save($value, true, array($field));
-	// 	$id = $this -> $model -> id;
-	// 	$rs = $this -> $model -> findById($id);
-	// 	$this -> set("data", $rs);
-	// 	$this -> set("_serialize", array("data"));
-	// }
+	public function saveField($model, $id, $field, $value){
+		$model = ucwords($model);
+		$this -> loadModel($model);
+		$this -> $model -> save($value, true, array($field));
+		$id = $this -> $model -> id;
+		$rs = $this -> $model -> findById($id);
+		$this -> set("data", $rs);
+		$this -> set("_serialize", array("data"));
+	}
+
+	public function setLinkFolderId($link_id, $folder_id){
+		$this -> loadModel("Link");
+		$this -> Link -> save(array(
+			"id" => $link_id,
+			"folder_id" => $folder_id
+		));
+		$rs = $this -> Link -> findById($link_id);
+		$this -> set("data", $rs);
+		$this -> set("_serialize", array("data"));
+	}
 
 	public function saveFolderName($id, $name){
 		$this -> loadModel("Folder");

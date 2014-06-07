@@ -16,9 +16,11 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 				mousetimer,
 				gRect = goog.math.Rect,
 				linkListData,
-				$folder = $(ele);
+				$folder = $(ele),
+				//* template reload count
+				count = 0;
 
-			//excecute mouse enter/leave binding	
+			//** excecute mouse enter/leave binding	
 			var bindMouseEvents = function(){
 				$ele.bind("mouseenter", function(){
 					var $folder = $(ele),
@@ -34,19 +36,22 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 					$(".arrow").hide();
 					$(".arrow").css("top", top + $folder.height()/2 - 10);
 
-					//folder is on right side of the screen
+					//* folder is on right side of the screen
 					if(left > $(window).width() / 2){
 						//show link list on the left of the folder
 						$list.css("left", left - 420);
 						$(".arrow-right").show();
 
-					//folder is on left side of the screen	
+					//* folder is on left side of the screen	
 					}else{
 						//show link list on the right of the folder
 						$list.css("left", left + $folder.width() );
 						$(".arrow-left").show();
 					}
-					if(linkListData === undefined){
+
+					//** class 'reload' applied to dom by lkDrag directive when new link is dropped onto the folder
+					if(linkListData === undefined || $folder.hasClass("reload")){
+						$folder.removeClass("reload");
 						apiService.folderService.getLinks(fid).then(function(arr){
 							scope.$apply(function(){
 								linkListData = arr;
@@ -54,7 +59,7 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 							});
 						});
 					}
-					//***
+					
 					//*** top buttons positioning
 						$(".top-buttons li").each(function(){
 							var $span = $(this).find("a>span");
@@ -135,7 +140,7 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 
 			//** LinkList
 			scope.linkList = {};
-			scope.linkList.url = root + "templates/folder.links.html";
+			scope.linkList.url = root + "templates/folder.links.html?count=0";
 			scope.linkList.show = false;
 			scope.linkList.arrowTop = 10;
 			scope.linkList.folderUrl = root + "folder/" + scope.data.hash;
@@ -238,14 +243,6 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 				scope.templates.state = temps.state();
 			});
 
-			// scope.$watch("data.title", function(newVal, oldVal){
-			// 	console.log(newVal);
-			// });
-
-			$ele.find("span.title").change(function(){
-				console.log($(this).text());
-			});
-
 			scope.linkStyle = function(){
 				if(scope.data.grid){
 					return {
@@ -334,9 +331,9 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 				}
 			}
 
+			//** removal be done in desktopController
 			scope.removeLink = function(){
 				$rootScope.$broadcast("removeLink", scope.data.uuid || scope.data.id);
-				//$(_events).trigger("removeLink", [scope.data.id || scope.data.uuid])
 			}
 
 			scope.openPage = function(){
@@ -575,7 +572,7 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 					start : function(e, ui){
 
 						$ele = $(ele);
-						$ele.trigger("dragStart");
+						$ele.trigger("dragStart").css("z-index", 1000);
 						originRect = rects.getDomRect($ele);
 						dragGrid = undefined;
 						originGrid = data.grid;
@@ -613,25 +610,27 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 					},
 					stop : function(e, ui){
 
-						$ele.trigger("dragStop");
+						$ele.trigger("dragStop").css("z-index", 10);
 						$(ele).trigger("mouseout");
 						ref = type === "link" ? scope.link : scope.folder;
 						ref.dragging = false;
 						preview.show = false;
 						$selectedFolder = $(".folder.selected");
 
-						// _c.log($selectedFolder);
 						//** do drop link to folder
 						if($selectedFolder.length === 1){
-							// _c.log(ref);
 							//** extend type varification later
 							var folderType = $selectedFolder.hasClass("video") ? "video" : "web";
 							var saveToFolder = function(folderId, link){
-								$rootScope.$broadcast("removeLink", link.id);
+
+								//$rootScope.$broadcast("removeLink", link.id);
+								var $link = $("#link-" + link.uuid);
+								$link.hide();
+
 								link.folder_id = folderId;
-								// _c.log(link);
 								$selectedFolder.addClass("saving");
-								apiService.linkService.save(link).then(function(res){
+								apiService.linkService.setLinkFolderId(link.id, folderId).then(function(res){
+									$selectedFolder.addClass("reload");
 									$selectedFolder.removeClass("saving");
 								});
 							}
@@ -642,6 +641,9 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 							}else{
 								saveToFolder($selectedFolder.attr("id").split("-")[1], ref);
 							}
+
+							$folders.removeClass("selected");
+							return;
 						}
 
 						$folders.removeClass("selected");

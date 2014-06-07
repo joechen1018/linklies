@@ -1,44 +1,55 @@
 folderViewApp.controller("folderViewCtrl", function($scope, $timeout){
 	//** variables
-	var data, 
-		_ = $scope, 
-		$view = $("#links-container");
+   var data, 
+	_ = $scope, 
+	$view = $("#links-container");
 
 	data = app.data;
 
 	$scope.index = 0;
 	$scope.folder = data.Folder;
-   	$scope.links = data.Link;
+	$scope.links = data.Link;
 
-   	function updateUrl(){
+	function updateUrl(){
 
-   		var $container = $("#links-container"),
-   			$links, $link, $iframe, $wrap, $noFrame, url;
+		var $container = $("#links-container"),
+			$links, $link, $iframe, $wrap, $noFrame, url;
 
-   		$links = $container.find(".link"), $link, $iframe;
-	   	for(var i = 0; i<$links.length; i++){
-	   		$link = $links.eq(i);
-	   		$iframe = $link.find("iframe").eq(0);
-	   		$wrap = $link.find(".iframe-wrap").eq(0);
-	   		$noFrame = $link.find(".no-iframe").eq(0);
+		$links = $container.find(".link"), $link, $iframe;
+   	for(var i = 0; i<$links.length; i++){
+   		$link = $links.eq(i);
+   		$iframe = $link.find("iframe").eq(0);
+   		$wrap = $link.find(".iframe-wrap").eq(0);
+   		$noFrame = $link.find(".no-iframe").eq(0);
 
-	   		if($scope.links[i].allowIframe){
-	   			$wrap.show();
-	   			$noFrame.hide();
-   			}else{
-   				$wrap.hide();
-   				$noFrame.show();
+   		if($scope.links[i].allowIframe){
+   			$wrap.show();
+   			$noFrame.hide();
+			}else{
+				$wrap.hide();
+				$noFrame.show();
+
+            setTimeout(function(){
+               var $holder = $link.find(".img-holder").eq(0),
+                   $img = $holder.find("img").eq(),
+                   $h1 = $link.find("h1").eq(0),
+                   $span = $h1.find("span").eq(0),
+                   top = $span.offset().top + $h1.height();
+               console.log($span.offset().top);    
+               $img.css("top", top).show();
+            }, 100);
+            console.log($scope.links[i]);
+			}
+   		if($link.hasClass("current") || $link.hasClass("prev") || $link.hasClass("next")){
+   			url = $scope.links[i].url;
+   			if($iframe.attr("src") != url){
+   				$iframe.attr("src", url);
    			}
-	   		if($link.hasClass("current") || $link.hasClass("prev") || $link.hasClass("next")){
-	   			url = $scope.links[i].url;
-	   			if($iframe.attr("src") != url){
-	   				$iframe.attr("src", url);
-	   			}
-	   		}
-	   	}
+   		}
    	}
+	}
 
-   	var currentObj = {
+   var currentObj = {
 		left : "15%",
 		top : "0",
 		width : "70%",
@@ -81,7 +92,7 @@ folderViewApp.controller("folderViewCtrl", function($scope, $timeout){
 
    	function addEvents(){
    		var addNavigateEvents = function(){
-   			var index = 0, lastIndex = 0;
+   			var index = 0, lastIndex = 0, watchModeTimer, mousemoveTimer;
    			var nextIndex = function(i, length){
    				i++;
    				if(i >= length){
@@ -121,12 +132,42 @@ folderViewApp.controller("folderViewCtrl", function($scope, $timeout){
    					  .css(prevObj);	  	  
 
    				updateUrl();	  
+               $(".link.current").stop().fadeTo(0, 1);
+               setTimeout(function(){
+                  setMouseMove();
+               }, 100);
    			}
+            var setWatchModeTimer = function(){
+               clearTimeout(watchModeTimer);
+               watchModeTimer = setTimeout(function(){
+                  $(".link.next, .link.prev").stop().fadeTo(500, 0.2);
+               }, 2000);
+            }
 
+            var setMouseMove = function(){
+
+               return;
+
+               var $current = $(".link.current");
+               var $currentHover = $current.find(".hover-overlay");
+
+               $currentHover.unbind("mousemove");
+               $currentHover.mousemove(function(){
+                  console.log("move");
+                  clearTimeout(mousemoveTimer);
+                  mousemoveTimer = setTimeout(function(){
+                     $currentHover.hide();
+                     $current.find(".options").stop().fadeTo(10, 0.1);
+                  }, 500);
+                  $current.find(".options").stop().fadeTo(10, 1); 
+               });
+               $current.find(".options").stop().fadeTo(10, 1); 
+            }
    			$view.on("click", ".link.next", function(){
    				lastIndex = index;
    				index = nextIndex(index, _.links.length);
    				animateFrames();
+               setWatchModeTimer();
    			});
 
    			$view.on("click", ".link.prev", function(){
@@ -134,12 +175,26 @@ folderViewApp.controller("folderViewCtrl", function($scope, $timeout){
    				index = prevIndex(index, _.links.length);
    				animateFrames();
    			});
+
+            $view.on("mouseenter", ".link.next, .link.prev", function(){
+               $(".next, .prev").stop().fadeTo(10, 1);
+            });
+            $view.on("mouseout", ".link.next, .link.prev", function(){
+               setWatchModeTimer();
+               // clearTimeout(mousemoveTimer);
+               // mousemoveTimer = setTimeout(function(){
+                  
+               // }, 10);
+            });
+
+            setMouseMove();
+            setWatchModeTimer();
    		}
    		addNavigateEvents();
    	}
    	addEvents();
+
    	$timeout(function(){
    		updateUrl();
    	}, 100);
-
 });

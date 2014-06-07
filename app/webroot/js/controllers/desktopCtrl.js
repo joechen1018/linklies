@@ -3,7 +3,6 @@
 goog.require('goog.math.Rect');
 app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, 
 									    keyboardManager, resize, gridSystem, gridRects, apiService, uuid, apiParser){
-
 	var $allElements;
 	var timeout;
 	var rs = resize;
@@ -13,7 +12,6 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http,
 		}
 		var onSizeDown = function(evt, lastWidth){
 		}
-
 		var enablePlugins = function(){
 			//**enable tooltip
 			$(document).tooltip();
@@ -57,6 +55,7 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http,
 	}
 
 	var onUserDataFetched = function(rs){
+		console.log(rs);
 		var data = rs.data,
 			user = data.User,
 			links = data.Link,
@@ -315,7 +314,7 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http,
 										$scope.folders[i].name = $input.val();
 
 										//** save
-										apiService.folderService.saveName(scope.data.id, $input.val()).then(function(res){
+										apiService.folderService.saveName(folder.id, $input.val()).then(function(res){
 											console.log(res);
 										});
 									});

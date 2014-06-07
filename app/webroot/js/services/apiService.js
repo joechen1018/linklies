@@ -42,10 +42,23 @@ app.service("apiService", function($http, apiParser){
 			save : function(link){
 				var obj = apiParser.linkToDb(link);
 				var _d = $.Deferred();
+
 				$.ajax({
 					url : "api/save/link",
 					method : "post",
 					data : obj,
+					success : function(res){
+						var link = apiParser.linkFromDb(res.data.Link);
+						_d.resolve(link);
+					}
+				});
+				return _d.promise();
+			},
+			setLinkFolderId : function(id, folder_id){
+				var _d = $.Deferred();
+				$.ajax({
+					url : "api/setLinkFolderId/" + id + "/" + folder_id,
+					method : "get",
 					success : function(res){
 						console.log(res);
 						var link = apiParser.linkFromDb(res.data.Link);
@@ -55,12 +68,13 @@ app.service("apiService", function($http, apiParser){
 				return _d.promise();
 			},
 			saveField : function(field, value, id){
+				console.log(field, value, id);
 				var _d = $.Deferred();
 				$.ajax({
 					url : "api/saveField/link/" + id + "/" + field + "/" + value,
-					method : "post",
-					data : obj,
+					method : "get",
 					success : function(res){
+						console.log(res);
 						var link = apiParser.linkFromDb(res.data.Link);
 						_d.resolve(link);
 					}

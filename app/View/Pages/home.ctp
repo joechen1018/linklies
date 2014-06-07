@@ -114,7 +114,7 @@
 				display : none
 			}"></iframe>
 		</div>
-		<div class="bg"></div>
+		<div class="bg" ng-click="closeBrowser()"></div>
 
 		<div class="btns">
 			<div class="btn">
