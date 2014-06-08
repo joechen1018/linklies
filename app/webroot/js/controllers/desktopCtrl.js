@@ -129,10 +129,10 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http,
 			}
 		}
 	}
-	if(userData === undefined){
-		apiService.getUser(uid).then(onUserDataFetched);
-	}
 
+	if(userData === undefined){
+		apiService.getUser(uid).then(onUserDataFetched);/**/
+	}
 	$scope.resize = resize;
 	$scope.grids = gridSystem;
 	$scope.showGrid = false;
@@ -329,6 +329,7 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http,
 	}
 
 	$scope.onBoardDbClick = function($event, grid){
+		//**
 		var x, y, g;
 		if(typeof grid === "object"){
 			g = grid;

@@ -42,7 +42,7 @@ body{
 	  //box-shadow: 0 3px 5px 3px  lighten(@dark, 60%);
 	  //background: lighten(@red, 30%);
 	  //background : darken(@bg-color, 75%);
-	  background: lighten(@dark, 10%);
+	  background: lighten(@dark, 0%);
 	  position: fixed;
 	  left:0;
 	  top:0;
@@ -262,14 +262,18 @@ body{
 			float:right;
 			width : 60px;
 			height : 60px;
-			background: @blue;
+			background: @dark;
 			position: relative;
+			&:hover{
+				background: @red;
+			};
 			span{
 				position: absolute;
 				font-size : 40px;
 				left : ~"calc(50% - 20px)";
 				top : ~"calc(50% - 20px)";
-				color : lighten(@blue, 35%);
+				//color : lighten(@blue, 35%);
+				color : white;
 				cursor: pointer;
 				&:hover{
 					color : white;

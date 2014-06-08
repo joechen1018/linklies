@@ -9,11 +9,14 @@
 
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular.min.js"></script>
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular-route.js"></script>
-	<script src="<?php echo $this -> webroot?>js/mockups.js"></script>
+
+	<script>
+		var app = angular.module("mk", ['ngRoute'], function($httpProvider){});
+	</script>
+
 	<script src="<?php echo $this -> webroot?>js/controllers/mockupsCtrl.js"></script>
-	<script src="<?php echo $this -> webroot?>js/plugins.js" type="text/javascript" charset="utf-8"></script>
-	<script src="<?php echo $this -> webroot?>js/services/apiService.js" type="text/javascript" charset="utf-8"></script>
-	<script src="<?php echo $this -> webroot?>js/directives/browser.js" type="text/javascript" charset="utf-8"></script>
+
+	<script src="<?php echo $this -> webroot?>js/services/gapi.js" type="text/javascript" charset="utf-8"></script>
 	
 	<!-- <link href='http://fonts.googleapis.com/css?family=Ubuntu Condensed' rel='stylesheet' type='text/css'> -->
 	<link href='http://fonts.googleapis.com/css?family=Droid Sans' rel='stylesheet' type='text/css'>

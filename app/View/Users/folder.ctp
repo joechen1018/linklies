@@ -21,6 +21,15 @@
 					<img src="{{link.thumb}}" alt="">
 				</div>
 			</h1>
+			<div class="qr-holder">
+				<img src="https://chart.googleapis.com/chart?cht=qr&chs=100x100&chl={{link.url}}" alt="">
+				<p class="shorten-url" ng-if="link.short_url.length > 5">
+					<span>share with this shorten url</span><br/>
+					<span class="url">
+						{{link.short_url}}
+					</span>
+				</p>
+			</div>
 		</div>
 		<div class="hover-overlay">
 			

@@ -6,6 +6,10 @@ class MockupsController extends AppController{
 		$this -> layout = "mockups";
 	}
 
+	public function gapi(){
+		$this -> render("/Layouts/blank");
+	}
+
 	public function link(){
 
 	}

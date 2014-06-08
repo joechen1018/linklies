@@ -1,7 +1,19 @@
-var app = angular.module("mk", ['ngRoute'], function($httpProvider){
-
-});
-app.controller("mockupsCtrl", function($scope, apiService){
+app.controller("mockupsCtrl", function($scope, gapi){
+	gapi.ready().then(function(){
+		gapi.checkAuth().then(function(rs){
+			console.log(rs);
+			gapi.loadPlus().then(function(rs){
+				console.log(rs);
+				gapi.loadDrive().then(function(rs){
+					console.log(rs);
+				});
+			});
+			// gapi.loadShortenUrl("https://docs.google.com/document/d/1sJQ6rWYV46PkivsFXN-FWr4BSPtLYTNBgCUGH9_N_6s/edit").then(function(rs){
+			// 	console.log(rs);
+			// });
+		});
+	});
+	/*
 	var service = apiService.linkService;
 	var _try = function(data){var a;try{a = JSON.parse(data);}catch(e){return {};}return a;}
 
@@ -29,7 +41,7 @@ app.controller("mockupsCtrl", function($scope, apiService){
     numbers = hashids.decrypt(hash);
 	
 	console.log(hash);
-	console.log(numbers);
+	console.log(numbers);*/
 
 	/*
 	service.get(626).then(function(link){

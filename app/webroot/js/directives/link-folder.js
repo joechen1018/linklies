@@ -298,13 +298,43 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 							})();
 						});
 
-						linkService.save(data).then(function(rs){
-							//** pass the id to data
-							scope.$apply(function(){
-								scope.data.id = rs.id;
-							});
-							//** notify controller level
-							$rootScope.$broadcast("linkCreationComplete", data);
+						gapi.client.load('urlshortener', 'v1',function(){
+							var request = gapi.client.urlshortener.url.insert({
+						      'resource': {
+							      'longUrl': data.url
+							    }
+						    });
+						    request.execute(function(response){
+						        if(response.id != null){
+						        	//console.log(response.id);
+
+						        	//** get shorten url
+						        	data["short_url"] = response.id;
+
+						        	//** save
+						        	linkService.save(data).then(function(rs){
+										//** pass the id to data
+										scope.$apply(function(){
+											scope.data.id = rs.id;
+											console.log(rs);
+											//** notify controller
+										});
+										$rootScope.$broadcast("linkCreationComplete", data);
+									});
+
+									//** getting shorten url info
+									// request = gapi.client.urlshortener.url.get({
+								 //        'shortUrl': data["short_url"],
+								 //        'projection': 'FULL'
+								 //   	});
+								 //   	request.execute(function(res){
+								 //   		console.log(res);
+								 //   	});
+
+						        }else{
+						            console.log("error: creating short url n"+ response.error);
+						        }
+						    });
 						});
 					})
 					.fail(function(){
