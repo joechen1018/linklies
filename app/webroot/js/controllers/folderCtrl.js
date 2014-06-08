@@ -11,6 +11,8 @@ folderViewApp.controller("folderViewCtrl", function($scope, $timeout, keyboardMa
 	$scope.folder = data.Folder;
 	$scope.links = data.Link;
    $scope.showPaginator = false;
+   $scope.showNavLeft = false;
+   $scope.showNavRight = false;
 
 	function updateUrl(){
 
@@ -194,9 +196,22 @@ folderViewApp.controller("folderViewCtrl", function($scope, $timeout, keyboardMa
 
             $view.on("mouseenter", ".link.next, .link.prev", function(){
                $(".next, .prev").stop().fadeTo(10, 1);
+               if($(this).hasClass('next')){
+                  $scope.$apply(function(){
+                     $scope.showNavRight = true;
+                  });
+               }else{
+                  $scope.$apply(function(){
+                     $scope.showNavLeft = true;
+                  });
+               }
             });
             $view.on("mouseout", ".link.next, .link.prev", function(){
                setWatchModeTimer();
+               $scope.$apply(function(){
+                  $scope.showNavLeft = false;
+                  $scope.showNavRight = false;
+               });
                // clearTimeout(mousemoveTimer);
                // mousemoveTimer = setTimeout(function(){
                   

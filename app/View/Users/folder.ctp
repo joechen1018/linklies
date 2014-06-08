@@ -37,6 +37,11 @@
 	</li>
 </ul>
 
+<div id="arrows">
+	<div class="left" data-icon="6" style="display:{{showNavLeft ?'block' : 'none'}}"></div>
+	<div class="right" data-icon="7"  style="display:{{showNavRight ?'block' : 'none'}}"></div>
+</div>
+
 <div id="paginator" ng-show="showPaginator">
 	<p>
 		<span class="ico-wrap">
