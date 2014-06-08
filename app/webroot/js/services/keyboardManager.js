@@ -1,5 +1,12 @@
 //http://jsfiddle.net/firehist/nzUBg/
-app.factory('keyboardManager', function ($window, $timeout) {
+var __ap;
+if(app){
+	__ap = app;
+}
+if(typeof folderViewApp !== 'undefined'){
+	__ap = folderViewApp;
+}
+__ap.factory('keyboardManager', function ($window, $timeout) {
 	var keyboardManagerService = {};
 
 	var defaultOpt = {

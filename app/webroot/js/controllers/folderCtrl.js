@@ -1,4 +1,5 @@
-folderViewApp.controller("folderViewCtrl", function($scope, $timeout){
+
+folderViewApp.controller("folderViewCtrl", function($scope, $timeout, keyboardManager){
 	//** variables
    var data, 
 	_ = $scope, 
@@ -9,6 +10,7 @@ folderViewApp.controller("folderViewCtrl", function($scope, $timeout){
 	$scope.index = 0;
 	$scope.folder = data.Folder;
 	$scope.links = data.Link;
+   $scope.showPaginator = false;
 
 	function updateUrl(){
 
@@ -35,10 +37,8 @@ folderViewApp.controller("folderViewCtrl", function($scope, $timeout){
                    $h1 = $link.find("h1").eq(0),
                    $span = $h1.find("span").eq(0),
                    top = $span.offset().top + $h1.height();
-               console.log($span.offset().top);    
                $img.css("top", top).show();
             }, 100);
-            console.log($scope.links[i]);
 			}
    		if($link.hasClass("current") || $link.hasClass("prev") || $link.hasClass("next")){
    			url = $scope.links[i].url;
@@ -80,25 +80,20 @@ folderViewApp.controller("folderViewCtrl", function($scope, $timeout){
 		width : "80%"
 	};
 
-	// $timeout(function(){
-	// 	$current = $view.find(".link.current"),
-	// 	$prev = $view.find(".link.prev"),
-	// 	$next = $view.find(".link.next");
-
-	// 	$current.css(currentObj);
-	// 	$next.css(nextObj);
-	// 	$prev.css(prevObj);
-	// }, 100);
-
    	function addEvents(){
    		var addNavigateEvents = function(){
-   			var index = 0, lastIndex = 0, watchModeTimer, mousemoveTimer;
+   			var index = 0, 
+                lastIndex = 0, 
+                watchModeTimer, 
+                mousemoveTimer,
+                showPaginatorTimer;
+
+
    			var nextIndex = function(i, length){
    				i++;
    				if(i >= length){
    					i = 0;
    				}
-   				console.log("next:" + i);
    				return i;
    			}
    			var prevIndex = function(i, length){
@@ -106,36 +101,59 @@ folderViewApp.controller("folderViewCtrl", function($scope, $timeout){
    				if(i === -1){
    					i = length - 1;
    				}
-   				console.log("prev:" + i);
    				return i;
    			}
-   			var animateFrames = function(){
+   			var animateFrames = function(dir){
    				var $container = $("#links-container"),
-   					$links = $container.find(".link"),
-					duration = 500,
-   					length = $links.length;
+   					 $links = $container.find(".link"),
+					    duration = 500,
+   					 length = $links.length;
 
-   				$links.removeClass("current")
-   					  .removeClass("next")
-   					  .removeClass("prev");
+               //* remove all classes    
+   				$links.removeClass("current next prev");
 
+               //* current index
    				$links.eq(index)
    					  .addClass("current")
    					  .css(currentObj);
 
-   				$links.eq(nextIndex(index, length))
-   					  .addClass("next")
-   					  .css(nextObj);
-   					  
-   				$links.eq(prevIndex(index, length))
-   					  .addClass("prev")
-   					  .css(prevObj);	  	  
+               if(length > 2){
+                  $links.eq(nextIndex(index, length))
+                    .addClass("next")
+                    .css(nextObj);
+
+                  $links.eq(prevIndex(index, length))
+                    .addClass("prev")
+                    .css(prevObj);         
+               }else{
+                  if(dir === 1){
+                     $links.eq(prevIndex(index, length))
+                    .addClass("prev")
+                    .css(prevObj);         
+                  }else if(dir === -1){
+                     $links.eq(nextIndex(index, length))
+                    .addClass("next")
+                    .css(nextObj);
+                  }
+               }
 
    				updateUrl();	  
                $(".link.current").stop().fadeTo(0, 1);
-               setTimeout(function(){
-                  setMouseMove();
-               }, 100);
+
+               $scope.$apply(function(){
+                  //* update index
+                  $scope.index = index;
+                   //* show paginator 
+                  $scope.showPaginator = true;
+               });
+
+               //* hide after 2 secs
+               clearTimeout(showPaginatorTimer);
+               showPaginatorTimer = setTimeout(function(){
+                  $scope.$apply(function(){
+                     $scope.showPaginator = false;
+                  });
+               }, 3000);
    			}
             var setWatchModeTimer = function(){
                clearTimeout(watchModeTimer);
@@ -144,37 +162,35 @@ folderViewApp.controller("folderViewCtrl", function($scope, $timeout){
                }, 2000);
             }
 
-            var setMouseMove = function(){
-
-               return;
-
-               var $current = $(".link.current");
-               var $currentHover = $current.find(".hover-overlay");
-
-               $currentHover.unbind("mousemove");
-               $currentHover.mousemove(function(){
-                  console.log("move");
-                  clearTimeout(mousemoveTimer);
-                  mousemoveTimer = setTimeout(function(){
-                     $currentHover.hide();
-                     $current.find(".options").stop().fadeTo(10, 0.1);
-                  }, 500);
-                  $current.find(".options").stop().fadeTo(10, 1); 
-               });
-               $current.find(".options").stop().fadeTo(10, 1); 
-            }
-   			$view.on("click", ".link.next", function(){
-   				lastIndex = index;
-   				index = nextIndex(index, _.links.length);
-   				animateFrames();
+            //*** click or keyboard to go next
+            $view.on("click", ".link.next", function(){
+               lastIndex = index;
+               index = nextIndex(index, _.links.length);
+               animateFrames(1);
                setWatchModeTimer();
-   			});
+            });
 
+            keyboardManager.bind("right", function(){
+               lastIndex = index;
+               index = nextIndex(index, _.links.length);
+               animateFrames(1);
+               setWatchModeTimer();
+            });
+
+            //*** click or keyboard to go prev
    			$view.on("click", ".link.prev", function(){
    				lastIndex = index;
    				index = prevIndex(index, _.links.length);
-   				animateFrames();
+   				animateFrames(-1);
+               setWatchModeTimer();
    			});
+
+            keyboardManager.bind("left", function(){
+               lastIndex = index;
+               index = prevIndex(index, _.links.length);
+               animateFrames(-1);
+               setWatchModeTimer();
+            });
 
             $view.on("mouseenter", ".link.next, .link.prev", function(){
                $(".next, .prev").stop().fadeTo(10, 1);
@@ -187,14 +203,19 @@ folderViewApp.controller("folderViewCtrl", function($scope, $timeout){
                // }, 10);
             });
 
-            setMouseMove();
             setWatchModeTimer();
    		}
    		addNavigateEvents();
    	}
    	addEvents();
 
+      showPaginatorTimer = setTimeout(function(){
+         $scope.$apply(function(){
+            $scope.showPaginator = false;
+         });
+      }, 3000);
    	$timeout(function(){
+         $scope.showPaginator = true;
    		updateUrl();
    	}, 100);
 });

@@ -11,7 +11,7 @@
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular-route.js"></script>
 	
 	<!-- <link href='http://fonts.googleapis.com/css?family=Ubuntu Condensed' rel='stylesheet' type='text/css'> -->
-	<link href='http://fonts.googleapis.com/css?family=Droid Sans' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Droid Sans,Molengo,Muli' rel='stylesheet' type='text/css'>
 
 	<script>
 	  var _con = console;
@@ -32,8 +32,11 @@
 	</script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
 	<script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script> 
+
 	<script src="<?php echo $this -> webroot?>js/folders.js" type="text/javascript" charset="utf-8"></script>
 	<script src="<?php echo $this -> webroot?>js/plugins.js" type="text/javascript" charset="utf-8"></script>
+	
+	<script src="<?php echo $this -> webroot?>js/services/keyboardManager.js" type="text/javascript" charset="utf-8"></script>
 
 	<script src="<?php echo $this -> webroot?>js/controllers/folderCtrl.js" type="text/javascript" charset="utf-8"></script>
 	<script src="<?php echo $this -> webroot?>js/services/folderViewApi.js" type="text/javascript" charset="utf-8"></script>

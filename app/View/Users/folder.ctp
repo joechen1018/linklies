@@ -24,10 +24,10 @@
 			<div class="qr-holder">
 				<img src="https://chart.googleapis.com/chart?cht=qr&chs=100x100&chl={{link.url}}" alt="">
 				<p class="shorten-url" ng-if="link.short_url.length > 5">
-					<span>share with this shorten url</span><br/>
-					<span class="url">
-						{{link.short_url}}
-					</span>
+					<!-- <span>share with this shorten url</span><br/> -->
+					<!-- <span class="url">
+						{{link.short_url.replace("http://", "")}}
+					</span> -->
 				</p>
 			</div>
 		</div>
@@ -36,3 +36,15 @@
 		</div>
 	</li>
 </ul>
+
+<div id="paginator" ng-show="showPaginator">
+	<p>
+		<span class="ico-wrap">
+			<img class="ico" src="{{links[index].ico}}" alt="">	
+		</span>
+		<span class="title">{{links[index].title}}</span>
+		<span class="current">{{index + 1}}</span>
+		<span>/</span>
+		<span class="total">{{links.length}}</span>
+	</p>
+</div>
