@@ -675,7 +675,6 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 							//** extend type varification later
 							var folderType = $selectedFolder.hasClass("video") ? "video" : "web";
 							var saveToFolder = function(folderId, link){
-
 								//$rootScope.$broadcast("removeLink", link.id);
 								var $link = $("#link-" + link.uuid);
 								$link.hide();

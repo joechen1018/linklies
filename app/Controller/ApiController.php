@@ -70,7 +70,9 @@ class ApiController extends AppController{
 	public function folderLinks($folder_id){
 
 		$this -> loadModel("Folder");
-		$data = $this -> Folder -> findById($folder_id);
+		$data = $this -> Folder -> findById(
+			$folder_id
+		);
 		$links = $data["Link"];
 		$this -> set("data", $links);
 		$this -> set("_serialize", array("data"));
@@ -101,7 +103,8 @@ class ApiController extends AppController{
 		$this -> loadModel("Link");
 		$this -> Link -> save(array(
 			"id" => $link_id,
-			"folder_id" => $folder_id
+			"folder_id" => $folder_id,
+			"foldertimestamp" => time()
 		));
 		$rs = $this -> Link -> findById($link_id);
 		$this -> set("data", $rs);
