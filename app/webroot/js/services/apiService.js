@@ -335,7 +335,9 @@ app.service("apiService", function($http, apiParser){
 			return ($img1.width() * $img1.height()) - $(img2.width() * $img2.height());
 		}
 		var clientId = "205449938055-06501obglsfmcellrtc67opqs6ogbs19.apps.googleusercontent.com";
-
+		var testImage = function(url){
+			return /.jpg$|.jpeg$|.png$|.gif$/i.test(url);
+		}
 		//** timeout
 		setTimeout(function(){
 			if(!d.state !== "resolved") d.reject();
@@ -344,13 +346,13 @@ app.service("apiService", function($http, apiParser){
 		//** init rs
 		rs.type = {};
 		rs.type.name = "default";
-		rs.type.isImage = /.jpg$|.jpeg$|.png$|.gif$/i.test(url);
+		rs.type.isImage = testImage(url);
 		rs.html_source = content;
 		rs.view = "default";
 		rs.url = url;
 
 		//** get iframe policy
-		rs.allowIframe = !contains(content, "X-Frame-Options");
+		rs.allowIframe = !contains(content, "X-Frame-Options") && (!rs.type.isImage);
 
 		//** strip css and script tags
 		for(var i = $html.length - 1; i>-1; i--){
@@ -651,9 +653,7 @@ app.service("apiService", function($http, apiParser){
 				d.resolve(rs);
 			break;
 			default : 
-				console.log(1);
 				if(rs.type.isImage){
-					console.log(rs.title);
 					if(rs.title === ""){
 						rs.title = rs.url;
 						rs.thumb = rs.url;
