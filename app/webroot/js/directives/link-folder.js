@@ -344,6 +344,15 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 
 						        }else{
 						            console.log("error: creating short url n"+ response.error);
+
+						            //** if creating short url fails, still save the link
+						            linkService.save(data).then(function(rs){
+										//** pass the id to data
+										scope.$apply(function(){
+											scope.data.id = rs.id;
+										});
+										$rootScope.$broadcast("linkCreationComplete", data);
+									});
 						        }
 						    });
 						});

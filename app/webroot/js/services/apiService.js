@@ -344,6 +344,7 @@ app.service("apiService", function($http, apiParser){
 		//** init rs
 		rs.type = {};
 		rs.type.name = "default";
+		rs.type.isImage = /.jpg$|.jpeg$|.png$|.gif$/i.test(url);
 		rs.html_source = content;
 		rs.view = "default";
 		rs.url = url;
@@ -494,6 +495,7 @@ app.service("apiService", function($http, apiParser){
 				rs.type.q = rs.title;
 				rs.view = "search";
 				d.resolve(rs);
+
 			break;
 			case 'google.translate':
 
@@ -633,6 +635,9 @@ app.service("apiService", function($http, apiParser){
 						rs.doc.file = resp;
 						rs.title = resp.title;
 						rs.thumb = resp.thumbnailLink;
+						if(rs.fileExtension === 'jpg' || rs.fileExtension === 'gif' || rs.fileExtension === 'png'){
+							rs.type.isImage = true;
+						}
 						//rs.view = "doc";
 						// _c.log(rs);	
 						d.resolve(rs);
@@ -646,6 +651,14 @@ app.service("apiService", function($http, apiParser){
 				d.resolve(rs);
 			break;
 			default : 
+				console.log(1);
+				if(rs.type.isImage){
+					console.log(rs.title);
+					if(rs.title === ""){
+						rs.title = rs.url;
+						rs.thumb = rs.url;
+					}
+				}
 				// _c.log(rs);
 				d.resolve(rs);
 			break;
