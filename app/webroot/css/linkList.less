@@ -98,7 +98,7 @@
 					top : 5px;
 					left : 5px;
 				}
-				>a{
+				a.title{
 					width : 80%;
 					white-space: nowrap;
 			        overflow: hidden;
@@ -112,7 +112,26 @@
 					font-size: 14px;
 					color : lighten(@dark, 5%);
 				}
-				>div{
+				a.icon{
+					width : 10px;
+					height : 10px;
+					position: absolute;
+					right : 30px;
+					top : 7px;
+					&:hover{
+						i{
+							display: block !important;
+						}
+					};
+					i{
+						color : lighten(@dark, 5%);
+						display: none;
+						&.hover{
+							display: block;
+						}
+					}
+				}
+				div.menu{
 					cursor: pointer;
 					position: absolute;
 					right : 10px;
@@ -165,25 +184,15 @@
 						}
 					};
 				}
-				>i{
-					width : 10px;
-					height : 10px;
-					position: absolute;
-					right : 30px;
-					top : 7px;
-					color : lighten(@dark, 5%);
-					display: none;
-				}
-
 				border-bottom : 1px solid white;
 				border-top : 1px solid white;
-				&:hover{
+				&:hover, &.hover{
 					background: lighten(@dark, 80%);
 					border-bottom : 1px solid lighten(@dark, 70%);
 					border-top : 1px solid lighten(@dark, 70%);
 					//border-left : 3px solid @green;
 					>i{
-						display: block;
+						//display: block;
 					}
 				};
 			}

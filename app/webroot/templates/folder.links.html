@@ -7,7 +7,7 @@
 		
 		<!-- buttons -->
 		<ul class="top-buttons">
-			<li class="left" ng-click="deleteFolder()">
+			<li class="left" ng-click="deleteFolder()" >
 				<a>
 					<span data-icon="z">
 						<span>Delete Folder</span>
@@ -24,17 +24,22 @@
 		</ul>
 
 		<ul class="link-list-items">
-			<li ng-repeat="link in linkList.content">
+			<li ng-repeat="link in linkList.content" ng-mouseover="link.hover = true" ng-mouseleave="link.hover = false">
+
 				<img src="{{link.ico}}" alt="">
-				<a href="{{link.url}}" target="_blank">{{link.title}}</a>
-				<i data-icon="x"></i>
-				<div data-icon="v"  ng-click="deleteLink(link.uuid)">
+				<a class="title" href="{{link.url}}" ng-click="onTitleClick($event, link)" target="_blank">{{link.title}}</a>
+				
+				<a class="icon" href="{{link.url}}" target="_blank">
+					<i data-icon="x" ng-class="{hover : (!link.allowIframe) && link.hover === true}"></i>
+				</a>
+
+				<div class="menu" data-icon="v"  ng-click="deleteLink(link.uuid)">
 					<ul>
 						<li data-icon="I">
 							<a href="">delete</a>
 						</li>	
 					</ul>
-				</ul>
+				</div>
 			</li>
 		</ul>	
 	</div>

@@ -61,11 +61,10 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 					}
 					
 					//*** top buttons positioning
-						$(".top-buttons li").each(function(){
-							var $span = $(this).find("a>span");
-							$span.css("padding-left", ($(this).width() - $span.width())/2 + 8);
-						});
-					//***
+					$(".top-buttons li").each(function(){
+						var $span = $(this).find("a>span");
+						$span.css("padding-left", ($(this).width() - $span.width())/2 + 8);
+					});
 
 					scope.$apply(function(){
 						scope.linkList.show = true;
@@ -87,7 +86,6 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 
 			//hide linkList before dragging	
 			$ele.bind("dragStart", function(){
-				console.log("start");
 				$ele.unbind("mouseenter");
 				$ele.unbind("mouseleave");
 
@@ -98,7 +96,6 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 
 			//bind mouse enter/leave events after drag
 			$ele.bind("dragStop", function(){
-				console.log("stop");
 				bindMouseEvents();
 			});
 
@@ -146,6 +143,20 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 			scope.linkList.folderUrl = root + "folder/" + scope.data.hash;
 			//****
 
+			scope.onTitleClick = function(e, link){
+				if(link.allowIframe){
+					e.preventDefault();
+					$rootScope.$broadcast("openPage", link);
+
+					//* hide folder links
+					$folder.css("z-index", 2);
+					scope.$apply(function(){
+						scope.linkList.show = false;
+					});
+				}else{
+
+				}
+			}
 			scope.deleteLink = function(uuid){
 				var list = scope.linkList.content;
 				if(confirm("Delete link?")){
@@ -548,6 +559,18 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
             	$(ele).find(".icon").hide();
 
             	$(loader.events).trigger("error", [data.id]);
+            });
+
+
+            $ele.on("mouseenter", "h1.title", function(){
+            	console.log(scope.data.allowIframe);
+            	if(!scope.data.allowIframe){
+            		$ele.find(".more>a").addClass("hover");
+            	}
+            });
+
+            $ele.on("mouseleave", "h1.title", function(){
+            	$ele.find(".more>a").removeClass("hover");
             });
 
             //** maxinum load time 2~3 sec, report error when exceeded

@@ -4,9 +4,10 @@
 		<p><a data-icon="x" href="{{folderUrl}}">Folder View</a></p>
 		<ul>
 			<li ng-repeat="link in linkList.content">
+
 				<img src="{{link.ico}}" alt="">
-				<a href="{{link.url}}" target="_blank">{{link.title}}</a>
-				<i data-icon="x"></i>
+				<a class="title" href="{{link.url}}" target="_blank">{{link.title}}</a>
+				<i class="external" data-icon="x"></i>
 				<div data-icon="v">
 					<ul>
 						<li data-icon="I">
