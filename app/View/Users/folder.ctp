@@ -3,13 +3,24 @@
 	<li ng-repeat="link in links" class="link" data-i="{{$index}}, {{index}}" ng-class="{
 		current : $index === index, 
 		prev : $index === index-1, 
-		next : $index === index+1
+		next : $index === index+1,
+		video : link.view === 'video',
+		img : link.type.isImage === true
 	}" data-text="{{link.allowIframe}}">
 		<div class="iframe-wrap">
 			<ul class="options">
 				<li class="full-screen" data-icon="^"></li>
 			</ul>
 			<iframe id="frame-{{$index}}" src="" frameborder="0"></iframe>
+		</div>
+		<div class="img-view">
+			
+		</div>
+		<div class="video-view">
+			
+		</div>
+		<div class="config">
+			
 		</div>
 		<div class="no-iframe">
 			<div class="logo-wrap">
