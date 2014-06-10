@@ -32,8 +32,11 @@
 	</script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
 	<script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script> 
-
+	
 	<script src="<?php echo $this -> webroot?>js/folders.js" type="text/javascript" charset="utf-8"></script>
+
+	<script src="<?php echo $this -> webroot?>js/services/gapi.js" type="text/javascript" charset="utf-8"></script>
+
 	<script src="<?php echo $this -> webroot?>js/plugins.js" type="text/javascript" charset="utf-8"></script>
 	
 	<script src="<?php echo $this -> webroot?>js/services/keyboardManager.js" type="text/javascript" charset="utf-8"></script>

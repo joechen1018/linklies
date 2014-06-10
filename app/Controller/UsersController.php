@@ -66,5 +66,26 @@ class UsersController extends AppController{
 
 		$this -> layout = "users";
 	}
+
+	public function ajaxLogin(){
+		$user_id = $this -> data["id"];
+		//find user by google id
+		$user = $this -> User -> find("first", array(
+			"conditions" => array("google_id" => $user_id)
+		));
+		$data = $user;
+		if($user === false){
+			//create a new user if not found
+			$user = $this -> User -> createByMeObj($this -> data);
+			$data = $user;
+		}
+
+		$rs = $this -> Auth -> login($user);
+
+		$this -> viewClass = "Json";
+		$this -> response -> type("json");
+		$this -> set("data", $data);
+		$this -> set("_serialize", array("data"));
+	}
 }
 ?>

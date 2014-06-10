@@ -35,8 +35,8 @@ var folderViewApp = angular.module("lk", ["ngRoute", "pasvaz.bindonce"], functio
 
     //** on unload
     $(window).bind("beforeunload",function(event){
-        sessionStorage.clear();
-        localStorage.clear();
+        // sessionStorage.clear();
+        // localStorage.clear();
        //return "";
     });
 })

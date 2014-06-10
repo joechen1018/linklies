@@ -73,17 +73,24 @@ var app = angular.module("lk", ["ngRoute"])
 		            'userId': 'me'
 		        });
 		        request.execute(function(resp) {
+
+		        	resp = resp || {};
+		        	resp.token = token;
+
+		        	//** if user is google+ user
 		        	if(resp.isPlusUser){
 		        		$.ajax({
 			        		url : "login",
 			        		method : "post",
 			        		data : resp,
 			        		success : function(res){
-			        			if(typeof sessionStorage !== undefined){
-			        				_c.log("saving data to sessionStorage");
-			        				sessionStorage.setItem("userData", JSON.stringify(res));
-			        			}
+
+			        			// if(typeof sessionStorage !== undefined){
+			        			// 	_c.log("saving data to sessionStorage");
+			        			// 	localStorage.setItem("userData", JSON.stringify(res));
+			        			// }
 			        			var user = res.data.User;
+			        			user.token = token;
 			        			if(user && user.username_id){
 			        				location.href = root + user.username_id
 			        				return;

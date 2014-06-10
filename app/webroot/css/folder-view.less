@@ -29,7 +29,7 @@
 	li.link{
 		display: block;
 		position: absolute;
-		background: white;
+		background: #eeeeee;
 		.shadow-light;
 		display: none;
 	
@@ -74,14 +74,8 @@
 				height : 100%;
 			}
 		}
-		div.img-view{
-
-		}
-		div.video-view{
-
-		}
-		img.config{
-
+		div.img-view, div.video-view, div.config{
+			display: none;
 		}
 		div.no-iframe{
 			position: absolute;
@@ -181,6 +175,22 @@
 			background: none;
 		}
 	}
+	li.link.useIframe{
+		div.no-iframe{
+			display: block;
+		}
+	}
+	li.link.img{
+		div.img-view{
+			display: block;
+		}
+	}
+	li.link.video{
+		div.video-view{
+			display: block;
+		}
+	}
+
 	li.current, li.prev, li.next{
 		display: block;
 	}

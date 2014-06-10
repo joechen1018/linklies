@@ -1,12 +1,13 @@
-folderViewApp.controller("folderViewCtrl", function($scope, $timeout, keyboardManager) {
+folderViewApp.controller("folderViewCtrl", function($scope, $timeout, keyboardManager, gapiService) {
     //** variables
     var data,
-        _ = $scope,
         $view = $("#links-container"),
+        cookieUser = $.cookie("user"),
+        localUser = localStorage.getItem("userData"),
+        user = app.data.User,
         parseLinkType = function(links){
           for(var i = 0; i<links.length; i++){
               links[i].type = JSON.parse(links[i].type);
-              // console.log(links[i].type);
           }
           return links;
         };
@@ -18,47 +19,72 @@ folderViewApp.controller("folderViewCtrl", function($scope, $timeout, keyboardMa
     $scope.showPaginator = false;
     $scope.showNavLeft = false;
     $scope.showNavRight = false;
+    $scope.imageUrl = "";
 
+    console.log(user);
+    console.log(localUser);
 
+    gapiService.initFolderView();
+
+    //** update content everytime after page changes
     function updateUrl() {
-
         var $container = $("#links-container"),
-        $links,
-        $link,
-        $iframe,
-        $wrap,
-        $noFrame,
-        url;
+            $links = $container.find(".link"),
+            $link,
+            $iframe,
+            $wrap,
+            $noFrame,
+            url, 
+            link;
 
-        $links = $container.find(".link"),
-        $link,
-        $iframe;
         for (var i = 0; i < $links.length; i++) {
             $link = $links.eq(i);
             $iframe = $link.find("iframe").eq(0);
-            $wrap = $link.find(".iframe-wrap").eq(0);
             $noFrame = $link.find(".no-iframe").eq(0);
+            link = $scope.links[i];
 
-            if ($scope.links[i].allowIframe) {
-                $wrap.show();
-                $noFrame.hide();
-            } else {
-                $wrap.hide();
-                $noFrame.show();
+            // setTimeout(function() {
+            //       var $holder = $link.find(".img-holder").eq(0),
+            //       $img = $holder.find("img").eq(),
+            //       $h1 = $link.find("h1").eq(0),
+            //       $span = $h1.find("span").eq(0),
+            //       top = $span.offset().top + $h1.height();
+            //       $img.css("top", top).show();
+            //     }, 100);
+            // }
 
-                setTimeout(function() {
-                    var $holder = $link.find(".img-holder").eq(0),
-                    $img = $holder.find("img").eq(),
-                    $h1 = $link.find("h1").eq(0),
-                    $span = $h1.find("span").eq(0),
-                    top = $span.offset().top + $h1.height();
-                    $img.css("top", top).show();
-                }, 100);
-            }
             if ($link.hasClass("current") || $link.hasClass("prev") || $link.hasClass("next")) {
+
+                //** update iframe url if not already
                 url = $scope.links[i].url;
-                if ($iframe.attr("src") != url) {
-                    $iframe.attr("src", url);
+                if(link.allowIframe){
+                    if ($iframe.attr("src") != url) {
+                        $iframe.attr("src", url);
+                    }
+                }
+
+                if(link.type.isImage){
+                  if(link.type.isGoogleImage){
+                      (function(link){
+                          setTimeout(function(){
+                          gapiService.check().then(function(rs){
+                              console.log(rs);
+                              gapiService.ready().then(function(){
+                                  gapiService.loadDrive().then(function(){
+                                      console.log(link);
+                                      console.log(link.key);
+                                      gapiService.getDriveFile(link.key).then(function(file){
+                                          console.log(file);
+                                      });
+                                  });
+                              });
+                          });
+                        }, 1000);
+                      })(link);
+
+                  }else{
+                      console.log(2);
+                  }
                 }
             }
         }
@@ -140,14 +166,14 @@ folderViewApp.controller("folderViewCtrl", function($scope, $timeout, keyboardMa
             //*** click or keyboard to go next
             $view.on("click", ".link.next", function() {
                 lastIndex = index;
-                index = nextIndex(index, _.links.length);
+                index = nextIndex(index, $scope.links.length);
                 animateFrames(1);
                 setWatchModeTimer();
             });
 
             keyboardManager.bind("right", function() {
                 lastIndex = index;
-                index = nextIndex(index, _.links.length);
+                index = nextIndex(index, $scope.links.length);
                 animateFrames(1);
                 setWatchModeTimer();
             });
@@ -155,14 +181,14 @@ folderViewApp.controller("folderViewCtrl", function($scope, $timeout, keyboardMa
             //*** click or keyboard to go prev
             $view.on("click", ".link.prev", function() {
                 lastIndex = index;
-                index = prevIndex(index, _.links.length);
+                index = prevIndex(index, $scope.links.length);
                 animateFrames( - 1);
                 setWatchModeTimer();
             });
 
             keyboardManager.bind("left", function() {
                 lastIndex = index;
-                index = prevIndex(index, _.links.length);
+                index = prevIndex(index, $scope.links.length);
                 animateFrames( - 1);
                 setWatchModeTimer();
             });
@@ -194,8 +220,10 @@ folderViewApp.controller("folderViewCtrl", function($scope, $timeout, keyboardMa
         }
         addNavigateEvents();
     }
+    //** handel events
     addEvents();
 
+    //** show page title once first
     showPaginatorTimer = setTimeout(function() {
         $scope.$apply(function() {
             $scope.showPaginator = false;

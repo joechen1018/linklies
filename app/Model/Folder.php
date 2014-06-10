@@ -5,5 +5,8 @@ class Folder extends AppModel{
 			"foldertimestamp" => "desc"
 		)
 	));
-	public $belongsTo = array("FolderType");
+	public $belongsTo = array(
+		"FolderType",
+		"User"
+	);
 } ?>

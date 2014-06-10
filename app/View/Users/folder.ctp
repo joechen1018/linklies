@@ -5,7 +5,9 @@
 		prev : $index === index-1, 
 		next : $index === index+1,
 		video : link.view === 'video',
-		img : link.type.isImage === true
+		img : link.type.isImage === true,
+		gimg : link.type.isGoogleImage,
+		userIframe : link.allowIframe && !(link.type.isImage || link.view === 'video')
 	}" data-text="{{link.allowIframe}}">
 		<div class="iframe-wrap">
 			<ul class="options">
@@ -14,7 +16,7 @@
 			<iframe id="frame-{{$index}}" src="" frameborder="0"></iframe>
 		</div>
 		<div class="img-view">
-			
+			<img ng-src="{{link.imageUrl}}" alt="" class="img">
 		</div>
 		<div class="video-view">
 			
@@ -22,7 +24,7 @@
 		<div class="config">
 			
 		</div>
-		<div class="no-iframe">
+		<div class="no-iframe" ng-if="link.allowIframe && !(link.type.isImage || link.view === 'video')">
 			<div class="logo-wrap">
 				<?php echo $this -> Html -> image("logo-1.png", array("width" => 64, "height" => 64)); ?>
 			</div>
@@ -32,15 +34,11 @@
 					<img src="{{link.thumb}}" alt="">
 				</div>
 			</h1>
-			<div class="qr-holder">
+			<!-- <div class="qr-holder">
 				<img src="https://chart.googleapis.com/chart?cht=qr&chs=100x100&chl={{link.url}}" alt="">
 				<p class="shorten-url" ng-if="link.short_url.length > 5">
-					<!-- <span>share with this shorten url</span><br/> -->
-					<!-- <span class="url">
-						{{link.short_url.replace("http://", "")}}
-					</span> -->
 				</p>
-			</div>
+			</div> -->
 		</div>
 		<div class="hover-overlay">
 			

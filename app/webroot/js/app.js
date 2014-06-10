@@ -163,8 +163,8 @@ var app = angular.module("lk", ["ngRoute", "pasvaz.bindonce"], function($httpPro
 
     //** on unload
     $(window).bind("beforeunload",function(event){
-        sessionStorage.clear();
-        localStorage.clear();
+        // sessionStorage.clear();
+        // localStorage.clear();
        //return "";
     });
 })
@@ -272,31 +272,32 @@ var app = angular.module("lk", ["ngRoute", "pasvaz.bindonce"], function($httpPro
             //** get token
             token = rs["access_token"];
 
-			gapi.client.setApiKey("");
-			gapi.client.load("drive", "v2", function(data){
-            var request = gapi.client.drive.files.list({
-                'fileId': "root"
-            });
-            request.execute(function(res) {
-                _c.log(res);
-            });
-
+            /*
+      			gapi.client.setApiKey("");
+      			gapi.client.load("drive", "v2", function(data){
+                  var request = gapi.client.drive.files.list({
+                      'fileId': "root"
+                  });
+                  request.execute(function(res) {
+                      _c.log(res);
+                  });
+      		  });
+            */
+            
             /*gapi.load('picker', {'callback': function(){
-                var picker = new google.picker.PickerBuilder().
-                  addView(google.picker.ViewId.PHOTOS).
-                  setOAuthToken(token).
-                  setDeveloperKey(apiKey).
-                  setCallback(function(){
-                  }).
-                  build();
-              picker.setVisible(true);
-            }});*/
-    	// var request = gapi.client.drive.files.list({'maxResults': 5 });
-	    // request.execute(function(resp) {
-	    // 	_c.log(resp);   
-	    // });    
-		  });
-
+              var picker = new google.picker.PickerBuilder().
+                addView(google.picker.ViewId.PHOTOS).
+                setOAuthToken(token).
+                setDeveloperKey(apiKey).
+                setCallback(function(){
+                }).
+                build();
+            picker.setVisible(true);
+          }});*/
+          // var request = gapi.client.drive.files.list({'maxResults': 5 });
+          // request.execute(function(resp) {
+          //  _c.log(resp);   
+          // });    
 
 
 		} else {

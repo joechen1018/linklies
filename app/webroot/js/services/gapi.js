@@ -1,4 +1,5 @@
-app.service("gapi", function(){
+var _app = folderViewApp || app;
+_app.service("gapiService", function(){
 
 	var clientId = "205449938055-06501obglsfmcellrtc67opqs6ogbs19.apps.googleusercontent.com",
 		scopes = 'https://www.googleapis.com/auth/plus.me https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/urlshortener',
@@ -74,7 +75,10 @@ app.service("gapi", function(){
 		})();
 	}
 
-	this.isReady = false;
+	//** google api loaded
+	this.apiLoaded = false;
+
+	//** check authentication
 	this.checkAuth = function(){
 		var $dr = $.Deferred();
 		gapi.auth.authorize({
@@ -108,19 +112,31 @@ app.service("gapi", function(){
 		return $dr.promise();
 	}
 
+	var driveReady = false;
 	this.loadDrive = function(fileKey){
 		var $dr = $.Deferred();
-		var key = fileKey ? fileKey : 'root';
+		if(driveReady){
+			$dr.resolve();
+		}
 		gapi.client.setApiKey("");
 		gapi.client.load("drive", "v2", function(data){
-        	var request = gapi.client.drive.files.list({
-            'fileId': key
-        	});
-	        request.execute(function(rs) {
-	            $dr.resolve(rs)
-	        });
+			driveReady = true;
+			$dr.resolve();
 	    });
 		return $dr.promise();
+	}
+
+	this.getDriveFile = function(key){
+		var $dr = $.Deferred();
+		// var key = key ? key : 'root';
+		console.log(key);
+		var request = gapi.client.drive.files.get({
+        	'fileId': key
+    	});
+        request.execute(function(rs) {
+            $dr.resolve(rs)
+        });
+        return $dr.promise();
 	}
 
 	this.loadShortenUrl = function(url){
@@ -167,17 +183,36 @@ app.service("gapi", function(){
 		}
 		return $dr.promise();
 	}
-	this.ready = function(){
-		if(this.isReady){
+
+	this.loadApi = function(){
+		if(this.apiLoaded){
 			$dr_ready.resolve();
 		}
 		return $dr_ready.promise();
 	}
 
+	this.initFolderView = function(){
+		/*this.loadApi().then(function(){
+			setInterval(function(){
+				gapi.auth.authorize({
+					client_id: clientId, 
+					scope: scopes, 
+					immediate: false
+				}, function(rs){
+					if(rs && !rs.error && rs["access_token"]){
+						$dr.resolve(rs);
+					}else{
+						$dr.reject(rs);
+					}
+				});
+			}, 36000);
+		});*/
+	}
+
 	getClientJs();
 	window.onGapiLoaded = function(){
 		gapi.client.setApiKey(clientId);
-		self.isReady = true;
+		self.apiLoaded = true;
 		$dr_ready.resolve();
 	}
 });

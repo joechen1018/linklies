@@ -565,7 +565,7 @@ app.service("apiService", function($http, apiParser){
 					    'fileId': rs.key
 					});
 					request.execute(function(resp) {
-						//_c.log(resp);
+						_c.log(resp);
 						rs.doc = {};
 						rs.doc.spreadsheet = resp;
 						rs.title = resp.title;
@@ -583,7 +583,7 @@ app.service("apiService", function($http, apiParser){
 				    'fileId': rs.key
 				});
 				request.execute(function(resp) {
-					//_c.log(resp);
+					_c.log(resp);
 					rs.doc = {};
 					rs.doc.document = resp;
 					rs.title = resp.title;
@@ -632,16 +632,16 @@ app.service("apiService", function($http, apiParser){
 					    'fileId': rs.key
 					});
 					request.execute(function(resp) {
-						console.log(resp);
 						rs.doc = {};
 						rs.doc.file = resp;
 						rs.title = resp.title;
 						rs.thumb = resp.thumbnailLink;
-						if(rs.fileExtension === 'jpg' || rs.fileExtension === 'gif' || rs.fileExtension === 'png'){
+						if(resp.fileExtension === 'jpg' || resp.fileExtension === 'gif' || resp.fileExtension === 'png'){
 							rs.type.isImage = true;
+							rs.type.isGoogleImage = true;
 						}
 						//rs.view = "doc";
-						// _c.log(rs);	
+						_c.log(rs);	
 						d.resolve(rs);
 					});
 				}

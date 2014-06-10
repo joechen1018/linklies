@@ -4,7 +4,7 @@
 	<span class="icon" data-icon="{{data.FolderType.icon}}" ng-style="{
 		top : (grids.folderSize.height  - 55  - 55) * 0.75
 	}" ></span>
-	<span class="link-count">7</span>
+	<span class="link-count">{{linkList.count+1}}</span>
 	<div class="close" data-icon="s"></div>
 	<p class="name">{{data.name}}</p>
 	<input id="edit-name" type="text" name="folderName" value="{{data.name}}" style="display:none" />
