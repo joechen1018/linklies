@@ -493,7 +493,6 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 
 			var timer, timer1, timer3;
 			var enableHover = function(){
-
 				//** clear before bind
 				$ele.unbind("mouseenter");
 				$ele.unbind("mouseleave");
@@ -504,6 +503,9 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 					$timeout.cancel(timer1);
 					$timeout.cancel(timer);
 					$timeout.cancel(timer3);
+
+					//** bring up link so detail will overlay other $elements
+					$ele.css("z-index", 1000);
 
 					scope.$apply(function(){
 						scope.showOpt = true;
@@ -531,6 +533,9 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 					//$rootScope.$broadcast("linkHover", scope.data);
 				});
 				$ele.on("mouseleave", function(){
+					//** setting z-index back
+					$ele.css("z-index", 10);
+
 					timer1 = $timeout(function(){
 						scope.showOpt = false;
 						scope.showDetail = false;
