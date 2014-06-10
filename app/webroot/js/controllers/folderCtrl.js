@@ -20,9 +20,28 @@ folderViewApp.controller("folderViewCtrl", function($scope, $timeout, keyboardMa
     $scope.showNavLeft = false;
     $scope.showNavRight = false;
     $scope.imageUrl = "";
+    $scope.getImagePos = function(index){
+        if(index === $scope.index){
+            var left = top = 0, width, height, 
+                pageWidth = $(window).width() * 0.7,
+                $img = $view.find(".link").eq(index).find(".img-view img");
 
-    console.log(user);
-    console.log(localUser);
+                console.log($img.width());
+
+            if($img.width() > pageWidth){
+                width = pageWidth;
+            }else{
+                left = (pageWidth - $img.width()) / 2;
+                top = ($(window).height() - $img.height()) / 2;
+            }
+            return {
+                left : left,
+                top : top,
+                width : width,
+                height : height
+            }
+        }
+    }
 
     gapiService.initFolderView();
 
@@ -35,7 +54,7 @@ folderViewApp.controller("folderViewCtrl", function($scope, $timeout, keyboardMa
             $wrap,
             $noFrame,
             url, 
-            link;
+            link, links = $scope.links;
 
         for (var i = 0; i < $links.length; i++) {
             $link = $links.eq(i);
@@ -52,6 +71,10 @@ folderViewApp.controller("folderViewCtrl", function($scope, $timeout, keyboardMa
             //       $img.css("top", top).show();
             //     }, 100);
             // }
+
+            if(link.type.isImage && !link.type.isGoogleImage){
+                links[i].imageUrl = link.url;
+            }
 
             if ($link.hasClass("current") || $link.hasClass("prev") || $link.hasClass("next")) {
 
@@ -83,11 +106,45 @@ folderViewApp.controller("folderViewCtrl", function($scope, $timeout, keyboardMa
                       })(link);
 
                   }else{
-                      console.log(2);
+                        //if($link.hasClass("current")){
+                        if(true){    
+                            (function($img){
+                                    var pageWidth = $(window).width() * 0.7, style = {};
+                                    var setStyle = function(){
+                                        // if($img.width() > pageWidth ||
+                                        //    $img.height() > $(window).height()){
+                                        if(false){
+
+                                            if($img.width() > $img.height()){
+                                                style.height = $(window).height();
+                                                style.left = ($img.width() - pageWidth) / 2;
+                                            }
+                                        }else{
+                                            style.left = (pageWidth - $img.width()) / 2;
+                                            style.top = ($(window).height() - $img.height()) / 2;
+                                        }
+                                        // console.log(style);
+                                        $img.css(style);
+                                    }
+                                    if($img.width() === 0){
+                                        $img.load(function(){
+                                             setStyle();
+                                        });
+                                    }else{
+                                        setStyle();
+                                    }
+
+                            })($link.find(".img-view img"));
+                            
+                        }
                   }
                 }
             }
         }
+
+        $scope.$apply(function(){
+            $scope.links = links;
+        });
     }
 
     var currentObj={left:"15%",top:"0",width:"70%",height:"100%"},nextObj={top:"5%",left:"90%",height:"90%",width:"90%"},prevObj={top:"5%",left:"-80%",height:"90%",width:"90%"},outRight={top:"10%",left:"165%",height:"80%",width:"80%"},outLeft={top:"10%",left:"-1650%",height:"80%",width:"80%"}
@@ -160,7 +217,7 @@ folderViewApp.controller("folderViewCtrl", function($scope, $timeout, keyboardMa
                 clearTimeout(watchModeTimer);
                 watchModeTimer = setTimeout(function() {
                     $(".link.next, .link.prev").stop().fadeTo(500, 0.2);
-                }, 2000);
+                }, 3000);
             }
 
             //*** click or keyboard to go next

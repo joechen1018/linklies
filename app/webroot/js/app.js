@@ -271,8 +271,6 @@ var app = angular.module("lk", ["ngRoute", "pasvaz.bindonce"], function($httpPro
 
             //** get token
             token = rs["access_token"];
-
-            /*
       			gapi.client.setApiKey("");
       			gapi.client.load("drive", "v2", function(data){
                   var request = gapi.client.drive.files.list({
@@ -282,7 +280,7 @@ var app = angular.module("lk", ["ngRoute", "pasvaz.bindonce"], function($httpPro
                       _c.log(res);
                   });
       		  });
-            */
+            
             
             /*gapi.load('picker', {'callback': function(){
               var picker = new google.picker.PickerBuilder().

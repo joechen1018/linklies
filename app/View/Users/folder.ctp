@@ -16,7 +16,7 @@
 			<iframe id="frame-{{$index}}" src="" frameborder="0"></iframe>
 		</div>
 		<div class="img-view">
-			<img ng-src="{{link.imageUrl}}" alt="" class="img">
+			<img ng-src="{{link.imageUrl}}" alt="" class="img img-{{$index}}">
 		</div>
 		<div class="video-view">
 			
@@ -54,12 +54,15 @@
 <div id="paginator" ng-show="showPaginator">
 	<p>
 		<span class="ico-wrap">
-			<img class="ico" src="{{links[index].ico}}" alt="" />	
+			<img class="ico" src="{{links[index].ico}}" alt="">	
 		</span>
 		<span class="title">{{links[index].title}}</span>
-		<span class="current">{{index + 1}}</span>
-		<span>/</span>
-		<span class="total">{{links.length}}</span>
+
+		<div class="page">
+			<span class="current">{{index + 1}}</span>
+			<span>/</span>
+			<span class="total">{{links.length}}</span>
+		</div>
 		<!-- <ul class="page-bar">
 			<li ng-repeat="link in links" ng-class="{on : index === $index }"></li>
 		</ul> -->
