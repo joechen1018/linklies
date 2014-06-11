@@ -312,8 +312,7 @@ app.service("apiService", function($http, apiParser){
 			rs = {},
 			d = $.Deferred(),
 			pattern,
-			$holder = $("#dom-holder"),
-			$holder = $("<div/>");
+			$holder = $("#dom-holder");
 
 		var contains = function(subject, needles, strict){
 			strict = strict === undefined ? true : false;
@@ -338,6 +337,7 @@ app.service("apiService", function($http, apiParser){
 		var testImage = function(url){
 			return /.jpg$|.jpeg$|.png$|.gif$/i.test(url);
 		}
+		var containedImgUrls, $containedImgs;
 		//** timeout
 		setTimeout(function(){
 			if(!d.state !== "resolved") d.reject();
@@ -386,6 +386,26 @@ app.service("apiService", function($http, apiParser){
 		//* get rid of html special characters
 		rs.title = $("<div/>").html(rs.title).text();
 		rs.thumb = rs.meta["og:image"];
+
+		//** get all images
+		$containedImgs = $holder.find("img");
+		$containedImgs.each(function(i, e){
+			(function($e){
+				var src = $e.attr('src');
+				if(src.indexOf("http://") !== -1 || src.indexOf("https://") !== -1 || src.split("/")[0] === "/"){
+					$e.load(function(){
+						console.log($e.attr("src"));
+						console.log($e.width(), $e.height());
+					});
+				}
+			})($(e));
+		});
+
+		setTimeout(function(){
+			//** dom query completed, remove dom
+			$holder.html("");
+			delete $holder;	
+		}, 4000);
 
 		//** find ico
 		//* use pre-defined ico url
@@ -663,9 +683,6 @@ app.service("apiService", function($http, apiParser){
 				d.resolve(rs);
 			break;
 		}
-		//** dom query completed, remove dom
-		$holder.html("");
-		delete $holder;
 
 		return d.promise();
 	}
