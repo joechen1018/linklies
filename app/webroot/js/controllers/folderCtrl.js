@@ -62,7 +62,14 @@ folderViewApp.controller("folderViewCtrl", function($scope, $timeout, keyboardMa
                         $iframe.attr("src", url);
                     }
                 }
+                //** handle videos
+                if($link.hasClass("video")){
+                    var src = link.type.embedUrl.replace("{{VIDEO_ID}}",  link.type.videoId)
+                    .replace("autoplay=1", "");
+                    $link.find(".video-view").find("iframe").attr("src", src);
+                }
 
+                //** handle images
                 if(link.type.isImage){
                   if(link.type.isGoogleImage){
                       (function(link){
