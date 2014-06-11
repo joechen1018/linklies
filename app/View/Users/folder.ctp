@@ -19,7 +19,7 @@
 			<img ng-src="{{link.imageUrl}}" alt="" class="img img-{{$index}}">
 		</div>
 		<div class="video-view">
-			
+			<iframe src="" width="100%" height="100%" frameborder="0"></iframe>
 		</div>
 		<div class="config">
 			

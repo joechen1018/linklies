@@ -280,8 +280,7 @@ var app = angular.module("lk", ["ngRoute", "pasvaz.bindonce"], function($httpPro
                       _c.log(res);
                   });
       		  });
-            
-            
+
             /*gapi.load('picker', {'callback': function(){
               var picker = new google.picker.PickerBuilder().
                 addView(google.picker.ViewId.PHOTOS).

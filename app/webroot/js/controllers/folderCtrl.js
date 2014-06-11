@@ -85,7 +85,18 @@ folderViewApp.controller("folderViewCtrl", function($scope, $timeout, keyboardMa
                         $iframe.attr("src", url);
                     }
                 }
+                //** handle videos
+                if($link.hasClass("video")){
+                    var src = link.type.embedUrl.replace("{{VIDEO_ID}}",  link.type.videoId)
+                    .replace("autoplay=1", ""),
+                        $player = $link.find(".video-view").find("iframe").eq(0);
 
+                    if($player.attr('src') !== src){
+                        $player.attr("src", src);
+                    }
+                }
+
+                //** handle images
                 if(link.type.isImage){
                   if(link.type.isGoogleImage){
                       (function(link){

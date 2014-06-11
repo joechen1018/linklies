@@ -387,6 +387,7 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 			}
 
 			scope.openPage = function(){
+				$ele.css("z-index", 10);
 				$rootScope.$broadcast("openPage", scope.data);
 			}
 
