@@ -108,33 +108,65 @@ folderViewApp.controller("folderViewCtrl", function($scope, $timeout, keyboardMa
                   }else{
                         //if($link.hasClass("current")){
                         if(true){    
-                            (function($img){
-                                    var pageWidth = $(window).width() * 0.7, style = {};
+                            (function($img, $wrap){
+                                    var getStyle = function(w, h){
+                                        var pageWidth = $(window).width() * 0.7, style = {};
+                                        if(false){
+
+                                        }else{
+                                            style.left = (pageWidth - w) / 2;
+                                            style.top = ($(window).height() - h) / 2;
+                                            style.width = w;
+                                            style.height = h;
+                                        }
+                                        return style;
+                                    }
                                     var setStyle = function(){
                                         // if($img.width() > pageWidth ||
                                         //    $img.height() > $(window).height()){
-                                        if(false){
-
-                                            if($img.width() > $img.height()){
-                                                style.height = $(window).height();
-                                                style.left = ($img.width() - pageWidth) / 2;
-                                            }
-                                        }else{
-                                            style.left = (pageWidth - $img.width()) / 2;
-                                            style.top = ($(window).height() - $img.height()) / 2;
-                                        }
+                                        
+                                        var style = getStyle($img.width(), $img.height());
                                         // console.log(style);
                                         $img.css(style);
                                     }
+                                    var bindMouseWheel = function(){
+                                        var min = 0.3, scale = 1, w = $img.width(), h = $img.height();
+                                        $wrap.bind("mousewheel", function(e){
+                                            if($wrap.attr("data-scale")){
+                                                scale = $wrap.attr("data-scale");
+                                            }
+
+                                            if(e.deltaY > 0){
+                                                scale *= 1.2;
+                                            }else{
+                                                scale *= 0.8;
+                                            }
+
+                                            if($wrap.find("img:animated").length === 0 && scale >= min){
+                                                var style = getStyle(
+                                                    w * scale, 
+                                                    h * scale
+                                                );
+                                                $img.stop().animate(style, 200);
+                                                console.log(scale);
+                                                $wrap.attr("data-scale", scale);
+                                            }
+                                        });
+                                    }
+
                                     if($img.width() === 0){
                                         $img.load(function(){
                                              setStyle();
+                                             bindMouseWheel();
                                         });
                                     }else{
                                         setStyle();
+                                        bindMouseWheel();
                                     }
 
-                            })($link.find(".img-view img"));
+                                    $(window).bind("resize", setStyle);
+
+                            })($link.find(".img-view img"), $link.find(".img-view"));
                             
                         }
                   }
