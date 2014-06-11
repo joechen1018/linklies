@@ -65,8 +65,12 @@ folderViewApp.controller("folderViewCtrl", function($scope, $timeout, keyboardMa
                 //** handle videos
                 if($link.hasClass("video")){
                     var src = link.type.embedUrl.replace("{{VIDEO_ID}}",  link.type.videoId)
-                    .replace("autoplay=1", "");
-                    $link.find(".video-view").find("iframe").attr("src", src);
+                    .replace("autoplay=1", ""),
+                        $player = $link.find(".video-view").find("iframe").eq(0);
+
+                    if($player.attr('src') !== src){
+                        $player.attr("src", src);
+                    }
                 }
 
                 //** handle images
