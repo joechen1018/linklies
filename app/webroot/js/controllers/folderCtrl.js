@@ -20,26 +20,6 @@ app.controller("folderViewCtrl", function($scope, $timeout, keyboardManager, gap
     $scope.showNavLeft = false;
     $scope.showNavRight = false;
     $scope.imageUrl = "";
-    $scope.getImagePos = function(index){
-        if(index === $scope.index){
-            var left = top = 0, width, height, 
-                pageWidth = $(window).width() * 0.7,
-                $img = $view.find(".link").eq(index).find(".img-view img");
-
-            if($img.width() > pageWidth){
-                width = pageWidth;
-            }else{
-                left = (pageWidth - $img.width()) / 2;
-                top = ($(window).height() - $img.height()) / 2;
-            }
-            return {
-                left : left,
-                top : top,
-                width : width,
-                height : height
-            }
-        }
-    }
 
     $scope.refreshIframe = function(){
         var $iframe = $(".link.current .iframe-wrap>iframe");
@@ -162,9 +142,13 @@ app.controller("folderViewCtrl", function($scope, $timeout, keyboardManager, gap
                         if(true){    
                             (function($img, $wrap){
                                     var getStyle = function(w, h){
+                                        var $link = $(".link.current");
                                         var pageWidth = $(window).width() * 0.7, style = {};
-                                        if(false){
-
+                                        if($link.find(".options").hasClass("fullscreen")){
+                                            style.left = ($(window).width() - w) / 2;
+                                            style.top = ($(window).height() - h) / 2;
+                                            style.width = w;
+                                            style.height = h;
                                         }else{
                                             style.left = (pageWidth - w) / 2;
                                             style.top = ($(window).height() - h) / 2;
@@ -200,7 +184,6 @@ app.controller("folderViewCtrl", function($scope, $timeout, keyboardManager, gap
                                                     h * scale
                                                 );
                                                 $img.stop().animate(style, 200);
-                                                console.log(scale);
                                                 $wrap.attr("data-scale", scale);
                                             }
                                         });

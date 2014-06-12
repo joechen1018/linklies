@@ -32,7 +32,9 @@
 			<div class="logo-wrap">
 				<?php echo $this -> Html -> image("logo-1.png", array("width" => 64, "height" => 64)); ?>
 			</div>
-			<h1 data-icon="*">Unable to display 
+			<!-- data-icon="*" -->
+			<h1>
+				Not allowed to display here, please go to the original page <br/>
 				<a href="{{link.url}}" target="_blank"><span class="title">{{link.title}}</span><span class="icon" data-icon="x"> </span></a>
 				<div class="img-holder" ng-show="link.thumb != ''">
 					<img src="{{link.thumb}}" alt="">
