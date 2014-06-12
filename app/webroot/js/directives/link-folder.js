@@ -578,7 +578,6 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 
 
             $ele.on("mouseenter", "h1.title", function(){
-            	console.log(scope.data.allowIframe);
             	if(!scope.data.allowIframe){
             		$ele.find(".more>a").addClass("hover");
             	}
