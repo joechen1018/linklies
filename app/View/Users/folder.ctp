@@ -13,7 +13,7 @@
 			<ul class="options">
 				<li class="full-screen" data-icon="^"></li>
 			</ul>
-			<iframe id="frame-{{$index}}" src="" frameborder="0"></iframe>
+			<iframe id="frame-{{$index}}" sandbox="allow-forms allow-scripts" src="" frameborder="0"></iframe>
 		</div>
 		<div class="img-view">
 			<img ng-src="{{link.imageUrl}}" alt="" class="img img-{{$index}}">

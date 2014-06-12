@@ -333,4 +333,8 @@ folderViewApp.controller("folderViewCtrl", function($scope, $timeout, keyboardMa
         $scope.showPaginator = true;
         updateUrl();
     }, 100);
+
+    // $(window).bind("beforeunload",function(event){
+    //     return "Are you sure leaving this page?";
+    // });
 });
