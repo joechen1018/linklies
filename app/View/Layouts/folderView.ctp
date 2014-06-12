@@ -26,6 +26,7 @@
 		));
 	?>
 	<script>
+		var appData = app.data;
 		console = _con;
 		var _c = _con;
 		var root = '<?php echo $this -> webroot?>';

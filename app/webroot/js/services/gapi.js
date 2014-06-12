@@ -1,5 +1,4 @@
-var _app = folderViewApp || app;
-_app.service("gapiService", function(){
+app.service("gapiService", function(){
 
 	var clientId = "205449938055-06501obglsfmcellrtc67opqs6ogbs19.apps.googleusercontent.com",
 		scopes = 'https://www.googleapis.com/auth/plus.me https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/urlshortener',

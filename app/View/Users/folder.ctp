@@ -11,7 +11,8 @@
 	}" data-text="{{link.allowIframe}}">
 		<div class="iframe-wrap">
 			<ul class="options">
-				<li class="full-screen" data-icon="^"></li>
+				<li class="full-screen" ng-click="goFullScreen()" data-icon="d"></li>
+				<li class="back-from-full-screen" ng-click="goBackFullScreen()" data-icon="c"></li>
 			</ul>
 			<iframe id="frame-{{$index}}" sandbox="allow-forms allow-scripts" src="" frameborder="0"></iframe>
 		</div>

@@ -1,10 +1,10 @@
-folderViewApp.controller("folderViewCtrl", function($scope, $timeout, keyboardManager, gapiService) {
+app.controller("folderViewCtrl", function($scope, $timeout, keyboardManager, gapiService) {
     //** variables
     var data,
         $view = $("#links-container"),
         cookieUser = $.cookie("user"),
         localUser = localStorage.getItem("userData"),
-        user = app.data.User,
+        user = appData.User,
         parseLinkType = function(links){
           for(var i = 0; i<links.length; i++){
               links[i].type = JSON.parse(links[i].type);
@@ -12,7 +12,7 @@ folderViewApp.controller("folderViewCtrl", function($scope, $timeout, keyboardMa
           return links;
         };
 
-    data = app.data;
+    data = appData;
     $scope.index = 0;
     $scope.folder = data.Folder;
     $scope.links = parseLinkType(data.Link);
@@ -25,8 +25,6 @@ folderViewApp.controller("folderViewCtrl", function($scope, $timeout, keyboardMa
             var left = top = 0, width, height, 
                 pageWidth = $(window).width() * 0.7,
                 $img = $view.find(".link").eq(index).find(".img-view img");
-
-                console.log($img.width());
 
             if($img.width() > pageWidth){
                 width = pageWidth;
@@ -41,6 +39,23 @@ folderViewApp.controller("folderViewCtrl", function($scope, $timeout, keyboardMa
                 height : height
             }
         }
+    }
+
+    $scope.goFullScreen = function(){
+        var $link = $(".link.current");
+        $link.animate({
+            left : 0,
+            top : 0,
+            width : '100%',
+            height : '100%'
+        }, 600);
+        $link.find(".options").addClass("fullscreen");
+    }
+
+    $scope.goBackFullScreen = function(){
+        var $link = $(".link.current");
+        $link.animate(currentObj, 600);
+        $link.find(".options").removeClass("fullscreen");
     }
 
     gapiService.initFolderView();

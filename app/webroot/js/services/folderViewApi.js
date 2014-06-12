@@ -1,4 +1,4 @@
-folderViewApp.service("folderViewApi", function($http, apiParser){
+app.service("folderViewApi", function($http, apiParser){
 	return {
 		linkService : {
 			get : function(id){
