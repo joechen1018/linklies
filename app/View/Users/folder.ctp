@@ -17,7 +17,9 @@
 				<li class="refresh" data-icon="J" ng-click="refreshIframe()"></li>
 				<!-- li.comments icon="E00D" -->
 			</ul>
-			<iframe id="frame-{{$index}}" sandbox="allow-forms allow-scripts allow-same-origin" src="" frameborder="0"></iframe>
+			<!-- <iframe id="frame-{{$index}}" sandbox="allow-forms allow-scripts allow-same-origin" src="" frameborder="0"></iframe> -->
+
+			<iframe id="frame-{{$index}}"  src="" frameborder="0"></iframe>
 		</div>
 		<div class="img-view">
 			<img ng-src="{{link.imageUrl}}" alt="" class="img img-{{$index}}">
