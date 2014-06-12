@@ -352,7 +352,8 @@ app.service("apiService", function($http, apiParser){
 		rs.url = url;
 
 		//** get iframe policy
-		rs.allowIframe = !contains(content, "X-Frame-Options") && (!rs.type.isImage);
+		rs.allowIframe = !contains(content, "X-Frame-Options") && 
+						(!rs.type.isImage) ;
 
 		//** strip css and script tags
 		for(var i = $html.length - 1; i>-1; i--){

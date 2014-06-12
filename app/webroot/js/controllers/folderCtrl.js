@@ -41,6 +41,13 @@ app.controller("folderViewCtrl", function($scope, $timeout, keyboardManager, gap
         }
     }
 
+    $scope.refreshIframe = function(){
+        var $iframe = $(".link.current .iframe-wrap>iframe");
+        var src = $iframe.attr("src");
+        $iframe.attr("src", "");
+        $iframe.attr("src", src);
+    }
+
     $scope.goFullScreen = function(){
         var $link = $(".link.current");
         $link.animate({
@@ -48,14 +55,33 @@ app.controller("folderViewCtrl", function($scope, $timeout, keyboardManager, gap
             top : 0,
             width : '100%',
             height : '100%'
-        }, 600);
+        }, 300, function(){
+            
+        });
         $link.find(".options").addClass("fullscreen");
+
+        var $img = $link.find(".img-view img");
+        var style = {
+            left : ($(window).width() - $img.width()) / 2,
+            top : ($(window).height() - $img.height()) / 2
+        }
+        $img.animate(style, 300, function(){
+        });
     }
 
     $scope.goBackFullScreen = function(){
         var $link = $(".link.current");
-        $link.animate(currentObj, 600);
+        $link.animate(currentObj, 300);
         $link.find(".options").removeClass("fullscreen");
+
+        var $img = $link.find(".img-view img");
+        var style = {
+            left : ($(window).width()*0.7 - $img.width()) / 2,
+            top : ($(window).height() - $img.height()) / 2
+        }
+        $img.animate(style, 300, function(){
+            // $(window).resize();
+        });
     }
 
     gapiService.initFolderView();
@@ -91,7 +117,7 @@ app.controller("folderViewCtrl", function($scope, $timeout, keyboardManager, gap
                 links[i].imageUrl = link.url;
             }
 
-            if ($link.hasClass("current") || $link.hasClass("prev") || $link.hasClass("next")) {
+            if ($link.hasClass("current") || $link.hasClass("next")) {
 
                 //** update iframe url if not already
                 url = $scope.links[i].url;
@@ -232,6 +258,7 @@ app.controller("folderViewCtrl", function($scope, $timeout, keyboardManager, gap
             var animateFrames = function(dir) {
                 var $container = $("#links-container"),
                 $links = $container.find(".link"),
+                $options = $("ul.options"),
                 duration = 500,
                 length = $links.length;
 
@@ -261,6 +288,8 @@ app.controller("folderViewCtrl", function($scope, $timeout, keyboardManager, gap
                     $scope.index = index;
                     //* show paginator 
                     $scope.showPaginator = true;
+                    $scope.showOptions = true;
+                    $options.removeClass("dim");
                 });
 
                 //* hide after 2 secs
@@ -268,6 +297,8 @@ app.controller("folderViewCtrl", function($scope, $timeout, keyboardManager, gap
                 showPaginatorTimer = setTimeout(function() {
                     $scope.$apply(function() {
                         $scope.showPaginator = false;
+                        $scope.showOptions = false;
+                        $options.addClass("dim");
                     });
                 }, 3000);
             }
@@ -342,12 +373,35 @@ app.controller("folderViewCtrl", function($scope, $timeout, keyboardManager, gap
     showPaginatorTimer = setTimeout(function() {
         $scope.$apply(function() {
             $scope.showPaginator = false;
+            $scope.showOptions = false;
+            $("ul.options").addClass("dim");
         });
     }, 3000);
     $timeout(function() {
+        $scope.showOptions = true;
         $scope.showPaginator = true;
         updateUrl();
     }, 100);
+
+    //** remove dim when hover
+    $("body").on("mouseenter", "ul.options", function(e){
+        var $options = $(e.currentTarget);
+        $options.removeClass("dim");
+        if($options.parent().parent().hasClass("current")){
+            $scope.$apply(function(){
+                $scope.showPaginator = true;
+            });
+        }
+    });
+    $("body").on("mouseleave", "ul.options", function(e){
+        var $options = $(e.currentTarget);
+        $options.addClass("dim");
+        if($options.parent().parent().hasClass("current")){
+            $scope.$apply(function(){
+                $scope.showPaginator = false;
+            });
+        }
+    });
 
     // $(window).bind("beforeunload",function(event){
     //     return "Are you sure leaving this page?";

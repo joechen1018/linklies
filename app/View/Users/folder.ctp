@@ -7,14 +7,17 @@
 		video : link.view === 'video',
 		img : link.type.isImage === true,
 		gimg : link.type.isGoogleImage,
-		userIframe : link.allowIframe && !(link.type.isImage || link.view === 'video')
+		useIframe : link.allowIframe && !(link.type.isImage || link.view === 'video'),
+		noIframe : !(link.allowIframe && !(link.type.isImage || link.view === 'video'))
 	}" data-text="{{link.allowIframe}}">
 		<div class="iframe-wrap">
-			<ul class="options">
+			<ul class="options" >
 				<li class="full-screen" ng-click="goFullScreen()" data-icon="d"></li>
-				<li class="back-from-full-screen" ng-click="goBackFullScreen()" data-icon="c"></li>
+				<li class="back-from-full-screen" ng-click="goBackFullScreen()" data-icon=")"></li>
+				<li class="refresh" data-icon="J" ng-click="refreshIframe()"></li>
+				<!-- li.comments icon="E00D" -->
 			</ul>
-			<iframe id="frame-{{$index}}" sandbox="allow-forms allow-scripts" src="" frameborder="0"></iframe>
+			<iframe id="frame-{{$index}}" sandbox="allow-forms allow-scripts allow-same-origin" src="" frameborder="0"></iframe>
 		</div>
 		<div class="img-view">
 			<img ng-src="{{link.imageUrl}}" alt="" class="img img-{{$index}}">
@@ -25,7 +28,7 @@
 		<div class="config">
 			
 		</div>
-		<div class="no-iframe" ng-if="link.allowIframe && !(link.type.isImage || link.view === 'video')">
+		<div class="no-iframe">
 			<div class="logo-wrap">
 				<?php echo $this -> Html -> image("logo-1.png", array("width" => 64, "height" => 64)); ?>
 			</div>
