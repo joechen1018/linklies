@@ -36,8 +36,8 @@
 			</div>
 			<!-- data-icon="*" -->
 			<h1>
-				Not allowed to display here, please go to the original page <br/>
-				<a href="{{link.url}}" target="_blank"><span class="title">{{link.title}}</span><span class="icon" data-icon="x"> </span></a>
+				<!-- Not allowed to display here, please go to the original page <br/> -->
+				<a href="{{link.url}}" target="_blank"><span class="title"><!-- {{link.title}} -->go to origin</span><span class="icon" data-icon="x"> </span></a>
 				<div class="img-holder" ng-show="link.thumb != ''">
 					<img src="{{link.thumb}}" alt="">
 				</div>

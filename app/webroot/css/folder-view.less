@@ -155,12 +155,15 @@
 				top : -10px;
 			}
 			h1{
-				font-size : 16px;
+				@fsize : 1rem;
+				@lh : 1.2rem;
+				font-size : @fsize;
 				//color : lighten(@dark, 0%);
 				color : darken(@red, 5%);
-				text-align:left;
-				padding : 8% 40% 0 15%;
-				line-height: 26px;
+				text-align:center;
+				// padding : 8% 40% 0 15%;
+				padding-top : 30%;
+				line-height: 20px;
 				font-weight: bold;
 				&::before{
 					position: relative;
@@ -169,17 +172,18 @@
 				a{
 					font-weight: normal;
 					//color : lighten(@red, 5%);
-					color : lighten(@dark, 15%);
+					color : lighten(@dark, 20%);
 					padding-left : 0px;
 					position: relative;
 					span{
-						font-size : 16px;
+						font-size : @fsize;
 					}
 					span.title{
 						font-weight: normal;
 						padding-left : 3px;
 						color : lighten(@dark, 15%);
 						text-decoration: none;
+						text-decoration: underline;
 					}
 					span.icon::before{
 						position: relative;

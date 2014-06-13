@@ -48,6 +48,7 @@ app.service("apiService", function($http, apiParser){
 					method : "post",
 					data : obj,
 					success : function(res){
+						console.log(res);
 						var link = apiParser.linkFromDb(res.data.Link);
 						_d.resolve(link);
 					}
@@ -227,6 +228,7 @@ app.service("apiService", function($http, apiParser){
 		obj.grid = link.grid.join(",");
 		obj.meta = JSON.stringify(link.meta);
 		obj.allowIframe = link.allowIframe ? 1 : 0;
+		obj.images = link.images.join(",");
 
 		return obj;
 	}
@@ -264,6 +266,10 @@ app.service("apiService", function($http, apiParser){
 			link.allowIframe = parseInt(link.allowIframe) === 0 ? false : true;
 		}
 
+		if(typeof link.images === "string"){
+			link.images = link.images.split(",");
+		}
+
 		//** initial state
 		link.state = {
 			name : "ready"
@@ -296,15 +302,15 @@ app.service("apiService", function($http, apiParser){
 	}
 
 	/*** returns
-	type - object
-	view - string
-	url - string
-	allowIframe - bool
-	html_source - string
-	meta - object
-	title - string
-	thumb - string
-	ico - string
+		type - object
+		view - string
+		url - string
+		allowIframe - bool
+		html_source - string
+		meta - object
+		title - string
+		thumb - string
+		ico - string
 	*/ 
 	this.parse = function(content, url){
 		var $html = $.parseHTML(content),
@@ -338,6 +344,8 @@ app.service("apiService", function($http, apiParser){
 			return /.jpg$|.jpeg$|.png$|.gif$/i.test(url);
 		}
 		var containedImgUrls, $containedImgs;
+		var imgTest = /^(http:\/\/|https:\/\/|\/\/).*(.jpg|.png|.gif|.jpeg)($|\?.*|#.*)/i;
+		var imgMatch = /(http:\/\/|https:\/\/|\/\/)[a-z0-9\/\.]*(.jpg|.png|.gif|.jpeg)/gi;
 		//** timeout
 		setTimeout(function(){
 			if(!d.state !== "resolved") d.reject();
@@ -389,24 +397,82 @@ app.service("apiService", function($http, apiParser){
 		rs.thumb = rs.meta["og:image"];
 
 		//** get all images
-		$containedImgs = $holder.find("img");
-		$containedImgs.each(function(i, e){
-			(function($e){
-				var src = $e.attr('src');
-				if(src.indexOf("http://") !== -1 || src.indexOf("https://") !== -1 || src.split("/")[0] === "/"){
-					$e.load(function(){
-						console.log($e.attr("src"));
-						console.log($e.width(), $e.height());
-					});
-				}
-			})($(e));
-		});
+		var texts = $holder.html();
+		var matchStr = texts.replace(/\n|\r/ig,"");
+		var imgs = matchStr.match(/(http:\/\/|https:\/\/|\/\/)[a-z0-9\/\.]*(.jpg|.png|.gif|.jpeg)/gi);
+		rs.imgs = imgs;
+		rs.images = [];
+		rs.filterImages = function(){
+			var $d = $.Deferred(), $img = $("<img>"), self = this;
+			var qualify = function($img){
+				var w = $img.width(),
+					h = $img.height(),
+					ratio = w / h;
 
-		setTimeout(function(){
-			//** dom query completed, remove dom
-			$holder.html("");
-			delete $holder;	
-		}, 4000);
+					// console.log(ratio);
+				//** as square as possible
+				if(ratio < 1.5 && ratio > 0.65){
+					//** as large as possible
+					if(w > 300 && h > 300)
+						return true;
+				}
+				return false;
+			}
+			var filter = function(){
+				if(self.imgs !== undefined){
+					$img.attr("src", self.imgs[self.i]);
+					$img.unbind();
+					$img.load(function(){
+						if(self.i < self.imgs.length){
+							if(qualify($img)){
+								self.images.push(self.imgs[self.i]);
+								// console.log(self.i, $img.width(), $img.height(), $img.attr("src"));
+							}
+							self.i++;
+							filter();
+						}else{
+							$d.resolve(self.images);
+						}
+					}).error(function(){
+						self.i++;
+						if(self.i<self.imgs.length){
+							filter();
+						}
+					});
+				}else{
+					console.log(self.i);
+				}
+			}
+
+			self.i = 0;
+			$img.css({
+				position : "absolute",
+				left : -10000,
+				top : -10000
+			});
+			$("body").append($img);
+			setTimeout(function(){
+				filter();
+			}, 100);
+			return $d.promise();
+		}
+		rs.filterImages().then(function(imgs){
+			console.log("done");
+			console.log(imgs);
+		});
+		// console.log(imgs);
+		// $containedImgs = $holder.find("img");
+		// $containedImgs.each(function(i, e){
+		// 	(function($e){
+		// 		var src = $e.attr('src');
+		// 		if(src.indexOf("http://") !== -1 || src.indexOf("https://") !== -1 || src.split("/")[0] === "/"){
+		// 			$e.load(function(){
+		// 				console.log($e.attr("src"));
+		// 				console.log($e.width(), $e.height());
+		// 			});
+		// 		}
+		// 	})($(e));
+		// });
 
 		//** find ico
 		//* use pre-defined ico url
@@ -684,6 +750,9 @@ app.service("apiService", function($http, apiParser){
 				d.resolve(rs);
 			break;
 		}
+
+		$holder.html("");
+		delete $holder;	
 
 		return d.promise();
 	}

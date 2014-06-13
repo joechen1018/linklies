@@ -51,6 +51,7 @@ class ApiController extends AppController{
 	public function fetchUrl(){
 		$url = $this -> data["url"];
 		$output = $this -> curl_get($url);
+		// $output = htmlspecialchars($output);
 		$html  = str_get_html($output);
 		$this -> set("data", $html);
 		$this -> set("_serialize", array("data"));

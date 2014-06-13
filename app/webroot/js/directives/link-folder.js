@@ -137,7 +137,7 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 
 			//** LinkList
 			scope.linkList = {};
-			scope.linkList.url = root + "templates/folder.links.html?count=0";
+			scope.linkList.url = root + "templates/folder.links.html";
 			scope.linkList.show = false;
 			scope.linkList.arrowTop = 10;
 			scope.linkList.folderUrl = root + "folder/" + scope.data.hash;
