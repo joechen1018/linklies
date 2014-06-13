@@ -228,7 +228,9 @@ app.service("apiService", function($http, apiParser){
 		obj.grid = link.grid.join(",");
 		obj.meta = JSON.stringify(link.meta);
 		obj.allowIframe = link.allowIframe ? 1 : 0;
-		obj.images = link.images.join(",");
+		if(link.images !== undefined){
+			obj.images = link.images.join(",");
+		}
 
 		return obj;
 	}
@@ -402,64 +404,64 @@ app.service("apiService", function($http, apiParser){
 		var imgs = matchStr.match(/(http:\/\/|https:\/\/|\/\/)[a-z0-9\/\.]*(.jpg|.png|.gif|.jpeg)/gi);
 		rs.imgs = imgs;
 		rs.images = [];
-		rs.filterImages = function(){
-			var $d = $.Deferred(), $img = $("<img>"), self = this;
-			var qualify = function($img){
-				var w = $img.width(),
-					h = $img.height(),
-					ratio = w / h;
 
-					// console.log(ratio);
-				//** as square as possible
-				if(ratio < 1.5 && ratio > 0.65){
-					//** as large as possible
-					if(w > 300 && h > 300)
-						return true;
-				}
-				return false;
-			}
-			var filter = function(){
-				if(self.imgs !== undefined){
-					$img.attr("src", self.imgs[self.i]);
-					$img.unbind();
-					$img.load(function(){
-						if(self.i < self.imgs.length){
-							if(qualify($img)){
-								self.images.push(self.imgs[self.i]);
-								// console.log(self.i, $img.width(), $img.height(), $img.attr("src"));
-							}
-							self.i++;
-							filter();
-						}else{
-							$d.resolve(self.images);
-						}
-					}).error(function(){
-						self.i++;
-						if(self.i<self.imgs.length){
-							filter();
-						}
-					});
-				}else{
-					console.log(self.i);
-				}
-			}
+		// rs.filterImages = function(){
+		// 	var $d = $.Deferred(), $img = $("<img>"), self = this;
+		// 	var qualify = function($img){
+		// 		var w = $img.width(),
+		// 			h = $img.height(),
+		// 			ratio = w / h;
 
-			self.i = 0;
-			$img.css({
-				position : "absolute",
-				left : -10000,
-				top : -10000
-			});
-			$("body").append($img);
-			setTimeout(function(){
-				filter();
-			}, 100);
-			return $d.promise();
-		}
-		rs.filterImages().then(function(imgs){
-			console.log("done");
-			console.log(imgs);
-		});
+		// 		//** as square as possible
+		// 		if(ratio < 1.8 && ratio > 0.65){
+		// 			//** as large as possible
+		// 			if(w > 300 && h > 300)
+		// 				return true;
+		// 		}
+		// 		return false;
+		// 	}
+		// 	var filter = function(){
+		// 		if(self.imgs !== undefined && self.imgs !== null){
+		// 			$img.attr("src", self.imgs[self.i]);
+		// 			$img.unbind();
+		// 			$img.load(function(){
+		// 				$img.unbind();
+		// 				if(self.i < self.imgs.length){
+		// 					if(qualify($img)){
+		// 						self.images.push(self.imgs[self.i]);
+		// 						// console.log(self.i, $img.width(), $img.height(), $img.attr("src"));
+		// 					}
+		// 					self.i++;
+		// 					filter();
+		// 				}else{
+		// 					$d.resolve(self.images);
+		// 				}
+		// 			}).error(function(){
+		// 				self.i++;
+		// 				if(self.i<self.imgs.length){
+		// 					filter();
+		// 				}
+		// 			});
+		// 		}else{
+		// 			self.i++;
+		// 			filter();
+		// 		}
+		// 	}
+
+		// 	self.i = 0;
+		// 	$img.css({
+		// 		position : "absolute",
+		// 		left : -10000,
+		// 		top : -10000
+		// 	});
+		// 	$("body").append($img);
+		// 	filter();
+		// 	return $d.promise();
+		// }
+
+		// rs.filterImages().then(function(imgs){
+		// 	console.log(imgs);
+		// });
 		// console.log(imgs);
 		// $containedImgs = $holder.find("img");
 		// $containedImgs.each(function(i, e){
