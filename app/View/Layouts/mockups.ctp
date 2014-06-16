@@ -14,7 +14,7 @@
 		var app = angular.module("mk", ['ngRoute'], function($httpProvider){});
 	</script>
 
-	<script src="<?php echo $this -> webroot?>js/controllers/mockupsCtrl.js"></script>
+	<script src="<?php echo $this -> webroot?>js/mockups.js"></script>
 
 	<!-- <link href='http://fonts.googleapis.com/css?family=Ubuntu Condensed' rel='stylesheet' type='text/css'> -->
 	<link href='http://fonts.googleapis.com/css?family=Droid Sans' rel='stylesheet' type='text/css'>
@@ -34,15 +34,17 @@
 		};*/
 
 		//** get rid of annoying less console output
-		var _con = console;
-		console = { log : function(){} }
+		// var _con = console;
+		// console = { log : function(){} }
 	</script>
-	<link rel="stylesheet/less" type="text/css" href="<?php echo $this -> webroot?>css/main.less?" />
-	<link rel="stylesheet/less" type="text/css" href="<?php echo $this -> webroot?>css/mockups.less?view=<?php echo "desktop-view"?>" />
+	<link rel="stylesheet" type="text/css" href="<?php echo $this -> webroot?>css/reset.css">
+	<link rel="stylesheet/less" type="text/css" href="<?php echo $this -> webroot?>css/linkPopup.less" />
+
 	<script src="//cdnjs.cloudflare.com/ajax/libs/less.js/1.6.2/less.min.js" type="text/javascript"></script>
+
 	<script>
-		console = _con;
-		var _c = _con;
+		// console = _con;
+		// var _c = _con;
 		var root = '<?php echo $this -> webroot?>';
 	</script>
 	

@@ -108,7 +108,7 @@
 	
 	<div id="browser" ng-show="showBrowser">
 		<div class="iframe-wrap" ng-show="showBrowser && showWrap">
-			<iframe src="" sandbox="allow-forms allow-scripts" frameborder="0" ng-style="{
+			<iframe src="" sandbox="allow-forms allow-scripts allow-same-origin" frameborder="0" ng-style="{
 				display : none
 			}"></iframe>
 		</div>
