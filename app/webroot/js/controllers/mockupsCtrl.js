@@ -1,5 +1,5 @@
-app.controller("mockupsCtrl", function($scope, gapi){
-	gapi.ready().then(function(){
+app.controller("mockupsCtrl", function($scope){
+	/*gapi.ready().then(function(){
 		gapi.checkAuth().then(function(rs){
 			console.log(rs);
 			gapi.loadPlus().then(function(rs){
@@ -12,7 +12,7 @@ app.controller("mockupsCtrl", function($scope, gapi){
 			// 	console.log(rs);
 			// });
 		});
-	});
+	});*/
 	/*
 	var service = apiService.linkService;
 	var _try = function(data){var a;try{a = JSON.parse(data);}catch(e){return {};}return a;}

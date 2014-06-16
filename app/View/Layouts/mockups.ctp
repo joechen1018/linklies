@@ -16,8 +16,6 @@
 
 	<script src="<?php echo $this -> webroot?>js/controllers/mockupsCtrl.js"></script>
 
-	<script src="<?php echo $this -> webroot?>js/services/gapi.js" type="text/javascript" charset="utf-8"></script>
-	
 	<!-- <link href='http://fonts.googleapis.com/css?family=Ubuntu Condensed' rel='stylesheet' type='text/css'> -->
 	<link href='http://fonts.googleapis.com/css?family=Droid Sans' rel='stylesheet' type='text/css'>
 

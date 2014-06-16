@@ -106,8 +106,6 @@
 	</div>
 	-->
 	
-	<?php //echo $this -> element("folder_links") ?>
-
 	<div id="browser" ng-show="showBrowser">
 		<div class="iframe-wrap" ng-show="showBrowser && showWrap">
 			<iframe src="" sandbox="allow-forms allow-scripts" frameborder="0" ng-style="{
