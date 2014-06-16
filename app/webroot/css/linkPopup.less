@@ -46,22 +46,27 @@ body, html{
 				position: absolute;
 				top: 50px;
 				left : 15px;
-				overflow: hidden;
+				overflow-x: hidden;
+				overflow-y:auto;
 				height : 450px;
+
 				img{
 					width : 330px;
 					float : left;
-					border : 10px solid white;
 					margin: 0 10px 10px 0;
 					&.selected{
-						border : 10px solid @green;
 					}
+				}
+				.selected-border{
+					position: absolute;
+					z-index: 3;
+					border : 10px solid @yellow;
 				}
 			}
 			.img-count{
 				position: absolute;
 				left : 15px;
-				bottom : 45px;
+				bottom : 30px;
 				span.count{
 					font-weight: bold;
 				}

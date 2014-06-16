@@ -13,8 +13,10 @@
 	<script>
 		var app = angular.module("mk", ['ngRoute'], function($httpProvider){});
 	</script>
-
+	
 	<script src="<?php echo $this -> webroot?>js/mockups.js"></script>
+	<script src="<?php echo $this -> webroot?>js/controllers/linkPopupCtrl.js"></script>
+	
 
 	<!-- <link href='http://fonts.googleapis.com/css?family=Ubuntu Condensed' rel='stylesheet' type='text/css'> -->
 	<link href='http://fonts.googleapis.com/css?family=Droid Sans' rel='stylesheet' type='text/css'>
