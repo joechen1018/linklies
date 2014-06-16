@@ -19,7 +19,7 @@ var app = angular.module("mk", [], function($httpProvider){
 	  	console.log('js api loaded');
 	  }
 })
-.controller("mockupsCtrl", function($scope, apiService, apiParser){
+.controller("mockupsCtrl", function($scope){
 
 });
 
@@ -46,43 +46,8 @@ app.utils.isUrl = function(s){
 	var regexp = /^s?https?:\/\/[-_.!~*'()a-zA-Z0-9;\/?:\@&=+\$,%#]+$/
 	return regexp.test(s);
 }
-app.utils.replace = function(str, obj){
-	for(var i in obj){
-		str = str.replace("{{" + i + "}}", obj[i]);
-	}
-	return str;
-}
+app.utils.replace=function(str,obj){for(var i in obj){str=str.replace("{{"+i+"}}",obj[i])}return str}
 
-app.utils.clone = function(obj){
-    // Handle the 3 simple types, and null or undefined
-    if (null == obj || "object" != typeof obj) return obj;
-
-    // Handle Date
-    if (obj instanceof Date) {
-        var copy = new Date();
-        copy.setTime(obj.getTime());
-        return copy;
-    }
-
-    // Handle Array
-    if (obj instanceof Array) {
-        var copy = [];
-        for (var i = 0, len = obj.length; i < len; i++) {
-            copy[i] = utils.clone(obj[i]);
-        }
-        return copy;
-    }
-
-    // Handle Object
-    if (obj instanceof Object) {
-        var copy = {};
-        for (var attr in obj) {
-            if (obj.hasOwnProperty(attr)) copy[attr] = utils.clone(obj[attr]);
-        }
-        return copy;
-    }
-
-    throw new Error("Unable to copy obj! Its type isn't supported.");
-}
+app.utils.clone=function(obj){if(null==obj||"object"!=typeof obj)return obj;if(obj instanceof Date){var copy=new Date();copy.setTime(obj.getTime());return copy}if(obj instanceof Array){var copy=[];for(var i=0,len=obj.length;i<len;i++){copy[i]=utils.clone(obj[i])}return copy}if(obj instanceof Object){var copy={};for(var attr in obj){if(obj.hasOwnProperty(attr))copy[attr]=utils.clone(obj[attr])}return copy}throw new Error("Unable to copy obj! Its type isn't supported.");}
 
 var utils = app.utils;
