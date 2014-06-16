@@ -1,6 +1,9 @@
 <div class="link-popup">
 	<div class="panel">
-		<div class="tabs"></div>
+		<ul class="tabs">
+			<li>edit</li>
+			<li>share</li>
+		</ul>
 		<div class="edit">
 			<input class="title" value="30個超荒謬但是每位養貓人士都一定要有的貓咪用品~~發明人應該是貓奴無誤!"></input>
 			<div class="imgs">
