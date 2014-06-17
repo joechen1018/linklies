@@ -1,11 +1,11 @@
 <div class="link-popup" ng-controller="linkPopupCtrl">
 	<div class="panel">
 		<ul class="tabs">
-			<li class="selected">edit</li>
-			<li>share</li>
+			<li ng-click="tab='edit'" ng-class="{selected : tab === 'edit'}">edit</li>
+			<li ng-click="tab='share'" ng-class="{selected : tab === 'share'}">share</li>
 		</ul>
-		<div class="edit">
-			<textarea class="title">個超荒謬但是每位養貓人士都一定要有的貓咪用品~~發明人應該是貓奴無誤!"></textarea>
+		<div class="edit" ng-show="tab==='edit'">
+			<input type="text" class="title" value="個超荒謬但是每位養貓人士都一定要有的貓咪用品~~發明人應該是貓奴無誤!">
 			<div class="imgs">
 				<img class="thumb selected" ng-click="onImgClick($event)" src="http://s1.gigacircle.com/media/s1_539a19432e1a3.jpg">
 				<img class="thumb"  ng-click="onImgClick($event)" src="https://i1.ytimg.com/vi/xR6Qait2JGY/maxresdefault.jpg">
@@ -17,7 +17,7 @@
 			</div>
 			<p class="img-count"><span class="count">7</span> images found</p>
 		</div>
-		<div class="share">
+		<div class="share" ng-show="tab==='share'">
 			<p class="short-url">
 				<span>goo.gl/4jyuub</span>
 				<input type="checkbox" name="useShortenUrl" checked="checked">Use shorten url

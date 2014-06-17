@@ -22,7 +22,7 @@ body, html{
 			top : -30px;
 			left : 0;
 			li{
-				height : 30px;
+				height : 25px;
 				display: block;
 				float : left;
 				background: white;
@@ -37,26 +37,26 @@ body, html{
 			}
 		}
 		.edit{
-			textarea{
-				width : @w - 50px;
-				height : 60px;
+			input.title{
+				width : @w - 60px;
 				margin : 0;
 				position: relative;
 				left : 15px;
-				top : 25px;
+				top : 35px;
 				border : 1px solid #eaeaea;
 				padding: 3px 10px 3px 10px;
+				font-size: 14px;
 				&:focus{
 					border : 2px solid @blue;
 				}
 			}
 			.imgs{
 				position: absolute;
-				top: 100px;
+				top: 70px;
 				left : 15px;
 				overflow-x: hidden;
 				overflow-y:auto;
-				height : 350px;
+				height : 400px;
 				img{
 					height : 200px;
 					float : left;
@@ -67,7 +67,7 @@ body, html{
 				.selected-border{
 					position: absolute;
 					z-index: 3;
-					border : 10px solid @red;
+					border : 10px solid @blue;
 				}
 			}
 			.img-count{
@@ -80,7 +80,6 @@ body, html{
 			}
 		}
 		.share{
-			display: none;
 			p.short-url{
 				position: relative;
 				padding : 45px 15px 10px 15px;

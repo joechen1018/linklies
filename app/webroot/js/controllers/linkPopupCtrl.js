@@ -22,6 +22,8 @@ app.controller("linkPopupCtrl", function($scope){
 		});
 	});
 
+	$scope.tab = "edit";
+
 	$scope.onImgClick = function(e){
 		$scope.selectedImg = $(e.currentTarget);
 	}
