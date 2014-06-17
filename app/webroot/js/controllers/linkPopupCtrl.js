@@ -16,7 +16,7 @@ app.controller("linkPopupCtrl", function($scope){
 		}
 	});
 
-	$selectedImg.load(function(){
+	$selectedImg.load(function(){	
 		$scope.$apply(function(){
 			$scope.selectedImg = $selectedImg;
 		});

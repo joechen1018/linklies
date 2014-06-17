@@ -26,32 +26,39 @@ body, html{
 				display: block;
 				float : left;
 				background: white;
-				padding : 5px 20px 5px 20px;
-				line-height: 30px;
+				padding : 5px 20px 0px 20px;
+				line-height: 25px;
 				font-size : 14px;
 				color : @dark;
+				cursor: pointer;
+				&.selected{
+					background: #eaeaea;
+				}
 			}
 		}
 		.edit{
-			input{
+			textarea{
 				width : @w - 50px;
+				height : 60px;
 				margin : 0;
 				position: relative;
 				left : 15px;
-				top : 15px;
+				top : 25px;
 				border : 1px solid #eaeaea;
 				padding: 3px 10px 3px 10px;
+				&:focus{
+					border : 2px solid @blue;
+				}
 			}
 			.imgs{
 				position: absolute;
-				top: 50px;
+				top: 100px;
 				left : 15px;
 				overflow-x: hidden;
 				overflow-y:auto;
-				height : 450px;
-
+				height : 350px;
 				img{
-					width : 330px;
+					height : 200px;
 					float : left;
 					margin: 0 10px 10px 0;
 					&.selected{
@@ -60,13 +67,13 @@ body, html{
 				.selected-border{
 					position: absolute;
 					z-index: 3;
-					border : 10px solid @yellow;
+					border : 10px solid @red;
 				}
 			}
 			.img-count{
 				position: absolute;
 				left : 15px;
-				bottom : 30px;
+				bottom : 15px;
 				span.count{
 					font-weight: bold;
 				}
