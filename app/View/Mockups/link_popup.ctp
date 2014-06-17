@@ -24,7 +24,7 @@
 				<input type="checkbox" name="useShortenUrl" checked="checked">Use shorten url
 			</p>
 			<p class="clicks">
-				<!-- <span class="click-count">5</span> clicks -->
+				<span class="click-count">5</span> clicks
 			</p>
 
 			<textarea class="say-something" placeholder="say something...."></textarea>
