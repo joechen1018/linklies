@@ -33,6 +33,7 @@ body, html{
 			}
 		}
 		.edit{
+			display: none;
 			input{
 				width : @w - 50px;
 				margin : 0;
@@ -73,7 +74,56 @@ body, html{
 			}
 		}
 		.share{
-
+			p.short-url{
+				position: relative;
+				padding : 45px 15px 10px 15px;
+				span{
+					font-size: 30px;
+					background: #eaeaea;
+					padding: 0 5px 0 5px;
+				}
+			}
+			p.clicks{
+				display: block;
+				position: absolute;
+				right : 15px;
+				top : 30px;
+				font-size : 20px;
+				span{
+					font-size: 24px;
+				}
+			}
+			textarea.say-something{
+				width : @w - 45;
+				height : 130px;
+				position: absolute;
+				top : 90px;
+				left : 15px;
+				&[placeholder]{
+					padding : 5px 0 0 10px;
+					font-size: 16px;
+				}
+			}
+			.img-wrap{
+				position: absolute;
+				left : 15px;
+				bottom : 50px;
+				width : @w - 30;
+				img{
+					height : 250px;
+					float : left;
+					margin-right: 10px;
+				}
+				p.title{
+					font-size : 24px;
+					line-height: 28px;
+					padding : 0 0 10px 0;
+				}
+				p.desc{
+					font-size : 14px;
+					line-height: 18px;
+				}
+			}
 		}
 		.btns{
 			position: absolute;
