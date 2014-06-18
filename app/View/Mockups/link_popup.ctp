@@ -5,8 +5,8 @@
 		edit : tab === 'edit'
 	}">
 		<ul class="tabs">
-			<li ng-click="tab='edit'" ng-class="{selected : tab === 'edit'}">edit</li>
-			<li ng-click="tab='share'" ng-class="{selected : tab === 'share'}">share</li>
+			<li ng-click="tab='edit'" data-icon="g" ng-class="{selected : tab === 'edit'}">edit</li>
+			<li ng-click="tab='share'"  data-icon="U" ng-class="{selected : tab === 'share'}">share</li>
 		</ul>
 		<div class="edit" ng-show="tab ==='edit'">
 			<input type="text" class="title" value="個超荒謬但是每位養貓人士都一定要有的貓咪用品~~發明人應該是貓奴無誤!">
@@ -44,6 +44,7 @@
 			<p class="clicks">
 				<span class="click-count">5</span> clicks
 			</p>
+			<div class="hr"></div>
 			<p class="say-something">
 				By so delight of showing neither believe he present. Deal sigh up in shew away when. Pursuit express no or prepare replied. Wholly formed old latter future but way she. Day her likewise smallest expenses judgment building man carriage gay. Considered introduced themselves mr to discretion at. Means among saw hopes for. Death mirth in oh learn he equal on. 
 			</p>

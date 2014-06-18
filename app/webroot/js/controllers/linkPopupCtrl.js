@@ -45,7 +45,7 @@ app.controller("linkPopupCtrl", function($scope){
 		});
 	});
 
-	$scope.tab = "edit";
+	$scope.tab = "share";
 	$scope.shared = true;
 	$scope.hoverImg = false;
 	$scope.onImgClick = function(e){
