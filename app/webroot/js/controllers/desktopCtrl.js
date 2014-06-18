@@ -55,7 +55,6 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http,
 	}
 
 	var onUserDataFetched = function(rs){
-		console.log(rs);
 		var data = rs.data,
 			user = data.User,
 			links = data.Link,

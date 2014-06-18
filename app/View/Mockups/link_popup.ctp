@@ -46,7 +46,7 @@
 			</p>
 			<div class="hr"></div>
 			<p class="say-something">
-				By so delight of showing neither believe he present. Deal sigh up in shew away when. Pursuit express no or prepare replied. Wholly formed old latter future but way she. Day her likewise smallest expenses judgment building man carriage gay. Considered introduced themselves mr to discretion at. Means among saw hopes for. Death mirth in oh learn he equal on. 
+				By so delight of showing neither believe he present. Deal sigh up in shew away when. Pursuit express no or prepare replied. Wholly formed old latter future but way she. Day her likewise smallest expenses judgment building man carriage gay. 
 			</p>
 			<div class="img-wrap">
 				<img class="thumb" src="http://s1.gigacircle.com/media/s1_539a19432e1a3.jpg"></img>

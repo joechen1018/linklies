@@ -405,75 +405,64 @@ app.service("apiService", function($http, apiParser){
 		rs.imgs = imgs;
 		rs.images = [];
 
-		// rs.filterImages = function(){
-		// 	var $d = $.Deferred(), $img = $("<img>"), self = this;
-		// 	var qualify = function($img){
-		// 		var w = $img.width(),
-		// 			h = $img.height(),
-		// 			ratio = w / h;
+		/* temporarily removed
+		rs.filterImages = function(){
+			var $d = $.Deferred(), $img = $("<img>"), self = this;
+			var qualify = function($img){
+				var w = $img.width(),
+					h = $img.height(),
+					ratio = w / h;
 
-		// 		//** as square as possible
-		// 		if(ratio < 1.8 && ratio > 0.65){
-		// 			//** as large as possible
-		// 			if(w > 300 && h > 300)
-		// 				return true;
-		// 		}
-		// 		return false;
-		// 	}
-		// 	var filter = function(){
-		// 		if(self.imgs !== undefined && self.imgs !== null){
-		// 			$img.attr("src", self.imgs[self.i]);
-		// 			$img.unbind();
-		// 			$img.load(function(){
-		// 				$img.unbind();
-		// 				if(self.i < self.imgs.length){
-		// 					if(qualify($img)){
-		// 						self.images.push(self.imgs[self.i]);
-		// 						// console.log(self.i, $img.width(), $img.height(), $img.attr("src"));
-		// 					}
-		// 					self.i++;
-		// 					filter();
-		// 				}else{
-		// 					$d.resolve(self.images);
-		// 				}
-		// 			}).error(function(){
-		// 				self.i++;
-		// 				if(self.i<self.imgs.length){
-		// 					filter();
-		// 				}
-		// 			});
-		// 		}else{
-		// 			self.i++;
-		// 			filter();
-		// 		}
-		// 	}
+				//** as square as possible
+				if(ratio < 1.8 && ratio > 0.65){
+					//** as large as possible
+					if(w > 300 && h > 300)
+						return true;
+				}
+				return false;
+			}
+			var filter = function(){
+				if(self.imgs !== undefined && self.imgs !== null){
+					$img.attr("src", self.imgs[self.i]);
+					$img.unbind();
+					$img.load(function(){
+						$img.unbind();
+						if(self.i < self.imgs.length){
+							if(qualify($img)){
+								self.images.push(self.imgs[self.i]);
+								// console.log(self.i, $img.width(), $img.height(), $img.attr("src"));
+							}
+							self.i++;
+							filter();
+						}else{
+							$d.resolve(self.images);
+						}
+					}).error(function(){
+						self.i++;
+						if(self.i<self.imgs.length){
+							filter();
+						}
+					});
+				}else{
+					self.i++;
+					filter();
+				}
+			}
 
-		// 	self.i = 0;
-		// 	$img.css({
-		// 		position : "absolute",
-		// 		left : -10000,
-		// 		top : -10000
-		// 	});
-		// 	$("body").append($img);
-		// 	filter();
-		// 	return $d.promise();
-		// }
+			self.i = 0;
+			$img.css({
+				position : "absolute",
+				left : -10000,
+				top : -10000
+			});
+			$("body").append($img);
+			filter();
+			return $d.promise();
+		}
+		*/
 
 		// rs.filterImages().then(function(imgs){
 		// 	console.log(imgs);
-		// });
-		// console.log(imgs);
-		// $containedImgs = $holder.find("img");
-		// $containedImgs.each(function(i, e){
-		// 	(function($e){
-		// 		var src = $e.attr('src');
-		// 		if(src.indexOf("http://") !== -1 || src.indexOf("https://") !== -1 || src.split("/")[0] === "/"){
-		// 			$e.load(function(){
-		// 				console.log($e.attr("src"));
-		// 				console.log($e.width(), $e.height());
-		// 			});
-		// 		}
-		// 	})($(e));
 		// });
 
 		//** find ico
@@ -536,6 +525,35 @@ app.service("apiService", function($http, apiParser){
 				}
 			}
 		}
+
+		$holder.find("link, script, style, meta").remove();
+		$containedImgs = $holder.find("img");
+		$containedImgs.each(function(i, e){
+			(function($e){
+				var src = $e.attr('src');
+				var w = $e.width(), 
+					h = $e.height();
+				if(src.indexOf("http://") !== -1 || src.indexOf("https://") !== -1 || src.substr(0, 2) === "//"){
+					(function(src){
+						var $img = $("<img>");
+						$img.attr("src", src);
+						$("body").append($img);
+						$img.css({
+							position : "absolute",
+							left : -10000
+						});
+						$img.load(function(){
+							console.log($img.attr('src'), $img.width(), $img.height());
+						});
+					})(src);
+					// (function(){
+					// 	setTimeout(function(){
+					// 		console.log(src, $e.width(), $e.height());
+					// 	}, 3000);
+					// })(src, $e);
+				}
+			})($(e));
+		});
 
 		//** get customized data from each type
 		var type = rs.type;
