@@ -46,7 +46,7 @@ app.controller("linkPopupCtrl", function($scope){
 	});
 
 	$scope.tab = "edit";
-	$scope.shared = false;
+	$scope.shared = true;
 	$scope.hoverImg = false;
 	$scope.onImgClick = function(e){
 		$selectedImg = $(e.currentTarget);

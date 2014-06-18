@@ -17,8 +17,11 @@ body, html{
 		top : calc(~"50%" - @h/2);
 		.shadow-medium;
 
-		&.share, &.edit{
+		&.edit{
 			height : @h;
+		}
+		&.share{
+			height : 450px;
 		}
 
 		ul.tabs{
@@ -113,23 +116,11 @@ body, html{
 					padding: 0 5px 0 5px;
 				}
 			}
-			p.clicks{
-				display: block;
-				position: absolute;
-				right : 20px;
-				top : 25px;
-				font-size : 16px;
-				color : lighten(@dark, 40%);
-				span{
-					color : lighten(@dark, 40%);
-					font-size: 60px;
-				}
-			}
 			textarea.say-something{
 				width : @w - 45;
-				height : 130px;
+				height : 115px;
 				position: absolute;
-				top : 90px;
+				top : 15px;
 				left : 15px;
 				&[placeholder]{
 					padding : 5px 0 0 10px;

@@ -1,6 +1,6 @@
 <div class="link-popup" ng-controller="linkPopupCtrl">
 	<div class="panel" ng-class="{
-		share : !shared,
+		share : !shared && tab === 'share',
 		shared : shared,
 		edit : tab === 'edit'
 	}">
@@ -25,13 +25,9 @@
 		</div>
 		<div class="share" ng-show="tab ==='share' && !shared">
 			<p class="short-url">
-				<span>goo.gl/4jyuub</span>
+				<!-- <span>goo.gl/4jyuub</span> -->
 				<!-- <input type="checkbox" name="useShortenUrl" checked="checked">Use shorten url -->
 			</p>
-			<p class="clicks">
-				<span class="click-count">5</span> clicks
-			</p>
-
 			<textarea class="say-something" placeholder="say something...."></textarea>
 			<div class="img-wrap">
 				<img class="thumb" src="http://s1.gigacircle.com/media/s1_539a19432e1a3.jpg"></img>
@@ -60,7 +56,7 @@
 			</div>
 		</div>
 		<div class="btns">
-			<button class="share" ng-show="tab ==='share'">Share</button>
+			<button class="share" ng-show="tab ==='share' && (!shared)">Share</button>
 			<button class="close">Close</button>
 		</div>
 	</div>
