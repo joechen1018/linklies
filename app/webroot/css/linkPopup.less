@@ -1,5 +1,6 @@
 @import "theme";
 @import "lib";
+@import "linklies-font-1/styles.css";
 
 body, html{
 	background: @bg-color;
@@ -10,12 +11,15 @@ body, html{
 		@h : 550px;
 		background: white;
 		width : @w;
-		height : @h;
 		position: fixed;
 		z-index: 2;
 		left : calc(~"50%" - @w/2);
 		top : calc(~"50%" - @h/2);
 		.shadow-medium;
+
+		&.share, &.edit{
+			height : @h;
+		}
 
 		ul.tabs{
 			position: absolute;
@@ -64,6 +68,7 @@ body, html{
 					height : 200px;
 					float : left;
 					margin: 0 10px 10px 0;
+					cursor: pointer;
 					&.selected{
 					}
 				}
@@ -71,6 +76,22 @@ body, html{
 					position: absolute;
 					z-index: 3;
 					border : 10px solid @blue;
+				}
+				.btn-del{
+					width : 30px;
+					height : 30px;
+					background: @red;
+					position: absolute;
+					left : 0;
+					top : 0;
+					color : white;
+					font-size : 14px;
+					cursor: pointer;
+					&::before{
+						position: relative;
+						left : 8px;
+						top : 8px;
+					};
 				}
 			}
 			.img-count{
@@ -136,10 +157,70 @@ body, html{
 				}
 			}
 		}
+		.shared{
+			p.short-url{
+				position: relative;
+				padding : 45px 15px 10px 15px;
+				span{
+					font-size: 30px;
+					background: #eaeaea;
+					padding: 0 5px 0 5px;
+				}
+			}
+			p.clicks{
+				display: block;
+				position: absolute;
+				right : 20px;
+				top : 25px;
+				font-size : 16px;
+				color : lighten(@dark, 40%);
+				span{
+					color : lighten(@dark, 40%);
+					font-size: 60px;
+				}
+			}
+			p.say-something{
+				padding : 20px 15px 20px 15px;
+				font-size : 18px;
+				line-height: 20px;
+			}
+			.img-wrap{
+				width : @w - 30;
+				img{
+					height : 250px;
+					float : left;
+					margin : 0 10px 15px 15px;
+				}
+				p.title{
+					font-size : 24px;
+					line-height: 28px;
+					padding : 0 0 10px 0;
+				}
+				p.desc{
+					font-size : 14px;
+					line-height: 18px;
+				}
+			}
+		}
 		.btns{
 			position: absolute;
 			right : 15px;
 			bottom : 15px;
+			button{
+				@dark-green : darken(@green, 30%);
+				float : right;
+				margin-left : 5px;
+				border : 0;
+				padding : 0px 20px 0px 20px;
+				color : white;
+				font-size : 16px;
+				line-height: 30px;
+				height : 30px;
+				background: @dark-green;
+				&.close{
+					background: @red;
+				}
+			}
 		}
 	}
 	.overlay{
