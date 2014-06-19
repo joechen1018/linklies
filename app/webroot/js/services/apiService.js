@@ -486,7 +486,8 @@ app.service("apiService", function($http, apiParser){
 		//** if url ends with file name like xxx.php, remove it
 		var targetRoot = (function(url){
 			var splits = url.split("/");
-			if(splits[splits.length - 1].indexOf(".") !== -1){
+			if(splits[splits.length - 1].indexOf(".") !== -1 || 
+			  splits[splits.length - 1].indexOf("#") !== -1){
 				splits[splits.length - 1] = "";
 			}
 			return splits.join("/");
@@ -545,6 +546,7 @@ app.service("apiService", function($http, apiParser){
 								ratio = w / h,
 								src = $img.attr("src");
 
+							console.log(src, w, h);	
 							//** as aquare as possible	
 							if(ratio < 1.9 && ratio > 0.65){
 
