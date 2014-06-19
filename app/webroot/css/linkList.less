@@ -63,11 +63,14 @@
 		ul.top-buttons{
 			height : @h;
 			border-bottom : 1px solid lighten(@dark, 70%);
+			background: lighten(@dark, 70%);
+			display: block;
+			height : @h;
+			width : 100%;
 			li{
-				height : @h;
-				width : 50%;
 				display: block;
-				position: absolute;
+				float : left;
+				width : 33%;
 				a{
 					display: block;
 					width : 100%;
@@ -78,14 +81,17 @@
 						color : lighten(@dark, 40%);
 						>span{
 							font-size : 14px;
-							padding-left : 3px;
+							padding-left : 0px;
 						}
 						&::before{
 							vertical-align: middle;
+							position: relative;
+							top : -2px;
+							left : -4px;
 						};
 					}
 					&:hover{
-						background: lighten(@dark, 70%);
+						background: white;
 						span{
 							color : black;
 						}
@@ -93,11 +99,13 @@
 				}
 			}
 			li.left{
-				left : 0;
+				border-right : 1px solid lighten(@dark, 70%);
+			}
+			li.middle{
 				border-right : 1px solid lighten(@dark, 70%);
 			}
 			li.right{
-				right : 0;
+
 			}
 		}
 		>ul.link-list-items{

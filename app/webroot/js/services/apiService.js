@@ -414,6 +414,7 @@ app.service("apiService", function($http, apiParser){
 		//* get rid of html special characters
 		rs.title = $("<div/>").html(rs.title).text();
 		rs.thumb = rs.meta["og:image"];
+		rs.images = [rs.thumb];
 
 		//** get all images
 		var texts = $holder.html();
