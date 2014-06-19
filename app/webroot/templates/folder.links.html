@@ -5,6 +5,10 @@
 		<div class="arrow arrow-left"></div>
 		<div class="arrow arrow-right"></div>
 		
+		<!-- bridge -->
+		<div class="bridge-left"></div>
+		<div class="bridge-right"></div>
+
 		<!-- buttons -->
 		<ul class="top-buttons">
 			<li class="left" ng-click="deleteFolder()" >
@@ -24,6 +28,7 @@
 		</ul>
 
 		<ul class="link-list-items">
+
 			<li ng-repeat="link in linkList.content" ng-mouseover="link.hover = true" ng-mouseleave="link.hover = false" bo-class="link.view">
 
 				<img src="{{link.ico}}" alt="">
@@ -55,7 +60,7 @@
 						data-icon="x">
 						<a class="icon" href="{{link.url}}" target="_blank"></a>
 					</li>
-					
+
 					<li ng-show="link.view === 'video'"
 						ng-mouseenter="otherItemIsHoverd = true" 
 						ng-mouseleave="otherItemIsHoverd = false"

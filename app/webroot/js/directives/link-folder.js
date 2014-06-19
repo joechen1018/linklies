@@ -39,14 +39,15 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 					//* folder is on right side of the screen
 					if(left > $(window).width() / 2){
 						//show link list on the left of the folder
-						$list.css("left", left - 469);
+						$list.css("left", left - 485);
 						$(".arrow-right").show();
 
 					//* folder is on left side of the screen	
 					}else{
 						//show link list on the right of the folder
-						$list.css("left", left + $folder.width() );
+						$list.css("left", left + $folder.width() + 15);
 						$(".arrow-left").show();
+
 					}
 
 					//** class 'reload' applied to dom by lkDrag directive when new link is dropped onto the folder
