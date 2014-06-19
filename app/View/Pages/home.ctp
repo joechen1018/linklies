@@ -58,7 +58,7 @@
 		top : grids.defaults.topHeight
 	}" ng-dblclick="onBoardDbClick($event)" ng-click="onBoardClick($event)" ng-right-click="onRightClick($event)">
 
-			<!-- <ul id="gridLines" ng-class="grids.show ? 'showGrid' : 'hideGrid'">
+			<ul id="gridLines" ng-class="grids.show ? 'showGrid' : 'hideGrid'">
 				<li class="hline gline" ng-repeat="item in grids.rows" ng-style="{
 					top : $index * grids.gridFullHeight,
 					height : grids.gridHeight
@@ -68,7 +68,7 @@
 					width : grids.gridWidth,
 					height : grids.height
 				}"></li>
-			</ul> -->
+			</ul>
 			
 			<div lk-folder data="folder" ng-right-click="onRightClick($event)" bindonce lk-drag drag-preview="dragPreview.folder" ng-repeat="folder in folders" ></div>
 

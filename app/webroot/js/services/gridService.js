@@ -1,3 +1,4 @@
+//** grid service is depreciated
 app.service("gridService", function($rootScope, $timeout, resize){
 	var self = this;
 	var $desk = $("#desktop-view");
@@ -429,7 +430,7 @@ app.service("gridService", function($rootScope, $timeout, resize){
 		this.gridHeight = _d.gridHeight;
 		this.gridFullHeight = this.gridHeight + _d.margin;
 		this.cols = _.range(getColNum(this.width, this.gridWidth));
-		this.rows = _.range(getRowNum(this.height, _d.gridHeight + _d.margin) + 4 + this.buffer);
+		this.rows = _.range(getRowNum(this.height, _d.gridHeight + _d.margin) + 12 + this.buffer);
 		this.folderSize = {
 			width : this.gridWidth,
 			fullWidth : this.gridWidth + _d.margin,
