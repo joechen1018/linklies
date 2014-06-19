@@ -112,6 +112,20 @@ class ApiController extends AppController{
 		$this -> set("_serialize", array("data"));
 	}
 
+	public function saveLinkThumbs(){
+		$this -> loadModel("Link");
+		$id = $this -> data["link_id"];
+		$images = $this -> data["urls"];
+		$link = $this -> Link -> findByUuid($id);
+		$link_id = $link["Link"]["id"];
+		$rs = $this -> Link -> save(array(
+			"id" => $link_id,
+			"images" => $images
+		));
+		$this -> set("data", $rs);
+		$this -> set("_serialize", array("data"));
+	}
+
 	public function saveFolderName($id, $name){
 		$this -> loadModel("Folder");
 		$data = $this -> Folder -> save(array(

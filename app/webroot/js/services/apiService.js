@@ -25,8 +25,8 @@ app.service("apiService", function($http, apiParser){
 					data : {"url" : url},
 					success : function(res){
 						//** return parsed html - *notice this is just a part of the Link object
-						apiParser.parse(res, url).then(function(obj){
-							_d.resolve(obj);
+						apiParser.parse(res, url).then(function(obj, task){
+							_d.resolve(obj, task);
 						})
 						.fail(function(){
 							_d.reject();
@@ -48,7 +48,6 @@ app.service("apiService", function($http, apiParser){
 					method : "post",
 					data : obj,
 					success : function(res){
-						console.log(res);
 						var link = apiParser.linkFromDb(res.data.Link);
 						_d.resolve(link);
 					}
@@ -64,6 +63,22 @@ app.service("apiService", function($http, apiParser){
 						console.log(res);
 						var link = apiParser.linkFromDb(res.data.Link);
 						_d.resolve(link);
+					}
+				});
+				return _d.promise();
+			},
+			saveLinkThumbs : function(urls, link_id){
+				var _d = $.Deferred();
+				$.ajax({
+					url : "api/saveLinkThumbs/",
+					method : "post",
+					data : {
+						urls : urls,
+						link_id : link_id
+					},
+					success : function(res){
+						console.log(res);
+						_d.resolve(res);
 					}
 				});
 				return _d.promise();
@@ -304,17 +319,18 @@ app.service("apiService", function($http, apiParser){
 	}
 
 	/*** returns
-		type - object
-		view - string
-		url - string
-		allowIframe - bool
-		html_source - string
-		meta - object
-		title - string
-		thumb - string
-		ico - string
+	type - object
+	view - string
+	url - string
+	allowIframe - bool
+	html_source - string
+	meta - object
+	title - string
+	thumb - string
+	ico - string
 	*/ 
 	this.parse = function(content, url){
+
 		var $html = $.parseHTML(content),
 			pl = $.url(url),
 			rs = {},
@@ -405,66 +421,6 @@ app.service("apiService", function($http, apiParser){
 		rs.imgs = imgs;
 		rs.images = [];
 
-		/* temporarily removed
-		rs.filterImages = function(){
-			var $d = $.Deferred(), $img = $("<img>"), self = this;
-			var qualify = function($img){
-				var w = $img.width(),
-					h = $img.height(),
-					ratio = w / h;
-
-				//** as square as possible
-				if(ratio < 1.8 && ratio > 0.65){
-					//** as large as possible
-					if(w > 300 && h > 300)
-						return true;
-				}
-				return false;
-			}
-			var filter = function(){
-				if(self.imgs !== undefined && self.imgs !== null){
-					$img.attr("src", self.imgs[self.i]);
-					$img.unbind();
-					$img.load(function(){
-						$img.unbind();
-						if(self.i < self.imgs.length){
-							if(qualify($img)){
-								self.images.push(self.imgs[self.i]);
-								// console.log(self.i, $img.width(), $img.height(), $img.attr("src"));
-							}
-							self.i++;
-							filter();
-						}else{
-							$d.resolve(self.images);
-						}
-					}).error(function(){
-						self.i++;
-						if(self.i<self.imgs.length){
-							filter();
-						}
-					});
-				}else{
-					self.i++;
-					filter();
-				}
-			}
-
-			self.i = 0;
-			$img.css({
-				position : "absolute",
-				left : -10000,
-				top : -10000
-			});
-			$("body").append($img);
-			filter();
-			return $d.promise();
-		}
-		*/
-
-		// rs.filterImages().then(function(imgs){
-		// 	console.log(imgs);
-		// });
-
 		//** find ico
 		//* use pre-defined ico url
 		if(rs.type.ico){
@@ -526,34 +482,83 @@ app.service("apiService", function($http, apiParser){
 			}
 		}
 
+		//** if url ends with file name like xxx.php, remove it
+		var targetRoot = (function(url){
+			var splits = url.split("/");
+			if(splits[splits.length - 1].indexOf(".") !== -1){
+				splits[splits.length - 1] = "";
+			}
+			return splits.join("/");
+		})(rs.url);
+
 		$holder.find("link, script, style, meta").remove();
 		$containedImgs = $holder.find("img");
-		$containedImgs.each(function(i, e){
-			(function($e){
-				var src = $e.attr('src');
-				var w = $e.width(), 
-					h = $e.height();
-				if(src.indexOf("http://") !== -1 || src.indexOf("https://") !== -1 || src.substr(0, 2) === "//"){
-					(function(src){
-						var $img = $("<img>");
-						$img.attr("src", src);
-						$("body").append($img);
-						$img.css({
-							position : "absolute",
-							left : -10000
-						});
-						$img.load(function(){
-							console.log($img.attr('src'), $img.width(), $img.height());
-						});
-					})(src);
-					// (function(){
-					// 	setTimeout(function(){
-					// 		console.log(src, $e.width(), $e.height());
-					// 	}, 3000);
-					// })(src, $e);
-				}
-			})($(e));
-		});
+
+		var findValidThumbsTask = (function(link_id){
+
+			var thumbs = [], $d = $.Deferred(), taskDuration = 6000;
+
+			$containedImgs.each(function(i, e){
+
+				(function($e){
+					var src = $e.attr('src'),
+						tmp;
+
+					if(src.substr(0,7) ==="http://" || 
+					   src.substr(0,8) === "https://" || 
+					   src.substr(0, 2) === "//"){
+					   	//** use src directly
+					}else{
+						src = targetRoot + src;
+
+						//** double slash exists besides the one in http://
+						tmp = src.split("://");
+						if(tmp.length > 1){
+							tmp[1] = tmp[1].replace(/\/\//g, "/");
+							src = tmp.join("://");
+						}
+					}
+
+					//** create and try load the image using src
+					var $img = $("<img>");
+					$img.attr("src", src);
+					$("body").append($img);
+					$img.css({
+						position : "absolute",
+						left : -10000
+					});
+
+					//** try load the image
+					$img.load(function(){
+
+						var w = $img.width(),
+							h = $img.height(),
+							ratio = w / h,
+							src = $img.attr("src");
+
+						//** as aquare as possible	
+						if(ratio < 1.9 && ratio > 0.65){
+
+							//** not too small
+							if(w > 300 && h > 200){
+								thumbs.push(src);
+								//console.log(src, ratio);
+							}
+						}
+
+						//** remove when done
+						$img.remove();
+					});
+
+				})($(e));
+			});
+
+			setTimeout(function(){
+				$d.resolve(thumbs, rs);
+			}, taskDuration);
+
+			return $d.promise();
+		})(rs);
 
 		//** get customized data from each type
 		var type = rs.type;
@@ -572,15 +577,15 @@ app.service("apiService", function($http, apiParser){
 				// _c.log(rs.videoId);
 				rs.type.videoId = rs.videoId;
 				rs.view = "video";
-				d.resolve(rs);
+				d.resolve(rs, findValidThumbsTask);
 			break;
 			case 'vimeo':
 				rs.icon = type.ico;
-				d.resolve(rs);
+				d.resolve(rs, findValidThumbsTask);
 			break;
 			case 'youku':
 				rs.icon = type.ico;
-				d.resolve(rs);
+				d.resolve(rs, findValidThumbsTask);
 			break;
 			case 'stackoverflow':
 				var sel = rs.type.selectors;
@@ -590,8 +595,7 @@ app.service("apiService", function($http, apiParser){
 				rs.type.ablock = "<pre class='theme-super'>" + $holder.find(sel.ablock).html() + "</pre>";
 				_c.log(rs.type);
 				rs.view = "qa";
-				d.resolve(rs);	
-
+				d.resolve(rs, findValidThumbsTask);	
 			break;
 			case 'google.search' :
 				var query = rs.type.selectors.results,
@@ -603,12 +607,12 @@ app.service("apiService", function($http, apiParser){
 				rs.type.verb = "googled";
 				rs.type.q = rs.title;
 				rs.view = "search";
-				d.resolve(rs);
+				d.resolve(rs, findValidThumbsTask);
 
 			break;
 			case 'google.translate':
 
-				d.resolve(rs);
+				d.resolve(rs, findValidThumbsTask);
 				/*
 				var inputs = pl.attr("fragment").split("/"),
 					params = {
@@ -677,11 +681,11 @@ app.service("apiService", function($http, apiParser){
 						rs.doc.spreadsheet = resp;
 						rs.title = resp.title;
 						rs.thumb = resp.thumbnailLink;
-						d.resolve(rs);
+						d.resolve(rs, findValidThumbsTask);
 					});
 				}else{
-					_c.warn("no docs key found");
-					d.resolve(rs);
+					// _c.warn("no docs key found");
+					d.resolve(rs, findValidThumbsTask);
 				}
 			break;
 			case 'google.docs.document' : 
@@ -690,14 +694,14 @@ app.service("apiService", function($http, apiParser){
 				    'fileId': rs.key
 				});
 				request.execute(function(resp) {
-					_c.log(resp);
+					// _c.log(resp);
 					rs.doc = {};
 					rs.doc.document = resp;
 					rs.title = resp.title;
 					rs.thumb = resp.thumbnailLink;
 					//rs.view = "doc";
 					// _c.log(rs);
-					d.resolve(rs);
+					d.resolve(rs, findValidThumbsTask);
 				    // console.log('Title: ' + resp.title);
 				    // console.log('Description: ' + resp.description);
 				    // console.log('MIME type: ' + resp.mimeType);
@@ -706,7 +710,6 @@ app.service("apiService", function($http, apiParser){
 			case "google.docs.presentations" :
 
 				rs.key = rs.url.match(/.+d\/([a-zA-z0-9\-_]*)(\/|)(.+|)/)[1];
-				console.log(rs.key);
 				var request = gapi.client.drive.files.get({
 				    'fileId': rs.key
 				});
@@ -717,7 +720,7 @@ app.service("apiService", function($http, apiParser){
 					rs.title = resp.title;
 					rs.thumb = resp.thumbnailLink;
 					//rs.view = "doc";
-					d.resolve(rs);
+					d.resolve(rs, findValidThumbsTask);
 				});
 			break;
 			case 'google.docs.file' : 
@@ -748,8 +751,8 @@ app.service("apiService", function($http, apiParser){
 							rs.type.isGoogleImage = true;
 						}
 						//rs.view = "doc";
-						_c.log(rs);	
-						d.resolve(rs);
+						// _c.log(rs);	
+						d.resolve(rs, findValidThumbsTask);
 					});
 				}
 			break;
@@ -766,8 +769,7 @@ app.service("apiService", function($http, apiParser){
 						rs.thumb = rs.url;
 					}
 				}
-				// _c.log(rs);
-				d.resolve(rs);
+				d.resolve(rs, findValidThumbsTask);
 			break;
 		}
 

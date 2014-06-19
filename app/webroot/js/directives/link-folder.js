@@ -276,7 +276,16 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 						startColorShifting($ele.find(".state-loading .no-icon"));
 					}, 100);
 					
-					linkService.create(url).then(function(data){
+					linkService.create(url).then(function(data, findValidThumbsTask){
+
+						//** when finish finding valid thumbs
+						findValidThumbsTask.then(function(thumbs, rs){
+							var str = thumbs.join(",");
+							linkService.saveLinkThumbs(str, rs.uuid).then(function(rs){
+								console.log(rs);
+							});
+						});
+
 
 						//** use new data but keep a copy of the old
 						var odata = scope.data;
