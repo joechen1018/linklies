@@ -39,7 +39,7 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 					//* folder is on right side of the screen
 					if(left > $(window).width() / 2){
 						//show link list on the left of the folder
-						$list.css("left", left - 470);
+						$list.css("left", left - 469);
 						$(".arrow-right").show();
 
 					//* folder is on left side of the screen	
