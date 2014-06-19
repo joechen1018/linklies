@@ -21,8 +21,10 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http,
 		//$(rs).on("sizeDown", onSizeDown);
 
 		keyboardManager.bind("ctrl+l", function(){
-			$scope.grids.show = !$scope.grids.show;
-			$scope.$apply();
+			$scope.$apply(function(){
+				//** toggle show grid
+				$scope.grids.show = !$scope.grids.show;
+			});
 		});
 
 		keyboardManager.bind("esc", function(){

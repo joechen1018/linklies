@@ -39,7 +39,7 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 					//* folder is on right side of the screen
 					if(left > $(window).width() / 2){
 						//show link list on the left of the folder
-						$list.css("left", left - 420);
+						$list.css("left", left - 470);
 						$(".arrow-right").show();
 
 					//* folder is on left side of the screen	
@@ -141,6 +141,7 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 			scope.linkList.show = false;
 			scope.linkList.arrowTop = 10;
 			scope.linkList.folderUrl = root + "folder/" + scope.data.hash;
+
 			//****
 
 			scope.onTitleClick = function(e, link){
