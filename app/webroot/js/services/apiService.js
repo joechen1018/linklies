@@ -504,52 +504,61 @@ app.service("apiService", function($http, apiParser){
 					var src = $e.attr('src'),
 						tmp;
 
-					if(src.substr(0,7) ==="http://" || 
-					   src.substr(0,8) === "https://" || 
-					   src.substr(0, 2) === "//"){
-					   	//** use src directly
-					}else{
-						src = targetRoot + src;
+					if(src === undefined){
+						//** explicitly for disp.cc
+						src = $e.attr("data-src");
+					}	
 
-						//** double slash exists besides the one in http://
-						tmp = src.split("://");
-						if(tmp.length > 1){
-							tmp[1] = tmp[1].replace(/\/\//g, "/");
-							src = tmp.join("://");
-						}
-					}
+					if(src){
 
-					//** create and try load the image using src
-					var $img = $("<img>");
-					$img.attr("src", src);
-					$("body").append($img);
-					$img.css({
-						position : "absolute",
-						left : -10000
-					});
+						if(src.substr(0,7) ==="http://" || 
+						   src.substr(0,8) === "https://" || 
+						   src.substr(0, 2) === "//"){
+						   	//** use src directly
+						}else{
+							src = targetRoot + src;
 
-					//** try load the image
-					$img.load(function(){
-
-						var w = $img.width(),
-							h = $img.height(),
-							ratio = w / h,
-							src = $img.attr("src");
-
-						//** as aquare as possible	
-						if(ratio < 1.9 && ratio > 0.65){
-
-							//** not too small
-							if(w > 300 && h > 200){
-								thumbs.push(src);
-								//console.log(src, ratio);
+							//** double slash exists besides the one in http://
+							tmp = src.split("://");
+							if(tmp.length > 1){
+								tmp[1] = tmp[1].replace(/\/\//g, "/");
+								src = tmp.join("://");
 							}
 						}
 
-						//** remove when done
-						$img.remove();
-					});
+						//** create and try load the image using src
+						var $img = $("<img>");
+						$img.attr("src", src);
+						$("body").append($img);
+						$img.css({
+							position : "absolute",
+							left : -10000
+						});
 
+						//** try load the image
+						$img.load(function(){
+
+							var w = $img.width(),
+								h = $img.height(),
+								ratio = w / h,
+								src = $img.attr("src");
+
+							//** as aquare as possible	
+							if(ratio < 1.9 && ratio > 0.65){
+
+								//** not too small
+								if(w > 300 && h > 200){
+									thumbs.push(src);
+									//console.log(src, ratio);
+								}
+							}
+
+							//** remove when done
+							$img.remove();
+						});
+	
+					}
+					
 				})($(e));
 			});
 
