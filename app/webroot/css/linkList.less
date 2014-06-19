@@ -122,7 +122,7 @@
 				position: relative;
 				margin : 0px;
 				height : @h;
-				padding-left : 7px;
+				padding-left : 12px;
 				//border-left : 3px solid white;
 				img{
 					height : 15px;
@@ -140,14 +140,17 @@
 					line-height: @h - 2;
 					height: @h;
 					position: absolute;
-					left : 35px;
+					left : 40px;
 					top : 0;
 					font-size: 14px;
-					color : lighten(@dark, 5%);
+					color : lighten(@dark, 25%);
+					&:hover{
+						color : lighten(@dark, 5%);
+					};
 				}
 				ul.options{
 					position: absolute;
-					right : 0px;
+					right : 12px;
 					top : 0;
 					height : @h;
 					padding-left : 5px;
