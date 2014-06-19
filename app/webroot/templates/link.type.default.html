@@ -3,7 +3,7 @@
 </div>
 
 <div class="img" ng-show="!isPlayingVideo && hasImageArea">
-	<img class="thumb" bo-src="getThumb()" class="{{iconHover ? 'icon-hover' : ''}}">
+	<img class="thumb" ng-src="{{data.images[0]}}" class="{{iconHover ? 'icon-hover' : ''}}">
 	<span class="thumb-icon" data-icon="j" bo-show="data.view == 'video'" ng-click="playVideo()">
 	</span>	
 	<div class="video-bg" bo-show="data.view == 'video'"></div>

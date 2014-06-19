@@ -245,7 +245,7 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 
 			//** whether the link has a thumb
 			scope.hasImageArea = true;
-			if(data.thumb === ""){
+			if(data.images === "" || data.images === []){
 				scope.hasImageArea = false;
 			}
 
@@ -282,7 +282,9 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 						findValidThumbsTask.then(function(thumbs, rs){
 							var str = thumbs.join(",");
 							linkService.saveLinkThumbs(str, rs.uuid).then(function(rs){
-								console.log(rs);
+								scope.$apply(function(){
+									scope.data.images = rs.data.Link.images.split(",");
+								});
 							});
 						});
 
@@ -395,10 +397,12 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 				$rootScope.$broadcast("removeLink", scope.data.uuid || scope.data.id);
 			}
 
+			//** open iframe browser
 			scope.openPage = function(){
 				$ele.css("z-index", 10);
 				$rootScope.$broadcast("openPage", scope.data);
 			}
+
 
 			scope.playVideo = function(){
 
@@ -474,6 +478,7 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 				$rootScope.$broadcast("stopVideo", scope.data);
 			}
 
+			//** getThumb depreciated
 			var thumbUrl;
 			scope.getThumb = function(){
 				//console.log(data);
@@ -500,6 +505,8 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 				}
 				return data.thumb;
 			}
+
+			// console.log(data)
 
 			var timer, timer1, timer3;
 			var enableHover = function(){

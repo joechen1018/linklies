@@ -7,7 +7,6 @@ app.service("apiService", function($http, apiParser){
 					url : root + "api/fetchById/link/" + id,
 					method : "get",
 					success : function(res){
-						//console.log(res);
 						var obj = res.data.Link;
 						_d.resolve(obj);
 					},
@@ -77,7 +76,6 @@ app.service("apiService", function($http, apiParser){
 						link_id : link_id
 					},
 					success : function(res){
-						console.log(res);
 						_d.resolve(res);
 					}
 				});
@@ -205,7 +203,7 @@ app.service("apiService", function($http, apiParser){
 				url : "api/user/" + username_id,
 				method : "get",
 				success : function(data){
-					// console.log(data);
+					console.log(data);
 					_d.resolve(data);
 				}
 			});
@@ -272,6 +270,9 @@ app.service("apiService", function($http, apiParser){
 		if(typeof link.grid === "array" && link.grid.length === 2){
 			link.grid[0] = parseInt(link.grid[0], 10);
 			link.grid[1] = parseInt(link.grid[1], 10);
+		}
+		if(typeof link.images === "string"){
+			link.images = link.images.split(",");
 		}
 
 		//** string to json
@@ -496,7 +497,8 @@ app.service("apiService", function($http, apiParser){
 
 		var findValidThumbsTask = (function(link_id){
 
-			var thumbs = [], $d = $.Deferred(), taskDuration = 6000;
+			var thumbs = rs.thumb ? [rs.thumb] : [], 
+				$d = $.Deferred(), taskDuration = 6000;
 
 			$containedImgs.each(function(i, e){
 
