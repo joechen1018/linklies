@@ -494,6 +494,17 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http,
 		}
 	});
 
+
+	//** on link updated
+	$rootScope.$on("linkUpdated", function(e, link){
+		for(var i = 0; i<$scope.links.length; i++){
+			if($scope.links[i].id === link.id){
+				$scope.links[i] = link;
+				console.log(link);
+			}
+		}
+	});
+
 	//** on link creationo completed
 	$rootScope.$on("linkCreationComplete", function(e, link){
 		for(var i = 0; i<$scope.links.length; i++){

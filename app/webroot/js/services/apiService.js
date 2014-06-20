@@ -82,7 +82,7 @@ app.service("apiService", function($http, apiParser){
 				return _d.promise();
 			},
 			saveField : function(field, value, id){
-				console.log(field, value, id);
+				console.log("api/saveField/link/" + id + "/" + field + "/" + value);
 				var _d = $.Deferred();
 				$.ajax({
 					url : "api/saveField/link/" + id + "/" + field + "/" + value,
@@ -273,6 +273,9 @@ app.service("apiService", function($http, apiParser){
 		}
 		if(typeof link.images === "string"){
 			link.images = link.images.split(",");
+		}
+		if(typeof link.thumbIndex === "string"){
+			link.thumbIndex = parseInt(link.thumbIndex, 10);
 		}
 
 		//** string to json

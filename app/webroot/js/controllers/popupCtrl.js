@@ -1,5 +1,5 @@
 'use strict';
-app.controller("popupCtrl", function($scope, $rootScope){
+app.controller("popupCtrl", function($scope, $rootScope, apiService){
 
 	$scope.show = false;
 	
@@ -9,7 +9,8 @@ app.controller("popupCtrl", function($scope, $rootScope){
 		$hoverImg = false,
 		$delBtn,
 		borderSize = 10,
-		link;
+		link,
+		thumbIndex;
 
 	$scope.$watch('selectedImg', function() {
 		var img = $scope.selectedImg;
@@ -71,6 +72,12 @@ app.controller("popupCtrl", function($scope, $rootScope){
 	$scope.onImgClick = function(e){
 		$selectedImg = $(e.currentTarget);
 		$scope.selectedImg = $selectedImg;
+		thumbIndex = $imgContainer.find("img").index($selectedImg);
+		$scope.link.thumbIndex = thumbIndex;
+		
+		apiService.linkService.save($scope.link).then(function(){
+			$rootScope.$broadcast("linkUpdated", $scope.link);
+		});
 	}
 	$scope.deleteHoverdImg = function(){
 
@@ -80,8 +87,6 @@ app.controller("popupCtrl", function($scope, $rootScope){
 
 		$imgContainer = $holder.find('.edit .imgs');
 		$delBtn  = $imgContainer.find(".btn-del");
-
-		console.log($imgContainer);
 
 		//** give it some time to render
 		setTimeout(function(){
