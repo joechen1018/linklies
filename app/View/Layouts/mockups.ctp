@@ -40,7 +40,8 @@
 		// console = { log : function(){} }
 	</script>
 	<link rel="stylesheet" type="text/css" href="<?php echo $this -> webroot?>css/reset.css">
-	<link rel="stylesheet/less" type="text/css" href="<?php echo $this -> webroot?>css/linkPopup.less" />
+
+	<link rel="stylesheet/less" type="text/css" href="<?php echo $this -> webroot?>css/mockups.less" />
 
 	<script src="//cdnjs.cloudflare.com/ajax/libs/less.js/1.6.2/less.min.js" type="text/javascript"></script>
 

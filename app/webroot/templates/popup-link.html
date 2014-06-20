@@ -1,0 +1,62 @@
+<div class="link-popup">
+	<div class="panel" ng-class="{
+		share : !shared && tab === 'share',
+		shared : shared,
+		edit : tab === 'edit'
+	}">
+		<ul class="tabs">
+			<li ng-click="tab='edit'" data-icon="g" ng-class="{selected : tab === 'edit'}">edit</li>
+			<li ng-click="tab='share'"  data-icon="U" ng-class="{selected : tab === 'share'}">share</li>
+		</ul>
+		<div class="edit" ng-show="tab ==='edit'">
+			<input type="text" class="title" value="{{link.title}}">
+			<div class="imgs">
+
+				<img ng-repeat="img in link.images track by $index" ng-class="{
+					thumb : true,
+					selected : $index === link.thumbIndex
+				}" ng-click="onImgClick($event)" ng-src="{{img}}">
+
+				<div class="selected-border"></div>
+				<div class="btn-del" ng-show="hoverImg !== false" ng-click="deleteHoverdImg()" data-icon="I" 
+					></div>
+			</div>
+			<p class="img-count"><span class="count">{{link.images.length}}</span> images found</p>
+		</div>
+		<div class="share" ng-show="tab ==='share' && !shared">
+			<p class="short-url">
+				<!-- <span>goo.gl/4jyuub</span> -->
+				<!-- <input type="checkbox" name="useShortenUrl" checked="checked">Use shorten url -->
+			</p>
+			<textarea class="say-something" placeholder="say something...."></textarea>
+			<div class="img-wrap">
+				<img class="thumb" src="http://s1.gigacircle.com/media/s1_539a19432e1a3.jpg"></img>
+				<p class="title">{{link.title}}</p>
+				<p class="desc">{{link.meta.description}}</p>
+			</div>
+		</div>
+		<div class="shared" ng-show="tab =='share' && shared">
+			<p class="short-url">
+				<span>goo.gl/4jyuub</span>
+			</p>
+			<p class="clicks">
+				<span class="click-count">5</span> clicks
+			</p>
+			<div class="hr"></div>
+			<p class="say-something">
+				By so delight of showing neither believe he present. Deal sigh up in shew away when. Pursuit express no or prepare replied. Wholly formed old latter future but way she. Day her likewise smallest expenses judgment building man carriage gay. 
+			</p>
+			<div class="img-wrap">
+				<img class="thumb" src="http://s1.gigacircle.com/media/s1_539a19432e1a3.jpg"></img>
+				<p class="title">30個超荒謬但是每位養貓人士都一定要有的貓咪用品~~發明人應該是貓奴無誤!</p>
+				<p class="desc">
+					有日本人以羊毛氈以及自製玻璃貓眼，手工製作了一隻又一隻超可愛的貓咪。製作者對貓的神態捕捉得淋漓盡致，
+				</p>
+			</div>
+		</div>
+		<div class="btns">
+			<button class="share" ng-show="tab ==='share' && (!shared)">Share</button>
+			<button class="close" ng-click="onPopupClose()">Close</button>
+		</div>
+	</div>
+</div>

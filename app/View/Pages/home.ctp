@@ -126,6 +126,13 @@
 	<!-- end #browser -->
 </div>
 
+<div id="popup-holder" ng-controller="popupCtrl" ng-show="show">
+	<div class="panel-holder" ng-include="popupUrl" onload="onPopupLoaded()">
+		
+	</div>
+	<div class="overlay"></div>
+</div>
+
 <div id="dom-holder">
 	
 </div>

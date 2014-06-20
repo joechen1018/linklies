@@ -50,7 +50,8 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 
 					}
 
-					//** class 'reload' applied to dom by lkDrag directive when new link is dropped onto the folder
+					//** class 'reload' applied to dom by lkDrag directive 
+					//   when new link is dropped onto the folder
 					if(linkListData === undefined || $folder.hasClass("reload")){
 						$folder.removeClass("reload");
 						apiService.folderService.getLinks(fid).then(function(arr){
@@ -131,6 +132,11 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 				});
 
 				return false;
+			});
+
+			//** prevent parent scrolling
+			$ele.on("mousewheel", ".link-list-items", function(){
+				$(this).mousewheelStopPropagation();
 			});
 
 			//** bind mouse enter/leave events
@@ -508,6 +514,9 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 				return data.thumb;
 			}
 
+			scope.openPopup = function(tab){
+				$rootScope.$broadcast("showPopup", tab, scope.data);
+			}
 			// console.log(data)
 
 			var timer, timer1, timer3;
@@ -606,10 +615,10 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
             });
 
             //** maxinum load time 2~3 sec, report error when exceeded
-            setTimeout(function(){
+            /*setTimeout(function(){
             	if(!bl)
             		$(loader.events).trigger("error", [data.id]);
-            }, 2000 +  (Math.random() * 1000));
+            }, 2000 +  (Math.random() * 1000));*/
 		}
 	}
 })

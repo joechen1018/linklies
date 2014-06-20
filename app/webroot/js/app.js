@@ -277,7 +277,7 @@ var app = angular.module("lk", ["ngRoute", "pasvaz.bindonce"], function($httpPro
                       'fileId': "root"
                   });
                   request.execute(function(res) {
-                      _c.log(res);
+                      // _c.log(res);
                   });
       		  });
 

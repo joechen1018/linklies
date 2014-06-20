@@ -500,7 +500,7 @@ app.service("apiService", function($http, apiParser){
 		var findValidThumbsTask = (function(link_id){
 
 			var thumbs = rs.thumb ? [rs.thumb] : [], 
-				$d = $.Deferred(), taskDuration = 6000;
+				$d = $.Deferred(), taskDuration = 2000;
 
 			$containedImgs.each(function(i, e){
 
@@ -547,7 +547,6 @@ app.service("apiService", function($http, apiParser){
 								ratio = w / h,
 								src = $img.attr("src");
 
-							console.log(src, w, h);	
 							//** as aquare as possible	
 							if(ratio < 1.9 && ratio > 0.65){
 
