@@ -145,7 +145,12 @@ var app = angular.module("lk", ["ngRoute", "pasvaz.bindonce"], function($httpPro
 })
 .value('$anchorScroll', angular.noop)
 //.provider('$anchorScroll', $AnchorScrollProvider)
-.run(function($location){
+.run(function($location, $rootScope, $templateCache){
+
+  //** prevent template cache
+  $rootScope.$on('$viewContentLoaded', function() {
+      //$templateCache.removeAll();
+   });
 
     //** load google api v2
 	(function() {

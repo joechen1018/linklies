@@ -30,28 +30,26 @@
 			</p>
 			<textarea class="say-something" placeholder="say something...."></textarea>
 			<div class="img-wrap">
-				<img class="thumb" src="http://s1.gigacircle.com/media/s1_539a19432e1a3.jpg"></img>
+				<img class="thumb" ng-src="link.images[link.thumbIndex]"></img>
 				<p class="title">{{link.title}}</p>
 				<p class="desc">{{link.meta.description}}</p>
 			</div>
 		</div>
 		<div class="shared" ng-show="tab =='share' && shared">
 			<p class="short-url">
-				<span>goo.gl/4jyuub</span>
+				<span>{{link.short_url}]</span>
 			</p>
 			<p class="clicks">
-				<span class="click-count">5</span> clicks
+				<span class="click-count">{{link.clicks}}</span> clicks
 			</p>
 			<div class="hr"></div>
 			<p class="say-something">
-				By so delight of showing neither believe he present. Deal sigh up in shew away when. Pursuit express no or prepare replied. Wholly formed old latter future but way she. Day her likewise smallest expenses judgment building man carriage gay. 
+				{{link.comment}}
 			</p>
 			<div class="img-wrap">
-				<img class="thumb" src="http://s1.gigacircle.com/media/s1_539a19432e1a3.jpg"></img>
-				<p class="title">30個超荒謬但是每位養貓人士都一定要有的貓咪用品~~發明人應該是貓奴無誤!</p>
-				<p class="desc">
-					有日本人以羊毛氈以及自製玻璃貓眼，手工製作了一隻又一隻超可愛的貓咪。製作者對貓的神態捕捉得淋漓盡致，
-				</p>
+				<img class="thumb" ng-src="link.images[link.thumbIndex]"></img>
+				<p class="title">{{link.title}}</p>
+				<p class="desc">{{link.description}}</p>
 			</div>
 		</div>
 		<div class="btns">
