@@ -78,13 +78,16 @@
 					overflow-x: hidden;
 					overflow-y:auto;
 					height : 400px;
-					width : @w - 30px;
+					width : @w - 50px;
 					border : 1px solid lighten(@dark, 70%);
 					background: lighten(@dark, 80%);
+					padding : 10px;
 					img{
 						height : 200px;
 						float : left;
-						margin: 0 10px 10px 0;
+						margin : 0;
+						margin-right : 10px;
+						margin-bottom: 10px;
 						cursor: pointer;
 						&.selected{
 						}
@@ -94,6 +97,7 @@
 						z-index: 3;
 						border : 10px solid @dark;
 						display: none;
+						.shadow-light;
 					}
 					.btn-del{
 						width : 30px;

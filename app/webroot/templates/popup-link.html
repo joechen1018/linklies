@@ -30,7 +30,7 @@
 			</p>
 			<textarea class="say-something" placeholder="say something...."></textarea>
 			<div class="img-wrap">
-				<img class="thumb" ng-src="link.images[link.thumbIndex]"></img>
+				<img class="thumb" ng-src="{{link.images[link.thumbIndex]}}"></img>
 				<p class="title">{{link.title}}</p>
 				<p class="desc">{{link.meta.description}}</p>
 			</div>
@@ -47,7 +47,7 @@
 				{{link.comment}}
 			</p>
 			<div class="img-wrap">
-				<img class="thumb" ng-src="link.images[link.thumbIndex]"></img>
+				<img class="thumb" ng-src="{{link.images[link.thumbIndex]}}"></img>
 				<p class="title">{{link.title}}</p>
 				<p class="desc">{{link.description}}</p>
 			</div>

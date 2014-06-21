@@ -500,12 +500,12 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http,
 		for(var i = 0; i<$scope.links.length; i++){
 			if($scope.links[i].id === link.id){
 				$scope.links[i] = link;
-				console.log(link);
 			}
 		}
 	});
 
-	//** on link creationo completed
+	//** on link creation completed
+	//** triggered in lkLink directive in link-folder.js
 	$rootScope.$on("linkCreationComplete", function(e, link){
 		for(var i = 0; i<$scope.links.length; i++){
 			if($scope.links[i].uuid == link.uuid){
@@ -514,7 +514,19 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http,
 		}
 	});
 
+	//** on finding valid images task completed
+	//** triggered in lkLink directive in link-folder.js
+	$rootScope.$on("findValidThumbsTaskComplete", function(e, link){
+		for(var i = 0; i<$scope.links.length; i++){
+			if($scope.links[i].uuid == link.uuid){
+				$scope.links[i].images = link.images;
+				console.log($scope.links[i]);
+			}
+		}
+	});
+
 	//** on link creation fails
+	//** triggered in lkLink directive in link-folder.js
 	$rootScope.$on("linkCreationFailed", function(e, link){
 		for(var i = 0; i<$scope.links.length; i++){
 			if($scope.links[i].uuid === link.uuid){

@@ -271,9 +271,13 @@ app.service("apiService", function($http, apiParser){
 			link.grid[0] = parseInt(link.grid[0], 10);
 			link.grid[1] = parseInt(link.grid[1], 10);
 		}
-		if(typeof link.images === "string"){
+
+		if(link.images.length > 0){
 			link.images = link.images.split(",");
+		}else{
+			link.images = [];
 		}
+
 		if(typeof link.thumbIndex === "string"){
 			link.thumbIndex = parseInt(link.thumbIndex, 10);
 		}
@@ -416,15 +420,14 @@ app.service("apiService", function($http, apiParser){
 		rs.title = rs.meta["og:title"] || $holder.find("title").eq(0).html();
 		//* get rid of html special characters
 		rs.title = $("<div/>").html(rs.title).text();
-		rs.thumb = rs.meta["og:image"];
-		rs.images = [rs.thumb];
 
-		//** get all images
-		var texts = $holder.html();
-		var matchStr = texts.replace(/\n|\r/ig,"");
-		var imgs = matchStr.match(/(http:\/\/|https:\/\/|\/\/)[a-z0-9\/\.]*(.jpg|.png|.gif|.jpeg)/gi);
-		rs.imgs = imgs;
+		//** thumb field depriciated
+		rs.thumb = rs.meta["og:image"];
+		rs.thumbIndex = 0;
 		rs.images = [];
+		if(rs.thumb !== undefined){
+			rs.images.push(rs.thumb);
+		}
 
 		//** find ico
 		//* use pre-defined ico url
@@ -517,53 +520,53 @@ app.service("apiService", function($http, apiParser){
 					}	
 
 					if(src){
+						if(src !== thumbs[0]){
+							if(src.substr(0,7) ==="http://" || 
+							   src.substr(0,8) === "https://" || 
+							   src.substr(0, 2) === "//"){
+							   	//** use src directly
+							}else{
+								src = targetRoot + src;
 
-						if(src.substr(0,7) ==="http://" || 
-						   src.substr(0,8) === "https://" || 
-						   src.substr(0, 2) === "//"){
-						   	//** use src directly
-						}else{
-							src = targetRoot + src;
-
-							//** double slash exists besides the one in http://
-							tmp = src.split("://");
-							if(tmp.length > 1){
-								tmp[1] = tmp[1].replace(/\/\//g, "/");
-								src = tmp.join("://");
-							}
-						}
-
-						//** create and try load the image using src
-						var $img = $("<img>");
-						$img.attr("src", src);
-						$("body").append($img);
-						$img.css({
-							position : "absolute",
-							left : -10000
-						});
-
-						//** try load the image
-						$img.load(function(){
-
-							var w = $img.width(),
-								h = $img.height(),
-								ratio = w / h,
-								src = $img.attr("src");
-
-							//** as aquare as possible	
-							if(ratio < 1.9 && ratio > 0.65){
-
-								//** not too small
-								if(w > 300 && h > 200){
-									thumbs.push(src);
-									//console.log(src, ratio);
+								//** double slash exists besides the one in http://
+								tmp = src.split("://");
+								if(tmp.length > 1){
+									tmp[1] = tmp[1].replace(/\/\//g, "/");
+									src = tmp.join("://");
 								}
 							}
 
-							//** remove when done
-							$img.remove();
-						});
-	
+							//** create and try load the image using src
+							var $img = $("<img>");
+							$img.attr("src", src);
+							$("body").append($img);
+							$img.css({
+								position : "absolute",
+								left : -10000
+							});
+
+							//** try load the image
+							$img.load(function(){
+
+								var w = $img.width(),
+									h = $img.height(),
+									ratio = w / h,
+									src = $img.attr("src");
+
+								//** as aquare as possible	
+								if(ratio < 1.9 && ratio > 0.65){
+
+									//** not too small
+									if(w > 300 && h > 200){
+										thumbs.push(src);
+										//console.log(src, ratio);
+									}
+								}
+
+								//** remove when done
+								$img.remove();
+							});
+						}
 					}
 					
 				})($(e));

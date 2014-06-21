@@ -292,6 +292,7 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 							linkService.saveLinkThumbs(str, rs.uuid).then(function(rs){
 								scope.$apply(function(){
 									scope.data.images = rs.data.Link.images.split(",");
+									$rootScope.$broadcast("findValidThumbsTaskComplete", scope.data);
 								});
 							});
 						});

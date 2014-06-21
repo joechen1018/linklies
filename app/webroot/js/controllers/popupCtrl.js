@@ -51,8 +51,8 @@ app.controller("popupCtrl", function($scope, $rootScope, apiService){
 			$imgBorder.show().css({
 		   		left : $img.position().left,
 		   		top : $img.position().top + $imgContainer.scrollTop(),
-		   		width : $img.width() - 2*borderSize + 2,
-		   		height : $img.height() - 2*borderSize + 2
+		   		width : $img.width() - 2*borderSize + 1,
+		   		height : $img.height() - 2*borderSize + 1
 		   	});
 		}
 	});

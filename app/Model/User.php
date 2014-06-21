@@ -5,7 +5,7 @@ class User extends AppModel{
 		"Link" => array(
 			"conditions" => array("folder_id" => "0"),
 			"fields" => array("id", "uuid", "user_id", "folder_id", "username_id", "grid", 
-							  "ico", "url", "title", "desc", "images", "view", "meta", "type", 
+							  "ico", "url", "title", "description", "comment","clicks", "desc", "images", "view", "meta", "type", 
 							  "hash", "timestamp", "allowIframe", "short_url", "thumbIndex"),
 			"limit" => 99,
 			"order" => "id desc"
