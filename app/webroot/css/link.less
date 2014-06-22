@@ -17,7 +17,7 @@
 	&.focus-me{
 		//border : 1px solid #999;
 		//background: lighten(@green, 20%);
-		background: lighten(@dark, 20%);
+		background: lighten(@dark, 0%);
 		span.title{
 			color : white !important;
 		}
@@ -26,6 +26,10 @@
 	&:hover{
 		z-index: 100;
 	};
+
+	&.hover{
+		z-index: 101;
+	}
 
 	.state-paste-url, .state-loading{
         position:relative;
@@ -101,6 +105,34 @@
 	          .opt{
 	            display: block;
 	          }
+	        }
+	        .thumb-head{
+				position: absolute;
+				left : -30px;
+				top : 0px;
+				z-index: 200;
+				overflow: hidden;
+				width : 26px;
+				background: white;
+				display: none;
+				-webkit-border-radius: 3px;
+				-moz-border-radius: 3px;
+				border-radius: 3px;
+				.shadow-light;
+				&.hasThumbHead.showThumbHead{
+					 display: block !important;
+				}
+				// -webkit-border-top-left-radius: 3px;
+				// -webkit-border-bottom-left-radius: 3px;
+				// -moz-border-radius-topleft: 3px;
+				// -moz-border-radius-bottomleft: 3px;
+				// border-top-left-radius: 3px;
+				// border-bottom-left-radius: 3px;
+				img{
+					position: absolute;
+					height : @h;
+					min-width : 30px;
+				}
 	        }
 	        .icon{
 	        	cursor : move;

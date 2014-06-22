@@ -89,7 +89,14 @@
 						margin-right : 10px;
 						margin-bottom: 10px;
 						cursor: pointer;
-						&.selected{
+						&.selected:before{
+							position: absolute;
+							left : 0;
+							top : 0;
+							z-index: 100;
+							width : calc(~"100% - 20px");
+							height : calc(~"100% - 20px");
+							border: 10px solid @dark;
 						}
 					}
 					.selected-border{
@@ -115,13 +122,30 @@
 							top : 8px;
 						};
 					}
+					.no-img{
+						font-size : 20px;
+						color : lighten(@dark, 60%);
+						text-align: center;
+						line-height: 100px;
+					}
 				}
 				.img-count{
+					color : lighten(@dark, 30%);
+					font-size : 16px;
 					position: absolute;
 					left : 15px;
 					bottom : 15px;
-					span.count{
-						font-weight: bold;
+					span{
+						font-size : 18px;
+						&.count{
+							font-weight: bold;
+						}
+					}
+					a{
+						font-size: 16px;
+						color : lighten(@dark, 15%);
+						text-decoration: underline;
+						padding-left : 5px;
 					}
 				}
 			}
@@ -137,10 +161,13 @@
 				}
 				textarea.say-something{
 					width : @w - 45;
-					height : 115px;
+					height : 105px;
 					position: absolute;
 					top : 15px;
 					left : 15px;
+					border : 1px solid lighten(@dark, 70%);
+					background: lighten(@dark, 80%);
+
 					&[placeholder]{
 						padding : 5px 0 0 10px;
 						font-size: 16px;
@@ -164,6 +191,8 @@
 					p.desc{
 						font-size : 14px;
 						line-height: 18px;
+						max-height: 120px;
+						color : lighten(@dark, 40%);;
 					}
 				}
 			}

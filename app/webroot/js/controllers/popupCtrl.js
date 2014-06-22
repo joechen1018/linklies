@@ -8,7 +8,7 @@ app.controller("popupCtrl", function($scope, $rootScope, apiService){
 		$selectedImg,
 		$hoverImg = false,
 		$delBtn,
-		$imgBorder,
+		// $imgBorder,
 		$pd = $.Deferred(),
 		popup = {},
 		borderSize = 10,
@@ -19,14 +19,14 @@ app.controller("popupCtrl", function($scope, $rootScope, apiService){
 		return $pd.promise();
 	}
 
-	popup.init = function(){
+popup.init = function(){
 		
 		$imgContainer = $holder.find('.edit .imgs');
 		$delBtn  = $imgContainer.find(".btn-del");
-		$imgBorder = $imgContainer.find(".selected-border");
+		//$imgBorder = $imgContainer.find(".selected-border");
 
 		//** hide border
-		$imgBorder.hide();
+		//$imgBorder.hide();
 
 		//** give it some time to render
 		setTimeout(function(){
@@ -46,18 +46,25 @@ app.controller("popupCtrl", function($scope, $rootScope, apiService){
 
 	$scope.$watch('selectedImg', function() {
 		var $img = $scope.selectedImg;
-
 		if($img !== undefined && $img.length === 1){
-			$imgBorder.show().css({
-		   		left : $img.position().left,
-		   		top : $img.position().top + $imgContainer.scrollTop(),
-		   		width : $img.width() - 2*borderSize + 1,
-		   		height : $img.height() - 2*borderSize + 1
-		   	});
+			
+			//$imgBorder.show().css({
+		   	// 	left : $img.position().left,
+		   	// 	top : $img.position().top + $imgContainer.scrollTop(),
+		   	// 	width : $img.width() - 2*borderSize + 1,
+		   	// 	height : $img.height() - 2*borderSize + 1
+		   	// });
+
+			//** remove all
+			$imgContainer.find("img").removeClass("selected");
+			$img.addClass("selected");
 		}
 	});
 
 	//** prevent parent element scroll
+	/*$holder.on("mousewheel", function(e){
+		$(this).mousewheelStopPropagation();
+	});*/
 	$holder.on("mousewheel", ".link-popup .edit .imgs", function(e){
 		$(this).mousewheelStopPropagation();
 	});
@@ -110,7 +117,7 @@ app.controller("popupCtrl", function($scope, $rootScope, apiService){
 
 		//** reset variables
 		$hoverImg = false;
-		$imgBorder.hide();
+		//$imgBorder.hide();
 	});
 
 	$scope.tab = "edit";
@@ -136,5 +143,6 @@ app.controller("popupCtrl", function($scope, $rootScope, apiService){
 
 	$scope.onPopupClose = function(){
 		$scope.show = false;
+		$rootScope.$broadcast("popupClosed", $scope.link);
 	}
 });

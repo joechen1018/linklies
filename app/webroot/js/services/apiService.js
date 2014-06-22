@@ -272,10 +272,12 @@ app.service("apiService", function($http, apiParser){
 			link.grid[1] = parseInt(link.grid[1], 10);
 		}
 
-		if(link.images.length > 0){
-			link.images = link.images.split(",");
-		}else{
-			link.images = [];
+		if(typeof link.images === "string"){
+			if(link.images.length > 0){
+				link.images = link.images.split(",");
+			}else{
+				link.images = [];
+			}
 		}
 
 		if(typeof link.thumbIndex === "string"){
@@ -509,7 +511,6 @@ app.service("apiService", function($http, apiParser){
 				$d = $.Deferred(), taskDuration = 2000;
 
 			$containedImgs.each(function(i, e){
-
 				(function($e){
 					var src = $e.attr('src'),
 						tmp;
@@ -520,6 +521,7 @@ app.service("apiService", function($http, apiParser){
 					}	
 
 					if(src){
+						//** prevent duplicated with og:image
 						if(src !== thumbs[0]){
 							if(src.substr(0,7) ==="http://" || 
 							   src.substr(0,8) === "https://" || 
@@ -536,36 +538,37 @@ app.service("apiService", function($http, apiParser){
 								}
 							}
 
-							//** create and try load the image using src
-							var $img = $("<img>");
-							$img.attr("src", src);
-							$("body").append($img);
-							$img.css({
-								position : "absolute",
-								left : -10000
-							});
+							if(src !== thumbs[0]){
 
-							//** try load the image
-							$img.load(function(){
+								//** create and try load the image using src
+								var $img = $("<img>");
+								$img.attr("src", src);
+								$("body").append($img);
 
-								var w = $img.width(),
-									h = $img.height(),
-									ratio = w / h,
-									src = $img.attr("src");
+								//** hide the image
+								$img.css({
+									position : "absolute",
+									left : -10000
+								});
 
-								//** as aquare as possible	
-								if(ratio < 1.9 && ratio > 0.65){
+								//** try load the image
+								$img.load(function(){
+									var w = $img.width(),
+										h = $img.height(),
+										ratio = w / h,
+										src = $img.attr("src");
 
-									//** not too small
-									if(w > 300 && h > 200){
-										thumbs.push(src);
-										//console.log(src, ratio);
+									//** as aquare as possible	
+									if(ratio < 1.9 && ratio > 0.25){
+										//** not too small
+										if(w > 300 && h > 200){
+											thumbs.push(src);
+										}
 									}
-								}
-
-								//** remove when done
-								$img.remove();
-							});
+									//** remove when done
+									$img.remove();
+								});
+							}
 						}
 					}
 					
@@ -589,7 +592,9 @@ app.service("apiService", function($http, apiParser){
 			case 'youtube.watch' :
 			case 'vimeo.watch' :
 				if(arr[0] === "youtube"){
-					rs.videoId = url.split("?v=")[1].split("&")[0];
+					if(url.split("?v=").length > 1){
+						rs.videoId = url.split("?v=")[1].split("&")[0];
+					}
 				}else{
 					rs.videoId = url.split("/")[url.split("/").length - 1];
 				}

@@ -17,11 +17,15 @@
 					selected : $index === link.thumbIndex
 				}" ng-click="onImgClick($event)" ng-src="{{img}}">
 
-				<div class="selected-border"></div>
+				<!-- <div class="selected-border"></div> -->
 				<div class="btn-del" ng-show="hoverImg !== false" ng-click="deleteHoverdImg()" data-icon="I" 
 					></div>
+				<p class="no-img" ng-show="link.images.length === 0">No Image Found</p>	
 			</div>
-			<p class="img-count"><span class="count">{{link.images.length}}</span> images found</p>
+			<p class="img-count" ng-show="link.images.length > 0">
+				<span class="count">{{link.images.length}}</span> image<span ng-if="link.images.length > 1">s</span> found 
+				<a href="">save to google drive</a>
+			</p>
 		</div>
 		<div class="share" ng-show="tab ==='share' && !shared">
 			<p class="short-url">

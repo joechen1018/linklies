@@ -518,6 +518,14 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 			scope.openPopup = function(tab){
 				$rootScope.$broadcast("showPopup", tab, scope.data);
 			}
+
+			scope.onTempLoaded = function(){
+				var $container = $ele.find(".thumb-head");
+				var $img = $container.find("img");
+				$img.load(function(){
+					$container.addClass("hasThumbHead");
+				});
+			}
 			// console.log(data)
 
 			var timer, timer1, timer3;
@@ -593,8 +601,9 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
             	bl = true;
             	$(loader.events).trigger("success", [data.id]);
             	$timeout(function(){
-            		scope.iconLoaded = true;
-            		scope.$apply();
+            		scope.$apply(function(){
+            			scope.iconLoaded = true;
+            		});
             	}, 1);
             })
             .bind("error", function(){
@@ -604,7 +613,6 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
             	$(loader.events).trigger("error", [data.id]);
             });
 
-
             $ele.on("mouseenter", "h1.title", function(){
             	if(!scope.data.allowIframe){
             		$ele.find(".more>a").addClass("hover");
@@ -613,6 +621,10 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 
             $ele.on("mouseleave", "h1.title", function(){
             	$ele.find(".more>a").removeClass("hover");
+            });
+
+            $ele.on("load", ".thumb-head img", function(){
+            	console.log('load');
             });
 
             //** maxinum load time 2~3 sec, report error when exceeded

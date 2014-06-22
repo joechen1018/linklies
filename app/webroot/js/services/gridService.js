@@ -412,6 +412,7 @@ app.service("gridService", function($rootScope, $timeout, resize){
 	this.gridFullHeight = _d.gridHeight + _d.margin;
 	this.show = false;
 	this.buffer = 0;
+
 	this.onResize = function(size){
 		if(size && size.width)
 			this.width = size.width - 2 * _d.sideWidth;

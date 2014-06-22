@@ -3,9 +3,12 @@
 goog.require('goog.math.Rect');
 app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, 
 									    keyboardManager, resize, gridSystem, gridRects, apiService, uuid, apiParser){
-	var $allElements;
-	var timeout;
-	var rs = resize;
+	var $allElements,
+		$desk = $('#desktop-view'),
+		timeout,
+		rs = resize;
+
+	//** 100ms after controller constructed
 	var init = function(){
 
 		var onSizeChange = function(){
@@ -16,9 +19,46 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http,
 			//**enable tooltip
 			$(document).tooltip();
 		}
-
+		var lineDistance = function(point1, point2){
+			var xs = 0;
+			  var ys = 0;
+			  xs = point2.x - point1.x;
+			  xs = xs * xs;
+			  ys = point2.y - point1.y;
+			  ys = ys * ys;
+			  return Math.sqrt( xs + ys );
+		}
 		$(rs).on("sizeChange", onSizeDown);
-		//$(rs).on("sizeDown", onSizeDown);
+
+		//** show head thumb nearby mouse, remove this feature for now		
+		/*$desk.on("mousemove", function(e){
+			var x = e.clientX,
+				y = e.clientY + $("body").scrollTop(),
+				left = 0,
+				top = 0,
+				distance = 0,
+				radius = 200,
+				$links = $desk.find(".link");
+
+				$links.each(function(i, e){
+					left = $(e).offset().left + $(e).find(".state-ready").width() / 2;
+					top = $(e).offset().top + $(e).find(".state-ready").height() / 2;
+					distance = lineDistance({
+						x : x,
+						y : y
+					},{
+						x : left,
+						y : top
+					});
+					if(distance <= radius){
+						$(e).addClass("hover");
+						$(e).find(".thumb-head").addClass("showThumbHead");
+					}else{
+						$(e).removeClass("hover");
+						$(e).find(".thumb-head").removeClass("showThumbHead");
+					}
+				});
+		});*/
 
 		keyboardManager.bind("ctrl+l", function(){
 			$scope.$apply(function(){
@@ -204,17 +244,6 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http,
 			buffer.add(event.deltaFactor);
 		}
 	});
-
-	//gs.init($scope.folders, $scope.links);
-
-	/*$scope.$watch('grid.gridWidth', function(newVal, oldVal, scope){
-		// console.log(newVal);
-		// console.log(oldVal);
-	});
-
-	$scope.$watch("gridRects.folders", function(newVal, oldVal){
-		//$scope.folders = newVal;
-	});*/
 
 	var getLatestLink = function(links){
 		var max = 1, id, latestLink;
@@ -505,28 +534,38 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http,
 	});
 
 	//** on link creation completed
-	//** triggered in lkLink directive in link-folder.js
+	//** triggered in link-folder.js
 	$rootScope.$on("linkCreationComplete", function(e, link){
 		for(var i = 0; i<$scope.links.length; i++){
 			if($scope.links[i].uuid == link.uuid){
-				applyFocus(link, i);
+				applyFocus(link, i, false);
+			}
+		}
+	});
+
+	//** on link creation completed
+	//** triggered in popupCtrl.js
+	$rootScope.$on("popupClosed", function(e, link){
+		for(var i = 0; i<$scope.links.length; i++){
+			if($scope.links[i].uuid == link.uuid){
+				applyFocus(link, i, false);
 			}
 		}
 	});
 
 	//** on finding valid images task completed
-	//** triggered in lkLink directive in link-folder.js
+	//** triggered in link-folder.js
 	$rootScope.$on("findValidThumbsTaskComplete", function(e, link){
 		for(var i = 0; i<$scope.links.length; i++){
 			if($scope.links[i].uuid == link.uuid){
 				$scope.links[i].images = link.images;
-				console.log($scope.links[i]);
+				// console.log($scope.links[i]);
 			}
 		}
 	});
 
 	//** on link creation fails
-	//** triggered in lkLink directive in link-folder.js
+	//** triggered in link-folder.js
 	$rootScope.$on("linkCreationFailed", function(e, link){
 		for(var i = 0; i<$scope.links.length; i++){
 			if($scope.links[i].uuid === link.uuid){
