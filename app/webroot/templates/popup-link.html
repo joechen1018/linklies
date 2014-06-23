@@ -17,7 +17,6 @@
 					selected : $index === link.thumbIndex
 				}" ng-click="onImgClick($event)" ng-src="{{img}}">
 
-				<!-- <div class="selected-border"></div> -->
 				<div class="btn-del" ng-show="hoverImg !== false" ng-click="deleteHoverdImg()" data-icon="I" 
 					></div>
 				<p class="no-img" ng-show="link.images.length === 0">No Image Found</p>	

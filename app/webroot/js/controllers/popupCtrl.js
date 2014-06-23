@@ -8,7 +8,6 @@ app.controller("popupCtrl", function($scope, $rootScope, apiService){
 		$selectedImg,
 		$hoverImg = false,
 		$delBtn,
-		// $imgBorder,
 		$pd = $.Deferred(),
 		popup = {},
 		borderSize = 10,
@@ -23,10 +22,6 @@ popup.init = function(){
 		
 		$imgContainer = $holder.find('.edit .imgs');
 		$delBtn  = $imgContainer.find(".btn-del");
-		//$imgBorder = $imgContainer.find(".selected-border");
-
-		//** hide border
-		//$imgBorder.hide();
 
 		//** give it some time to render
 		setTimeout(function(){
@@ -47,14 +42,6 @@ popup.init = function(){
 	$scope.$watch('selectedImg', function() {
 		var $img = $scope.selectedImg;
 		if($img !== undefined && $img.length === 1){
-			
-			//$imgBorder.show().css({
-		   	// 	left : $img.position().left,
-		   	// 	top : $img.position().top + $imgContainer.scrollTop(),
-		   	// 	width : $img.width() - 2*borderSize + 1,
-		   	// 	height : $img.height() - 2*borderSize + 1
-		   	// });
-
 			//** remove all
 			$imgContainer.find("img").removeClass("selected");
 			$img.addClass("selected");
@@ -81,10 +68,17 @@ popup.init = function(){
 			}
 		});
 
-		$delBtn.css({
-			left : $hoverImg.position().left + $hoverImg.width() - $delBtn.width(),
-			top : $hoverImg.position().top + $imgContainer.scrollTop()
-		});
+		if($hoverImg.hasClass("selected")){
+			$delBtn.css({
+				left : $hoverImg.position().left + $hoverImg.width() + 20 - $delBtn.width(),
+				top : $hoverImg.position().top + $imgContainer.scrollTop()
+			});
+		}else{
+			$delBtn.css({
+				left : $hoverImg.position().left + $hoverImg.width() - $delBtn.width(),
+				top : $hoverImg.position().top + $imgContainer.scrollTop()
+			});	
+		}
 	});
 
 	//** handle mouseleave event on img
@@ -117,7 +111,6 @@ popup.init = function(){
 
 		//** reset variables
 		$hoverImg = false;
-		//$imgBorder.hide();
 	});
 
 	$scope.tab = "edit";

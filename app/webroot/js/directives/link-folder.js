@@ -347,7 +347,6 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 										//** pass the id to data
 										scope.$apply(function(){
 											scope.data.id = rs.id;
-											console.log(rs);
 											//** notify controller
 										});
 										$rootScope.$broadcast("linkCreationComplete", data);
