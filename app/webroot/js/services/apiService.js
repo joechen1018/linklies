@@ -200,7 +200,7 @@ app.service("apiService", function($http, apiParser){
 		getUser : function(username_id){
 			var _d = $.Deferred();
 			$.ajax({
-				url : "api/user/" + username_id,
+				url : root + "api/user/" + username_id,
 				method : "get",
 				success : function(data){
 					console.log(data);

@@ -14,7 +14,6 @@ var app = angular.module("mk", [], function($httpProvider){
 	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
 	  })();
 
-	  
 	  window['onJsApiLoaded'] = function(){
 	  	console.log('js api loaded');
 	  }

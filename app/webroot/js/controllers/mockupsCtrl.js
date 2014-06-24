@@ -1,4 +1,23 @@
-app.controller("mockupsCtrl", function($scope){
+app.controller("mockupsCtrl", function($scope, apiService, apiParser){
+
+
+	apiService.getUser("joe.chen.1").then(function(rs){
+		var data = rs.data,
+			user = data.User,
+			links = data.Link,
+			folders = data.Folder,
+			phase;
+
+		// console.log(folders);
+		//** scope variables
+		$scope.$apply(function(){
+			$scope.user = user;
+			$scope.user_id = user.id;
+			$scope.username_id = user.username_id;
+			$scope.data = folders[0];
+		});
+	})
+
 	/*gapi.ready().then(function(){
 		gapi.checkAuth().then(function(rs){
 			console.log(rs);

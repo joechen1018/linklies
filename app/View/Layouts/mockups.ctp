@@ -15,7 +15,8 @@
 	</script>
 	
 	<script src="<?php echo $this -> webroot?>js/mockups.js"></script>
-	<script src="<?php echo $this -> webroot?>js/controllers/linkPopupCtrl.js"></script>
+	<script src="<?php echo $this -> webroot?>js/controllers/mockupsCtrl.js"></script>
+	<script src="<?php echo $this -> webroot?>js/services/apiService.js"></script>
 	
 
 	<!-- <link href='http://fonts.googleapis.com/css?family=Ubuntu Condensed' rel='stylesheet' type='text/css'> -->
@@ -36,8 +37,9 @@
 		};*/
 
 		//** get rid of annoying less console output
-		// var _con = console;
-		// console = { log : function(){} }
+		var _con = console;
+		console = { log : function(){} }
+		
 	</script>
 	<link rel="stylesheet" type="text/css" href="<?php echo $this -> webroot?>css/reset.css">
 
@@ -46,8 +48,8 @@
 	<script src="//cdnjs.cloudflare.com/ajax/libs/less.js/1.6.2/less.min.js" type="text/javascript"></script>
 
 	<script>
-		// console = _con;
-		// var _c = _con;
+		console = _con;
+		var _c = _con;
 		var root = '<?php echo $this -> webroot?>';
 	</script>
 	
@@ -58,6 +60,8 @@
 			<button id="pick"></button> 
 		-->
 		<?php echo $this -> fetch("content") ?>	
+
+		<div ng-include="folderUrl"></div>
 	</div>
 </body>
 </html>
