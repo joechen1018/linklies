@@ -1,6 +1,5 @@
 app.controller("mockupsCtrl", function($scope, apiService, apiParser){
 
-
 	apiService.getUser("joe.chen.1").then(function(rs){
 		var data = rs.data,
 			user = data.User,
@@ -16,7 +15,33 @@ app.controller("mockupsCtrl", function($scope, apiService, apiParser){
 			$scope.username_id = user.username_id;
 			$scope.data = folders[0];
 		});
-	})
+	});
+
+
+	var closed = true;
+	$scope.toggleOpen = function(){
+		var open = function(){
+			$(".folder").animate({
+					width : 750,
+					height : 350
+			}, 600);
+		},
+			close = function(){
+				$(".folder").animate({
+					width : 150,
+					height : 150
+			}, 600);
+		};
+
+		if(closed){
+			open();
+			$(".folder").removeClass("closed");
+		}else{
+			close();
+			$(".folder").addClass("closed");
+		}
+		closed = !closed;
+	}
 
 	/*gapi.ready().then(function(){
 		gapi.checkAuth().then(function(rs){

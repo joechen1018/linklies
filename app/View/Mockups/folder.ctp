@@ -1,9 +1,9 @@
-<div id="folder-{{data.id}}" class="folder {{data.FolderType.name}}" data-grid="{{data.grid}}" 
-	data-grid-index="{{$index}}" 
-	ng-style="getStyle()">
-	<span class="icon" data-icon="{{data.FolderType.icon}}" ng-style="{
-		top : (grids.folderSize.height  - 55  - 55) * 0.75
-	}" ></span>
+<!-- this is a copy of templates/folder.html, to be relocated -->
+<div id="folder-{{data.id}}" 
+ng-click="toggleOpen()"
+class="folder {{data.FolderType.name}} closed" 
+data-icon="{{data.FolderType.icon}}">
+
 	<span class="link-count">{{linkList.count+1}}</span>
 	<div class="close" data-icon="s"></div>
 	<p class="name">{{data.name}}</p>

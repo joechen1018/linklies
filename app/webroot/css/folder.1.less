@@ -1,0 +1,147 @@
+@gridWidth : 150px;
+@gridHeight : 30px;
+@gridVPadding : 10px;
+@gridHPadding : 10px;
+@gridPadding : 10px;
+@folderHeight : 4*@gridHeight + 3*@gridPadding;
+
+.folder{
+    @size : 4*@gridHeight + 3*@gridVPadding;
+    @bg : lighten(@dark, 25%);
+    position:absolute;
+    width : 150px;
+    height : @size;
+    background: @bg;
+    left : 10px;
+    top : 10px;
+
+    //** for the ico
+
+    &:before{
+        position: absolute;
+        left : 45px;
+        top : 20px;
+        font-size:60px;
+        color : lighten(@dark, 45%);
+    };
+
+    // background: @blue url(../img/icons-3/SVG/folder12.svg) center 0px no-repeat;
+    // background-size:@size*0.7;
+    z-index:2;
+    //.alpha(0.95);
+    cursor : pointer;
+    .shadow-light;
+    //overflow: hidden;
+    -webkit-border-radius: 5px 5px 0 0;
+    border-radius: 5px;
+    
+    div.close{
+      display: none;
+    }
+    span.icon{
+      font-size:60px;
+      color : lighten(@dark, 45%);
+    }
+    span.link-count{
+      position:absolute;
+      font-size:60px;
+      left : ~"calc(50% - 15px)";
+      top : 20px;
+      color : darken(@dark, 30%);
+      display: none;
+    }
+    &.video{
+      background: lighten(@orange, 10%);
+      color : darken(@orange, 40%);
+      span.icon{
+        color : darken(@orange, 40%);
+      }
+    }
+    &.googleSearch{
+      background: lighten(@yellow, 10%);
+      color : darken(@yellow, 40%);
+      span.icon{
+        color : darken(@yellow, 40%);
+      }
+    }
+    &.stackOverflow{
+      // background: @blue url(../img/icons-3/SVG/movie3.svg) center 0px no-repeat;
+      // background-size:@size*0.7;
+      background: lighten(@green, 10%);
+      .name{
+        color : lighten(@dark, 50%);
+      }
+      // &:after{
+      //   position:absolute;
+      //   width:16px;
+      //   height:16px;
+      //   background: url(http://www.youtube.com/favicon.ico) left top no-repeat;
+      //   content : "";
+      //   right : 10px;
+      //   top : 10px;
+      // }
+      span.icon{
+        color : darken(@green, 50%);
+      }
+    }
+    #edit-name{
+      display: block;
+      position: absolute;
+      font-size:13.5px;
+      line-height:15px;
+      padding:0 15px 0 15px;
+      bottom: 18px;
+      height : 30px;
+      width : ~"calc(100% - 30px)";
+      font-weight: 400;
+      text-align:center;
+      vertical-align: middle;
+      background: none;
+      border : 0;
+    }
+    .name{
+      display: block;
+      position: absolute;
+      font-size:13.5px;
+      line-height:15px;
+      top : 90px;
+      //color : lighten(@blue, 50%);
+      color:white;
+      width : 150px;
+      text-align:center;
+    }
+    &.closed{
+        p.name{
+            height : 30px;
+            overflow: hidden;
+            //width:150px - 10px;
+            //white-space: nowrap;
+            //text-overflow: ellipsis;
+            font-weight: 400;
+            text-align:center;
+            vertical-align: middle;
+        }
+    }
+    &.selected{
+      background: white;
+      .alpha(1);
+      div.close{
+        //display: block;
+        position: absolute;
+        right : 5px;
+        top : 5px;
+        font-size:20px;
+        //color : darken(@red, 15%);
+        color : black;
+      }
+    }
+    &.saving{
+      .alpha(0.8);
+      span.icon{
+        display: none;
+      }
+      span.link-count{
+        display: block;
+      }
+    }
+}

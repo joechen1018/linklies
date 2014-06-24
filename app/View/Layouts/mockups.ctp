@@ -41,7 +41,6 @@
 		console = { log : function(){} }
 		
 	</script>
-	<link rel="stylesheet" type="text/css" href="<?php echo $this -> webroot?>css/reset.css">
 
 	<link rel="stylesheet/less" type="text/css" href="<?php echo $this -> webroot?>css/mockups.less" />
 
@@ -61,7 +60,6 @@
 		-->
 		<?php echo $this -> fetch("content") ?>	
 
-		<div ng-include="folderUrl"></div>
 	</div>
 </body>
 </html>

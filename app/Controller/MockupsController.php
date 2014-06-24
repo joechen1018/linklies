@@ -19,7 +19,7 @@ class MockupsController extends AppController{
 	}
 
 	public function folder(){
-
+		// $this -> render("/Layouts/blank");
 	}
 
 	public function folderLinks() {
