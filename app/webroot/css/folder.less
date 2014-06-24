@@ -7,10 +7,11 @@
 
 .folder{
     @size : 4*@gridHeight + 3*@gridVPadding;
+    @bg : lighten(@dark, 25%);
     position:absolute;
     width : 150px;
     height : @size;
-    background: lighten(@dark, 10%);
+    background: @bg;
     // background: @blue url(../img/icons-3/SVG/folder12.svg) center 0px no-repeat;
     // background-size:@size*0.7;
     z-index:2;
@@ -29,7 +30,7 @@
       font-size:60px;
       left : ~"calc(50% - 30px)";
       top : 35px;
-      color : darken(@dark, 5%);
+      color : lighten(@dark, 45%);
     }
     span.link-count{
       position:absolute;
@@ -58,7 +59,7 @@
       // background-size:@size*0.7;
       background: lighten(@green, 10%);
       .name{
-        color:lighten(@dark, 60%); 
+        color : lighten(@dark, 50%);
       }
       // &:after{
       //   position:absolute;
@@ -105,7 +106,7 @@
       text-align:center;
       vertical-align: middle;
       //color : lighten(@blue, 50%);
-      color:lighten(@dark, 60%); 
+      color:white;
     }
     &.selected{
       background: white;

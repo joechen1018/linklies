@@ -496,7 +496,8 @@ app.service("apiService", function($http, apiParser){
 		var targetRoot = (function(url){
 			var splits = url.split("/");
 			if(splits[splits.length - 1].indexOf(".") !== -1 || 
-			  splits[splits.length - 1].indexOf("#") !== -1){
+			  splits[splits.length - 1].indexOf("#") !== -1 ||
+			  splits[splits.length - 1].indexOf("?") !== -1){
 				splits[splits.length - 1] = "";
 			}
 			return splits.join("/");
@@ -519,6 +520,8 @@ app.service("apiService", function($http, apiParser){
 						//** explicitly for disp.cc
 						src = $e.attr("data-src");
 					}	
+
+
 
 					if(src){
 						//** prevent duplicated with og:image
