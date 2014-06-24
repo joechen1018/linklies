@@ -172,7 +172,7 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http,
 	}
 
 	if(userData === undefined){
-		apiService.getUser(uid).then(onUserDataFetched);/**/
+		apiService.getUser(uid).then(onUserDataFetched);
 	}
 	$scope.resize = resize;
 	$scope.grids = gridSystem;
