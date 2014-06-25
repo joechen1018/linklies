@@ -10,6 +10,16 @@ data-icon="{{data.FolderType.icon}}">
 	<input id="edit-name" type="text" name="folderName" value="{{data.name}}" style="display:none" />
 	<div ng-include="data.folderLinks"></div>
 
-	<div ng-include="linkList.url"></div>
+	<ul class="links-holder">
+		<li ng-repeat="link in links" class="link" ng-style="{
+			top : $index * 40
+		}">
+			<div class="state-ready">
+				<div class="link-body">
+					<p class="title">{{link.title}}</p>
+				</div>
+			</div>
+		</li>
+	</ul>
 </div>
 

@@ -17,8 +17,9 @@
 	<script src="<?php echo $this -> webroot?>js/mockups.js"></script>
 	<script src="<?php echo $this -> webroot?>js/controllers/mockupsCtrl.js"></script>
 	<script src="<?php echo $this -> webroot?>js/services/apiService.js"></script>
-	
+	<script src="<?php echo $this -> webroot?>js/directives/link-folder.js"></script>
 
+	<script src="<?php echo $this -> webroot?>js/services/gridService.js"></script>
 	<!-- <link href='http://fonts.googleapis.com/css?family=Ubuntu Condensed' rel='stylesheet' type='text/css'> -->
 	<link href='http://fonts.googleapis.com/css?family=Droid Sans' rel='stylesheet' type='text/css'>
 

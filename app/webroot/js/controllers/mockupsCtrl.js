@@ -1,11 +1,11 @@
 app.controller("mockupsCtrl", function($scope, apiService, apiParser){
-
+	
+	var data, user, links, folders, phase;
 	apiService.getUser("joe.chen.1").then(function(rs){
-		var data = rs.data,
-			user = data.User,
-			links = data.Link,
-			folders = data.Folder,
-			phase;
+		data = rs.data,
+		user = data.User,
+		links = data.Link,
+		folders = data.Folder
 
 		// console.log(folders);
 		//** scope variables
@@ -36,8 +36,10 @@ app.controller("mockupsCtrl", function($scope, apiService, apiParser){
 		if(closed){
 			open();
 			$(".folder").removeClass("closed");
+			$scope.links = links;
 		}else{
 			close();
+			$scope.links = [];
 			$(".folder").addClass("closed");
 		}
 		closed = !closed;
