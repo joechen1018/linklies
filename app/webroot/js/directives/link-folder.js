@@ -34,18 +34,24 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 
 					//*** arrow position
 					$(".arrow").hide();
-					$(".arrow").css("top", top + $folder.height()/2 - 10);
+					$(".arrow").css("top", top + 75);
 
 					//* folder is on right side of the screen
 					if(left > $(window).width() / 2){
 						//show link list on the left of the folder
-						$list.css("left", left - 485);
+						$list.css({
+							"left" : left - 475,
+							"top" : top - ($list.height() - $folder.height())/2
+						});
 						$(".arrow-right").show();
 
 					//* folder is on left side of the screen	
 					}else{
 						//show link list on the right of the folder
-						$list.css("left", left + $folder.width() + 15);
+						$list.css({
+							"left" : left + 150 + 5,
+							"top" : top - ($list.height() - $folder.height())/2
+						});
 						$(".arrow-left").show();
 
 					}

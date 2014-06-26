@@ -7,7 +7,7 @@
 
 .folder{
     @size : 4*@gridHeight + 3*@gridVPadding;
-    @bg : lighten(@dark, 25%);
+    @bg : spin(darken(@bg-color, 35%), 60);
     position:absolute;
     width : 150px;
     height : @size;
@@ -30,7 +30,7 @@
       font-size:60px;
       left : ~"calc(50% - 30px)";
       top : 35px;
-      color : lighten(@dark, 45%);
+      color : darken(@bg, 30%);
     }
     span.link-count{
       position:absolute;
@@ -59,7 +59,7 @@
       // background-size:@size*0.7;
       background: lighten(@green, 10%);
       .name{
-        color : lighten(@dark, 50%);
+        color : darken(@bg, 40%);
       }
       // &:after{
       //   position:absolute;
