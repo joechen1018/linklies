@@ -417,7 +417,6 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 				$rootScope.$broadcast("openPage", scope.data);
 			}
 
-
 			scope.playVideo = function(){
 
 				var type = scope.data.type;
@@ -524,15 +523,6 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 				$rootScope.$broadcast("showPopup", tab, scope.data);
 			}
 
-			scope.onTempLoaded = function(){
-				var $container = $ele.find(".thumb-head");
-				var $img = $container.find("img");
-				$img.load(function(){
-					$container.addClass("hasThumbHead");
-				});
-			}
-			// console.log(data)
-
 			var timer, timer1, timer3;
 			var enableHover = function(){
 				//** clear before bind
@@ -560,15 +550,23 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 							return data.view === "search";
 						})()){
 							scope.templates.type = temps.type.search;
-							//_c.log(scope.templates.type);
 						}
 						else
 							scope.templates.type = temps.type['default'];
-						});
+					});
 
 					timer = $timeout(function(){
 						scope.$apply(function(){
 							scope.showDetail = true;
+
+							var $holder = $ele.find(".img .holder");
+							var $img = $holder.find("img").eq(data.thumbIndex);
+							setTimeout(function(){
+								$holder.height($img.height());
+								$holder.css({
+									left : -(data.thumbIndex * 330)
+								});
+							}, 10);
 						});
 					}, 600);
 
