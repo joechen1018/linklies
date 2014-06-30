@@ -10,8 +10,8 @@
 	</span>	
 	
 	<div class="arrows" ng-show="data.images.length > 1">
-		<div class="left" data-icon='"'></div>
-		<div class="right" data-icon='#'></div>
+		<div class="left" data-icon='"' ng-click="slideThumb(-1)"></div>
+		<div class="right" data-icon='#' ng-click="slideThumb(1)"></div>
 	</div>
 
 	<div class="video-bg" bo-show="data.view == 'video'"></div>

@@ -523,6 +523,20 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 				$rootScope.$broadcast("showPopup", tab, scope.data);
 			}
 
+			scope.slideThumb = function(dir){
+				data.thumbIndex += dir;
+				if(data.thumbIndex < 0) data.thumbIndex = 0;
+				if(data.thumbIndex >= data.images.length) data.thumbIndex = data.images.length - 1;
+				var $holder = $ele.find(".img .holder");
+				var $img = $holder.find("img").eq(data.thumbIndex);
+				$holder.height($img.height());
+				$holder.animate({
+					left : -(data.thumbIndex * 330)
+				}, 300, function(){
+					apiService.linkService.save(data);
+				});
+			}
+
 			var timer, timer1, timer3;
 			var enableHover = function(){
 				//** clear before bind
@@ -559,6 +573,7 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 						scope.$apply(function(){
 							scope.showDetail = true;
 
+							//** get selected thumb height and assign it to the holder
 							var $holder = $ele.find(".img .holder");
 							var $img = $holder.find("img").eq(data.thumbIndex);
 							setTimeout(function(){
