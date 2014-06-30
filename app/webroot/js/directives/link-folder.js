@@ -40,10 +40,11 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 					if(left > $(window).width() / 2){
 						//show link list on the left of the folder
 						$list.css({
-							"left" : left - 475,
+							"left" : left - 465,
 							"top" : top - ($list.height() - $folder.height())/2
 						});
 						$(".arrow-right").show();
+						$folder.find(".link-list").removeClass("left").addClass("right");
 
 					//* folder is on left side of the screen	
 					}else{
@@ -53,6 +54,7 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 							"top" : top - ($list.height() - $folder.height())/2
 						});
 						$(".arrow-left").show();
+						$folder.find(".link-list").removeClass("right").addClass("left");
 
 					}
 
