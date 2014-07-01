@@ -1,4 +1,4 @@
-app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
+app.directive("lkFolder", function(gridSystem, $rootScope, apiService, apiParser){
 	return {
 		restrict : "EA",
 		templateUrl : "templates/folder.html",
@@ -22,7 +22,9 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 
 			//** excecute mouse enter/leave binding	
 			var bindMouseEvents = function(){
+
 				$ele.bind("mouseenter", function(){
+
 					var $folder = $(ele),
 						$list = $folder.find(".link-list").eq(0),
 						left = $folder.offset().left,
@@ -44,7 +46,9 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 							"top" : top - ($list.height() - $folder.height())/2
 						});
 						$(".arrow-right").show();
-						$folder.find(".link-list").removeClass("left").addClass("right");
+						$folder.find(".link-list")
+							   .removeClass("left")
+							   .addClass("right");
 
 					//* folder is on left side of the screen	
 					}else{
@@ -53,8 +57,11 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 							"left" : left + 150 + 5,
 							"top" : top - ($list.height() - $folder.height())/2
 						});
+
 						$(".arrow-left").show();
-						$folder.find(".link-list").removeClass("right").addClass("left");
+						$folder.find(".link-list")
+							   .removeClass("right")
+							   .addClass("left");
 
 					}
 
@@ -64,8 +71,13 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 						$folder.removeClass("reload");
 						apiService.folderService.getLinks(fid).then(function(arr){
 							scope.$apply(function(){
+								//** parse link
+								for(var i = 0; i<arr.length; i++){
+									arr[i] = apiParser.linkFromDb(arr[i]);
+								}
 								linkListData = arr;
 								scope.linkList.content = arr;
+								scope.linkList.selectedLink = scope.linkList.content[0];
 							});
 						});
 					}
@@ -156,8 +168,22 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService){
 			scope.linkList.show = false;
 			scope.linkList.arrowTop = 10;
 			scope.linkList.folderUrl = root + "folder/" + scope.data.hash;
-
+			scope.linkList.selectedIndex = 0;
 			//****
+
+			var hoverTimer;
+			scope.onListItemHover = function(i){
+				hoverTimer = setTimeout(function(){
+					scope.$apply(function(){
+						scope.linkList.selectedIndex = i;
+						scope.linkList.selectedLink = scope.linkList.content[i];
+					});
+				}, 500);
+			}
+
+			scope.onListItemOut = function(){
+				clearTimeout(hoverTimer);
+			}
 
 			scope.onTitleClick = function(e, link){
 				if(link.allowIframe){

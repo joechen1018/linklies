@@ -36,19 +36,27 @@
 
 		<ul class="link-list-items">
 
-			<li ng-repeat="link in linkList.content" ng-mouseover="link.hover = true" ng-mouseleave="link.hover = false" bo-class="link.view">
+			<li ng-repeat="link in linkList.content" ng-mouseenter="onListItemHover($index)" ng-mouseleave="onListItemOut()" bo-class="link.view" ng-class="{
+				selected : linkList.selectedIndex === $index
+			}">
 
 				<img src="{{link.ico}}" alt="">
 				<a class="title" href="{{link.url}}" ng-click="onTitleClick($event, link)" target="_blank">{{link.title}}</a>
 				
+			</li>
+		</ul>	
+
+		<div class="selected-content">
+			<div class="head">
+				<h1 class="title">{{linkList.selectedLink.title}}</h1>
 				<ul class="options" ng-init="otherItemIsHoverd = false">
+
 					<li class="delete" 
 						ng-mouseenter="otherItemIsHoverd = true" 
 						ng-mouseleave="otherItemIsHoverd = false"
 						data-icon="I" 
 						title="delete"></li>
-
-					<!-- <li class="share"
+					<li class="share"
 						title="share to facebook"
 						ng-mouseenter="otherItemIsHoverd = true" 
 						ng-mouseleave="otherItemIsHoverd = false"
@@ -76,18 +84,12 @@
 						title="play video"
 						data-icon="j">
 						<a class="icon" href="{{link.url}}" target="_blank"></a>
-					</li> -->
+					</li>
 
 				</ul>
-			</li>
-		</ul>	
-
-		<div class="selected-content">
-			<div class="head">
-				<h1 class="title">some titles</h1>
 			</div>
 			<div class="img-holder">
-				
+				<img ng-src="{{linkList.selectedLink.images[linkList.selectedLink.thumbIndex]}}" alt="">
 			</div>
 			<ul class="options">
 				
