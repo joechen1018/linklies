@@ -35,34 +35,48 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService, apiParser
 					$folder.css("z-index", 1000);
 
 					//*** arrow position
-					$(".arrow").hide();
-					$(".arrow").css("top", top + 75);
+					// $(".arrow").hide().css("top", top + 75);
 
 					//* folder is on right side of the screen
 					if(left > $(window).width() / 2){
 						//show link list on the left of the folder
 						$list.css({
-							"left" : left - 465,
+							"left" : left - 515,
 							"top" : top - ($list.height() - $folder.height())/2
 						});
-						$(".arrow-right").show();
+
+						//** show arrow
+						$(".arrow-right").show().css({
+							top : $list.position().top  + ($list.height()/2)
+						});
+
 						$folder.find(".link-list")
 							   .removeClass("left")
 							   .addClass("right");
+
+						scope.$apply(function(){
+							scope.dir = "right";
+						});	   
 
 					//* folder is on left side of the screen	
 					}else{
 						//show link list on the right of the folder
 						$list.css({
-							"left" : left + 150 + 5,
+							"left" : left + 150,
 							"top" : top - ($list.height() - $folder.height())/2
 						});
 
-						$(".arrow-left").show();
+						$(".arrow-left").show().css({
+							top : $list.position().top + ($list.height()/2)
+						});
+
 						$folder.find(".link-list")
 							   .removeClass("right")
 							   .addClass("left");
 
+						scope.$apply(function(){
+							scope.dir = "left";
+						});	   
 					}
 
 					//** class 'reload' applied to dom by lkDrag directive 
@@ -178,7 +192,7 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService, apiParser
 						scope.linkList.selectedIndex = i;
 						scope.linkList.selectedLink = scope.linkList.content[i];
 					});
-				}, 500);
+				}, 10);
 			}
 
 			scope.onListItemOut = function(){
@@ -204,7 +218,6 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService, apiParser
 				if(confirm("Delete link?")){
 					for(var i = 0; i<list.length; i++){
 						if(list[i].uuid === uuid){
-							console.log(uuid);
 							//do delete
 							scope.linkList.content.splice(i, 1);
 							apiService.linkService.remove(uuid).then(function(res){
