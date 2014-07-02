@@ -7,14 +7,14 @@
 	top : 0px;
 	@h : 38px;
 	@w : 800px;
-	@bg : spin(darken(@bg-color, 35%), 60);
+	@green : spin(darken(@bg-color, 35%), 60);
 	div.holder{
 		position:absolute;
 		left : 5px;
 		top : 0;
 		width : 480px;
 		height : 100%;
-		background: lighten(@bg, 70%);
+		background: @green;
 		opacity: 1;
 		.shadow-medium;
 
@@ -145,17 +145,17 @@
 					left : 40px;
 					top : 0;
 					font-size: 14px;
-					color : lighten(@dark, 25%);
+					color : darken(@green, 45%);
 					&:hover{
-						color : lighten(@dark, 5%);
+						color : darken(@green, 35%);
 					};
 				}
-				border-bottom : 1px solid white;
-				border-top : 1px solid white;
+				border-bottom : 1px solid @green;
+				border-top : 1px solid @green;
 				&.selected{
-					background: lighten(@dark, 80%);
-					border-bottom : 1px solid lighten(@dark, 70%);
-					border-top : 1px solid lighten(@dark, 70%);
+					background: white;
+					border-bottom : 1px solid @green;
+					border-top : 1px solid @green;
 					//border-left : 3px solid @green;
 					>i{
 						//display: block;
@@ -238,3 +238,13 @@ div.selected-content{
 		right : 430px;
 	}
 }
+
+// div.overlay{
+// 	width : 100%;
+// 	height : 100%;
+// 	left : 0;
+// 	top : 0;
+// 	position: fixed;
+// 	background: @dark;
+// 	.alpha(0.9);
+// }
