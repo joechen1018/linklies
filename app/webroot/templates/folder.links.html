@@ -86,54 +86,56 @@
 		</ul>	
 
 	</div>
-</div>
 
-<div class="selected-content" ng-show="linkList.show" ng-class="{
-	left : dir === 'left',
-	right : dir === 'right'
-}">
-	<!-- <div class="head">
-		<h1 class="title">{{linkList.selectedLink.title}}</h1>
-		<ul class="options" ng-init="otherItemIsHoverd = false">
+	<div class="selected-content" ng-show="linkList.show" ng-class="{
+		left : dir === 'left',
+		right : dir === 'right'
+	}">
+		<!-- <div class="head">
+			<h1 class="title">{{linkList.selectedLink.title}}</h1>
+			<ul class="options" ng-init="otherItemIsHoverd = false">
 
-			<li class="delete" 
-				ng-mouseenter="otherItemIsHoverd = true" 
-				ng-mouseleave="otherItemIsHoverd = false"
-				data-icon="I" 
-				title="delete"></li>
-			<li class="share"
-				title="share to facebook"
-				ng-mouseenter="otherItemIsHoverd = true" 
-				ng-mouseleave="otherItemIsHoverd = false"
-				data-icon="U" ></li>
+				<li class="delete" 
+					ng-mouseenter="otherItemIsHoverd = true" 
+					ng-mouseleave="otherItemIsHoverd = false"
+					data-icon="I" 
+					title="delete"></li>
+				<li class="share"
+					title="share to facebook"
+					ng-mouseenter="otherItemIsHoverd = true" 
+					ng-mouseleave="otherItemIsHoverd = false"
+					data-icon="U" ></li>
 
-			<li class="edit"
-				title="edit link"
-				ng-mouseenter="otherItemIsHoverd = true" 
-				ng-mouseleave="otherItemIsHoverd = false"
-				data-icon="g"></li>
-			
-			<li ng-class="{hover : (!link.allowIframe) && link.hover === true && (!otherItemIsHoverd)}"
-				ng-mouseenter="otherItemIsHoverd = true" 
-				ng-mouseleave="otherItemIsHoverd = false"
-				class="openInTab" 
-				title="open in new tab"
-				data-icon="x">
-				<a class="icon" href="{{link.url}}" target="_blank"></a>
-			</li>
+				<li class="edit"
+					title="edit link"
+					ng-mouseenter="otherItemIsHoverd = true" 
+					ng-mouseleave="otherItemIsHoverd = false"
+					data-icon="g"></li>
+				
+				<li ng-class="{hover : (!link.allowIframe) && link.hover === true && (!otherItemIsHoverd)}"
+					ng-mouseenter="otherItemIsHoverd = true" 
+					ng-mouseleave="otherItemIsHoverd = false"
+					class="openInTab" 
+					title="open in new tab"
+					data-icon="x">
+					<a class="icon" href="{{link.url}}" target="_blank"></a>
+				</li>
 
-			<li ng-show="link.view === 'video'"
-				ng-mouseenter="otherItemIsHoverd = true" 
-				ng-mouseleave="otherItemIsHoverd = false"
-				class="playVideo" 
-				title="play video"
-				data-icon="j">
-				<a class="icon" href="{{link.url}}" target="_blank"></a>
-			</li>
+				<li ng-show="link.view === 'video'"
+					ng-mouseenter="otherItemIsHoverd = true" 
+					ng-mouseleave="otherItemIsHoverd = false"
+					class="playVideo" 
+					title="play video"
+					data-icon="j">
+					<a class="icon" href="{{link.url}}" target="_blank"></a>
+				</li>
 
-		</ul>
-	</div> -->
-	<div class="img-holder">
+			</ul>
+		</div> -->
 		<img ng-src="{{linkList.selectedLink.images[linkList.selectedLink.thumbIndex]}}" alt="">
+		
+		<div class="img-holder">
+			
+		</div>
 	</div>
 </div>

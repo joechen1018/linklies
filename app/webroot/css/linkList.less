@@ -216,24 +216,25 @@
 }
 
 div.selected-content{
-	position: fixed;
-	bottom : 20px;
+	position: absolute;
+	top : 0;
 	width : 300px;
 	.img-holder{
 		position: absolute;
-		bottom : 0px;
 		width : 100%;
-		background: #eaeaea;
+		//background: #eaeaea;
 		overflow: hidden;
-		.shadow-strong;
-		img{
-			width : 100%;
-		}
+		// .shadow-medium;
+		
+	}
+	img{
+		width : 300px;
+		.shadow-medium;
 	}
 	&.left{
-		right : 20px;
+		left : 500px;
 	}
 	&.right{
-		left : 20px;
+		right : 430px;
 	}
 }
