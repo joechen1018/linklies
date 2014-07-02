@@ -1,4 +1,16 @@
-app.directive("lkFolder", function(gridSystem, $rootScope, apiService, apiParser){
+app.directive("imgWatcher", function(){
+	return {
+		link : function(scope, ele, attrs){
+			ele.bind("load", function(e){
+				ele.show();
+			});
+			ele.bind("error", function(){
+				ele.hide();
+			});
+		}
+	}
+})
+.directive("lkFolder", function(gridSystem, $rootScope, apiService, apiParser){
 	return {
 		restrict : "EA",
 		templateUrl : "templates/folder.html",
@@ -175,6 +187,11 @@ app.directive("lkFolder", function(gridSystem, $rootScope, apiService, apiParser
 
 			//** bind mouse enter/leave events
 			bindMouseEvents();
+
+			scope.onPreviewImgLoad = function(){
+				var $img = $ele.find("img.preview");
+				console.log($img.height());
+			}
 
 			//** LinkList
 			scope.linkList = {};
