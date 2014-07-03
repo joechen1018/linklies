@@ -103,7 +103,7 @@ app.directive("imgWatcher", function(){
 								}
 								linkListData = arr;
 								scope.linkList.content = arr;
-								scope.linkList.selectedLink = scope.linkList.content[0];
+								//scope.linkList.selectedLink = scope.linkList.content[0];
 							});
 						});
 					}
@@ -127,6 +127,7 @@ app.directive("imgWatcher", function(){
 						$folder.css("z-index", 2);
 						scope.$apply(function(){
 							scope.linkList.show = false;
+							scope.linkList.selectedLink = undefined;
 						});
 					}
 				});
@@ -199,7 +200,7 @@ app.directive("imgWatcher", function(){
 			scope.linkList.show = false;
 			scope.linkList.arrowTop = 10;
 			scope.linkList.folderUrl = root + "folder/" + scope.data.hash;
-			scope.linkList.selectedIndex = 0;
+			// scope.linkList.selectedIndex = 0;
 			//****
 
 			var hoverTimer;
