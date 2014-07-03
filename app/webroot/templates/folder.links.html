@@ -48,18 +48,22 @@
 					<li class="delete" 
 						ng-mouseenter="otherItemIsHoverd = true" 
 						ng-mouseleave="otherItemIsHoverd = false"
+						ng-click="deleteLink(link)"
 						data-icon="I" 
 						title="delete"></li>
+
 					<li class="share"
 						title="share to facebook"
 						ng-mouseenter="otherItemIsHoverd = true" 
 						ng-mouseleave="otherItemIsHoverd = false"
+						ng-click="openPopup('share', link)"
 						data-icon="U" ></li>
 
 					<li class="edit"
 						title="edit link"
 						ng-mouseenter="otherItemIsHoverd = true" 
 						ng-mouseleave="otherItemIsHoverd = false"
+						ng-click="openPopup('edit', link)"
 						data-icon="g"></li>
 					
 					<li ng-class="{hover : (!link.allowIframe) && link.hover === true && (!otherItemIsHoverd)}"
@@ -84,7 +88,43 @@
 				
 			</li>
 		</ul>	
+		
 
+		<ul class="folder-options" ng-init="otherItemIsHoverd = false">
+
+			<li class="delete" 
+				ng-click="deleteFolder()"
+				data-icon="0" 
+				title="delete"></li>
+
+			<li class="share"
+				title="share folder"
+				ng-click="openPopup('share', data)"
+				data-icon="U" ></li>
+
+			<li class="edit"
+				title="edit link"
+				ng-click="openPopup('edit', data)"
+				data-icon="g"></li>
+			
+			<a class="icon" href="{{linkList.folderUrl}}" target="_blank">
+			<li class="openInTab" 
+				title="open in new tab"
+				data-icon="x">
+				
+			</li>
+			</a>
+
+			<!-- <li ng-show="link.view === 'video'"
+				ng-mouseenter="otherItemIsHoverd = true" 
+				ng-mouseleave="otherItemIsHoverd = false"
+				class="playVideo" 
+				title="play video"
+				data-icon="j">
+				<a class="icon" href="{{link.url}}" target="_blank"></a>
+			</li> -->
+
+		</ul>
 	</div>
 
 	<div class="selected-content" ng-show="linkList.show" ng-class="{

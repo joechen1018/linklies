@@ -208,11 +208,13 @@ app.directive("imgWatcher", function(){
 					scope.$apply(function(){
 						scope.linkList.selectedIndex = i;
 						scope.linkList.selectedLink = scope.linkList.content[i];
+						scope.linkList.selectedLink.hover = true;
 					});
 				}, 10);
 			}
 
 			scope.onListItemOut = function(){
+				scope.linkList.selectedLink.hover = false;
 				clearTimeout(hoverTimer);
 			}
 
@@ -230,14 +232,13 @@ app.directive("imgWatcher", function(){
 
 				}
 			}
-			scope.deleteLink = function(uuid){
+			scope.deleteLink = function(link){
 				var list = scope.linkList.content;
 				if(confirm("Delete link?")){
 					for(var i = 0; i<list.length; i++){
-						if(list[i].uuid === uuid){
-							//do delete
+						if(list[i].uuid === link.uuid){
 							scope.linkList.content.splice(i, 1);
-							apiService.linkService.remove(uuid).then(function(res){
+							apiService.linkService.remove(link.uuid).then(function(res){
 								console.log(res)
 							});
 						}
@@ -269,6 +270,11 @@ app.directive("imgWatcher", function(){
 				var arr = [$(ele).offset().left, $(ele).offset().top];
 				return arr;
 			}
+
+			scope.openPopup = function(tab, link){
+				$rootScope.$broadcast("showPopup", tab, link);
+			}
+
 		}
 	}
 })

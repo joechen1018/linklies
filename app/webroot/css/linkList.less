@@ -16,7 +16,7 @@
 		height : 100%;
 		background: lighten(@bg, 70%);
 		opacity: 1;
-		.shadow-medium;
+		.shadow-light;
 
 		.bridge-right{
 			width : 50px;
@@ -206,6 +206,27 @@
 				}
 			}
 		}
+
+		>ul.folder-options{
+			display: block;
+			position: absolute;
+			left : 10px;
+			bottom: 5px;
+			li{
+				display: block;
+				float : left;
+				margin-right : 7px;
+				&:before{
+					font-size : 18px;
+					color : lighten(@dark, 55%);
+				};
+				&:hover{
+					&:before{
+						color : lighten(@dark, 15%);
+					};
+				};
+			}
+		}
 	}
 	&.right div.holder div.selected-content{
 		right : 420px;
@@ -229,7 +250,7 @@ div.selected-content{
 	}
 	img{
 		width : 300px;
-		.shadow-medium;
+		.shadow-light;
 	}
 	&.left{
 		left : 500px;

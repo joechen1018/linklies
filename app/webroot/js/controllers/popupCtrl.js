@@ -89,7 +89,7 @@ popup.init = function(){
 	});
 
 	$rootScope.$on("showPopup", function(e, tab, data){
-		// console.log(data);
+		 console.log(data);
 		if(data.images.length === 1 && data.images[0].length === 0)
 			data.images = [];
 
