@@ -115,6 +115,7 @@ app.service("apiService", function($http, apiParser){
 					method : "get",
 					success : function(res){
 						var obj = res.data.Folder;
+						obj = apiParser.folderFromDb(obj);
 						if(rel){
 							_d.resolve(res);
 							return;
@@ -142,7 +143,6 @@ app.service("apiService", function($http, apiParser){
 				return _d.promise();
 			},
 			create : function(user_id, grid){
-				console.log(grid);
 				var _d = $.Deferred();
 				$.ajax({
 					url : root + "api/createFolder/" + user_id + "/" + grid[0] + ',' + grid[1],
@@ -157,18 +157,18 @@ app.service("apiService", function($http, apiParser){
 				return _d.promise();
 			},
 			save : function(folder){
-				if(folder.grid){
-					folder.grid = folder.grid.join(",");
-				}
+				//** prevent parsing to effect scope object
+				var folderClone = jQuery.extend(true, {}, folder);
+				folderClone = apiParser.folderToDb(folderClone);
 
-				//_c.log(folder);
 				var _d = $.Deferred();
 				$.ajax({
 					url : "api/save/folder",
 					method : "post",
-					data : folder,
+					data : folderClone,
 					success : function(res){
 						var data = res.data.Folder;
+						data = apiParser.folderFromDb(data);
 						_d.resolve(data);
 					}
 				});
@@ -203,7 +203,6 @@ app.service("apiService", function($http, apiParser){
 				url : root + "api/user/" + username_id,
 				method : "get",
 				success : function(data){
-					console.log(data);
 					_d.resolve(data);
 				}
 			});
@@ -306,6 +305,30 @@ app.service("apiService", function($http, apiParser){
 		return link;
 	}
 
+	this.folderToDb = function(folder){
+		if(typeof folder.grid === "array" || typeof folder.grid === "object"){
+			folder.grid = folder.grid.join(",");
+		}
+		if(typeof folder.images === "array" && folder.images.indexOf(",") !== -1){
+			folder.images = folder.images.join(",");
+		}
+		return folder;
+	}
+
+	this.folderFromDb = function(folder){
+		if(typeof folder.images === "string"){
+			if(folder.images.length > 0){
+				folder.images = folder.images.split(",");
+			}else{
+				folder.images = [];
+			}
+		}
+		if(typeof folder.grid === "string" && folder.grid.indexOf(",") !== -1){
+			folder.grid = folder.grid.split(",");
+		}
+
+		return folder;
+	}
 	this.requestTranslate = function(params){
 		var api = 'https://www.googleapis.com/language/translate/v2?key={{clientId}}&source={{source}}&target={{target}}&callback={{callback}}&q={{q}}',
 			url = utils.replace(api, {

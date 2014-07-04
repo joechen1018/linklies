@@ -24,7 +24,7 @@ app.directive("contextMenu", function(uuid, apiService, apiParser, $rootScope, u
 					{
 						"name" : "openView",
 						"label" : "Folder View",
-						"icon" : "Q"
+						"icon" : "x"
 					},
 					{
 						"name" : "rename",
@@ -59,9 +59,19 @@ app.directive("contextMenu", function(uuid, apiService, apiParser, $rootScope, u
 						"icon" : "B",
 					},
 					{
+						"name" : "share",
+						"label" : "Share",
+						"icon" : "U"
+					},
+					{
 						"name" : "delete",
 						"label" : "Delete",
 						"icon" : "0"
+					},
+					{
+						"name" : "edit",
+						"label" : "Edit",
+						"icon" : "g"
 					},
 					{	
 						"name" : "new",
@@ -91,7 +101,8 @@ app.directive("contextMenu", function(uuid, apiService, apiParser, $rootScope, u
 						"name" : "folder",
 						"options" : [
 							byName("openView"),
-							byName("rename"),
+							byName("edit"),
+							byName("share"),
 							byName("delete")
 						]
 					},
@@ -112,8 +123,9 @@ app.directive("contextMenu", function(uuid, apiService, apiParser, $rootScope, u
 				];
 			$ele.hide();
 			scope.$watch("context", function(newVal, oldVal){
-
 				var $menu;
+
+				//** hide folder options when grids is available for folder
 				var showFolderOptions = function(){
 					//** wait for dom finish drawing
 					setTimeout(function(){
@@ -126,6 +138,8 @@ app.directive("contextMenu", function(uuid, apiService, apiParser, $rootScope, u
 						});
 					}, 20);
 				}
+
+				//** hide folder options when grids not available for folder
 				var hideFolderOptions = function(){
 					//** wait for dom finish drawing
 					setTimeout(function(){
@@ -133,7 +147,7 @@ app.directive("contextMenu", function(uuid, apiService, apiParser, $rootScope, u
 						$menu.find("li").not(":has(ul)").each(function(i, e){
 							var text = $(e).text().trim();
 							if(/.*folder.*/i.test(text)){
-								$(e).hide();
+								//$(e).hide();
 							}
 						});
 					},20);
@@ -154,7 +168,7 @@ app.directive("contextMenu", function(uuid, apiService, apiParser, $rootScope, u
 
 					if(newVal.folderAvailable === true){
 						showFolderOptions();
-					}else{
+					}else if(newVal['class'] !== 'folder'){
 						hideFolderOptions();
 					}
 				}
@@ -162,9 +176,9 @@ app.directive("contextMenu", function(uuid, apiService, apiParser, $rootScope, u
 
 			scope.onItemClick= function($event, item){
 				$ele.hide();
+				var ctrl = scope.$parent;
 				if(item.name.indexOf("new.") !== -1){
 
-					var ctrl = scope.$parent;
 					switch(item.name){
 						case 'new.link' :
 							ctrl.onBoardDbClick(false, scope.context.grid);
@@ -174,7 +188,25 @@ app.directive("contextMenu", function(uuid, apiService, apiParser, $rootScope, u
 						break;
 					}
 
-				}else{
+				}else if(context['class'] === 'folder'){
+					switch(item.name){
+						case 'openView' :
+							//** given href in context will create the native link for this option
+						break;
+						case 'edit' :
+							$rootScope.$broadcast("showPopup", 'edit', context.ref);
+						break;
+						case 'share' :
+							$rootScope.$broadcast("showPopup", 'share', context.ref);
+						break;
+						case 'delete' :
+							if(confirm("Are you sure you wish to delete this folder? You have " + scope.linkList.content.length + " links in this folder.")){
+								$rootScope.$broadcast("deleteFolder", context.ref.id);
+							}
+						break;
+					}
+				}
+				else{
 					picker = createPicker(item.name, function(rs){
 						//** callback doesn't just get called on finish selecting
 						//console.log(rs);
@@ -218,8 +250,6 @@ app.directive("contextMenu", function(uuid, apiService, apiParser, $rootScope, u
 							//** color animation 
 							startColorShifting($(".link").last().find(".state-loading .no-icon"));
 
-							_c.log(item);
-							_c.log(newLink);
 							ctrl.links.push(newLink);
 							linkService.create(url).then(function(data){
 								// _c.log(data);
@@ -248,7 +278,6 @@ app.directive("contextMenu", function(uuid, apiService, apiParser, $rootScope, u
 									ctrl.links[ctrl.links.length - 1] = data;
 								});
 
-								_c.log(data);
 								linkService.save(data).then(function(rs){
 									_c.log(rs);
 									data.id = rs.id;

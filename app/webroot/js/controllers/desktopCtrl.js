@@ -121,6 +121,11 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http,
 			}
 		});	
 
+		//** parse folders
+		$(folders).each(function(i, e){
+			e = apiParser.folderFromDb(e);
+		});
+
 		//** global variable used in app.js
 		expectCount = links.length;
 
@@ -156,20 +161,6 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http,
 	uid = uid.split("/");
 	uid = uid[uid.length - 1];
 	glob.user = false;
-
-	//** will try cache user data later
-	//if(typeof sessionStorage !== undefined){
-	if(false){	
-		userData = sessionStorage.getItem("userData");
-		if(userData !== undefined){
-			try{
-				userData = JSON.parse(userData);
-				onUserDataFetched(userData);
-			}catch(e){
-				userData = undefined;
-			}
-		}
-	}
 
 	if(userData === undefined){
 		apiService.getUser(uid).then(onUserDataFetched);
@@ -345,7 +336,7 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http,
 
 										//** save
 										apiService.folderService.saveName(folder.id, $input.val()).then(function(res){
-											console.log(res);
+											// console.log(res);
 										});
 									});
 								}
@@ -460,7 +451,7 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http,
 		}
 
 		$scope.context = context;
-		$event.stopPropagation();
+		//$event.stopPropagation();
 	}
 	$scope.onLinkClick = function($event){
 		$event.stopPropagation();
@@ -472,6 +463,7 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http,
 		$event.stopPropagation();
 		*/
 	}
+
 	$scope.showBrowser = false;
 	$scope.closeBrowser = function(){
 		$scope.showBrowser = false;	
@@ -543,6 +535,14 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http,
 		}
 	});
 
+	$rootScope.$on("folderUpdated", function(e, folder){
+		for(var i = 0; i<$scope.folders.length; i++){
+			if($scope.folders[i].id == folder.id){
+				$scope.folders[i] = folder;
+			}
+		}
+	});
+
 	//** on link creation completed
 	//** triggered in popupCtrl.js
 	$rootScope.$on("popupClosed", function(e, link){
@@ -589,6 +589,10 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http,
 				return;
 			}
 		}
+	});
+
+	$rootScope.$on("showFolderMenu", function(e, context){
+		$scope.context = context;
 	});
 
 	var browsingLink;

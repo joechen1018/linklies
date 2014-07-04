@@ -5,7 +5,7 @@
 }">
 	<li ng-repeat="opt in context.set.options" ng-click="onItemClick($event, opt)">
 		<span class="icon" data-icon="{{opt.icon}}"></span>
-		<a href="">{{opt.label}}</a>
+		<a href="{{context.href}}" target="_blank">{{opt.label}}</a>
 		<ul ng-if="opt.options.length > 0">
 			<span class="icon icon-child" data-icon="7"></span>
 			<li ng-repeat="copt in opt.options" ng-click="onItemClick($event, copt)">

@@ -170,7 +170,7 @@ app.directive("imgWatcher", function(){
 							scope.data.name = $input.val();
 						});
 						apiService.folderService.saveName(scope.data.id, $input.val()).then(function(res){
-							console.log(res);
+							// console.log(res);
 						});
 
 					}else{
@@ -191,7 +191,20 @@ app.directive("imgWatcher", function(){
 
 			scope.onPreviewImgLoad = function(){
 				var $img = $ele.find("img.preview");
-				console.log($img.height());
+			}
+
+			scope.onRightClick = function($event){
+				var context = {};
+				context = {
+					"show" : true,
+					"class" : 'folder',
+					"left" : $event.pageX,
+					"top" : $event.pageY,
+					"href" : scope.linkList.folderUrl,
+					"ref" : scope.data
+				};
+				$rootScope.$broadcast("showFolderMenu", context);
+				$event.stopPropagation();
 			}
 
 			//** LinkList
@@ -248,16 +261,13 @@ app.directive("imgWatcher", function(){
 			}
 
 			scope.deleteFolder = function(){
-				if(confirm("Are you sure you wish to delete this folder? This will also delete all contained links and connot be recovered!")){
+				if(confirm("Are you sure you wish to delete this folder? You have " + scope.linkList.content.length + " links in this folder.")){
 					$rootScope.$broadcast("deleteFolder", scope.data.id);
 				}
 			}
 			// scope.links = scope.data.Link;
 			scope.getStyle = function(){
 				if(scope.data && scope.data.grid){
-					if(scope.data.grid.length !== 2){
-						scope.data.grid = scope.data.grid.split(",");
-					}
 					return {
 						left : scope.data.grid[0] * grids.gridFullWidth,
 						top : scope.data.grid[1] * grids.gridFullHeight,
@@ -845,23 +855,15 @@ app.directive("imgWatcher", function(){
 						isAvailable = allRects.gridAvailable(dragGrid, originGrid);
 						//if there is a selected grid and the selected grid is not occupied
 						if(isAvailable){
-							/*	
-							_c.log(ref);
-							_c.log(dragGrid);
-							*/
-							ref.grid = dragGrid;
-							if($.type(ref.type) === "string"){
-								ref.type = $.parseJSON(ref.type);
-							}
-							scope.$apply();
+
+							scope.$apply(function(){
+								ref.grid = dragGrid;
+								if($.type(ref.type) === "string"){
+									ref.type = $.parseJSON(ref.type);
+								}
+							});
+
 							service.save(ref);
-
-							/*clearTimeout(timeout);
-							timeout = setTimeout(function(){
-								.then(function(res){
-
-								});
-							}, 100);*/
 
 						}else{
 							$ele.animate({

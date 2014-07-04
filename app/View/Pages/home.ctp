@@ -70,9 +70,9 @@
 				}"></li>
 			</ul>
 			
-			<div lk-folder data="folder" ng-right-click="onRightClick($event)" bindonce lk-drag drag-preview="dragPreview.folder" ng-repeat="folder in folders" ></div>
+			<div lk-folder data="folder" bindonce lk-drag drag-preview="dragPreview.folder" ng-repeat="folder in folders" ></div>
 
-			<div lk-link data="link" ng-repeat="link in links | filter : searchKey" ng-right-click="onRightClick($event)" bindonce ng-dblclick="onLinkDbClick($event)" lk-drag drag-preview="dragPreview.link" ng-click="onLinkClick($event)"></div>
+			<div lk-link data="link" ng-repeat="link in links | filter : searchKey" bindonce ng-dblclick="onLinkDbClick($event)" lk-drag drag-preview="dragPreview.link" ng-click="onLinkClick($event)"></div>
 
 			<div id="folder-drop-preview" ng-style="{
 				width : grids.gridWidth,
