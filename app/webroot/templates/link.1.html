@@ -6,5 +6,5 @@
 	'focus-me' : data.state.focusMe == true
 }" data-grid="{{data.grid}}" ng-style="linkStyle()">
 	<div ng-include="templates.state" onload="onTempLoaded()"></div>
-	<div ng-include="templates.detail"></div>
+	<div id="link-detail" ng-include="templates.detail"></div>
 </div>

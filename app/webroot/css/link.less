@@ -281,27 +281,11 @@
 			top:10px;
 			padding:0;
 			margin:0;
-			.shadow-light;
 			
-			.close-btn{
-				width : 30px;
-				height: 30px;
-				background: @dark;
-				position: absolute;
-				right : -30px;
-				top : 0;
-				span{
-					color : white;
-					font-size : 25px;
-					display: block;
-					position: absolute;
-					left : ~"calc(50% - 12.5px)";
-					top : ~"calc(50% - 12.5px)";
-				}
-				&:hover{
-					background: @red;
-				};
+			&:not(.animating){
+				.shadow-light;
 			}
+			
 			.texts{
 				cursor:default;
 				margin-left:0px;
@@ -376,7 +360,7 @@
 				font-size: 0px;
 				div.holder{
 					position: relative;
-					width : 5000px;
+					width : 10000px;
 					height : 0;
 					overflow: hidden;
 					img{
@@ -450,7 +434,27 @@
 					}
 				}
 			}
-
+			
+			.close-btn{
+				width : 30px;
+				height: 30px;
+				background: @dark;
+				position: absolute;
+				right : -30px;
+				top : 0;
+				span{
+					color : white;
+					font-size : 25px;
+					display: block;
+					position: absolute;
+					left : ~"calc(50% - 12.5px)";
+					top : ~"calc(50% - 12.5px)";
+				}
+				&:hover{
+					background: @red;
+				};
+			}
+			
 			.player-holder{
 				background: black;
 			}

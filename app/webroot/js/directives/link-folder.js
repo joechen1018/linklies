@@ -301,7 +301,6 @@ app.directive("imgWatcher", function(){
 		},
 		replace : true,
 		link : function(scope, ele, attrs){
-			// _c.log(scope.data);
 			var grids = gridSystem,
 				data = scope.data,
 				linkService = apiService.linkService,
@@ -318,6 +317,7 @@ app.directive("imgWatcher", function(){
 				},
 				$playerHolder, 
 				$detailWrap,
+				$typeWrap,
 				$imgArea,
 				$img,
 				$ele = $(ele),
@@ -331,6 +331,10 @@ app.directive("imgWatcher", function(){
 			scope.iconHover = false;
 			scope.isPlayingVideo = false;
 			scope.showDetail = false;
+
+			//** the close button inside 'link-detail' directive 
+			// only shows in folder-link-list view
+			scope.showCloseBtn = false;
 
 			//** whether the link has a thumb
 			scope.hasImageArea = true;
@@ -492,80 +496,6 @@ app.directive("imgWatcher", function(){
 				$rootScope.$broadcast("openPage", scope.data);
 			}
 
-			scope.playVideo = function(){
-
-				var type = scope.data.type;
-
-				//** prevent detail hidden when mouse out
-				$ele.unbind("mouseenter");
-				$ele.unbind("mouseleave");
-
-				//** hide displayed image
-				$detailWrap = $ele.find(".link-details").eq(0);
-				$img = $detailWrap.find(".img");
-				$img.hide();
-
-				//** embed iframe player
-				var src = utils.replace(type.embedUrl, {
-					"VIDEO_ID" : type.videoId
-				});
-
-
-				$player = $ele.find(".player-holder iframe").eq(0);
-				$player.show();
-				$player.attr("src", src);
-
-				//** player size equal to the image size
-				$playerHolder = $(".player-holder");
-				$playerHolder.css('top', $img.position().top)
-							 .css('width', $img.width())
-							 .css('height', $img.height());
-
-				//** allow drag around		  
-				$detailWrap.draggable({
-					containment : "#board",
-					scroll: false,
-					delay : 10,
-				});
-
-				//** higher than hovered link(100)
-				$ele.css('z-index', '101')
-
-				//** let user know the pannel is draggable
-				$detailWrap.find(".texts").css("cursor","move");
-
-
-				scope.isPlayingVideo = true;   
-			}
-
-			scope.stopVideo = function(){
-
-				//** enable hover again
-				enableHover();
-
-				//** link-detail & img
-				$detailWrap = $ele.find(".link-details").eq(0);
-				$img = $detailWrap.find(".img");
-				$img.show();
-
-				//** set things back
-				$playerHolder.removeAttr("style");
-				$player.attr("src", "").hide();
-				$ele.css('z-index', '');
-
-				$detailWrap.draggable("destroy");
-				$detailWrap.removeAttr("style");
-				$detailWrap.find(".texts").removeAttr("style");
-
-				$timeout(function(){
-					scope.isPlayingVideo = false;
-					scope.showDetail = false;
-				}, 1);
-
-				//** focus me for 30 sec
-				$rootScope.$broadcast("stopVideo", scope.data);
-			}
-
 			//** getThumb depreciated
 			var thumbUrl;
 			scope.getThumb = function(){
@@ -596,20 +526,6 @@ app.directive("imgWatcher", function(){
 
 			scope.openPopup = function(tab){
 				$rootScope.$broadcast("showPopup", tab, scope.data);
-			}
-
-			scope.slideThumb = function(dir){
-				data.thumbIndex += dir;
-				if(data.thumbIndex < 0) data.thumbIndex = 0;
-				if(data.thumbIndex >= data.images.length) data.thumbIndex = data.images.length - 1;
-				var $holder = $ele.find(".img .holder");
-				var $img = $holder.find("img").eq(data.thumbIndex);
-				$holder.height($img.height());
-				$holder.animate({
-					left : -(data.thumbIndex * 330)
-				}, 300, function(){
-					apiService.linkService.save(data);
-				});
 			}
 
 			var timer, timer1, timer3;
@@ -718,6 +634,60 @@ app.directive("imgWatcher", function(){
 
             $ele.on("load", ".thumb-head img", function(){
             	console.log('load');
+            });
+
+
+            scope.stopVideo = function(){
+
+				$typeWrap = $ele.find(".type-wrap").eq(0);
+				$typeWrap.trigger("stopVideo");
+
+				//** enable hover again
+				enableHover();
+
+				$timeout(function(){
+					scope.isPlayingVideo = false;
+					scope.showDetail = false;
+				}, 1);
+
+				//** focus me for 30 sec
+				$rootScope.$broadcast("stopVideo", scope.data);
+
+
+				//** set things back
+				$playerHolder = $ele.find(".player-holder");
+				$player = $playerHolder.find("iframe").eq(0);
+
+				$playerHolder.removeAttr("style");
+				$player.attr("src", "").hide();
+				$ele.css('z-index', '');
+
+				$detailWrap.draggable("destroy");
+				$detailWrap.removeAttr("style");
+				$detailWrap.find(".texts").removeAttr("style");
+				$img = $detailWrap.find(".img>img").eq(0);
+				$img.show();
+			}
+
+            $ele.on("videoStart", ".type-wrap", function(){
+            	//** prevent detail hidden when mouse out
+				$ele.unbind("mouseenter");
+				$ele.unbind("mouseleave");
+
+				//** higher than hovered link(100)
+				$ele.css('z-index', '101')
+				scope.isPlayingVideo = true;
+
+				//** allow drag around
+				$detailWrap = $ele.find(".detail-wrap").eq(0);
+				$detailWrap.draggable({
+					containment : "#board",
+					scroll: false,
+					delay : 10,
+				});
+
+				//** let user know the pannel is draggable
+				$detailWrap.find(".texts").css("cursor","move");
             });
 
             //** maxinum load time 2~3 sec, report error when exceeded

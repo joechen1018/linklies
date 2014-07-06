@@ -1,18 +1,27 @@
-<div class="player-holder">
-	<iframe style="display:none" src="" width="100%" height="100%" frameborder="0"></iframe>
-</div>
+<div link-detail>
+	<div class="type-wrap">
 
-<div class="img" ng-show="!isPlayingVideo && hasImageArea">
-	<div class="holder">
-		<img class="thumb" ng-repeat="img in data.images track by $index" ng-src="{{img}}" data-index="{{thumbIndex}}" class="{{iconHover ? 'icon-hover' : ''}}">
-	</div>
-	<span class="thumb-icon" data-icon="j" bo-show="data.view == 'video'" ng-click="playVideo()">
-	</span>	
-	
-	<div class="arrows" ng-show="data.images.length > 1">
-		<div class="left" data-icon='"' ng-click="slideThumb(-1)"></div>
-		<div class="right" data-icon='#' ng-click="slideThumb(1)"></div>
-	</div>
+		<div class="close-btn" ng-show="isPlayingVideo && showCloseBtn" ng-click="stopVideo()">
+			<span data-icon="I"></span>
+		</div>
 
-	<div class="video-bg" bo-show="data.view == 'video'"></div>
+		<div class="player-holder">
+			<iframe style="display:none" src="" width="100%" height="100%" frameborder="0"></iframe>
+		</div>
+
+		<div class="img" ng-show="!isPlayingVideo && hasImageArea">
+			<div class="holder">
+				<img class="thumb" ng-repeat="img in data.images track by $index" ng-src="{{img}}" data-index="{{thumbIndex}}" class="{{iconHover ? 'icon-hover' : ''}}">
+			</div>
+			<span class="thumb-icon" data-icon="j" bo-show="data.view == 'video'" ng-click="playVideo()">
+			</span>	
+			
+			<div class="arrows" ng-show="data.images.length > 1">
+				<div class="left" data-icon='"' ng-click="slideThumb(-1)"></div>
+				<div class="right" data-icon='#' ng-click="slideThumb(1)"></div>
+			</div>
+
+			<div class="video-bg" bo-show="data.view == 'video'"></div>
+		</div>
+	</div>
 </div>
