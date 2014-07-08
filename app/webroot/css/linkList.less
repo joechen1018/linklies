@@ -8,7 +8,7 @@
 	@h : 38px;
 	@w : 800px;
 	@bg : spin(darken(@bg-color, 35%), 60);
-	div.holder{
+	div.list-holder{
 		position:absolute;
 		left : 5px;
 		top : 0;
@@ -197,11 +197,89 @@ div.selected-content{
 		//background: #eaeaea;
 		overflow: hidden;
 		// .shadow-medium;
-		
 	}
-	img{
-		width : 300px;
-		.shadow-light;
+	.type-wrap{
+		.img{
+			position: relative;
+			max-height: 300px;
+			overflow: hidden;
+			font-size: 0px;
+
+			.holder{
+				position: relative;
+				width : 10000px;
+				overflow: hidden;
+				img{
+					width : 330px;
+					.shadow-light;
+					float : left;
+					&.icon-hover{
+						.alpha(0.7);
+					}
+				}
+			}
+
+			span.thumb-icon{
+				cursor: pointer;
+				position: absolute;
+				font-size : 80px;
+				width : 80px;
+				height : 80px;
+				color: lighten(@orange, 10%);
+				left : ~"calc(50% - 40px)";
+				top : ~"calc(50% - 50px)";
+				z-index: 102;
+				&:hover{
+					color : lighten(@orange, 40%);
+				};
+			}
+
+			div.arrows{
+				position: absolute;
+				width : 100%;
+				height : 100%;
+				top :0;
+				left : 0;
+				.left{
+					left : 0;
+					&:before{
+						left : 10px;
+					};
+				}
+				.right{
+					right : 0;
+					&:before{
+						right : 10px;
+					};
+				}
+				div{
+					position: absolute;
+					z-index: 100;
+					height : 100%;
+					width : 50%;
+					font-size : 40px;
+					&:hover:before{
+						.alpha(1);
+					};
+					&:before{
+						top : 40%;
+						position: absolute;
+						color : white;	
+						.alpha(0.5);
+					};
+				}
+			}
+
+			div.video-bg{
+				position: absolute;
+				width : 60px;
+				height: 40px;
+				background : darken(@orange, 30%);
+				left : ~"calc(50% - 30px)";
+				top : ~"calc(50% - 30px)";
+				z-index: 101;
+			};
+		}
 	}
 	&.left{
 		left : 500px;

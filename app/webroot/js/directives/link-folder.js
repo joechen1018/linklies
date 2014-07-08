@@ -213,6 +213,10 @@ app.directive("imgWatcher", function(){
 			scope.linkList.show = false;
 			scope.linkList.arrowTop = 10;
 			scope.linkList.folderUrl = root + "folder/" + scope.data.hash;
+			scope.templateUrl = "templates/link.type.default.html";
+			//** whether the link has a thumb
+			scope.hasImageArea = true;
+			scope.showCloseBtn = true;
 			// scope.linkList.selectedIndex = 0;
 			//****
 
@@ -223,13 +227,22 @@ app.directive("imgWatcher", function(){
 						scope.linkList.selectedIndex = i;
 						scope.linkList.selectedLink = scope.linkList.content[i];
 						scope.linkList.selectedLink.hover = true;
+						scope.selectedLink = scope.linkList.selectedLink;
+						if(scope.selectedLink.images === "" || scope.selectedLink.images === []){
+							scope.hasImageArea = false;
+						}
+						// console.log(scope.selectedLink);
 					});
-				}, 10);
+
+					var $holder = $ele.find(".img .holder");
+					$holder.css("left", -(scope.selectedLink.thumbIndex*330));
+
+				}, 100);
 			}
 
 			scope.onListItemOut = function(){
-				scope.linkList.selectedLink.hover = false;
 				clearTimeout(hoverTimer);
+				scope.linkList.selectedLink.hover = false;
 			}
 
 			scope.onTitleClick = function(e, link){
@@ -253,7 +266,7 @@ app.directive("imgWatcher", function(){
 						if(list[i].uuid === link.uuid){
 							scope.linkList.content.splice(i, 1);
 							apiService.linkService.remove(link.uuid).then(function(res){
-								console.log(res)
+								// console.log(res)
 							});
 						}
 					}
@@ -331,6 +344,7 @@ app.directive("imgWatcher", function(){
 			scope.iconHover = false;
 			scope.isPlayingVideo = false;
 			scope.showDetail = false;
+			scope.selectedLink = data;
 
 			//** the close button inside 'link-detail' directive 
 			// only shows in folder-link-list view
@@ -496,7 +510,7 @@ app.directive("imgWatcher", function(){
 				$rootScope.$broadcast("openPage", scope.data);
 			}
 
-			//** getThumb depreciated
+			//** getThumb deprecated
 			var thumbUrl;
 			scope.getThumb = function(){
 				//console.log(data);

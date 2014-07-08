@@ -1,7 +1,7 @@
 app.directive('linkDetail', function(apiService, $rootScope, apiParser, $timeout){
 	return {
 		link : function(scope, ele, attrs){
-			var data = scope.data,
+			var data = scope.selectedLink,
 				linkService = apiService.linkService,
 				$playerHolder, 
 				$detailWrap,
@@ -11,8 +11,8 @@ app.directive('linkDetail', function(apiService, $rootScope, apiParser, $timeout
 
 			scope.playVideo = function(){
 
+				data = scope.selectedLink;
 				var type = data.type;
-
 				//** hide displayed image
 				$detailWrap = $ele.find(".type-wrap").eq(0);
 				$detailWrap.trigger("videoStart");
@@ -42,9 +42,12 @@ app.directive('linkDetail', function(apiService, $rootScope, apiParser, $timeout
 			}
 
 			scope.slideThumb = function(dir){
+
+				data = scope.selectedLink;
 				data.thumbIndex += dir;
 				if(data.thumbIndex < 0) data.thumbIndex = 0;
 				if(data.thumbIndex >= data.images.length) data.thumbIndex = data.images.length - 1;
+
 				var $holder = $ele.find(".img .holder");
 				var $img = $holder.find("img").eq(data.thumbIndex);
 				var $wrap = $ele.find(".detail-wrap");
