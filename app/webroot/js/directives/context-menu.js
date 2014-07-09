@@ -46,6 +46,7 @@ app.directive("contextMenu", function(uuid, apiService, apiParser, $rootScope, u
 					{
 						"name" : "upload",
 						"label" : "Upload File",
+						"options" : [],
 						"icon" : "}"
 					},
 					{
@@ -177,6 +178,7 @@ app.directive("contextMenu", function(uuid, apiService, apiParser, $rootScope, u
 			scope.onItemClick= function($event, item){
 				$ele.hide();
 				var ctrl = scope.$parent;
+
 				if(item.name.indexOf("new.") !== -1){
 
 					switch(item.name){
@@ -188,7 +190,7 @@ app.directive("contextMenu", function(uuid, apiService, apiParser, $rootScope, u
 						break;
 					}
 
-				}else if(context['class'] === 'folder'){
+				}else if(scope.context['class'] === 'folder'){
 					switch(item.name){
 						case 'openView' :
 							//** given href in context will create the native link for this option

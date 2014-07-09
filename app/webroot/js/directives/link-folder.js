@@ -237,12 +237,14 @@ app.directive("imgWatcher", function(){
 					var $holder = $ele.find(".img .holder");
 					$holder.css("left", -(scope.selectedLink.thumbIndex*330));
 
-				}, 100);
+				}, 300);
 			}
 
 			scope.onListItemOut = function(){
 				clearTimeout(hoverTimer);
-				scope.linkList.selectedLink.hover = false;
+				if(scope.linkList.selectedLink){
+					scope.linkList.selectedLink.hover = false;
+				}
 			}
 
 			scope.onTitleClick = function(e, link){

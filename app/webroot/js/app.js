@@ -251,7 +251,7 @@ var app = angular.module("lk", ["ngRoute", "pasvaz.bindonce"], function($httpPro
 })
 .controller("appCtrl", function($scope){
 	var checkAuth = function() {
-		gapi.auth.authorize({client_id: clientId, scope: scopes, immediate: true}, authorize);
+		    gapi.auth.authorize({client_id: clientId, scope: scopes, immediate: true}, authorize);
         google.load("picker", "1", {
             callback : function(){
                // _c.log("picker loaded");
