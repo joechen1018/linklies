@@ -36,6 +36,7 @@ class UsersController extends AppController{
 		$this -> loadModel("Folder");
 		$data = $this -> Folder -> findByHash($hash);
 		$this -> set("data", $data);
+		$this -> render("folder.1");
 	}
 
 	public function login(){

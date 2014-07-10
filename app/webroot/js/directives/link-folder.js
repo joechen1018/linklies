@@ -181,13 +181,17 @@ app.directive("imgWatcher", function(){
 				return false;
 			});
 
+			$ele.bind("click", function(){
+
+			});
+
 			//** prevent parent scrolling
 			$ele.on("mousewheel", ".link-list-items", function(){
 				$(this).mousewheelStopPropagation();
 			});
 
 			//** bind mouse enter/leave events
-			bindMouseEvents();
+			//bindMouseEvents();
 
 			scope.onPreviewImgLoad = function(){
 				var $img = $ele.find("img.preview");
@@ -213,6 +217,7 @@ app.directive("imgWatcher", function(){
 			scope.linkList.show = false;
 			scope.linkList.arrowTop = 10;
 			scope.linkList.folderUrl = root + "folder/" + scope.data.hash;
+
 			scope.templateUrl = "templates/link.type.default.html";
 			//** whether the link has a thumb
 			scope.hasImageArea = true;

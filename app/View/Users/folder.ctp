@@ -10,6 +10,7 @@
 		useIframe : link.allowIframe && !(link.type.isImage || link.view === 'video'),
 		noIframe : !(link.allowIframe && !(link.type.isImage || link.view === 'video'))
 	}" data-text="{{link.allowIframe}}">
+	
 		<div class="iframe-wrap">
 			<ul class="options" >
 				<li class="full-screen" ng-click="goFullScreen()" data-icon="d"></li>

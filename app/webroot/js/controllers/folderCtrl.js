@@ -1,3 +1,4 @@
+//deprecated
 app.controller("folderViewCtrl", function($scope, $timeout, keyboardManager, gapiService) {
     //** variables
     var data,
@@ -389,4 +390,30 @@ app.controller("folderViewCtrl", function($scope, $timeout, keyboardManager, gap
     // $(window).bind("beforeunload",function(event){
     //     return "Are you sure leaving this page?";
     // });
+});
+
+//new
+app.controller("folderViewCtrl1", function($scope){
+
+    var data,
+        $view = $(".folder-view-container"),
+        cookieUser = $.cookie("user"),
+        localUser = localStorage.getItem("userData"),
+        user = appData.User, 
+        links = appData.Link,
+        folder = appData.Folder;
+
+    for(var i = 0; i<links.length; i++){
+        if(typeof links[i].images === "string"){
+            links[i].images = [links[i].images];
+            links[i].meta = JSON.parse(links[i].meta);
+            if(links[i].description === ""){
+                links[i].description = links[i].meta['og:description'] || links[i].meta['description'];
+                console.log(links[i].description);
+            }
+        }
+    }    
+    $scope.folder = folder;
+    $scope.links = links;
+    console.log(links);
 });
