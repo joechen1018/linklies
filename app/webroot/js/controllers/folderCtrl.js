@@ -393,10 +393,11 @@ app.controller("folderViewCtrl", function($scope, $timeout, keyboardManager, gap
 });
 
 //new
-app.controller("folderViewCtrl1", function($scope){
+app.controller("folderViewCtrl1", function($scope, $timeout){
 
-    var data,
-        $view = $(".folder-view-container"),
+    var $container = $(".folder-view-container"),
+        $list = $container.find("li.link"),
+        $thumbs,
         cookieUser = $.cookie("user"),
         localUser = localStorage.getItem("userData"),
         user = appData.User, 
@@ -404,16 +405,103 @@ app.controller("folderViewCtrl1", function($scope){
         folder = appData.Folder;
 
     for(var i = 0; i<links.length; i++){
+
         if(typeof links[i].images === "string"){
-            links[i].images = [links[i].images];
+            links[i].images = links[i].images.split(",");
             links[i].meta = JSON.parse(links[i].meta);
             if(links[i].description === ""){
                 links[i].description = links[i].meta['og:description'] || links[i].meta['description'];
-                console.log(links[i].description);
+                // console.log(links[i].description);
             }
         }
     }    
+
+    function reposition(animate){
+
+        var w = $container.width(),
+            w1 = 300,
+            ps = [],
+            cols, m, p;
+
+        if(animate === undefined) animate = false;
+
+        cols = Math.floor(w/w1);
+        m = Math.floor((w - cols*w1)/(cols-1));
+        if(m < 15){
+            m = 15;
+        }else if(m > 30){
+            m = 30;
+        }
+        w1 = (w - m*(cols-1)) / cols;
+
+        //** init size and pos
+        $list.width(w1);
+        $list.find("img.thumb").width(w1);
+        
+        $scope.$apply(function(){
+            $scope.cardWidth = w1;
+        });
+
+        ps = [];
+        $list.each(function(i, e){
+            ps.push({
+                height : $(e).height()
+            });
+        });
+
+        $list.each(function(i, e){
+            var p;
+            if(i<cols){
+                ps[i].top = 0;
+                ps[i].left = i*(w1+m);
+            }else{
+                p = ps[i-cols];
+                ps[i].top = p.top + p.height + m
+                ps[i].left = p.left;
+            }
+        });
+
+        $list.each(function(i, e){
+            if(animate){
+                $(e).animate({
+                    left : ps[i].left,
+                    top : ps[i].top
+                }, 500);
+            }else{
+                $(e).css({
+                    left : ps[i].left,
+                    top : ps[i].top
+                }).show();
+            }
+        });
+    }
+
+    function init(){
+
+        $container = $(".folder-view-container");
+        $list = $container.find("li.link");
+        $thumbs = $(".list img.thumb");
+
+        reposition();
+    }
+
     $scope.folder = folder;
     $scope.links = links;
-    console.log(links);
+    $scope.cardWidth = 300;
+    $scope.playVideo = function(){
+
+    }
+    $scope.slideThumb = function(dir){
+
+    }
+
+    $timeout(init, 1000);
+
+    var timeout;    
+    $(window).resize(function(){
+        clearTimeout(timeout);
+        timeout = setTimeout(function(){
+            reposition(true);
+        }, 500)
+    });
 });
