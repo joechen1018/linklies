@@ -437,7 +437,7 @@ app.controller("folderViewCtrl1", function($scope, $timeout){
         //** init size and pos
         $list.width(w1);
         $list.find("img.thumb").width(w1);
-        
+
         $scope.$apply(function(){
             $scope.cardWidth = w1;
         });
@@ -483,6 +483,21 @@ app.controller("folderViewCtrl1", function($scope, $timeout){
         $thumbs = $(".list img.thumb");
 
         reposition();
+        $list.draggable({
+            start : function(e, ui){
+                var $link = $(ui.helper[0]);
+                $link.css({
+                    "z-index" : 1000
+                });
+            },
+            stop : function(e, ui){
+                var $link = $(ui.helper[0]);
+                $link.css({
+                    "z-index" : 1
+                });
+                reposition(true);
+            }
+        });
     }
 
     $scope.folder = folder;
