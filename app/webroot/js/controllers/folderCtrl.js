@@ -1,4 +1,23 @@
 //deprecated
+angular.module('ng').filter('cut', function () {
+    return function (value, wordwise, max, tail) {
+        if (!value) return '';
+
+        max = parseInt(max, 10);
+        if (!max) return value;
+        if (value.length <= max) return value;
+
+        value = value.substr(0, max);
+        if (wordwise) {
+            var lastspace = value.lastIndexOf(' ');
+            if (lastspace != -1) {
+                value = value.substr(0, lastspace);
+            }
+        }
+
+        return value + (tail || ' …');
+    };
+});
 app.controller("folderViewCtrl", function($scope, $timeout, keyboardManager, gapiService) {
     //** variables
     var data,
@@ -483,6 +502,8 @@ app.controller("folderViewCtrl1", function($scope, $timeout){
         $thumbs = $(".list img.thumb");
 
         reposition();
+
+        var timeout;
         $list.draggable({
             start : function(e, ui){
                 var $link = $(ui.helper[0]);
@@ -491,11 +512,17 @@ app.controller("folderViewCtrl1", function($scope, $timeout){
                 });
             },
             stop : function(e, ui){
-                var $link = $(ui.helper[0]);
-                $link.css({
-                    "z-index" : 1
-                });
+
                 reposition(true);
+
+                var $link = $(ui.helper[0]);
+
+                clearTimeout(timeout);
+                timeout = setTimeout(function(){
+                    $link.css({
+                        "z-index" : 1
+                    });
+                }, 500);
             }
         });
     }
@@ -503,11 +530,38 @@ app.controller("folderViewCtrl1", function($scope, $timeout){
     $scope.folder = folder;
     $scope.links = links;
     $scope.cardWidth = 300;
-    $scope.playVideo = function(){
+    $scope.browserData = {
+        name : "test"
+    };
+    $scope.isOwner = true;
+    // console.log(links);
+    $scope.playVideo = function(videoId){
+        var tmp = "http://www.youtube.com/embed/{{VIDEO_ID}}?autoplay=1",
+            src = tmp.replace("{{VIDEO_ID}}", videoId),
+            $pop = $(".pop-layer"),
+            $holder = $pop.find(".player-holder"),
+            $iframe = $holder.find("iframe").eq(0);
 
+        console.log(src);
+        console.log($iframe);
+        $iframe.attr("src", src);
+        $pop.show();
     }
     $scope.slideThumb = function(dir){
 
+    }
+
+    $scope.openLink = function(link){
+
+    }
+
+    $scope.closePopup = function(){
+        var $pop = $(".pop-layer"),
+            $holder = $pop.find(".player-holder"),
+            $iframe = $holder.find("iframe").eq(0);
+
+        $iframe.attr("src", "");
+        $pop.fadeOut(300);    
     }
 
     $timeout(init, 1000);

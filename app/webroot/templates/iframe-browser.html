@@ -1,0 +1,11 @@
+<div class="iframe-browser">
+	<div class="iframe-holder">
+		<iframe ng-src="{{data.url}}" frameborder="0"></iframe>
+	</div>
+	<ul class="options">
+		<li data-icon="" title="close"></li>
+		<li data-icon="" title="refresh"></li>
+		<li data-icon="" ng-if="!data.fullscreen" class="opt-fullscreen" title="fullscreen"></li>
+		<li data-icon="" ng-if="data.fullscreen" class="fullscreen" title="escape fullscreen"></li>
+	</ul>
+</div>

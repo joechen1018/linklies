@@ -77,17 +77,136 @@ div.folder-view-container{
 				line-height: 22px;
 				color : @dark;
 				padding : 10px 10px 3px 10px;
+				a{
+					font-size : 18px;
+					line-height: 22px;
+					color : @dark;
+				}
+				a:hover{
+					text-decoration: underline;
+				};
 			}
 			p.desc{
-				font-size: 12px;
+				font-size: 13px;
 				color : lighten(@dark, 30%);
 				line-height: 16px;
-				padding : 3px 10px 10px 10px;
+				padding : 3px 10px 40px 10px;
+			}
+			ul.options{
+				@size : 30px;
+				@color : lighten(@dark, 50%);
+				@color-hover : lighten(@dark, 0%);
+
+				position: absolute;
+				right : 8px;
+				bottom : 5px;
+				display: block;
+				width : 100%;
+				height : @size;
+				.alpha(0.4);
+				&:hover{
+					.alpha(1);
+				};
+				li{
+					position: relative;
+					display: block;
+					float:right;
+					width : @size;
+					height: @size;
+					cursor : pointer;
+					&:before{
+						@fsize : 18px;
+						
+						color : @color;
+						font-size : @fsize;
+						display: block;
+						position: absolute;
+						left : (@size - @fsize) / 2;
+						top : (@size - @fsize) / 2;
+					};
+					&:hover, &.hover{
+						&:before{
+							color : @color-hover !important;
+						};
+					};
+				}
 			}
 		}
 	}
 }
-
+div.pop-layer{
+	width: 100%;
+	height: 100%;
+	position: fixed;
+	z-index: 3;
+	display: none;
+	left : 0;
+	top : 0;
+	.bg{
+		background: @dark;
+		.alpha(0.8);
+		width: 100%;
+		height: 100%;
+	}
+	div.player-holder{
+		position: absolute;
+		width : 75%;
+		height: 85%;
+		left : 12.5%;
+		top : 7.5%;
+		z-index: 5;
+		iframe{
+			width : 100%;
+			height: 100%;
+		}
+	}
+	ul.options{
+		@h : 30px;
+		position: absolute;
+		right : -@h;
+		top : 0;
+		width: @h;
+		height : 100%;
+		li{
+			position: absolute;
+			width : @h;
+			height: @h;
+			left : 0;
+			top : 0;
+			background: @dark;
+			&::before{
+				position: absolute;
+				width : @h - 20px;
+				height : @h - 20px;
+				font-size: @h - 30px;
+				color : white;
+				left : 15px;
+				top : 15px;
+			};
+			&.refresh{
+				top : @h;
+			}
+			&.full-screen{
+			}
+			&.back-from-full-screen{
+				left : -50px;
+				top : 0;
+				z-index: 1000;
+				display: none;
+				background: @red;
+			}
+			&:hover{
+				background: @red;
+			};
+		}
+		&.fullscreen{
+			li.back-from-full-screen{
+				display: block !important;
+				.alpha(1) !important;
+			}
+		}
+	}	
+}
 
 #links-container{
 	position: fixed;
