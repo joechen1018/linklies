@@ -9,8 +9,8 @@ app.directive("iframeBrowser", function(){
 		scope: {
 		    data : "=browserData"
 		},
-		link : function(scope, ele, attrs, ctrl){
-			console.log(scope.data);
+		link : function(scope, ele, attrs, ctrl, sce){
+			scope.data.url = "";
 		}
 	}
 });	

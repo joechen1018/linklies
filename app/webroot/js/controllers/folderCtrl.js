@@ -446,10 +446,10 @@ app.controller("folderViewCtrl1", function($scope, $timeout){
 
         cols = Math.floor(w/w1);
         m = Math.floor((w - cols*w1)/(cols-1));
-        if(m < 15){
-            m = 15;
-        }else if(m > 30){
-            m = 30;
+        if(m < 20){
+            m = 20;
+        }else if(m > 35){
+            m = 35;
         }
         w1 = (w - m*(cols-1)) / cols;
 
@@ -531,7 +531,7 @@ app.controller("folderViewCtrl1", function($scope, $timeout){
     $scope.links = links;
     $scope.cardWidth = 300;
     $scope.browserData = {
-        name : "test"
+        url : ""
     };
     $scope.isOwner = true;
     // console.log(links);
@@ -540,10 +540,8 @@ app.controller("folderViewCtrl1", function($scope, $timeout){
             src = tmp.replace("{{VIDEO_ID}}", videoId),
             $pop = $(".pop-layer"),
             $holder = $pop.find(".player-holder"),
-            $iframe = $holder.find("iframe").eq(0);
+            $player = $holder.find("iframe.player").eq(0);
 
-        console.log(src);
-        console.log($iframe);
         $iframe.attr("src", src);
         $pop.show();
     }
@@ -552,7 +550,13 @@ app.controller("folderViewCtrl1", function($scope, $timeout){
     }
 
     $scope.openLink = function(link){
+        var $pop = $(".pop-layer"),
+            $holder = $pop.find(".iframe-holder"),
+            $iframe = $holder.find("iframe.browser").eq(0);
 
+        $pop.show();
+        $scope.browserData.show = true;
+        $scope.browserData.url = link.url;
     }
 
     $scope.closePopup = function(){

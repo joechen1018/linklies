@@ -47,9 +47,13 @@
 
 	<div class="pop-layer">
 		<div class="player-holder">
-			<iframe src="" allowfullscreen width="100%" height="100%" frameborder="0"></iframe>
+			<iframe class="player" src="" allowfullscreen width="100%" height="100%" frameborder="0"></iframe>
 		</div>
-		<div class="browser" ng-show="browserData.show" iframe-browser browser-data="browserData" ></div>
+		
+		<div class="browser" ng-show="browserData.show" iframe-browser browser-data="browserData" >
+			
+		</div>
+
 		<div class="bg" ng-click="closePopup()"></div>
 	</div>
 </div>
