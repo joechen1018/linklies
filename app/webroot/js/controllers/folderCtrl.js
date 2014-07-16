@@ -19,6 +19,7 @@ angular.module('ng').filter('cut', function () {
     };
 });
 app.controller("folderViewCtrl", function($scope, $timeout, keyboardManager, gapiService) {
+    return;
     //** variables
     var data,
         $view = $("#links-container"),
@@ -412,7 +413,7 @@ app.controller("folderViewCtrl", function($scope, $timeout, keyboardManager, gap
 });
 
 //new
-app.controller("folderViewCtrl1", function($scope, $timeout){
+app.controller("folderViewCtrl1", function($scope, $timeout, $sce, $rootScope){
 
     var $container = $(".folder-view-container"),
         $list = $container.find("li.link"),
@@ -428,6 +429,7 @@ app.controller("folderViewCtrl1", function($scope, $timeout){
         if(typeof links[i].images === "string"){
             links[i].images = links[i].images.split(",");
             links[i].meta = JSON.parse(links[i].meta);
+            links[i].type = JSON.parse(links[i].type);
             if(links[i].description === ""){
                 links[i].description = links[i].meta['og:description'] || links[i].meta['description'];
                 // console.log(links[i].description);
@@ -440,7 +442,8 @@ app.controller("folderViewCtrl1", function($scope, $timeout){
         var w = $container.width(),
             w1 = 300,
             ps = [],
-            cols, m, p;
+            cols, m, p,
+            $spacer = $container.find(".spacer");
 
         if(animate === undefined) animate = false;
 
@@ -493,6 +496,18 @@ app.controller("folderViewCtrl1", function($scope, $timeout){
                 }).show();
             }
         });
+
+        var bottom = (function(){
+            var tmp = 0;
+            $list.each(function(i, e){
+                if(ps[i].top + $(e).height() > tmp){
+                    tmp = ps[i].top + $(e).height();
+                }
+            });
+            return tmp;
+        })();
+
+        $spacer.height(bottom + 50);
     }
 
     function init(){
@@ -531,42 +546,70 @@ app.controller("folderViewCtrl1", function($scope, $timeout){
     $scope.links = links;
     $scope.cardWidth = 300;
     $scope.browserData = {
-        url : ""
+        url : "",
+        show : false
     };
     $scope.isOwner = true;
     // console.log(links);
-    $scope.playVideo = function(videoId){
-        var tmp = "http://www.youtube.com/embed/{{VIDEO_ID}}?autoplay=1",
-            src = tmp.replace("{{VIDEO_ID}}", videoId),
+
+    $scope.playVideo = function(link){
+        // console.log(link);
+        var vid = link.type.videoId,
+            tmp = "http://www.youtube.com/embed/{{VIDEO_ID}}?autoplay=1",
+            src = tmp.replace("{{VIDEO_ID}}", vid),
             $pop = $(".pop-layer"),
+            $browser = $pop.find(".browser"),
             $holder = $pop.find(".player-holder"),
             $player = $holder.find("iframe.player").eq(0);
 
-        $iframe.attr("src", src);
+        $player.attr("src", src);
+
+        $holder.show();
         $pop.show();
+        $browser.hide();
     }
     $scope.slideThumb = function(dir){
 
     }
 
     $scope.openLink = function(link){
+
+        if(link.view === 'video'){
+            $scope.playVideo(link);
+            return;
+        }
+
+        $("body").css("overflow", "hidden");
+
         var $pop = $(".pop-layer"),
             $holder = $pop.find(".iframe-holder"),
             $iframe = $holder.find("iframe.browser").eq(0);
 
+        var $browser = $(".browser"),
+            $playerHolder = $(".player-holder");
+            
         $pop.show();
+        $browser.show();
+        $playerHolder.hide();
+
         $scope.browserData.show = true;
-        $scope.browserData.url = link.url;
+        $scope.browserData.url = $sce.trustAsResourceUrl(link.url);
     }
 
     $scope.closePopup = function(){
+        $("body").css("overflow", "");
         var $pop = $(".pop-layer"),
             $holder = $pop.find(".player-holder"),
-            $iframe = $holder.find("iframe").eq(0);
+            $iframe = $(".browser").find("iframe").eq(0),
+            $player = $holder.find("iframe").eq(0);
 
         $iframe.attr("src", "");
-        $pop.fadeOut(300);    
+        $player.attr("src", "");
+
+        $pop.hide();
     }
+
+    $rootScope.$on("browserClosed", $scope.closePopup);
 
     $timeout(init, 1000);
 

@@ -64,7 +64,7 @@
 	<script src="<?php echo $this -> webroot?>js/services/folderViewApi.js" type="text/javascript" charset="utf-8"></script>
 
 </head>
-<body style="overflow: hidden;">
+<body>
 	<?php echo $this -> fetch("content") ?>
 </body>
 </html>

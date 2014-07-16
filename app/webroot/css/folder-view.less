@@ -39,7 +39,6 @@ div.folder-view-container{
 			background: white;
 			.border-radius(3px);
 			.shadow-light;
-			overflow: hidden;
 			z-index: 1;
 			.img-wrap{
 				width : 100%;
@@ -104,7 +103,7 @@ div.folder-view-container{
 				display: block;
 				width : 100%;
 				height : @size;
-				.alpha(0.4);
+				.alpha(1);
 				&:hover{
 					.alpha(1);
 				};
@@ -130,9 +129,27 @@ div.folder-view-container{
 							color : @color-hover !important;
 						};
 					};
+					&.open-in-tab{
+						&:before{
+							font-size: 20px !important;
+						};
+						&.hover{
+							.alpha(1);
+							&:before{
+								color : @red !important;
+							};
+						}
+					}
 				}
 			}
 		}
+	}
+
+	div.spacer{
+		position: absolute;
+		width : 1px;
+		left : 0px;
+		top : 0;
 	}
 }
 div.pop-layer{
@@ -156,6 +173,7 @@ div.pop-layer{
 		left : 12.5%;
 		top : 7.5%;
 		z-index: 5;
+		display: none;
 		iframe.player{
 			width : 100%;
 			height: 100%;
@@ -169,51 +187,53 @@ div.pop-layer{
 			position: absolute;
 			left : 10%;
 			z-index: 3;
+			.shadow-medium;
+			background: white;
 			iframe{
 				width : 100%;
 				height : 100%;
 			}
-		}
-		ul.options{
-			@h : 30px;
-			position: absolute;
-			right : -@h;
-			top : 0;
-			width: @h;
-			height : 100%;
-			li{
+			ul.options{
+				@h : 60px;
 				position: absolute;
-				width : @h;
-				height: @h;
-				left : 0;
+				right : -@h;
 				top : 0;
-				background: @dark;
-				&::before{
-					position: absolute;
-					width : @h - 20px;
-					height : @h - 20px;
-					font-size: @h - 30px;
-					color : white;
-					left : 15px;
-					top : 15px;
-				};
-				&.refresh{
-					top : @h;
+				width: @h;
+				li{
+					width : @h;
+					height: @h;
+					background: @dark;
+					position: relative;
+					cursor: pointer;
+					&::before{
+						position: absolute;
+						width : @h - 20px;
+						height : @h - 20px;
+						font-size: 25px;
+						color : white;
+						left : 17.5px;
+						top : 17.5px;
+					};
+					&.close{
+						&::before{
+							font-size: 30px;
+							left : 15px;
+							top : 15px;
+						};
+					}
+					&.esc-fullscreen{
+						position: absolute;
+						left : -@h;
+						top : 0;
+						z-index: 5;
+						background: @red;
+					}
+					&:hover{
+						background: @red;
+					};
 				}
-				&.fullscreen{
-				}
-				&.esc-fullscreen{
-					left : -50px;
-					top : 0;
-					z-index: 1000;
-					display: none;
-					background: @red;
-				}
-				&:hover{
-					background: @red;
-				};
-			}
-		}	
+			}	
+		}
 	}
 }
 

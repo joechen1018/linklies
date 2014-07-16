@@ -1,11 +1,11 @@
 <div class="iframe-browser">
 	<div class="iframe-holder">
-		<iframe frameborder="0"></iframe>
+		<iframe src="{{data.url}}" frameborder="0"></iframe>
+		<ul class="options">
+			<li data-icon="I" class="close" title="close" ng-click="closeBrowser()"></li>
+			<li data-icon="x" ng-if="data.fullscreen === true" ng-click="escapeFullscreen()" class="esc-fullscreen" title="escape fullscreen"></li>
+			<li data-icon="d" ng-if="data.fullscreen === false" ng-click="gotoFullscreen()" class="fullscreen" title="fullscreen"></li>
+			<li data-icon="J" title="refresh"></li>
+		</ul>
 	</div>
-	<ul class="options">
-		<li data-icon="" title="close"></li>
-		<li data-icon="" title="refresh"></li>
-		<li data-icon="" ng-if="!data.fullscreen" class="opt-fullscreen" title="fullscreen"></li>
-		<li data-icon="" ng-if="data.fullscreen" class="fullscreen" title="escape fullscreen"></li>
-	</ul>
 </div>
