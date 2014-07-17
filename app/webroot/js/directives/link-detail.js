@@ -9,34 +9,51 @@ app.directive('linkDetail', function(apiService, $rootScope, apiParser, $timeout
 				$ele = $(ele),
 				$player;
 
-			scope.playVideo = function(){
+			// scope.playVideo = function(){
 
-				data = scope.selectedLink;
-				var type = data.type;
-				//** hide displayed image
-				$detailWrap = $ele.find(".type-wrap").eq(0);
-				$detailWrap.trigger("videoStart");
+			// 	data = scope.selectedLink;
+			// 	var type = data.type;
+			// 	//** hide displayed image
+			// 	$detailWrap = $ele.find(".type-wrap").eq(0);
+			// 	$detailWrap.trigger("videoStart");
 
-				$img = $detailWrap.find(".img").find("img").eq(0);
-				$img.hide();
+			// 	$img = $detailWrap.find(".img").find("img").eq(0);
+			// 	$img.hide();
 
-				//** embed iframe player
-				var src = utils.replace(type.embedUrl, {
-					"VIDEO_ID" : type.videoId
-				});
+			// 	//** embed iframe player
+			// 	var src = utils.replace(type.embedUrl, {
+			// 		"VIDEO_ID" : type.videoId
+			// 	});
 
 
-				$player = $ele.find(".player-holder iframe").eq(0);
-				$player.show();
-				$player.attr("src", src);
+			// 	$player = $ele.find(".player-holder iframe").eq(0);
+			// 	$player.show();
+			// 	$player.attr("src", src);
 
-				//** player size equal to the image size
-				$playerHolder = $ele.find(".player-holder");
-				$playerHolder.css('top', $img.position().top)
-							 .css('width', $img.width())
-							 .css('height', $img.height());
-			}
+			// 	//** player size equal to the image size
+			// 	$playerHolder = $ele.find(".player-holder");
+			// 	$playerHolder.css('top', $img.position().top)
+			// 				 .css('width', $img.width())
+			// 				 .css('height', $img.height());
+			// }
 
+			scope.playVideo = function(link){
+		        console.log(link);
+		        var vid = link.type.videoId,
+		            tmp = "http://www.youtube.com/embed/{{VIDEO_ID}}?autoplay=1",
+		            src = tmp.replace("{{VIDEO_ID}}", vid),
+		            $pop = $(".pop-layer"),
+		            $browser = $pop.find(".browser"),
+		            $holder = $pop.find(".player-holder"),
+		            $player = $holder.find("iframe.player").eq(0);
+
+		        $player.attr("src", src);
+
+		        $holder.show();
+		        $pop.show();
+		        $browser.hide();
+		    }
+		    
 			scope.stopVideo = function(){
 
 			}

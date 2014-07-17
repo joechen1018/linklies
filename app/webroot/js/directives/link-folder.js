@@ -266,6 +266,7 @@ app.directive("imgWatcher", function(){
 
 				}
 			}
+
 			scope.deleteLink = function(link){
 				var list = scope.linkList.content;
 				if(confirm("Delete link?")){
@@ -302,10 +303,10 @@ app.directive("imgWatcher", function(){
 				return arr;
 			}
 
+			//** deprecated
 			scope.openPopup = function(tab, link){
 				$rootScope.$broadcast("showPopup", tab, link);
 			}
-
 		}
 	}
 })
@@ -548,6 +549,46 @@ app.directive("imgWatcher", function(){
 			scope.openPopup = function(tab){
 				$rootScope.$broadcast("showPopup", tab, scope.data);
 			}
+
+			scope.openLink = function(link){
+
+				console.log(link);
+		        if(link.view === 'video'){
+		            scope.playVideo(link);
+		            return;
+		        }
+
+		        $("body").css("overflow", "hidden");
+
+		        var $pop = $(".pop-layer"),
+		            $holder = $pop.find(".iframe-holder"),
+		            $iframe = $holder.find("iframe.browser").eq(0);
+
+		        var $browser = $(".browser"),
+		            $playerHolder = $(".player-holder");
+		            
+		        $pop.show();
+		        $browser.show();
+		        $playerHolder.hide();
+
+		        $rootScope.$broadcast("browserDataChange", {
+		        	show : true,
+		        	url : link.url
+		        });
+		    }
+
+		    scope.closePopup = function(){
+		        $("body").css("overflow", "");
+		        var $pop = $(".pop-layer"),
+		            $holder = $pop.find(".player-holder"),
+		            $iframe = $(".browser").find("iframe").eq(0),
+		            $player = $holder.find("iframe").eq(0);
+
+		        $iframe.attr("src", "");
+		        $player.attr("src", "");
+
+		        $pop.hide();
+		    }
 
 			var timer, timer1, timer3;
 			var enableHover = function(){

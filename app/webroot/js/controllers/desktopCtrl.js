@@ -1,7 +1,7 @@
 'use strict';
 
 goog.require('goog.math.Rect');
-app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, 
+app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, $sce,
 									    keyboardManager, resize, gridSystem, gridRects, apiService, uuid, apiParser){
 	var $allElements,
 		$desk = $('#desktop-view'),
@@ -472,6 +472,11 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http,
 
 		applyFocus(browsingLink, getLinkIndex(browsingLink), false);
 	}
+	$scope.browserData = {
+        url : "",
+        show : false
+    };
+
 	var getLinkIndex = function(link){
 		var _t = function(str){try{eval(str);}catch(e){return false;}}
 		for(var i = 0; i<$scope.links.length; i++){
@@ -502,6 +507,13 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http,
 			});
 		}, 30 * 1000);
 	}
+
+	$rootScope.$on("browserDataChange", function(e, data){
+		if(data.url){
+			data.url = $sce.trustAsResourceUrl(data.url)
+		}
+		$scope.browserData = data;
+	});
 
 	//** delete folder
 	$rootScope.$on("deleteFolder", function(e, folder_id){

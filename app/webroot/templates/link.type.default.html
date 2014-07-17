@@ -13,7 +13,7 @@
 			<div class="holder">
 				<img class="thumb" ng-repeat="img in selectedLink.images track by $index" ng-src="{{img}}" data-index="{{thumbIndex}}" class="{{iconHover ? 'icon-hover' : ''}}">
 			</div>
-			<span class="thumb-icon" data-icon="j" ng-show="selectedLink.view == 'video'" ng-click="playVideo()">
+			<span class="thumb-icon" data-icon="j" ng-show="selectedLink.view == 'video'" ng-click="playVideo(selectedLink)">
 			</span>	
 			
 			<div class="arrows" ng-show="selectedLink.images.length > 1">

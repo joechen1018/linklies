@@ -18,11 +18,11 @@
 		
 		<div class="texts">
 
-			<h1 bo-show="!data.allowIframe" class="title">
-				<a target="_blank" bo-href="data.url">{{data.title}}</a>
+			<h1 bindonce bo-show="!data.allowIframe && data.view !== 'video'" class="title">
+				<a target="_blank"  bindonce ng-mouseenter="data.mouseEnter = true" ng-mouseout="data.mouseEnter = false" bo-href="data.url">{{data.title}}</a>
 			</h1>
 
-			<h1  bo-show="data.allowIframe" ng-click="openPage()" class="title">{{data.title}}</h1>
+			<h1  bindonce bo-show="data.allowIframe || data.view === 'video'" ng-click="openLink(data)" class="title">{{data.title}}</h1>
 
 			<div class="more">
 				<a bo-href="data.url" target="_blank"> 

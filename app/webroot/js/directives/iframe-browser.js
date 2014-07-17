@@ -1,7 +1,7 @@
 app.directive("iframeBrowser", function($rootScope){
 	return {
 		restrict : "EA",
-		templateUrl : "../templates/iframe-browser.html",
+		templateUrl : root + "templates/iframe-browser.html",
 		controller : function($scope){
 
 		},

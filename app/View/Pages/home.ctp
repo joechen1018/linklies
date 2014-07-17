@@ -106,7 +106,7 @@
 	</div>
 	-->
 	
-	<div id="browser" ng-show="showBrowser">
+	<!-- <div id="browser" ng-show="showBrowser">
 		<div class="iframe-wrap" ng-show="showBrowser && showWrap">
 			<iframe src="" sandbox="allow-forms allow-scripts allow-same-origin" frameborder="0" ng-style="{
 				display : none
@@ -118,20 +118,28 @@
 			<div class="btn">
 				<span data-icon="I" ng-click="closeBrowser()"></span>	
 			</div>
-			<!-- <div class="btn">
-				<span data-icon="q" ng-click="closeBrowser()"></span>	
-			</div> -->
 		</div>
-	</div>
+	</div> -->
 	<!-- end #browser -->
+
+	<div class="pop-layer">
+		<div class="player-holder">
+			<iframe class="player" src="" allowfullscreen width="100%" height="100%" frameborder="0"></iframe>
+		</div>
+		
+		<div class="browser" iframe-browser browser-data="browserData">
+		</div>
+
+		<div class="bg" ng-click="closePopup()"></div>
+	</div>
 </div>
 
-<div id="popup-holder" ng-controller="popupCtrl" ng-show="show">
+<!-- <div id="popup-holder" ng-controller="popupCtrl" ng-show="show">
 	<div class="panel-holder" ng-include="popupUrl" onload="onPopupLoaded()">
 		
 	</div>
 	<div class="overlay"></div>
-</div>
+</div> -->
 
 <div id="dom-holder">
 	
