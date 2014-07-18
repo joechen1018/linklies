@@ -1,4 +1,180 @@
-//deprecated
+app.controller("folderViewCtrl1", function($scope, $timeout, $sce, $rootScope, popupData){
+
+    var $container = $(".folder-view-container"),
+        $list = $container.find("li.link"),
+        $thumbs,
+        cookieUser = $.cookie("user"),
+        localUser = localStorage.getItem("userData"),
+        user = appData.User, 
+        links = appData.Link,
+        folder = appData.Folder;
+
+    for(var i = 0; i<links.length; i++){
+
+        if(typeof links[i].images === "string"){
+            links[i].images = links[i].images.split(",");
+            links[i].meta = JSON.parse(links[i].meta);
+            links[i].type = JSON.parse(links[i].type);
+            if(links[i].description === ""){
+                links[i].description = links[i].meta['og:description'] || links[i].meta['description'];
+                // console.log(links[i].description);
+            }
+        }
+    }    
+
+    function reposition(animate){
+
+        var w = $container.width(),
+            w1 = 300,
+            ps = [],
+            cols, m, p,
+            $spacer = $container.find(".spacer");
+
+        if(animate === undefined) animate = false;
+
+        cols = Math.floor(w/w1);
+        m = Math.floor((w - cols*w1)/(cols-1));
+        if(m < 20){
+            m = 20;
+        }else if(m > 35){
+            m = 35;
+        }
+        w1 = (w - m*(cols-1)) / cols;
+
+        //** init size and pos
+        $list.width(w1);
+        $list.find("img.thumb").width(w1);
+
+        $scope.$apply(function(){
+            $scope.cardWidth = w1;
+        });
+
+        ps = [];
+        $list.each(function(i, e){
+            ps.push({
+                height : $(e).height()
+            });
+        });
+
+        $list.each(function(i, e){
+            var p;
+            if(i<cols){
+                ps[i].top = 0;
+                ps[i].left = i*(w1+m);
+            }else{
+                p = ps[i-cols];
+                ps[i].top = p.top + p.height + m
+                ps[i].left = p.left;
+            }
+        });
+
+        $list.each(function(i, e){
+            if(animate){
+                $(e).animate({
+                    left : ps[i].left,
+                    top : ps[i].top
+                }, 500);
+            }else{
+                $(e).css({
+                    left : ps[i].left,
+                    top : ps[i].top
+                }).show();
+            }
+        });
+
+        var bottom = (function(){
+            var tmp = 0;
+            $list.each(function(i, e){
+                if(ps[i].top + $(e).height() > tmp){
+                    tmp = ps[i].top + $(e).height();
+                }
+            });
+            return tmp;
+        })();
+
+        $spacer.height(bottom + 50);
+    }
+
+    function init(){
+
+        $container = $(".folder-view-container");
+        $list = $container.find("li.link");
+        $thumbs = $(".list img.thumb");
+
+        reposition();
+
+        var timeout;
+        $list.draggable({
+            start : function(e, ui){
+                var $link = $(ui.helper[0]);
+                $link.css({
+                    "z-index" : 1000
+                });
+            },
+            stop : function(e, ui){
+
+                reposition(true);
+
+                var $link = $(ui.helper[0]);
+
+                clearTimeout(timeout);
+                timeout = setTimeout(function(){
+                    $link.css({
+                        "z-index" : 1
+                    });
+                }, 500);
+            }
+        });
+    }
+
+    $scope.popupData = popupData;
+    $scope.folder = folder;
+    $scope.links = links;
+    $scope.cardWidth = 300;
+    $scope.isOwner = true;
+    // console.log(links);
+
+    $scope.playVideo = function(link){
+        // console.log(link);
+        var vid = link.type.videoId,
+            tmp = "http://www.youtube.com/embed/{{VIDEO_ID}}?autoplay=1",
+            src = tmp.replace("{{VIDEO_ID}}", vid);
+
+        popupData.show = true;
+        popupData.player.src = $sce.trustAsResourceUrl(src);
+        popupData.player.show = true;
+        popupData.browser.show = false;
+
+        $scope.popupData = popupData;
+    }
+
+    $scope.openLink = function(link){
+
+        if(link.view === 'video'){
+            $scope.playVideo(link);
+            return;
+        }
+
+        //** prevent body to scroll
+        $("body").css("overflow", "hidden");
+
+        popupData.show = true;
+        popupData.browser.show = true;
+        popupData.browser.url = $sce.trustAsResourceUrl(link.url);
+    }
+
+    $timeout(init, 1000);
+
+    var timeout;    
+    $(window).resize(function(){
+        clearTimeout(timeout);
+        timeout = setTimeout(function(){
+            reposition(true);
+        }, 500)
+    });
+});
+
+//** deprecated **************************************************************************
 angular.module('ng').filter('cut', function () {
     return function (value, wordwise, max, tail) {
         if (!value) return '';
@@ -18,6 +194,8 @@ angular.module('ng').filter('cut', function () {
         return value + (tail || ' …');
     };
 });
+
+//** deprecated **************************************************************************
 app.controller("folderViewCtrl", function($scope, $timeout, keyboardManager, gapiService) {
     return;
     //** variables
@@ -410,214 +588,4 @@ app.controller("folderViewCtrl", function($scope, $timeout, keyboardManager, gap
     // $(window).bind("beforeunload",function(event){
     //     return "Are you sure leaving this page?";
     // });
-});
-
-//new
-app.controller("folderViewCtrl1", function($scope, $timeout, $sce, $rootScope){
-
-    var $container = $(".folder-view-container"),
-        $list = $container.find("li.link"),
-        $thumbs,
-        cookieUser = $.cookie("user"),
-        localUser = localStorage.getItem("userData"),
-        user = appData.User, 
-        links = appData.Link,
-        folder = appData.Folder;
-
-    for(var i = 0; i<links.length; i++){
-
-        if(typeof links[i].images === "string"){
-            links[i].images = links[i].images.split(",");
-            links[i].meta = JSON.parse(links[i].meta);
-            links[i].type = JSON.parse(links[i].type);
-            if(links[i].description === ""){
-                links[i].description = links[i].meta['og:description'] || links[i].meta['description'];
-                // console.log(links[i].description);
-            }
-        }
-    }    
-
-    function reposition(animate){
-
-        var w = $container.width(),
-            w1 = 300,
-            ps = [],
-            cols, m, p,
-            $spacer = $container.find(".spacer");
-
-        if(animate === undefined) animate = false;
-
-        cols = Math.floor(w/w1);
-        m = Math.floor((w - cols*w1)/(cols-1));
-        if(m < 20){
-            m = 20;
-        }else if(m > 35){
-            m = 35;
-        }
-        w1 = (w - m*(cols-1)) / cols;
-
-        //** init size and pos
-        $list.width(w1);
-        $list.find("img.thumb").width(w1);
-
-        $scope.$apply(function(){
-            $scope.cardWidth = w1;
-        });
-
-        ps = [];
-        $list.each(function(i, e){
-            ps.push({
-                height : $(e).height()
-            });
-        });
-
-        $list.each(function(i, e){
-            var p;
-            if(i<cols){
-                ps[i].top = 0;
-                ps[i].left = i*(w1+m);
-            }else{
-                p = ps[i-cols];
-                ps[i].top = p.top + p.height + m
-                ps[i].left = p.left;
-            }
-        });
-
-        $list.each(function(i, e){
-            if(animate){
-                $(e).animate({
-                    left : ps[i].left,
-                    top : ps[i].top
-                }, 500);
-            }else{
-                $(e).css({
-                    left : ps[i].left,
-                    top : ps[i].top
-                }).show();
-            }
-        });
-
-        var bottom = (function(){
-            var tmp = 0;
-            $list.each(function(i, e){
-                if(ps[i].top + $(e).height() > tmp){
-                    tmp = ps[i].top + $(e).height();
-                }
-            });
-            return tmp;
-        })();
-
-        $spacer.height(bottom + 50);
-    }
-
-    function init(){
-
-        $container = $(".folder-view-container");
-        $list = $container.find("li.link");
-        $thumbs = $(".list img.thumb");
-
-        reposition();
-
-        var timeout;
-        $list.draggable({
-            start : function(e, ui){
-                var $link = $(ui.helper[0]);
-                $link.css({
-                    "z-index" : 1000
-                });
-            },
-            stop : function(e, ui){
-
-                reposition(true);
-
-                var $link = $(ui.helper[0]);
-
-                clearTimeout(timeout);
-                timeout = setTimeout(function(){
-                    $link.css({
-                        "z-index" : 1
-                    });
-                }, 500);
-            }
-        });
-    }
-
-    $scope.folder = folder;
-    $scope.links = links;
-    $scope.cardWidth = 300;
-    $scope.browserData = {
-        url : "",
-        show : false
-    };
-    $scope.isOwner = true;
-    // console.log(links);
-
-    $scope.playVideo = function(link){
-        // console.log(link);
-        var vid = link.type.videoId,
-            tmp = "http://www.youtube.com/embed/{{VIDEO_ID}}?autoplay=1",
-            src = tmp.replace("{{VIDEO_ID}}", vid),
-            $pop = $(".pop-layer"),
-            $browser = $pop.find(".browser"),
-            $holder = $pop.find(".player-holder"),
-            $player = $holder.find("iframe.player").eq(0);
-
-        $player.attr("src", src);
-
-        $holder.show();
-        $pop.show();
-        $browser.hide();
-    }
-    $scope.slideThumb = function(dir){
-
-    }
-
-    $scope.openLink = function(link){
-
-        if(link.view === 'video'){
-            $scope.playVideo(link);
-            return;
-        }
-
-        $("body").css("overflow", "hidden");
-
-        var $pop = $(".pop-layer"),
-            $holder = $pop.find(".iframe-holder"),
-            $iframe = $holder.find("iframe.browser").eq(0);
-
-        var $browser = $(".browser"),
-            $playerHolder = $(".player-holder");
-            
-        $pop.show();
-        $browser.show();
-        $playerHolder.hide();
-
-        $scope.browserData.show = true;
-        $scope.browserData.url = $sce.trustAsResourceUrl(link.url);
-    }
-
-    $scope.closePopup = function(){
-        $("body").css("overflow", "");
-        var $pop = $(".pop-layer"),
-            $holder = $pop.find(".player-holder"),
-            $iframe = $(".browser").find("iframe").eq(0),
-            $player = $holder.find("iframe").eq(0);
-
-        $iframe.attr("src", "");
-        $player.attr("src", "");
-
-        $pop.hide();
-    }
-
-    $rootScope.$on("browserClosed", $scope.closePopup);
-
-    $timeout(init, 1000);
-
-    var timeout;    
-    $(window).resize(function(){
-        clearTimeout(timeout);
-        timeout = setTimeout(function(){
-            reposition(true);
-        }, 500)
-    });
 });

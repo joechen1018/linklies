@@ -47,12 +47,13 @@
 		<div class="spacer"></div>
 	</div>
 
-	<div class="pop-layer">
-		<div class="player-holder">
-			<iframe class="player" src="" allowfullscreen width="100%" height="100%" frameborder="0"></iframe>
+	<div class="pop-layer" ng-controller="popupCtrl" ng-show="popupData.show">
+		<div class="player-holder" ng-show="popupData.player.show">
+			<iframe class="player" src="{{popupData.player.src}}" allowfullscreen width="100%" height="100%" frameborder="0"></iframe>
 		</div>
 		
-		<div class="browser" iframe-browser browser-data="browserData" >
+		<div class="browser-holder"  ng-show="popupData.browser.show">
+			<div iframe-browser></div>
 		</div>
 
 		<div class="bg" ng-click="closePopup()"></div>

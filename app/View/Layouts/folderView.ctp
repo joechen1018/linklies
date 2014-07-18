@@ -56,9 +56,13 @@
 	
 	<!-- keybaordManager service -->
 	<script src="<?php echo $this -> webroot?>js/services/keyboardManager.js" type="text/javascript" charset="utf-8"></script>
-	
+
+	<script src="<?php echo $this -> webroot?>js/factories/popupData.js" type="text/javascript" charset="utf-8"></script>
+
 	<!-- controller -->
 	<script src="<?php echo $this -> webroot?>js/controllers/folderCtrl.js" type="text/javascript" charset="utf-8"></script>
+
+	<script src="<?php echo $this -> webroot?>js/controllers/popupCtrl.js" type="text/javascript" charset="utf-8"></script>
 
 	<!-- backend api for folder view -->
 	<script src="<?php echo $this -> webroot?>js/services/folderViewApi.js" type="text/javascript" charset="utf-8"></script>

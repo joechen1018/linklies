@@ -93,41 +93,13 @@
 	</div>
 	<!-- end #baord -->
 	
-	<!--
-	<div id="link-list" ng-show="showLinkList">
-		<div class="arrow arrow-left"></div>
-		<p><a href="{{folderUrl}}">Open in new tab</a></p>
-		<ul>
-			<li ng-repeat="link in linkList">
-				<img src="{{link.ico}}" alt="">
-				<a href="{{link.url}}" target="_blank">{{link.title}}</a>
-			</li>
-		</ul>
-	</div>
-	-->
-	
-	<!-- <div id="browser" ng-show="showBrowser">
-		<div class="iframe-wrap" ng-show="showBrowser && showWrap">
-			<iframe src="" sandbox="allow-forms allow-scripts allow-same-origin" frameborder="0" ng-style="{
-				display : none
-			}"></iframe>
-		</div>
-		<div class="bg" ng-click="closeBrowser()"></div>
-
-		<div class="btns">
-			<div class="btn">
-				<span data-icon="I" ng-click="closeBrowser()"></span>	
-			</div>
-		</div>
-	</div> -->
-	<!-- end #browser -->
-
-	<div class="pop-layer">
-		<div class="player-holder">
-			<iframe class="player" src="" allowfullscreen width="100%" height="100%" frameborder="0"></iframe>
+	<div class="pop-layer" ng-controller="popupCtrl" ng-show="popupData.show">
+		<div class="player-holder" ng-show="popupData.player.show">
+			<iframe class="player" src="{{popupData.player.src}}" allowfullscreen width="100%" height="100%" frameborder="0"></iframe>
 		</div>
 		
-		<div class="browser" iframe-browser browser-data="browserData">
+		<div class="browser-holder"  ng-show="popupData.browser.show">
+			<div iframe-browser></div>
 		</div>
 
 		<div class="bg" ng-click="closePopup()"></div>

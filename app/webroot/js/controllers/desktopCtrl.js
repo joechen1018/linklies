@@ -2,7 +2,8 @@
 
 goog.require('goog.math.Rect');
 app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, $sce,
-									    keyboardManager, resize, gridSystem, gridRects, apiService, uuid, apiParser){
+									    keyboardManager, resize, gridSystem, gridRects, 
+									    apiService, uuid, apiParser, popupData){
 	var $allElements,
 		$desk = $('#desktop-view'),
 		timeout,
@@ -11,14 +12,12 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, $sce
 	//** 100ms after controller constructed
 	var init = function(){
 
-		var onSizeChange = function(){
-		}
-		var onSizeDown = function(evt, lastWidth){
-		}
+		//** enable tooltip
 		var enablePlugins = function(){
-			//**enable tooltip
 			$(document).tooltip();
 		}
+
+		//** get distance between 2 points
 		var lineDistance = function(point1, point2){
 			var xs = 0;
 			  var ys = 0;
@@ -28,37 +27,6 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, $sce
 			  ys = ys * ys;
 			  return Math.sqrt( xs + ys );
 		}
-		$(rs).on("sizeChange", onSizeDown);
-
-		//** show head thumb nearby mouse, remove this feature for now		
-		/*$desk.on("mousemove", function(e){
-			var x = e.clientX,
-				y = e.clientY + $("body").scrollTop(),
-				left = 0,
-				top = 0,
-				distance = 0,
-				radius = 200,
-				$links = $desk.find(".link");
-
-				$links.each(function(i, e){
-					left = $(e).offset().left + $(e).find(".state-ready").width() / 2;
-					top = $(e).offset().top + $(e).find(".state-ready").height() / 2;
-					distance = lineDistance({
-						x : x,
-						y : y
-					},{
-						x : left,
-						y : top
-					});
-					if(distance <= radius){
-						$(e).addClass("hover");
-						$(e).find(".thumb-head").addClass("showThumbHead");
-					}else{
-						$(e).removeClass("hover");
-						$(e).find(".thumb-head").removeClass("showThumbHead");
-					}
-				});
-		});*/
 
 		keyboardManager.bind("ctrl+l", function(){
 			$scope.$apply(function(){
@@ -74,12 +42,9 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, $sce
 		});
 
 		keyboardManager.bind("shift+d", function(){
-			//_c.log(currentHoverLink);
 		});
 
 		if(glob.requireSign === true){
-			// $scope.showOverlay = true;
-			// $scope.requireSign = true;
 		}
 
 		$timeout(function(){
@@ -88,6 +53,7 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, $sce
 			gridSystem.update();
 		}, 100);
 	}
+
 	var clearLinks = function(){
 		for(var i = $scope.links.length - 1; i>-1; i--){
 			if($scope.links[i].state && $scope.links[i].state.name == "paste-url"){
@@ -153,6 +119,7 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, $sce
 		//** init desktop
 		setTimeout(init, 100);
 	}
+	
 	//user identifier
 	var url = $.url();
 	var uid = url.attr("path");
@@ -215,7 +182,7 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, $sce
 	
 	var average = [];
 	var averageDelta = 0;
-	$(window).on("mousewheel", function(event) {
+	$("#desktop-view").on("mousewheel", function(event) {
 		//console.log(event.deltaX, event.deltaY, event.deltaFactor);
 		//_c.log(event.deltaY);
 		average.push(event.deltaY);
@@ -254,6 +221,8 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, $sce
 	$scope.$watch('resize.size', function(newSize, oldSize){
 		gridSystem.onResize(newSize);
 	}, true);
+
+	$scope.popupData = popupData;
 
 	$scope.getDesktopStyle = function(){
 		return {
@@ -464,19 +433,6 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, $sce
 		*/
 	}
 
-	$scope.showBrowser = false;
-	$scope.closeBrowser = function(){
-		$scope.showBrowser = false;	
-		$("#browser iframe").attr("src", "");
-		$("body").css("overflow", "");
-
-		applyFocus(browsingLink, getLinkIndex(browsingLink), false);
-	}
-	$scope.browserData = {
-        url : "",
-        show : false
-    };
-
 	var getLinkIndex = function(link){
 		var _t = function(str){try{eval(str);}catch(e){return false;}}
 		for(var i = 0; i<$scope.links.length; i++){
@@ -508,12 +464,38 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, $sce
 		}, 30 * 1000);
 	}
 
-	$rootScope.$on("browserDataChange", function(e, data){
-		if(data.url){
-			data.url = $sce.trustAsResourceUrl(data.url)
-		}
-		$scope.browserData = data;
-	});
+	$scope.openLink = function(link){
+		if(link.view === 'video'){
+            $scope.playVideo(link);
+            return;
+        }
+
+        popupData.show = true;
+        popupData.browser.show = true;
+        popupData.browser.url = $sce.trustAsResourceUrl(link.url);
+        popupData.player.show = false;
+
+        $scope.popupData = popupData;
+
+        //** prevent body scrolling
+        $("body").css("overflow", "hidden");
+	}
+
+	$scope.playVideo = function(link){
+		var vid = link.type.videoId,
+            tmp = "http://www.youtube.com/embed/{{VIDEO_ID}}?autoplay=1",
+            src = tmp.replace("{{VIDEO_ID}}", vid);
+
+        popupData.show = true;
+        popupData.player.src = $sce.trustAsResourceUrl(src);
+        popupData.player.show = true;
+        popupData.browser.show = false;
+
+        $scope.popupData = popupData;
+
+        //** prevent body scrolling
+        $("body").css("overflow", "hidden");
+	}
 
 	//** delete folder
 	$rootScope.$on("deleteFolder", function(e, folder_id){
@@ -526,7 +508,6 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, $sce
 			}
 		}
 	});
-
 
 	//** on link updated
 	$rootScope.$on("linkUpdated", function(e, link){
@@ -605,31 +586,6 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, $sce
 
 	$rootScope.$on("showFolderMenu", function(e, context){
 		$scope.context = context;
-	});
-
-	var browsingLink;
-	$rootScope.$on("openPage", function(e, link){
-		var $iframe = $("#browser iframe"),
-		$body = $("body");
-
-		browsingLink = link;
-
-		$iframe.attr("src", link.url);
-		$body.css("overflow", "hidden");
-
-		$scope.showBrowser = true;
-		$timeout(function(){
-			$scope.$apply(function(){
-				$scope.showWrap = true;
-			});
-		}, 500);
-
-		$iframe.one("load", function(){
-			$iframe.show();
-			$scope.$apply(function(){
-				
-			});
-		});
 	});
 
 	$rootScope.$on("stopVideo", function(e, link){

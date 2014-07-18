@@ -1,8 +1,19 @@
 'use strict';
-app.controller("popupCtrl", function($scope, $rootScope, apiService){
+app.controller("popupCtrl", function($scope, $rootScope, popupData){
 
-	$scope.show = false;
-	
+
+	$scope.closePopup = function(){
+
+        popupData.show = false;
+        popupData.player.src = "";
+        popupData.browser.url = "";
+
+        $("body").css("overflow", "");
+	}
+
+	return;
+	//** deprecated below
+	//** contains edit/share panel logics
 	var $holder = $("#popup-holder"),
 		$imgContainer,
 		$selectedImg,
@@ -18,7 +29,7 @@ app.controller("popupCtrl", function($scope, $rootScope, apiService){
 		return $pd.promise();
 	}
 
-popup.init = function(){
+	popup.init = function(){
 		
 		$imgContainer = $holder.find('.edit .imgs');
 		$delBtn  = $imgContainer.find(".btn-del");

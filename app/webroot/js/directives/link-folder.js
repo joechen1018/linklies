@@ -44,7 +44,7 @@ app.directive("imgWatcher", function(){
 						fid = $folder.attr("id").split("-")[1];
 
 					//* move folder to front	
-					$folder.css("z-index", 1000);
+					// $folder.css("z-index", 9);
 
 					//*** arrow position
 					// $(".arrow").hide().css("top", top + 75);
@@ -124,7 +124,7 @@ app.directive("imgWatcher", function(){
 					// var linksRect = new goog.math.Rect($linkList.offset().left, 0, $linkList.width(), $linkList.height());
 					// var bool = linksRect.intersects(mouseRect);
 					if(true){
-						$folder.css("z-index", 2);
+						$folder.css("z-index", 1);
 						scope.$apply(function(){
 							scope.linkList.show = false;
 							scope.linkList.selectedLink = undefined;
@@ -258,7 +258,7 @@ app.directive("imgWatcher", function(){
 					$rootScope.$broadcast("openPage", link);
 
 					//* hide folder links
-					$folder.css("z-index", 2);
+					$folder.css("z-index", 1);
 					scope.$apply(function(){
 						scope.linkList.show = false;
 					});
@@ -350,7 +350,6 @@ app.directive("imgWatcher", function(){
 			scope.grids = gridSystem;
 			scope.showOpt = false;
 			scope.iconHover = false;
-			scope.isPlayingVideo = false;
 			scope.showDetail = false;
 			scope.selectedLink = data;
 
@@ -512,82 +511,12 @@ app.directive("imgWatcher", function(){
 				$rootScope.$broadcast("removeLink", scope.data.uuid || scope.data.id);
 			}
 
-			//** open iframe browser
-			scope.openPage = function(){
-				$ele.css("z-index", 10);
-				$rootScope.$broadcast("openPage", scope.data);
-			}
-
-			//** getThumb deprecated
-			var thumbUrl;
-			scope.getThumb = function(){
-				//console.log(data);
-				if(typeof data.type === "object"){
-					if(data.type.name.indexOf("google.docs") !== -1){
-						if(thumbUrl){
-							return thumbUrl;
-						}else{
-							if(data.key === undefined || data.key === ""){
-								data.key = __.getDocKey(data.url);
-							}
-							var request = gapi.client.drive.files.get({
-			                    'fileId': data.key
-			                });
-			                request.execute(function(res) {
-			                    $ele.find(".thumb").attr("src", res.thumbnailLink);
-			                    data.thumb = res.thumbnailLink;
-			                    apiService.linkService.save(data);
-			                    thumbUrl = res.thumbnailLink;
-			                });
-						}
-						return "";
-					}
-				}
-				return data.thumb;
-			}
-
-			scope.openPopup = function(tab){
-				$rootScope.$broadcast("showPopup", tab, scope.data);
-			}
-
 			scope.openLink = function(link){
-
-				console.log(link);
-		        if(link.view === 'video'){
-		            scope.playVideo(link);
-		            return;
-		        }
-
-		        $("body").css("overflow", "hidden");
-
-		        var $pop = $(".pop-layer"),
-		            $holder = $pop.find(".iframe-holder"),
-		            $iframe = $holder.find("iframe.browser").eq(0);
-
-		        var $browser = $(".browser"),
-		            $playerHolder = $(".player-holder");
-		            
-		        $pop.show();
-		        $browser.show();
-		        $playerHolder.hide();
-
-		        $rootScope.$broadcast("browserDataChange", {
-		        	show : true,
-		        	url : link.url
-		        });
+				scope.$parent.openLink(link);
 		    }
 
-		    scope.closePopup = function(){
-		        $("body").css("overflow", "");
-		        var $pop = $(".pop-layer"),
-		            $holder = $pop.find(".player-holder"),
-		            $iframe = $(".browser").find("iframe").eq(0),
-		            $player = $holder.find("iframe").eq(0);
-
-		        $iframe.attr("src", "");
-		        $player.attr("src", "");
-
-		        $pop.hide();
+		    scope.playVideo = function(link){
+		        scope.$parent.playVideo(link);
 		    }
 
 			var timer, timer1, timer3;
@@ -604,7 +533,7 @@ app.directive("imgWatcher", function(){
 					$timeout.cancel(timer3);
 
 					//** bring up link so detail will overlay other $elements
-					$ele.css("z-index", 1000);
+					$ele.css("z-index", 3);
 
 					scope.$apply(function(){
 						scope.showOpt = true;
@@ -642,7 +571,7 @@ app.directive("imgWatcher", function(){
 				});
 				$ele.on("mouseleave", function(){
 					//** setting z-index back
-					$ele.css("z-index", 10);
+					$ele.css("z-index", 1);
 
 					timer1 = $timeout(function(){
 						scope.showOpt = false;
@@ -697,66 +626,6 @@ app.directive("imgWatcher", function(){
             $ele.on("load", ".thumb-head img", function(){
             	console.log('load');
             });
-
-
-            scope.stopVideo = function(){
-
-				$typeWrap = $ele.find(".type-wrap").eq(0);
-				$typeWrap.trigger("stopVideo");
-
-				//** enable hover again
-				enableHover();
-
-				$timeout(function(){
-					scope.isPlayingVideo = false;
-					scope.showDetail = false;
-				}, 1);
-
-				//** focus me for 30 sec
-				$rootScope.$broadcast("stopVideo", scope.data);
-
-
-				//** set things back
-				$playerHolder = $ele.find(".player-holder");
-				$player = $playerHolder.find("iframe").eq(0);
-
-				$playerHolder.removeAttr("style");
-				$player.attr("src", "").hide();
-				$ele.css('z-index', '');
-
-				$detailWrap.draggable("destroy");
-				$detailWrap.removeAttr("style");
-				$detailWrap.find(".texts").removeAttr("style");
-				$img = $detailWrap.find(".img>img").eq(0);
-				$img.show();
-			}
-
-            $ele.on("videoStart", ".type-wrap", function(){
-            	//** prevent detail hidden when mouse out
-				$ele.unbind("mouseenter");
-				$ele.unbind("mouseleave");
-
-				//** higher than hovered link(100)
-				$ele.css('z-index', '101')
-				scope.isPlayingVideo = true;
-
-				//** allow drag around
-				$detailWrap = $ele.find(".detail-wrap").eq(0);
-				$detailWrap.draggable({
-					containment : "#board",
-					scroll: false,
-					delay : 10,
-				});
-
-				//** let user know the pannel is draggable
-				$detailWrap.find(".texts").css("cursor","move");
-            });
-
-            //** maxinum load time 2~3 sec, report error when exceeded
-            /*setTimeout(function(){
-            	if(!bl)
-            		$(loader.events).trigger("error", [data.id]);
-            }, 2000 +  (Math.random() * 1000));*/
 		}
 	}
 })
@@ -804,7 +673,7 @@ app.directive("imgWatcher", function(){
 					start : function(e, ui){
 
 						$ele = $(ele);
-						$ele.trigger("dragStart").css("z-index", 1000);
+						$ele.trigger("dragStart").css("z-index", 5);
 						originRect = rects.getDomRect($ele);
 						dragGrid = undefined;
 						originGrid = data.grid;
@@ -842,7 +711,7 @@ app.directive("imgWatcher", function(){
 					},
 					stop : function(e, ui){
 
-						$ele.trigger("dragStop").css("z-index", 10);
+						$ele.trigger("dragStop").css("z-index", 1);
 						$(ele).trigger("mouseout");
 						ref = type === "link" ? scope.link : scope.folder;
 						ref.dragging = false;

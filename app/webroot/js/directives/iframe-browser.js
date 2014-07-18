@@ -1,4 +1,4 @@
-app.directive("iframeBrowser", function($rootScope){
+app.directive("iframeBrowser", function($rootScope, popupData){
 	return {
 		restrict : "EA",
 		templateUrl : root + "templates/iframe-browser.html",
@@ -6,15 +6,13 @@ app.directive("iframeBrowser", function($rootScope){
 
 		},
 		replace : true,
-		scope: {
-		    data : "=browserData"
-		},
 		link : function(scope, ele, attrs, ctrl){
+
+			scope.data = popupData.browser;
 			var $browser = $(".iframe-browser"),
 				$holder = $browser.find(".iframe-holder");
 
 			scope.data.fullscreen = false;
-
 			scope.gotoFullscreen = function(){
 				scope.data.fullscreen = true;
 				$holder.animate({
@@ -33,7 +31,7 @@ app.directive("iframeBrowser", function($rootScope){
 
 			scope.closeBrowser = function(){
 				scope.data.show = false;
-				$rootScope.$broadcast("browserClosed");
+				popupData.show = false;
 			}
 
 			scope.refresh = function(){
