@@ -1,17 +1,13 @@
 <div>
 	<div class="type-wrap">
 
-		<div class="close-btn" ng-show="isPlayingVideo && showCloseBtn" ng-click="stopVideo()">
-			<span data-icon="I"></span>
-		</div>
-
 		<div class="player-holder">
 			<iframe style="display:none" allowfullscreen src="" width="100%" height="100%" frameborder="0"></iframe>
 		</div>
 
-		<div class="img" ng-show="!isPlayingVideo && hasImageArea">
+		<div class="img" ng-show="hasImageArea">
 			<div class="holder">
-				<img class="thumb" ng-repeat="img in selectedLink.images track by $index" ng-src="{{img}}" data-index="{{thumbIndex}}" class="{{iconHover ? 'icon-hover' : ''}}">
+				<img gdoc-content-preview link="selectedLink"  class="thumb" ng-repeat="img in selectedLink.images track by $index" ng-src="{{img}}" data-index="{{thumbIndex}}" class="{{iconHover ? 'icon-hover' : ''}}">
 			</div>
 			<span class="thumb-icon" data-icon="j" ng-show="selectedLink.view == 'video'" ng-click="playVideo(selectedLink)">
 			</span>	

@@ -127,8 +127,7 @@ app.service("gapiService", function(){
 
 	this.getDriveFile = function(key){
 		var $dr = $.Deferred();
-		// var key = key ? key : 'root';
-		console.log(key);
+		var key = key ? key : 'root';
 		var request = gapi.client.drive.files.get({
         	'fileId': key
     	});
@@ -188,24 +187,6 @@ app.service("gapiService", function(){
 			$dr_ready.resolve();
 		}
 		return $dr_ready.promise();
-	}
-
-	this.initFolderView = function(){
-		/*this.loadApi().then(function(){
-			setInterval(function(){
-				gapi.auth.authorize({
-					client_id: clientId, 
-					scope: scopes, 
-					immediate: false
-				}, function(rs){
-					if(rs && !rs.error && rs["access_token"]){
-						$dr.resolve(rs);
-					}else{
-						$dr.reject(rs);
-					}
-				});
-			}, 36000);
-		});*/
 	}
 
 	getClientJs();

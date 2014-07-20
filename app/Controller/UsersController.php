@@ -25,8 +25,11 @@ class UsersController extends AppController{
 		}
 		$this -> layout = "default";
 		$this -> view = "/Pages/home";
-		$user = $this -> User -> findByUsernameId($user_id);
-		$this -> set("user", $user);
+		$user = $this -> User -> find("first", array(
+			"conditions" => array("User.username_id" => $user_id),
+			"recursive" => 2
+		));
+		$this -> set("data", $user);
 		// debug($user_id);
 	}
 

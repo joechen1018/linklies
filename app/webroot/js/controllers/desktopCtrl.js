@@ -9,6 +9,21 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, $sce
 		timeout,
 		rs = resize;
 
+	var dragTimer;	
+	$(document).on('dragover', function(e) {
+	    var dt = e.originalEvent.dataTransfer;
+	    if(dt.types != null && (dt.types.indexOf ? dt.types.indexOf('Files') != -1 : dt.types.contains('application/x-moz-file'))) {
+	        $("#dropzone").show();
+	        window.clearTimeout(dragTimer);
+	    }
+	});	
+
+	$(document).on('dragleave', function(e) {
+	    dragTimer = window.setTimeout(function() {
+	        $("#dropzone").hide();
+	    }, 25);
+	});
+
 	//** 100ms after controller constructed
 	var init = function(){
 
@@ -62,23 +77,13 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, $sce
 		}
 	}
 
-	var onUserDataFetched = function(rs){
-		var data = rs.data,
+	var onUserDataFetched = function(appData){
+		var data = appData,
 			user = data.User,
 			links = data.Link,
 			folders = data.Folder,
 			phase,
-			_try = function(data){
-				var a;
-				try{
-			        a = $.parseJSON(data);
-			    }catch(e){
-			    	_c.warn("link type parse error");
-			    	_c.warn(data);
-			    	return {};
-			    }
-			    return a;
-			}
+			_try=function(e){var t;try{t=$.parseJSON(e)}catch(n){_c.warn("link type parse error");_c.warn(e);return{}}return t}
 
 		//** parse links to objects	
 		$(links).each(function(i, e){
@@ -124,14 +129,17 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, $sce
 	var url = $.url();
 	var uid = url.attr("path");
 	var userData;
+	//if(userData === undefined){
+	if(true){	
+		//apiService.getUser(uid).then(onUserDataFetched);
+		onUserDataFetched(appData);
+	}
 
 	uid = uid.split("/");
 	uid = uid[uid.length - 1];
 	glob.user = false;
 
-	if(userData === undefined){
-		apiService.getUser(uid).then(onUserDataFetched);
-	}
+	
 	$scope.resize = resize;
 	$scope.grids = gridSystem;
 	$scope.showGrid = false;

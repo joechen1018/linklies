@@ -468,7 +468,7 @@ app.directive("imgWatcher", function(){
 								 //   	});
 
 						        }else{
-						            console.log("error: creating short url n"+ response.error);
+						            // console.log("error: creating short url n"+ response.error);
 
 						            //** if creating short url fails, still save the link
 						            linkService.save(data).then(function(rs){
@@ -624,7 +624,6 @@ app.directive("imgWatcher", function(){
             });
 
             $ele.on("load", ".thumb-head img", function(){
-            	console.log('load');
             });
 		}
 	}

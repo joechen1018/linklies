@@ -29,7 +29,16 @@
 	</script>
 	<link rel="stylesheet/less" type="text/css" href="<?php echo $this -> webroot?>css/main.less?view=<?php echo "desktop-view"?>" />
 	<script src="//cdnjs.cloudflare.com/ajax/libs/less.js/1.6.2/less.min.js" type="text/javascript"></script>
+
+	<?php 
+		$this -> Js -> set("data", $data); 
+		echo $this -> Js -> writeBuffer(array(
+			"onDomReady" => false
+		));
+	?>
+
 	<script>
+		var appData = app.data;
 		console = _con;
 		var _c = _con;
 		var root = '<?php echo $this -> webroot?>';
@@ -46,7 +55,9 @@
 	<script src="<?php echo $this -> webroot?>js/factories/popupData.js" type="text/javascript" charset="utf-8"></script>
 	<script src="<?php echo $this -> webroot?>js/services/keyboardManager.js" type="text/javascript" charset="utf-8"></script>
 	<script src="<?php echo $this -> webroot?>js/services/gridService.js" type="text/javascript" charset="utf-8"></script>
+	<script src="<?php echo $this -> webroot?>js/services/gapi.js" type="text/javascript" charset="utf-8"></script>
 	<script src="<?php echo $this -> webroot?>js/services/gridRects.js" type="text/javascript" charset="utf-8"></script>
+	<script src="<?php echo $this -> webroot?>js/directives/gdoc-content-preview.js" type="text/javascript" charset="utf-8"></script>
 	<script src="<?php echo $this -> webroot?>js/directives/iframe-browser.js" type="text/javascript" charset="utf-8"></script>
 	<script src="<?php echo $this -> webroot?>js/directives/link-folder.js" type="text/javascript" charset="utf-8"></script>
 	<script src="<?php echo $this -> webroot?>js/directives/context-menu.js" type="text/javascript" charset="utf-8"></script>

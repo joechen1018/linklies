@@ -20,7 +20,8 @@
 </div> -->
 
 <div id="desktop-view" ng-controller="desktopCtrl" ng-style="getDesktopStyle()">
-
+	
+	<div id="dropzone"></div>
 	<div context-menu context-menu-data="context"></div>
 
 	<div id="msg-box">

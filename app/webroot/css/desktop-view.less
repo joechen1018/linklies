@@ -9,6 +9,18 @@ body{
 	//** overflow-y : hidden defined in inline html;
 }
 
+#dropzone{
+	display: none;
+	position: fixed;
+	left : 0;
+	top : 0;
+	width : 100%;
+	height : 100%;
+	z-index: 9;
+	background: blue;
+	.alpha(0.5);
+}
+
 #board{
     //background: darken(@bg-color, 15%);
     position: relative;
