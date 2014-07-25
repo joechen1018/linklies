@@ -10,7 +10,7 @@ app.directive("imgWatcher", function(){
 		}
 	}
 })
-.directive("lkFolder", function(gridSystem, $rootScope, apiService, apiParser){
+.directive("lkFolder", function(gridSystem, $rootScope, apiService, apiParser, gapiService){
 	return {
 		restrict : "EA",
 		templateUrl : "templates/folder.html",
@@ -310,7 +310,7 @@ app.directive("imgWatcher", function(){
 		}
 	}
 })
-.directive("lkLink", function(gridSystem, apiService, $rootScope, apiParser, $timeout, uuid){
+.directive("lkLink", function(gridSystem, apiService, $rootScope, apiParser, $timeout, uuid, gapiService){
 	return {
 		restrict : "EA",
 		templateUrl : "templates/link.1.html",
@@ -435,51 +435,67 @@ app.directive("imgWatcher", function(){
 							})();
 						});
 
+
 						gapi.client.load('urlshortener', 'v1',function(){
-							var request = gapi.client.urlshortener.url.insert({
-						      'resource': {
-							      'longUrl': data.url
-							    }
-						    });
-						    request.execute(function(response){
-						        if(response.id != null){
-						        	//console.log(response.id);
 
-						        	//** get shorten url
-						        	data["short_url"] = response.id;
+							if(gapi.client.urlshortener){
 
-						        	//** save
-						        	linkService.save(data).then(function(rs){
-										//** pass the id to data
-										scope.$apply(function(){
-											scope.data.id = rs.id;
-											//** notify controller
+								var request = gapi.client.urlshortener.url.insert({
+							      'resource': {
+								      'longUrl': data.url
+								    }
+							    });
+							    request.execute(function(response){
+							        if(response.id != null){
+							        	//console.log(response.id);
+
+							        	//** get shorten url
+							        	data["short_url"] = response.id;
+
+							        	//** save
+							        	linkService.save(data).then(function(rs){
+											//** pass the id to data
+											scope.$apply(function(){
+												scope.data.id = rs.id;
+												//** notify controller
+											});
+											$rootScope.$broadcast("linkCreationComplete", data);
 										});
-										$rootScope.$broadcast("linkCreationComplete", data);
-									});
 
-									//** getting shorten url info
-									// request = gapi.client.urlshortener.url.get({
-								 //        'shortUrl': data["short_url"],
-								 //        'projection': 'FULL'
-								 //   	});
-								 //   	request.execute(function(res){
-								 //   		console.log(res);
-								 //   	});
+										//** getting shorten url info
+										// request = gapi.client.urlshortener.url.get({
+									 //        'shortUrl': data["short_url"],
+									 //        'projection': 'FULL'
+									 //   	});
+									 //   	request.execute(function(res){
+									 //   		console.log(res);
+									 //   	});
 
-						        }else{
-						            // console.log("error: creating short url n"+ response.error);
+							        }else{
+							            // console.log("error: creating short url n"+ response.error);
 
-						            //** if creating short url fails, still save the link
-						            linkService.save(data).then(function(rs){
-										//** pass the id to data
-										scope.$apply(function(){
-											scope.data.id = rs.id;
+							            //** if creating short url fails, still save the link
+							            linkService.save(data).then(function(rs){
+											//** pass the id to data
+											scope.$apply(function(){
+												scope.data.id = rs.id;
+											});
+											$rootScope.$broadcast("linkCreationComplete", data);
 										});
-										$rootScope.$broadcast("linkCreationComplete", data);
+							        }
+							    });	
+
+							}else{
+								linkService.save(data).then(function(rs){
+									//** pass the id to data
+									scope.$apply(function(){
+										scope.data.id = rs.id;
+										//** notify controller
 									});
-						        }
-						    });
+									$rootScope.$broadcast("linkCreationComplete", data);
+								});
+							}
+							
 						});
 					})
 					.fail(function(){
@@ -518,6 +534,30 @@ app.directive("imgWatcher", function(){
 		    scope.playVideo = function(link){
 		        scope.$parent.playVideo(link);
 		    }
+
+		    scope.slideThumb = function(dir){
+
+				data = scope.selectedLink;
+				data.thumbIndex += dir;
+				if(data.thumbIndex < 0) data.thumbIndex = 0;
+				if(data.thumbIndex >= data.images.length) data.thumbIndex = data.images.length - 1;
+
+				var $holder = $ele.find(".img .holder");
+				var $img = $holder.find("img").eq(data.thumbIndex);
+				var $wrap = $ele.find(".detail-wrap");
+
+				$wrap.addClass("animating");
+				$("div.img").css("background", "none");
+
+				$holder.height($img.height());
+				$holder.animate({
+					left : -(data.thumbIndex * 330)
+				}, 300, function(){
+					$wrap.removeClass("animating");
+					$("div.img").css("background", "white");
+					apiService.linkService.save(data);
+				});
+			}
 
 			var timer, timer1, timer3;
 			var enableHover = function(){

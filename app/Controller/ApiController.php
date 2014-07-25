@@ -114,8 +114,10 @@ class ApiController extends AppController{
 
 	public function saveLinkThumbs(){
 		$this -> loadModel("Link");
+
 		$id = $this -> data["link_id"];
 		$images = $this -> data["urls"];
+
 		$link = $this -> Link -> findByUuid($id);
 		$link_id = $link["Link"]["id"];
 		$rs = $this -> Link -> save(array(

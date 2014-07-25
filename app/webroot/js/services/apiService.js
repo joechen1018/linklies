@@ -82,7 +82,6 @@ app.service("apiService", function($http, apiParser){
 				return _d.promise();
 			},
 			saveField : function(field, value, id){
-				console.log("api/saveField/link/" + id + "/" + field + "/" + value);
 				var _d = $.Deferred();
 				$.ajax({
 					url : "api/saveField/link/" + id + "/" + field + "/" + value,
@@ -211,7 +210,7 @@ app.service("apiService", function($http, apiParser){
 	}
 })
 
-.service("apiParser", function(urlTypes){
+.service("apiParser", function(urlTypes, uuid){
 	
 	var self = this;
 	this.parseGoogleResult = function($list){
@@ -449,6 +448,10 @@ app.service("apiService", function($http, apiParser){
 		//** thumb field depriciated
 		rs.thumb = rs.meta["og:image"];
 		rs.thumbIndex = 0;
+		rs.uuid = uuid.create();
+		rs.user_id = appData.User.id;
+		rs.username_id = appData.User.username_id;
+
 		rs.images = [];
 		if(rs.thumb !== undefined){
 			rs.images.push(rs.thumb);
@@ -543,8 +546,6 @@ app.service("apiService", function($http, apiParser){
 						//** explicitly for disp.cc
 						src = $e.attr("data-src");
 					}	
-
-
 
 					if(src){
 						//** prevent duplicated with og:image

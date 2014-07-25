@@ -67,11 +67,20 @@ app.service("gapiService", function(){
 
 	//** get google client.js
 	var getClientJs = function(){
+
+		//** load google api v2
 		(function() {
 		    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
 		    po.src = 'https://apis.google.com/js/client.js?onload=onGapiLoaded';
 		    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
 		})();
+
+		//** load open api  
+		(function() {
+	        var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+	        po.src = 'http://www.google.com/jsapi';
+	        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+	    })();
 	}
 
 	//** google api loaded
