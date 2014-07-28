@@ -560,7 +560,13 @@ app.controller("desktopCtrl", function($scope, $rootScope, $timeout, $http, $sce
 		for(var i = 0; i<$scope.links.length; i++){
 			if($scope.links[i].uuid == link.uuid){
 				$scope.links[i].images = link.images;
-				// console.log($scope.links[i]);
+				if($scope.links[i].images.length === 1){
+					if($scope.links[i].images[0].length === 0){
+						if($scope.links[i].thumb.length > 1){
+							$scope.links[i].images[0] = $scope.links[i].thumb;
+						}
+					}
+				}
 			}
 		}
 	});

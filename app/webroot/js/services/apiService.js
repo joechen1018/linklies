@@ -727,7 +727,7 @@ app.service("apiService", function($http, apiParser){
 					    'fileId': rs.key
 					});
 					request.execute(function(resp) {
-						_c.log(resp);
+						// _c.log(resp);
 						rs.doc = {};
 						rs.doc.spreadsheet = resp;
 						rs.title = resp.title;

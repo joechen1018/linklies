@@ -390,6 +390,7 @@ app.directive("imgWatcher", function(){
 						startColorShifting($ele.find(".state-loading .no-icon"));
 					}, 100);
 					
+					console.log(appData.User);
 					linkService.create(url).then(function(data, findValidThumbsTask){
 
 						//** when finish finding valid thumbs
