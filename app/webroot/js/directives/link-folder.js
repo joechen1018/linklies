@@ -455,6 +455,7 @@ app.directive("imgWatcher", function(){
 							        	//** get shorten url
 							        	data["short_url"] = response.id;
 
+							        	console.log(data);
 							        	//** save
 							        	linkService.save(data).then(function(rs){
 											//** pass the id to data

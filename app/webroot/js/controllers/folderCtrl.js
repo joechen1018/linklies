@@ -137,7 +137,7 @@ app.controller("folderViewCtrl1", function($scope, $timeout, $sce, $rootScope, p
     $scope.playVideo = function(link){
         // console.log(link);
         var vid = link.type.videoId,
-            tmp = "http://www.youtube.com/embed/{{VIDEO_ID}}?autoplay=1",
+            tmp = link.type.embedUrl,
             src = tmp.replace("{{VIDEO_ID}}", vid);
 
         popupData.show = true;
