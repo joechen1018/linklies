@@ -1,4 +1,4 @@
-app.service("apiService", function($http, apiParser){
+app.service("apiService", function($http, apiParser, gapiService){
 	return {
 		linkService : {
 			get : function(id){

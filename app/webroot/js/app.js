@@ -153,18 +153,19 @@ var app = angular.module("lk", ["ngRoute", "pasvaz.bindonce"], function($httpPro
    });
 
     //** load google api v2
-	(function() {
-	    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
-	    po.src = 'https://apis.google.com/js/client.js?onload=onGApiLoaded';
-	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-	})();
+    
+    /*(function() {
+        var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+        po.src = 'https://apis.google.com/js/client.js?onload=onGApiLoaded';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+    })();*/
 
     //** load open api  
-    (function() {
+    /*(function() {
         var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
         po.src = 'http://www.google.com/jsapi';
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-    })();
+    })();*/
 
     //** on unload
     $(window).bind("beforeunload",function(event){
@@ -250,30 +251,30 @@ var app = angular.module("lk", ["ngRoute", "pasvaz.bindonce"], function($httpPro
    return fallbackSrc;
 })
 .controller("appCtrl", function($scope){
-	var checkAuth = function() {
-		    gapi.auth.authorize({client_id: clientId, scope: scopes, immediate: true}, authorize);
+
+  var checkAuth = function() {
+  	    gapi.auth.authorize({client_id: clientId, scope: scopes, immediate: true}, authorize);
         google.load("picker", "1", {
             callback : function(){
                // _c.log("picker loaded");
             }
         });
-	}
-	$scope.onGApiLoaded = function(){
-		//console.log("loaded");
-		gapi.client.setApiKey(clientId);
-		window.setTimeout(checkAuth,1);
-	}
-	window["onGApiLoaded"] = $scope.onGApiLoaded;
+  }
+  $scope.onGApiLoaded = function(){
+  	//console.log("loaded");
+  	gapi.client.setApiKey(clientId);
+  	window.setTimeout(checkAuth,1);
+  }
+  window["onGApiLoaded"] = $scope.onGApiLoaded;
 
-    var apiKey = glob.apiKey;
-	var clientId = "205449938055-06501obglsfmcellrtc67opqs6ogbs19.apps.googleusercontent.com";
-	var scopes = 'https://www.googleapis.com/auth/plus.me https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/userinfo.email';
-	var secret = "zo03y8aW30ZAJnJLKYSH4b4v";
-	var userId;
-	var authorize = function(rs){
-		//console.log(rs);
-		if (rs && !rs.error && rs["access_token"]) {
-
+  var apiKey = glob.apiKey;
+  var clientId = "205449938055-06501obglsfmcellrtc67opqs6ogbs19.apps.googleusercontent.com";
+  var scopes = 'https://www.googleapis.com/auth/plus.me https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/userinfo.email';
+  var secret = "zo03y8aW30ZAJnJLKYSH4b4v";
+  var userId;
+  var authorize = function(rs){
+  	//console.log(rs);
+  	if (rs && !rs.error && rs["access_token"]) {
             //** get token
             token = rs["access_token"];
       			gapi.client.setApiKey("");
@@ -302,13 +303,13 @@ var app = angular.module("lk", ["ngRoute", "pasvaz.bindonce"], function($httpPro
           // });    
 
 
-		} else {
-			location.href = root + "users/login";
-		}
-	}
-	$scope.app = {
-		view : "desktop"
-	}
+  	} else {
+  		location.href = root + "users/login";
+  	}
+  }
+  $scope.app = {
+  	view : "desktop"
+  }
 })
 .factory('$debounce', ['$rootScope', '$browser', '$q', '$exceptionHandler',
     function($rootScope,   $browser,   $q,   $exceptionHandler) {

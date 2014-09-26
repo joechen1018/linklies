@@ -322,6 +322,10 @@ app.directive("imgWatcher", function(){
 		},
 		replace : true,
 		link : function(scope, ele, attrs){
+
+			scope.data.user_id = appData.User.id;
+			scope.data.username_id = appData.User.username_id;
+
 			var grids = gridSystem,
 				data = scope.data,
 				linkService = apiService.linkService,
@@ -409,6 +413,7 @@ app.directive("imgWatcher", function(){
 
 						//** use new data but keep a copy of the old
 						var odata = scope.data;
+						console.log(odata);
 
 						//** attribute that we will use from old
 						var list = ["id", "dragging", "grid", "thumb", "url", "user_id", "username_id", "uuid"];
@@ -422,6 +427,12 @@ app.directive("imgWatcher", function(){
 
 						//** parse from string to object etc
 						data = apiParser.linkFromDb(data);
+						linkService.save(data).then(function(rs){
+							scope.$apply(function(){
+								scope.data = data;
+							});
+							$rootScope.$broadcast("linkCreationComplete", data);
+						});
 
 						//** stop color animation
 						stopColorShifting();
@@ -437,73 +448,8 @@ app.directive("imgWatcher", function(){
 								return true;
 							})();
 						});
-
-
-						gapi.client.load('urlshortener', 'v1',function(){
-
-							if(gapi.client.urlshortener){
-
-								var request = gapi.client.urlshortener.url.insert({
-							      'resource': {
-								      'longUrl': data.url
-								    }
-							    });
-							    request.execute(function(response){
-							        if(response.id != null){
-							        	//console.log(response.id);
-
-							        	//** get shorten url
-							        	data["short_url"] = response.id;
-
-							        	console.log(data);
-							        	//** save
-							        	linkService.save(data).then(function(rs){
-											//** pass the id to data
-											scope.$apply(function(){
-												scope.data.id = rs.id;
-												//** notify controller
-											});
-											$rootScope.$broadcast("linkCreationComplete", data);
-										});
-
-										//** getting shorten url info
-										// request = gapi.client.urlshortener.url.get({
-									 //        'shortUrl': data["short_url"],
-									 //        'projection': 'FULL'
-									 //   	});
-									 //   	request.execute(function(res){
-									 //   		console.log(res);
-									 //   	});
-
-							        }else{
-							            // console.log("error: creating short url n"+ response.error);
-
-							            //** if creating short url fails, still save the link
-							            linkService.save(data).then(function(rs){
-											//** pass the id to data
-											scope.$apply(function(){
-												scope.data.id = rs.id;
-											});
-											$rootScope.$broadcast("linkCreationComplete", data);
-										});
-							        }
-							    });	
-
-							}else{
-								linkService.save(data).then(function(rs){
-									//** pass the id to data
-									scope.$apply(function(){
-										scope.data.id = rs.id;
-										//** notify controller
-									});
-									$rootScope.$broadcast("linkCreationComplete", data);
-								});
-							}
-							
-						});
 					})
 					.fail(function(){
-						_c.log("fail");
 						//** notify controller level
 						$rootScope.$broadcast("linkCreationFailed", scope.data);
 					});

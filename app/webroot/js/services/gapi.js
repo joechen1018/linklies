@@ -87,7 +87,7 @@ app.service("gapiService", function(){
 	this.apiLoaded = false;
 
 	//** check authentication
-	this.checkAuth = function(){
+	this.authorize = function(){
 		var $dr = $.Deferred();
 		gapi.auth.authorize({
 			client_id: clientId, 
@@ -104,7 +104,7 @@ app.service("gapiService", function(){
 	}
 	this.loadPlus = function(){
 		var $dr = $.Deferred();
-		gapi.client.setApiKey("");
+		// gapi.client.setApiKey("");
 	    gapi.client.load('plus', 'v1', function() {
 	    	if(gapi.client.plus){
 				var request = gapi.client.plus.people.get({
@@ -121,7 +121,7 @@ app.service("gapiService", function(){
 	}
 
 	var driveReady = false;
-	this.loadDrive = function(fileKey){
+	this.loadDrive = function(){
 		var $dr = $.Deferred();
 		if(driveReady){
 			$dr.resolve();
@@ -191,17 +191,17 @@ app.service("gapiService", function(){
 		return $dr.promise();
 	}
 
-	this.loadApi = function(){
-		if(this.apiLoaded){
-			$dr_ready.resolve();
-		}
-		return $dr_ready.promise();
-	}
-
-	getClientJs();
 	window.onGapiLoaded = function(){
 		gapi.client.setApiKey(clientId);
 		self.apiLoaded = true;
 		$dr_ready.resolve();
+		self.loadDrive().then(function(){
+			console.log('drive loaded');
+		});
+		self.loadPlus().then(function(){
+			console.log('plus loaded');
+		});
 	}
+
+	getClientJs();
 });

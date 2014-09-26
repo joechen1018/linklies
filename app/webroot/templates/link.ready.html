@@ -31,7 +31,7 @@
 			<span class="title" ng-model='data.title' target="_blank" ng-style="{
 				width : data.view === 'default' ? grids.linkSize.width - 35 : grids.linkSize.width - 45,
 				lineHeight : (grids.gridHeight + 2) + 'px'
-			}">{{data.title}}</span>
+			}">{{data.title == "" ? "無標題文件" : data.title}}</span>
 
 			<div class="opt" ng-show="showOpt">
 				<a data-icon="I" ng-click="removeLink()"></a>
